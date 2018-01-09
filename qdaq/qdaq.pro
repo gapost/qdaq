@@ -23,7 +23,10 @@ HEADERS  += \
     core/QDaqObject.h \
     core/QDaqGlobal.h \
     core/QDaqRoot.h \
-    core/QDaqTypes.h
+    core/QDaqTypes.h \
+    core/os_utils.h \
+    core/os_utils_linux.h \
+    core/os_utils_win32.h
 
 DISTFILES += \
     qdaq.pri
