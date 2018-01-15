@@ -30,8 +30,6 @@ public:
     QDaqRoot(void);
     virtual ~QDaqRoot(void);
 
-    void objectCreation(QDaqObject* obj, bool c);
-
     QString h5write(const QString& filename, const QString& comment);
 
     QString xml();

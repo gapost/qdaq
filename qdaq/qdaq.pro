@@ -14,19 +14,30 @@ TARGET = qdaq
 TEMPLATE = app
 
 SOURCES += main.cpp\
+    core/QDaqSession.cpp \
     core/QDaqObject.cpp \
     core/QDaqRoot.cpp \
     core/QDaqH5Serialize.cpp \
-    core/QDaqTypes.cpp
+    core/QDaqTypes.cpp \
+    core/QDaqJob.cpp \
+    gui/QDaqConsole.cpp \
+    gui/QConsoleWidget.cpp
 
 HEADERS  += \
+    core/QDaqSession.h \
     core/QDaqObject.h \
     core/QDaqGlobal.h \
     core/QDaqRoot.h \
     core/QDaqTypes.h \
     core/os_utils.h \
     core/os_utils_linux.h \
-    core/os_utils_win32.h
+    core/os_utils_win32.h \
+    core/QDaqJob.h \
+    core/math_util.h \
+    gui/QConsoleWidget.h \
+    gui/QDaqConsole.h
+
+INCLUDEPATH += ./core ./gui ./daq
 
 DISTFILES += \
     qdaq.pri

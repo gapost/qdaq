@@ -21,28 +21,37 @@ QDaqObject::~QDaqObject(void)
 	qDebug() << "destroying" << fullName() << "@" << (void*)this;
 }
 
-/* Attach this QDaqObject to the Rt-framework.
-This function should always be called right after the constructor.
+/** Attach this QDaqObject to the QDaq-framework.
+This function should be called right after the constructor.
 It establishes the required links to other objects of the framework. 
 This has to be done after the constructor so that the object's C++ pointer
 is fully qualified.
 */
-//void QDaqObject::attach()
-//{
-//	qDebug() << "attaching" << fullName() << "@" << (void*)this;
-//	root_.objectCreation(this,true);
-//}
-/** Detach this QDaqObject to the Rt-framework.
+void QDaqObject::attach()
+{
+    qDebug() << "attaching" << fullName() << "@" << (void*)this;
+    foreach(QDaqObject* obj, children_) obj->attach();
+    //root_.objectCreation(this,true);
+}
+/** Detach this QDaqObject from the QDaq-framework.
 This function should always be called before the destructor.
 It removes links to this object from other objects in the framework.
-It stops RtLoop objects, disarms RtJob objects, etc. so that they can
+It stops QDaqLoop objects, disarms QDaqJob objects, etc. so that they can
 be safely deleted.
 */
 void QDaqObject::detach()
 {
-    root_.objectCreation(this,false);
+    //root_.objectCreation(this,false);
     foreach(QDaqObject* obj, children_) obj->detach();
     qDebug() << "detaching" << fullName() << "@" << (void*)this;
+}
+/** Return true if this QDaqObject is attached to the QDaq-framework.
+*/
+bool QDaqObject::isAttached() const
+{
+    QDaqObject* p = parent();
+    while(p && p!=root()) p = p->parent();
+    return p;
 }
 
 QString QDaqObject::errorBacktrace() const
@@ -58,12 +67,12 @@ QString QDaqObject::errorBacktrace() const
 	return S;
 }
 
-/*
+
 QString QDaqObject::toString() const
 {
 	return fullName();
 }
-*/
+
 
 void QDaqObject::throwScriptError(const QString& msg) const
 {
@@ -343,6 +352,7 @@ void QDaqObject::appendChild(QDaqObject* obj)
 	}
 
     obj->setParent(this);
+    obj->attach();
 }
 
 void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
@@ -367,15 +377,15 @@ void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
     }
 
     newobj->setParent(this);
-
     // put the new object in the correct order
     children_.removeLast();
     children_.insert(i,newobj);
+    newobj->attach();
 }
 
 void QDaqObject::childEvent(QChildEvent *event)
 {
-    QDaqObject* obj = qobject_cast<QDaqObject*>(event->child());
+    QDaqObject* obj = qobject_cast<QDaqObject*>(event->child()); // maybe reinterpret??
     int i = children_.indexOf(obj);
     if (event->added() && i<0) children_.append(obj);
     if (event->removed() && i>=0) children_.removeAt(i);
@@ -425,13 +435,14 @@ QDaqObject* QDaqObject::replaceChild(QDaqObject *newobj, QDaqObject *oldobj)
     if ((newobj->objectName()!=oldobj->objectName()) &&
             !checkName(newobj->objectName())) return 0;
 
-    oldobj->detach();
+    bool attached = isAttached();
+    if (attached) oldobj->detach();
     oldobj->setParent(0);
     newobj->setParent(this);
-
     // put the new object in the correct order
     children_.removeLast();
     children_.insert(i,newobj);
+    if (attached) newobj->attach();
 
     return oldobj;
 }
@@ -463,7 +474,7 @@ QDaqObject* QDaqObject::clone()
     foreach(QDaqObject* obj, children_)
     {
         QDaqObject* newobj = obj->clone();
-        newobj->setParent(_clone);
+        _clone->appendChild(newobj);
     }
 
     return _clone;

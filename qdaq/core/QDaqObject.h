@@ -127,8 +127,10 @@ public:
     explicit QDaqObject(const QString& name);
     virtual ~QDaqObject(void);
 
-	//virtual void attach();
+    virtual void attach();
 	virtual void detach();
+
+    bool isAttached() const;
 
 	void objectTree(QString& S, int level) const;
 
@@ -144,7 +146,7 @@ public slots:
 	/// Print a backtrace of recent errors
 	QString errorBacktrace() const;
 	/// Print a string representation of the object
-	//QString toString() const;
+    QString toString() const;
 	/// Print the objects children hierarchy
 	QString objectTree() const
 	{
@@ -167,7 +169,7 @@ public slots:
     bool hasChildren() const { return !children_.isEmpty(); }
     /// Adds a new child QDaqObject, as the last child.
     void appendChild(QDaqObject* obj);
-    /// Adds a new child QDaqObject, as the last child.
+    /// Adds a new child QDaqObject, before an existing child.
     void insertBefore(QDaqObject* newobj, QDaqObject* existingobj);
     /// Clone a QDaqObject with its child objects.
     QDaqObject* clone();

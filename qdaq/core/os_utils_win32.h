@@ -335,11 +335,7 @@ class timer
     {
         arm(period);
         wait_period();
-        while (continue_)
-        {
-            F->operator()();
-            wait_period();
-        }
+        while (continue_ && F->operator()()) wait_period();
         arm(0);
     }
 

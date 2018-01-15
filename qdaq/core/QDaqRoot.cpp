@@ -1,4 +1,5 @@
 #include "QDaqRoot.h"
+#include "QDaqJob.h"
 
 #include <QCoreApplication>
 
@@ -6,6 +7,9 @@ QDaqRoot QDaqObject::root_;
 
 QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq")
 {
+    registerClass(&QDaqObject::staticMetaObject);
+    registerClass(&QDaqJob::staticMetaObject);
+    registerClass(&QDaqLoop::staticMetaObject);
 }
 
 QDaqRoot::~QDaqRoot(void)
@@ -19,17 +23,6 @@ QDaqRoot::~QDaqRoot(void)
 			delete rtobj;
 		}
     }*/
-}
-
-void QDaqRoot::objectCreation(QDaqObject* obj, bool create)
-{
-	if (obj==this) return;
-	if (obj->parent()==0) return;
-
-	if (create)
-		emit objectCreated(obj);
-	else 
-		emit objectDeleted(obj);
 }
 
 QString QDaqRoot::xml()

@@ -27,3 +27,4 @@ unix {
     ######### comedi #############
     LIBS += -lcomedi
 }
+

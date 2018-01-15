@@ -1,10 +1,17 @@
-
 #include <QApplication>
+
+#include "QDaqConsole.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    //Q_INIT_RESOURCE(main);
 
 
-    return a.exec();
+    QApplication app(argc, argv);
+
+    QDaqConsole mainWin;
+    mainWin.show();
+
+    return app.exec();
 }
+
