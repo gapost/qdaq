@@ -9,8 +9,13 @@ class QDaqSession;
 class RTLAB_GUI_EXPORT QDaqConsole : public QConsoleWidget
 {
     QDaqSession* session;
+    QString execCode_;
 public:
-    QDaqConsole(void);
+    explicit QDaqConsole(const QString& startupScript = QString());
+
+protected slots:
+    void deferedEvaluate();
+
 protected:
 	void exec(const QString& code);
 	bool canEvaluate(const QString& code);

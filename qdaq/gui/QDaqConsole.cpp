@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QScriptEngine>
 #include <QScriptValueIterator>
+#include <QTimer>
 
 #include "QDaqConsole.h"
 
@@ -10,7 +11,7 @@
 
 #include "QDaqRoot.h"
 
-QDaqConsole::QDaqConsole(void)
+QDaqConsole::QDaqConsole(const QString &startupScript)
 {
 
 	setTabStopWidth ( 40 );
@@ -20,6 +21,25 @@ QDaqConsole::QDaqConsole(void)
 	connect(session,SIGNAL(stdOut(const QString&)),this,SLOT(stdOut(const QString&)));
 	connect(session,SIGNAL(stdErr(const QString&)),this,SLOT(stdErr(const QString&)));
 	connect(session,SIGNAL(endSession()),this,SLOT(endSession()),Qt::QueuedConnection);
+
+    if (!startupScript.isEmpty())
+    {
+        execCode_ = startupScript;
+        QTimer::singleShot(1000,this,SLOT(deferedEvaluate()));
+    }
+
+    setWindowTitle(QString("Console #%1").arg(session->index()));
+
+}
+
+void QDaqConsole::deferedEvaluate()
+{
+    session->print(QString("Running startup script %1 ...").arg(execCode_));
+    QFile fin(execCode_);
+    if (fin.open(QFile::ReadOnly))
+    {
+        session->evaluate(fin.readAll());
+    }
 }
 
 void QDaqConsole::exec(const QString& code)
@@ -73,8 +93,9 @@ void QDaqConsole::keyPressEvent (QKeyEvent * e)
 	if (e->modifiers() & Qt::ControlModifier)
 	{
 		int k = e->key();
-		if (k==Qt::Key_Cancel || k==Qt::Key_Pause)
-		{
+        //if (k==Qt::Key_Cancel || k==Qt::Key_Pause) // did not work on Linux. GA 24/3/2015
+        if (k==Qt::Key_Q) // Ctrl-Q aborts
+        {
 			session->abortEvaluation();
 			e->accept();
 			return;

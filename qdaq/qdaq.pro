@@ -29,7 +29,9 @@ SOURCES += main.cpp\
     gui/jsedit.cpp \
     gui/QDaqObjectController.cpp \
     gui/QDaqObjectBrowser.cpp \
-    gui/QDaqErrorLog.cpp
+    gui/QDaqErrorLog.cpp \
+    gui/QDaqIde.cpp \
+    gui/QDaqScriptEditor.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -52,10 +54,15 @@ HEADERS  += \
     gui/jsedit.h \
     gui/QDaqObjectBrowser.h \
     gui/QDaqObjectController.h \
-    gui/QDaqErrorLog.h
+    gui/QDaqErrorLog.h \
+    gui/QDaqIde.h \
+    gui/QDaqScriptEditor.h
 
 INCLUDEPATH += ./core ./gui ./daq
 
 DISTFILES += \
     qdaq.pri \
     .gitignore
+
+RESOURCES += \
+    qdaq.qrc

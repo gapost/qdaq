@@ -49,6 +49,8 @@ public:
 	*/
     QDaqObject* createObject(const QString& name, const QString& className);
 
+    void objectCreation(QDaqObject* obj, bool c);
+
     void postError(const QDaqError& e) { emit error(e); }
 
 public slots:

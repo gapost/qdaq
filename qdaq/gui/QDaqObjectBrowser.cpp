@@ -40,11 +40,13 @@ QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QWidget(p)
     hlayout->addLayout(vlayout);
     setLayout(hlayout);
 
-	foreach(QObject* o, QDaqObject::root()->children())
-	{
-		if (QDaqObject* rto = qobject_cast<QDaqObject*>(o))
-			insertObject(treeWidget->invisibleRootItem(), rto, true);
-	}
+    insertObject(treeWidget->invisibleRootItem(), QDaqObject::root(), true);
+
+//	foreach(QObject* o, QDaqObject::root()->children())
+//	{
+//		if (QDaqObject* rto = qobject_cast<QDaqObject*>(o))
+//			insertObject(treeWidget->invisibleRootItem(), rto, true);
+//	}
 
 	connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
 		this, SLOT(slotCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)) );

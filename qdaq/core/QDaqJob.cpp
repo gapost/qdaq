@@ -10,7 +10,7 @@ QDaqJob::~QDaqJob(void)
 }
 void QDaqJob::attach()
 {
-
+    QDaqObject::attach();
 }
 void QDaqJob::detach()
 {

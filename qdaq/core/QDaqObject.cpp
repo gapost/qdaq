@@ -31,7 +31,7 @@ void QDaqObject::attach()
 {
     qDebug() << "attaching" << fullName() << "@" << (void*)this;
     foreach(QDaqObject* obj, children_) obj->attach();
-    //root_.objectCreation(this,true);
+    root_.objectCreation(this,true);
 }
 /** Detach this QDaqObject from the QDaq-framework.
 This function should always be called before the destructor.
@@ -41,7 +41,7 @@ be safely deleted.
 */
 void QDaqObject::detach()
 {
-    //root_.objectCreation(this,false);
+    root_.objectCreation(this,false);
     foreach(QDaqObject* obj, children_) obj->detach();
     qDebug() << "detaching" << fullName() << "@" << (void*)this;
 }
@@ -68,10 +68,10 @@ QString QDaqObject::errorBacktrace() const
 }
 
 
-QString QDaqObject::toString() const
-{
-	return fullName();
-}
+//QString QDaqObject::toString() const
+//{
+//	return fullName();
+//}
 
 
 void QDaqObject::throwScriptError(const QString& msg) const

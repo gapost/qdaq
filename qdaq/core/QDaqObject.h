@@ -146,7 +146,7 @@ public slots:
 	/// Print a backtrace of recent errors
 	QString errorBacktrace() const;
 	/// Print a string representation of the object
-    QString toString() const;
+    // QString toString() const;
 	/// Print the objects children hierarchy
 	QString objectTree() const
 	{
