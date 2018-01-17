@@ -81,7 +81,7 @@ void QDaqObjectBrowser::change(QDaqObject* obj, bool create)
 		QTreeWidgetItem* parentitem = objects2items.value(obj->parent());
 		if (parentitem) 
 		{
-			insertObject(parentitem, obj);
+            insertObject(parentitem, obj,true);
 			//treeWidget->expandItem(parentitem);
 		}
 	}
@@ -92,10 +92,21 @@ void QDaqObjectBrowser::insertObject(QTreeWidgetItem* parent, QDaqObject* obj, b
 {
 	QStringList nodedata;
 	nodedata <<  obj->objectName() << obj->metaObject()->className();
-	QTreeWidgetItem* node = new QTreeWidgetItem(parent, nodedata);
+
+    QTreeWidgetItem* node = new QTreeWidgetItem(nodedata);
+
+    QDaqObject* parent_obj = obj->parent();
+
+    if (parent_obj) {
+        int idx = parent_obj->children().indexOf(obj);
+        parent->insertChild(idx,node);
+    } else parent->addChild(node);
+
+    //QTreeWidgetItem* node = new QTreeWidgetItem(parent, nodedata);
 	objects2items.insert(obj,node);
 	items2objects.insert(node,obj);
 	//treeWidget->expandItem(node);
+
 	emit updateItem(node);
 
 	if (recursive)
@@ -103,7 +114,7 @@ void QDaqObjectBrowser::insertObject(QTreeWidgetItem* parent, QDaqObject* obj, b
 		foreach(QObject* o, obj->children())
 		{
 			if (QDaqObject* rtchild = qobject_cast<QDaqObject*>(o))
-				insertObject(node, rtchild);
+                insertObject(node, rtchild, recursive);
 		}
 	}
 

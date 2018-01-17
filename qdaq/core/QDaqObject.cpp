@@ -49,6 +49,7 @@ void QDaqObject::detach()
 */
 bool QDaqObject::isAttached() const
 {
+    if (this==root()) return true; // root is always atached
     QDaqObject* p = parent();
     while(p && p!=root()) p = p->parent();
     return p;
@@ -417,6 +418,11 @@ QDaqObject* QDaqObject::replaceChild(QDaqObject *newobj, QDaqObject *oldobj)
     if (!newobj)
     {
         throwScriptError("The 1st argument is not a valid object.");
+        return 0;
+    }
+    if (newobj->isAttached())
+    {
+        throwScriptError("The 1st argument is already in the qdaq tree.");
         return 0;
     }
     if (!oldobj)
