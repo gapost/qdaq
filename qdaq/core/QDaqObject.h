@@ -140,7 +140,7 @@ public:
 	/// Get the objects full name, e.g., dev.ifc1.obj1
 	QString fullName() const;
     static QDaqObject* findByName(const QString& name);
-    static QDaqObjectList findByWildcard(const QString& wildcard, QDaqObject* from = 0);
+    static QDaqObjectList findByWildcard(const QString& wildcard, const QDaqObject* from = 0);
 
 public slots:
 	/// Print a backtrace of recent errors
@@ -161,6 +161,10 @@ public slots:
 	QString listFunctions() const;
 
     // Core DOM API 1. implementation
+    QDaqObjectList find(const QString& wc) const
+    {
+        return QDaqObject::findByWildcard(wc,this);
+    }
     /// Return the object's parent
     QDaqObject* parent() const { return qobject_cast<QDaqObject*>(QObject::parent()); }
     /// Return a list of children of this object
@@ -185,6 +189,8 @@ signals:
     void objectCreated(QDaqObject* obj);
 	/// Fired when properties have changed
 	void propertiesChanged();
+    /// Fired when widgets need update
+    void updateWidgets();
 };
 
 Q_DECLARE_METATYPE(QDaqObject*)

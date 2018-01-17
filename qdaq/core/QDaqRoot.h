@@ -9,11 +9,10 @@
 
 class QScriptContext;
 class QScriptEngine;
+class QDaqLogFile;
 
 
-class RtMainWindow;
-
-/** The QDaQ root object.
+/** The QDaq root object.
 
 All QDaqObject are descendands of QDaqRoot.
 
@@ -26,9 +25,19 @@ class RTLAB_BASE_EXPORT QDaqRoot : public QDaqObject
 {
 	Q_OBJECT
 
+    Q_PROPERTY(QString rootDir READ rootDir)
+    Q_PROPERTY(QString logDir READ logDir)
+
+protected:
+    QString rootDir_, logDir_;
+    QDaqLogFile* errorLog_;
+
 public:
     QDaqRoot(void);
     virtual ~QDaqRoot(void);
+
+    QString rootDir() const { return rootDir_; }
+    QString logDir() const { return logDir_; }
 
     QString h5write(const QString& filename, const QString& comment);
 
@@ -40,7 +49,7 @@ public:
 	*/
     QDaqObject* createObject(const QString& name, const QString& className);
 
-    void postError(const QDaqError& e) { Q_UNUSED(e) }
+    void postError(const QDaqError& e) { emit error(e); }
 
 public slots:
 
@@ -50,6 +59,12 @@ public slots:
     void h5write(const QString& filename);
     /// Read object contents from HDF5 file.
     void h5read(const QString& filename);
+
+private slots:
+    void onError(const QDaqError& err);
+
+signals:
+    void error(const QDaqError& e);
 
 
 private:

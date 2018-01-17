@@ -1,15 +1,20 @@
 #include "QDaqSession.h"
 #include "QDaqRoot.h"
+#include "QDaqTypes.h"
+#include "QDaqLogFile.h"
+
 #include <QDebug>
 #include <QScriptEngine>
+#include <QScriptEngineDebugger>
 #include <QFile>
 //#include <QTextStream>
 #include <QTimer>
 #include <QCoreApplication>
 #include <QScriptValueIterator>
 #include <QDir>
+#include <QProcess>
 
-#include "QDaqTypes.h"
+
 
 QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject* metaObject)
 {
@@ -62,7 +67,7 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
 	engine_->setGlobalObject(self);
 
-    // register QDaqObject* with the engine (and RtObjectList)
+    // register QDaqObject* with the engine (and QDaqObjectList)
     registerQDaqObjectStar(engine_);
 
 	// register basic types with the engine
@@ -121,40 +126,54 @@ void QDaqScriptEngine::abortEvaluation()
 	engine_->abortEvaluation();
 }
 
+
 ////////////////// QDaqSession /////////////////////////////
+
+QSet<int> QDaqSession::idx_set;
+
+/// \brief QDaqSession::QDaqSession
+/// \param parent
+///
+///
 QDaqSession::QDaqSession(QObject *parent) : QDaqScriptEngine(parent)
 {
+    debugger_ = new QScriptEngineDebugger(this);
+
     wait_timer_ = new QTimer(this);
     wait_timer_->setSingleShot(true);
 
-    int n = ids.size();
-    id_ = 1;
-    if (n)
-    {
-        int idmax = *(ids.crbegin());
-        if (n==idmax)
-            id_ = idmax;
-        else
-        {
-            for(; id_<=idmax; id_++)
-            {
-                if (ids.find(id_)==ids.end()) break;
-            }
-        }
-    }
+    idx_ = 1;
+    idx_set.contains(1);
+    while (idx_set.contains(idx_)) idx_++;
+    idx_set.insert(idx_);
 
-    ids.insert(id_);
+    QString objName = QString("console_%1").arg(idx_);
+    setObjectName(objName);
+
+    // create log file
+    if (idx_) {
+        logFile_ = new QDaqLogFile(true,' ',this);
+        logFile_->open(QDaqLogFile::getDecoratedName(objName));
+
+        connect(this,SIGNAL(stdOut(QString)),this,SLOT(log_out(QString)));
+        connect(this,SIGNAL(stdErr(QString)),this,SLOT(log_err(QString)));
+    }
 }
 
 QDaqSession::~QDaqSession( void)
 {
     Q_ASSERT(!isEvaluating());
 
-    ids.erase(id_);
+    // close logfile, remove from index set
+    if (idx_) {
+        if (logFile_) delete logFile_;
+        idx_set.remove(idx_);
+    }
 }
 
 void QDaqSession::evaluate(const QString& program)
 {
+    if (logFile_) log_in(program);
     QString result;
     if ( QDaqScriptEngine::evaluate(program, result) )
     {
@@ -251,5 +270,39 @@ bool QDaqSession::isDir(const QString& name)
 {
     QFileInfo fi(name);
     return fi.isDir();
+}
+void QDaqSession::debug(bool on)
+{
+    if (on) debugger_->attachTo(engine_);
+    else debugger_->detach();
+}
+QString QDaqSession::system(const QString &comm)
+{
+    QProcess p;
+    //comm.split(QChar(' '),QString::SkipEmptyParts);
+    p.start(comm);
+    /*bool ret = */p.waitForFinished(1000);
+    QByteArray pout = p.readAllStandardOutput();
+    QByteArray perr = p.readAllStandardError();
+    QByteArray pall = p.readAll();
+    return QString(pout);
+}
+void QDaqSession::log__(int fd, const QString &str)
+{
+    if (!logFile_) return;
+
+    QString pre;
+    if (fd==0) pre = ">> ";
+    else if (fd==2) pre = "err: ";
+
+    QStringList lines = str.split('\n', QString::SkipEmptyParts);
+    foreach(const QString& ln, lines)
+    {
+        QString buff(pre);
+        buff += ln;
+        //if (buff.endsWith('\n')) buff.remove(buff.size()-1,1);
+        *logFile_ << buff;
+    }
+
 }
 

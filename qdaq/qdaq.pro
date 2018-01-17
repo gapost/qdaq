@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets script network
+QT       += core gui widgets script scripttools network
 
 lessThan(QT_MAJOR_VERSION, 5): error("This app needs Qt5")
 
@@ -21,7 +21,15 @@ SOURCES += main.cpp\
     core/QDaqTypes.cpp \
     core/QDaqJob.cpp \
     gui/QDaqConsole.cpp \
-    gui/QConsoleWidget.cpp
+    gui/QConsoleWidget.cpp \
+    core/QDaqLogFile.cpp \
+    core/QDaqChannel.cpp \
+    core/QDaqDataBuffer.cpp \
+    core/QDaqBufferProto.cpp \
+    gui/jsedit.cpp \
+    gui/QDaqObjectController.cpp \
+    gui/QDaqObjectBrowser.cpp \
+    gui/QDaqErrorLog.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -35,7 +43,16 @@ HEADERS  += \
     core/QDaqJob.h \
     core/math_util.h \
     gui/QConsoleWidget.h \
-    gui/QDaqConsole.h
+    gui/QDaqConsole.h \
+    core/QDaqLogFile.h \
+    core/QDaqChannel.h \
+    core/QDaqEnumHelper.h \
+    core/QDaqDataBuffer.h \
+    core/QDaqBufferProto.h \
+    gui/jsedit.h \
+    gui/QDaqObjectBrowser.h \
+    gui/QDaqObjectController.h \
+    gui/QDaqErrorLog.h
 
 INCLUDEPATH += ./core ./gui ./daq
 

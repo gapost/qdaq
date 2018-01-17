@@ -5,83 +5,114 @@
 
 namespace math {
 
+/** A circular LIFO buffer class.
 
+  \ingroup QDaqCore
+
+  When the buffer becomes full, newer elements overwrite older ones.
+
+  The allocated memory for the buffer is always 2^N for maximum efficiency.
+
+  Data elements are inserted with push() or with the insertion operator<<().
+
+  The stored elements can be recalled by the c-style array operator[].
+  The elements are stored in LIFO order: at index 0 is
+  the last inserted element, at 1 the one before last, etc.
+
+  The class does not keep count of the number of elements that have been inserted.
+  The user is responsible for the neccesary book-keeping.
+
+  */
 template<class T>
 class circular_buffer
 {
-	/// buffer capacity
-	unsigned int cap_;
-	/// index of the first element
-	unsigned int  head_;
-	/// index bit mask
-	unsigned int mask_;
-	/// memory buffer
-	T* buff_;
-
-	void inc(unsigned int& i)
-	{
-        i++;
-        i = i & mask_;
-	}
-	void dec(unsigned int& i)
-	{
-        i--;
-        i = i & mask_;
-	}
-	T* at(int i) const
-	{
-		return buff_ + ((head_ + i) & mask_);
-	}
 public:
-	explicit circular_buffer(unsigned int nmax = 1) : buff_(0)
-	{
-		alloc(nmax);
-	}
-	~circular_buffer()
-	{
-		if (buff_) delete [] buff_;
-	}
-	void alloc(unsigned int nmax)
-	{
-		cap_ = 1;
-		while (cap_ < nmax) cap_ <<= 1;
-		//assert(cap_>1);
-		if (buff_) delete [] buff_;
-		buff_ = new T[cap_];
-		mask_ = cap_ - 1;
-		head_ = 0; 
-	}
-	/// insert an element at the front
-	void push(const T& v)
-	{
-		dec(head_);
-		buff_[head_] = v;
-	}
-	/// remove an element from the front
-	void pop()
-	{
-		inc(head_);
-	}
-	/// ref to the i-th element
-	T& operator[](int i)
-	{
-		return *(at(i));
-	}
-	/// const ref to the i-th element
-	const T& operator[](int i) const
-	{
-		return *(at(i));
-	}
-	/// const ref to last element inserted
-	const T& last() const
-	{
-		return buff_[head_];
-	}
-	/// return the buffer's capacity
-	unsigned int capacity() const
-	{
-		return cap_; 
-	}
+    typedef circular_buffer<T> self_t;
+
+private:
+    // buffer capacity
+    unsigned int cap_;
+    // index of the first element
+    unsigned int  head_;
+    // index bit mask
+    unsigned int mask_;
+    // memory buffer
+    T* buff_;
+
+    void inc(unsigned int& i)
+    {
+        i++;
+        i &= mask_;
+    }
+    void dec(unsigned int& i)
+    {
+        i--;
+        i &= mask_;
+    }
+    T* at(int i) const
+    {
+        return buff_ + ((head_ + i) & mask_);
+    }
+public:
+    /// Construct a circular_buffer with capacity nmax.
+    explicit circular_buffer(unsigned int nmax = 1) : buff_(0)
+    {
+        if (nmax < 1) nmax = 1;
+        alloc(nmax);
+    }
+    ~circular_buffer()
+    {
+        if (buff_) delete [] buff_;
+    }
+    /// allocate memory for nmax elements (nmax is adjusted to 2^N).
+    /* Previously stored elements are lost! */
+    void alloc(unsigned int nmax)
+    {
+        // find a number 2^N so that 2^N>nmax
+        cap_ = 1;
+        while (cap_ < nmax) cap_ <<= 1;
+        // re-allocate memory
+        if (buff_) delete [] buff_;
+        buff_ = new T[cap_];
+        mask_ = cap_ - 1;
+        head_ = 0;
+    }
+    /// insert an element.
+    void push(const T& v)
+    {
+        dec(head_);
+        buff_[head_] = v;
+    }
+    /// insertion operator is the same as push()
+    self_t& operator<< (const T& v)
+    {
+        push(v); return (*this);
+    }
+    /// remove the last inserted element
+    void pop()
+    {
+        inc(head_);
+    }
+    /// ref to the i-th element
+    T& operator[](int i)
+    {
+        return *(at(i));
+    }
+    /// const ref to the i-th element
+    const T& operator[](int i) const
+    {
+        return *(at(i));
+    }
+    /// const ref to last element inserted
+    const T& last() const
+    {
+        return buff_[head_];
+    }
+    /// return the buffer's capacity
+    unsigned int capacity() const
+    {
+        return cap_;
+    }
 };
 
 template<class T>

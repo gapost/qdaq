@@ -210,7 +210,7 @@ void findByWildcardHelper(const QRegExp& rx, QDaqObjectList& lst, const QDaqObje
 	}
 }
 
-QDaqObjectList QDaqObject::findByWildcard(const QString& wildcard, QDaqObject* from)
+QDaqObjectList QDaqObject::findByWildcard(const QString& wildcard, const QDaqObject *from)
 {
     QDaqObjectList lst;
 

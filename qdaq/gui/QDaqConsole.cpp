@@ -86,55 +86,42 @@ void QDaqConsole::keyPressEvent (QKeyEvent * e)
 
 QStringList QDaqConsole::introspection(const QString& lookup)
 {
-    if (lookup.isEmpty()) return QStringList();
+    // list of found tokens
+    QStringList properties;
 
-	QStringList found;
-
-    QDaqObject* obj = QDaqObject::findByName(lookup);
-	if (obj)
-	{
-        foreach(QDaqObject* o, obj->children()) found << o->objectName();
-		//return found;
-	}
+    if (lookup.isEmpty()) return properties;
 
     QScriptEngine* eng = session->getEngine();
-    QScriptValue scriptObj = eng->globalObject();
-    QStringList tokens = lookup.split('.');
+    QScriptValue scriptObj = eng->evaluate(lookup);
 
+    // if the engine cannot recognize the variable return
+    if (eng->hasUncaughtException()) return properties;
 
-    bool objFound;
-    do
+     // if a QObject add the named children
+    if (scriptObj.isQObject())
     {
-        objFound = false;
-
-        QString str = tokens.front();
-        tokens.pop_front();
-
-        QScriptValueIterator it(scriptObj);
-        while (it.hasNext())
+        QObject* obj = scriptObj.toQObject();
+        foreach(QObject* ch, obj->children())
         {
-            it.next();
-            QString valueName = it.name();
-            if (valueName==str)
-            {
-                scriptObj = it.value();
-                objFound = true;
-                break;
-            }
+            QString name = ch->objectName();
+            if (!name.isEmpty())
+                properties << name;
         }
-     }
-    while (objFound && !tokens.isEmpty());
 
-    if (objFound)
+    }
+
+    // add the script properties
     {
         QScriptValueIterator it(scriptObj);
         while (it.hasNext()) {
              it.next();
-             found << it.name();
+             if (it.flags() & QScriptValue::SkipInEnumeration)
+                 continue;
+             properties << it.name();
          }
     }
 
-    return found;
+    return properties;
 
 }
 
