@@ -1,19 +1,14 @@
-#ifndef RTDATABUFFER_H
-#define RTDATABUFFER_H
+#ifndef QDAQDATABUFFER_H
+#define QDAQDATABUFFER_H
 
-#include "RtJob.h"
-
-#include "RtTypes.h"
-
-#include "DataQueue.h"
+#include "QDaqTypes.h"
+#include "QDaqJob.h"
 
 #include <QPointer>
 
-//#include <QStringList>
+class QDaqChannel;
 
-class RtDataChannel;
-
-class RTLAB_BASE_EXPORT RtDataBuffer : public RtJob
+class RTLAB_BASE_EXPORT QDaqDataBuffer : public QDaqJob
 {
 	Q_OBJECT
 
@@ -21,13 +16,14 @@ class RTLAB_BASE_EXPORT RtDataBuffer : public RtJob
 
 	Q_PROPERTY(uint capacity READ capacity WRITE setCapacity)
 	Q_PROPERTY(uint size READ size)
+    Q_PROPERTY(uint columns READ columns)
 	Q_PROPERTY(BufferType type READ type WRITE setType)
-	Q_PROPERTY(RtObjectList channels READ channels WRITE setChannels)
+    Q_PROPERTY(QDaqObjectList channels READ channels WRITE setChannels)
 
 	Q_ENUMS(BufferType)
 
 protected:
-	typedef RtDoubleBuffer vector_t;
+    typedef QDaqBuffer vector_t;
 
 public:
 	enum BufferType {
@@ -39,40 +35,48 @@ public:
 	virtual void registerTypes(QScriptEngine *e);
 
 protected:
-	typedef QPointer<RtDataChannel> channel_t;
-	typedef QList<channel_t> channel_list;
+    typedef QPointer<QDaqChannel> channel_t;
+    typedef QVector<channel_t> channel_vector_t;
 	typedef QVector<vector_t> matrix_t;
 
 	BufferType type_;
 
-	DataQueue<double> queue_;
+    //DataQueue<double> queue_;
+    matrix_t queue_;
 
-	RtObjectList channel_objects;
-	channel_list channel_ptrs;
+    QDaqObjectList channel_objects;
+    channel_vector_t channel_ptrs;
 	QList<QByteArray> channel_names;
 
 	matrix_t data_matrix;
 
-	virtual void run();
-
-	virtual void rtEvent(RtEvent* e);
+    virtual bool run();
 
 	void resize();
 
 public:
-	Q_INVOKABLE
-	RtDataBuffer(const QString& name);
+    Q_INVOKABLE explicit QDaqDataBuffer(const QString& name);
 
-	uint backBufferDepth() const { return (uint)queue_.depth(); }
+    uint backBufferDepth() const;
 	uint capacity() const;
 	uint size() const;
+    uint columns() const;
 	BufferType type() const { return type_ ; }
-	RtObjectList channels() const { return channel_objects; }
+    QDaqObjectList channels() const { return channel_objects; }
 
 	void setBackBufferDepth(uint d);
 	void setCapacity(uint cap);
 	void setType(BufferType t);
-	void setChannels(RtObjectList chlist);
+    void setChannels(QDaqObjectList chlist);
+
+private:
+    uint bufferRowsAvailable() const;
+
+signals:
+    void dataReady();
+
+private slots:
+    void onDataReady();
 
 };
 

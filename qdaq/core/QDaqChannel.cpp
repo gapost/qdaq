@@ -1,13 +1,16 @@
-#include "RtDataChannel.h"
+#include "QDaqChannel.h"
 
 #include <muParser.h>
 
-#include "RtEnumHelper.h"
-Q_SCRIPT_ENUM(AveragingType,RtDataChannel)
-Q_SCRIPT_ENUM(NumberFormat,RtDataChannel)
+#include "QDaqEnumHelper.h"
+Q_SCRIPT_ENUM(AveragingType,QDaqChannel)
+Q_SCRIPT_ENUM(NumberFormat,QDaqChannel)
 
-RtDataChannel::RtDataChannel(const QString& name) :
-	RtJob(name), type_(None), fmt_(General), digits_(6),
+QDaqChannel::QDaqChannel(const QString& name) :
+    QDaqJob(name),
+    type_(None),
+    fmt_(General),
+    digits_(6),
 	v_(0.), dv_(0.),
 	offset_(0.), multiplier_(1.),
 	parser_(0),
@@ -18,56 +21,56 @@ RtDataChannel::RtDataChannel(const QString& name) :
 	setForgettingFactor(0.99);
 }
 
-RtDataChannel::~RtDataChannel(void)
+QDaqChannel::~QDaqChannel(void)
 {
 	if (parser_) delete parser_;
 }
 
-void RtDataChannel::detach()
+void QDaqChannel::detach()
 {
-	RtJob::detach();
+    QDaqJob::detach();
 }
 
-void RtDataChannel::registerTypes(QScriptEngine* e)
+void QDaqChannel::registerTypes(QScriptEngine* e)
 {
 	qScriptRegisterAveragingType(e);
 	qScriptRegisterNumberFormat(e);
-	RtJob::registerTypes(e);
+    QDaqJob::registerTypes(e);
 }
-void RtDataChannel::setSignalName(QString v)
+void QDaqChannel::setSignalName(QString v)
 {
 	signalName_ = v;
 	emit propertiesChanged();
 }
-void RtDataChannel::setUnit(QString v)
+void QDaqChannel::setUnit(QString v)
 {
 	unit_ = v;
 	emit propertiesChanged();
 }
-void RtDataChannel::setRange(const RtDoubleVector& v)
+void QDaqChannel::setRange(const QDaqDoubleVector &v)
 {
-	if((v!=range_) && (!v.isEmpty()) && (v.size()==2) && _finite(v[0]) && _finite(v[1]) && (v[1]!=v[0]))
+    if((v!=range_) && (!v.isEmpty()) && (v.size()==2) && __finite(v[0]) && __finite(v[1]) && (v[1]!=v[0]))
 	{
 		// fix ordering
-		RtDoubleVector myv ( v );
+        QDaqDoubleVector myv ( v );
 		if (v[1]<v[0]) { myv[0] = v[1]; myv[1] = v[0]; }
 		// set the range
-		auto_lock L(comm_lock);
+        os::auto_lock L(comm_lock);
 		range_ = myv;
 		emit propertiesChanged();
 	}
 }
-void RtDataChannel::setOffset(double v)
+void QDaqChannel::setOffset(double v)
 {
-	auto_lock L(comm_lock);
+    os::auto_lock L(comm_lock);
 	offset_ = v;
 }
-void RtDataChannel::setMultiplier(double v)
+void QDaqChannel::setMultiplier(double v)
 {
-	auto_lock L(comm_lock);
+    os::auto_lock L(comm_lock);
 	multiplier_ = v;
 }
-void RtDataChannel::setAveraging(AveragingType t)
+void QDaqChannel::setAveraging(AveragingType t)
 {
 	//if (throwIfArmed()) return;
 	if ((int)t==-1)
@@ -82,18 +85,18 @@ void RtDataChannel::setAveraging(AveragingType t)
 	if (type_ != t)
 	{
 		{
-			auto_lock L(comm_lock);
+            os::auto_lock L(comm_lock);
 			type_ = t;
 		}
 		emit propertiesChanged();
 	}
 }
-void RtDataChannel::setDepth(uint d)
+void QDaqChannel::setDepth(uint d)
 {
 	if ((d!=depth_) && d>0)
 	{
 		{
-			auto_lock L(comm_lock);
+            os::auto_lock L(comm_lock);
 			depth_ = d;
 			buff_.alloc(d);
 			ffw_ = 1. / (1. - pow(ff_,(int)d));
@@ -101,13 +104,13 @@ void RtDataChannel::setDepth(uint d)
 		emit propertiesChanged();
 	}
 }
-bool RtDataChannel::arm_()
+bool QDaqChannel::arm_()
 {
 	counter_ = 0;
 	dataReady_ = false;
-	return RtJob::arm_();
+    return QDaqJob::arm_();
 }
-bool RtDataChannel::average()
+bool QDaqChannel::average()
 {
 	int m = (counter_ < depth_) ? counter_ : depth_;
 	v_ = dv_ = 0;
@@ -159,6 +162,8 @@ bool RtDataChannel::average()
 		v_ *= ffw_;
 		dv_ *= ffw_;
 		break;
+    case None:
+        break;
 	}
 
 	// dv now contains <y^2>
@@ -170,9 +175,9 @@ bool RtDataChannel::average()
 	return true;
 }
 
-void RtDataChannel::run()
+bool QDaqChannel::run()
 {
-	if (dataReady_ = average())
+    if ((dataReady_ = average()))
 	{
 		if (parser_)
 		{
@@ -195,12 +200,12 @@ void RtDataChannel::run()
 			dv_ = multiplier_*dv_ + offset_;
 		}
 		// check limits
-		dataReady_ = dataReady_ && _finite(v_) && (v_>range_[0]) && (v_<range_[1]);
-		updateWidgets();
+        dataReady_ = dataReady_ && __finite(v_) && (v_>range_[0]) && (v_<range_[1]);
+        emit updateWidgets();
 	}
-	RtJob::run();
+    return QDaqJob::run();
 }
-QString RtDataChannel::formatedValue()
+QString QDaqChannel::formatedValue()
 {
 	QString ret;
 	switch(fmt_)
@@ -212,7 +217,7 @@ QString RtDataChannel::formatedValue()
 	case Scientific:
 		return QString::number(v_,'e',digits_);
 	case Time:
-		return RtTimeValue(v_).toString();
+        return QDaqTimeValue(v_).toString();
 	}
 
 	return QString::number(v_);
@@ -220,34 +225,34 @@ QString RtDataChannel::formatedValue()
 //		(time_channel_ ? RtTimeValue(v_).toString() : QString::number(v_)) : QString();
 }
 
-void RtDataChannel::clear()
+void QDaqChannel::clear()
 {
-	auto_lock L(comm_lock);
+    os::auto_lock L(comm_lock);
 	counter_ = 0;
 	dataReady_ = false;
 }
 
 
-QString RtDataChannel::parserExpression() const
+QString QDaqChannel::parserExpression() const
 {
 	if (parser_) return QString(parser_->GetExpr().c_str());
 	else return QString();
 }
-void RtDataChannel::setForgettingFactor(double v)
+void QDaqChannel::setForgettingFactor(double v)
 {
 	if (v!=ff_ && v>0. && v<1.)
 	{
-		auto_lock L(comm_lock);
+        os::auto_lock L(comm_lock);
 		ff_ = v;
 		ffw_ = 1./(1. - pow(ff_,(int)depth_));
 		emit propertiesChanged();
 	}
 }
-void RtDataChannel::setParserExpression(const QString& s)
+void QDaqChannel::setParserExpression(const QString& s)
 {
 	if (s!=parserExpression())
 	{
-		auto_lock L(comm_lock);
+        os::auto_lock L(comm_lock);
 
 		if (s.isEmpty())
 		{
@@ -266,4 +271,95 @@ void RtDataChannel::setParserExpression(const QString& s)
 
 		emit propertiesChanged();
 	}
+}
+
+/////////////////// QDaqTimeChannel //////////////////////////////////////
+QDaqTimeChannel::QDaqTimeChannel(const QString& name) :
+    QDaqChannel(name)
+{
+    dv_ = 0.001;
+}
+
+QDaqTimeChannel::~QDaqTimeChannel(void)
+{
+}
+
+bool QDaqTimeChannel::run()
+{
+    // disabling averaging etc.
+    v_ = QDaqTimeValue::now();
+    // time data is always availiable
+    dataReady_ = true;
+
+    // do not call QDaqChannel::run
+    return QDaqJob::run();
+}
+
+/////////////////////// QDaqTestChannel //////////////////////////////////////
+
+Q_SCRIPT_ENUM(TestType,QDaqTestChannel)
+
+QDaqTestChannel::QDaqTestChannel(const QString& name) :
+    QDaqChannel(name), type_(Random), par_(1.), v(0)
+{
+}
+QDaqTestChannel::~QDaqTestChannel(void)
+{
+}
+void QDaqTestChannel::registerTypes(QScriptEngine* e)
+{
+    qScriptRegisterTestType(e);
+    QDaqChannel::registerTypes(e);
+}
+bool QDaqTestChannel::run()
+{
+    //static int i;
+
+    double t;
+
+    switch (type_)
+    {
+    case Random:
+        v = par_*rand()/RAND_MAX;
+        break;
+    case Inc:
+        v += par_;
+        break;
+    case Dec:
+        v -= par_;
+        break;
+    case Sin:
+        t = QDaqTimeValue::now();
+        v = sin(6.283185307*par_*t);
+    }
+
+    push(v);
+    return QDaqChannel::run();
+}
+//////////////////// QDaqFilterChannel /////////////////////////////
+QDaqFilterChannel::QDaqFilterChannel(const QString& name) : QDaqChannel(name)
+{
+}
+void QDaqFilterChannel::setInputChannel(QDaqObject* obj)
+{
+    QDaqChannel* ch = qobject_cast<QDaqChannel*>(obj);
+    if (ch)
+    {
+        os::auto_lock L(comm_lock);
+        inputChannel_ = ch;
+        emit propertiesChanged();
+    }
+}
+QDaqObject* QDaqFilterChannel::inputChannel()
+{
+    if (inputChannel_) return inputChannel_;
+    else if (qobject_cast<QDaqChannel*>(parent())) return (QDaqObject*)parent();
+    else return 0;
+}
+bool QDaqFilterChannel::run()
+{
+    QDaqChannel* ch = (QDaqChannel*)inputChannel();
+    if (ch && ch->dataReady()) push(ch->value());
+    else push(0);
+    return QDaqChannel::run();
 }

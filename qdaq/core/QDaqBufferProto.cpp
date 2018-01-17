@@ -1,65 +1,68 @@
-#include "QDaqTypes.h"
+#include "QDaqBufferProto.h"
 
-QDaqDoubleBufferPrototype::QDaqDoubleBufferPrototype(QObject *parent)
+//#include <QScriptValue>
+#include <QScriptEngine>
+
+QDaqBufferProto::QDaqBufferProto(QObject *parent)
     : QObject(parent)
 {
 }
-int QDaqDoubleBufferPrototype::size() const
+int QDaqBufferProto::size() const
 {
-    QDaqDoubleBuffer* obj = getObject();
+    QDaqBuffer* obj = getObject();
     if (obj) return obj->size();
     else return 0;
 }
-QDaqDoubleBuffer* QDaqDoubleBufferPrototype::getObject() const
+QDaqBuffer* QDaqBufferProto::getObject() const
 {
-    return qscriptvalue_cast<QDaqDoubleBuffer*>(thisObject());
+    return qscriptvalue_cast<QDaqBuffer*>(thisObject());
 }
-double QDaqDoubleBufferPrototype::get(int i) const
+double QDaqBufferProto::get(int i) const
 {
-    QDaqDoubleBuffer* obj = getObject();
+    QDaqBuffer* obj = getObject();
     if (obj && i>=0 && i<obj->size())
         return obj->get(i);
     else return 0;
 }
-double QDaqDoubleBufferPrototype::mean() const
+double QDaqBufferProto::mean() const
 {
-    QDaqDoubleBuffer* obj = getObject();
+    QDaqBuffer* obj = getObject();
     if (obj)
         return obj->mean();
     else return 0;
 }
-double QDaqDoubleBufferPrototype::std() const
+double QDaqBufferProto::std() const
 {
-    QDaqDoubleBuffer* obj = getObject();
+    QDaqBuffer* obj = getObject();
     if (obj)
         return obj->std();
     else return 0;
 }
-double QDaqDoubleBufferPrototype::vmax() const
+double QDaqBufferProto::vmax() const
 {
-    QDaqDoubleBuffer* obj = getObject();
+    QDaqBuffer* obj = getObject();
     if (obj)
         return obj->vmax();
     else return 0;
 }
-double QDaqDoubleBufferPrototype::vmin() const
+double QDaqBufferProto::vmin() const
 {
-    QDaqDoubleBuffer* obj = getObject();
+    QDaqBuffer* obj = getObject();
     if (obj)
         return obj->vmin();
     else return 0;
 }
-RtDoubleVector QDaqDoubleBufferPrototype::toArray() const
+QDaqDoubleVector QDaqBufferProto::toArray() const
 {
-    QDaqDoubleBuffer* obj = getObject();
+    QDaqBuffer* obj = getObject();
     if (obj)
         return QDaqDoubleVector(obj->vector());
     return QDaqDoubleVector();
 }
-void QDaqDoubleBufferPrototype::setup(QScriptEngine *eng)
+void QDaqBufferProto::setup(QScriptEngine *eng)
 {
-    QDaqDoubleBufferPrototype *proto = new QDaqDoubleBufferPrototype();
-    eng->setDefaultPrototype(qMetaTypeId<QDaqDoubleBuffer*>(),
+    QDaqBufferProto *proto = new QDaqBufferProto();
+    eng->setDefaultPrototype(qMetaTypeId<QDaqBuffer*>(),
         eng->newQObject(proto, QScriptEngine::ScriptOwnership,
                            QScriptEngine::ExcludeSuperClassContents));
 }

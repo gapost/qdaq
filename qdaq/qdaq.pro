@@ -57,4 +57,5 @@ HEADERS  += \
 INCLUDEPATH += ./core ./gui ./daq
 
 DISTFILES += \
-    qdaq.pri
+    qdaq.pri \
+    .gitignore

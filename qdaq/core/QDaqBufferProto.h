@@ -3,20 +3,18 @@
 
 #include "QDaqTypes.h"
 
-typedef QDaqBuffer<double> QDaqDoubleBuffer;
+#include <QObject>
 
-Q_DECLARE_METATYPE(QDaqDoubleBuffer*)
-
-class RTLAB_BASE_EXPORT QDaqDoubleBufferPrototype : public QObject, public QScriptable
+class RTLAB_BASE_EXPORT QDaqBufferProto : public QObject, public QScriptable
 {
     Q_OBJECT
     Q_PROPERTY(int size READ size)
 public:
-    QDaqDoubleBufferPrototype(QObject *parent = 0);
+    QDaqBufferProto(QObject *parent = 0);
 
     int size() const;
 
-    QDaqDoubleBuffer* getObject() const;
+    QDaqBuffer* getObject() const;
 
     static void setup(QScriptEngine* eng);
 

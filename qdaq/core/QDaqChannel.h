@@ -1,10 +1,10 @@
 #ifndef RTDATACHANNEL_H
 #define RTDATACHANNEL_H
 
-#include "RtJob.h"
-#include "RtTypes.h"
+#include "QDaqJob.h"
+#include "QDaqTypes.h"
 
-#include "circular_buffer.h"
+#include "math_util.h"
 
 namespace mu
 {
@@ -13,14 +13,14 @@ namespace mu
 
 /** Objects that represent a stream of numerical data, a signal.
 
-Real time data is handeled in RtLab through the RtDataChannel class.
-An instrument provides measurement data through RtDataChannel objects.
-On-line filtering and all types of data processing is also done with RtDataChannel and its
+Real time data is handeled in RtLab through the QDaqChannel class.
+An instrument provides measurement data through QDaqChannel objects.
+On-line filtering and all types of data processing is also done with QDaqChannel and its
 descendants.
 
-\ingroup RtCore
+\ingroup QDaq Core
 */
-class RTLAB_BASE_EXPORT RtDataChannel : public RtJob
+class RTLAB_BASE_EXPORT QDaqChannel : public QDaqJob
 {
 	Q_OBJECT
 
@@ -43,7 +43,7 @@ class RTLAB_BASE_EXPORT RtDataChannel : public RtJob
 	/** Signal range.
 	When the signal is outside the range an error is raised.
 	*/
-	Q_PROPERTY(RtDoubleVector range READ range WRITE setRange)
+    Q_PROPERTY(QDaqDoubleVector range READ range WRITE setRange)
 	/** Channel offset.
 	Applied imediately when data is inserted in the channel by the transformation y=a*x+b.
 	b is the offset and a is the multiplier.
@@ -103,25 +103,28 @@ public:
 
 protected:
 	QString signalName_, unit_;
-	NumberFormat fmt_;
-	int digits_;
-	AveragingType type_;
+    AveragingType type_;
+    NumberFormat fmt_;
+    int digits_;
 	double v_, dv_, offset_, multiplier_;
-	RtDoubleVector range_;
+    mu::Parser* parser_;
+    bool dataReady_;
+    QDaqDoubleVector range_;
+    // a counter incremented at each new value
+    uint counter_;
 	uint depth_;
 	double ff_, ffw_;
-	bool dataReady_;
 
-	// a counter incremented at each new value
-	uint counter_;
+
+
 
 	// channel buffer
-	circular_buffer<double> buff_;
+    math::circular_buffer<double> buff_;
 
-	mu::Parser* parser_;
+
 
 	virtual bool arm_();
-	virtual void run();
+    virtual bool run();
 
 	virtual void registerTypes(QScriptEngine* e);
 
@@ -129,9 +132,8 @@ protected:
 	bool average();
 
 public:
-	Q_INVOKABLE
-	RtDataChannel(const QString& name);
-	virtual ~RtDataChannel(void);
+    Q_INVOKABLE explicit QDaqChannel(const QString& name);
+    virtual ~QDaqChannel(void);
 
 	virtual void detach();
 
@@ -140,7 +142,7 @@ public:
 	QString unit() const { return unit_; }
 	NumberFormat format() const { return fmt_; }
 	int digits() const { return digits_; }
-	RtDoubleVector range() const { return range_; }
+    QDaqDoubleVector range() const { return range_; }
 	AveragingType averaging() const { return type_; }
 	double forgettingFactor() const { return ff_; }
 	double offset() const { return offset_; }
@@ -155,7 +157,7 @@ public:
 	void setUnit(QString v);
 	void setFormat(NumberFormat v) { fmt_ = v; }
 	void setDigits(int n) { digits_ = n; }
-	void setRange(const RtDoubleVector& v);
+    void setRange(const QDaqDoubleVector& v);
 	void setOffset(double v);
 	void setMultiplier(double v);
 	void setAveraging(AveragingType t);
@@ -180,4 +182,101 @@ public slots:
 	/** Get the current channel value standard deviation. */
 	double std() const { return dv_; }
 };
-#endif // RTDATACHANNEL_H
+
+/** A channel for time measurement.
+
+  \ingroup RtCore
+
+  Every time the channel is executed it registers the current time.
+
+  Can be used as a timer.
+
+*/
+class RTLAB_BASE_EXPORT QDaqTimeChannel : public QDaqChannel
+{
+    Q_OBJECT
+protected:
+    virtual bool run();
+public:
+    Q_INVOKABLE explicit QDaqTimeChannel(const QString& name);
+    virtual ~QDaqTimeChannel(void);
+};
+
+/** A channel for testing.
+
+  \ingroup RtCore
+
+  The test channel generates data according to the TestType and parameter chosen.
+  The data can be random noise, a continously increasing/decreasing value, or a sine wave.
+
+*/
+class RTLAB_BASE_EXPORT QDaqTestChannel : public QDaqChannel
+{
+    Q_OBJECT
+
+    /// Set the test type.
+    Q_PROPERTY(TestType type READ type WRITE setType)
+    /** A parameter with different meaning according to type of test.
+      For random noise it is the amplitude.
+      For inc/dec it is the increment/decrement.
+      For sine wave it is the frequency.
+      */
+    Q_PROPERTY(double par READ par WRITE setPar)
+
+    Q_ENUMS(TestType)
+
+public:
+    enum TestType { Random, Inc, Dec, Sin };
+
+    virtual void registerTypes(QScriptEngine *e);
+
+protected:
+    TestType type_;
+    double par_;
+    double v;
+
+    virtual bool run();
+
+public:
+    Q_INVOKABLE explicit QDaqTestChannel(const QString& name);
+    virtual ~QDaqTestChannel(void);
+
+
+    TestType type() const { return type_; }
+    void setType(TestType type) { type_ = type; v = 0; }
+    double par() const { return par_; }
+    void setPar(double v) { par_ = v; }
+};
+
+/** A channel for filtering another channel's data.
+
+  \ingroup QDaqCore
+
+  Performs filtering operations on data from the specified inputChannel.
+
+  If the filter channel is the child of another data channel, then automatically
+  it takes input from its parent (unless another inputChannel is specified).
+
+*/
+class RTLAB_BASE_EXPORT QDaqFilterChannel : public QDaqChannel
+{
+    Q_OBJECT
+
+
+    /** The input channel to filter.
+      */
+    Q_PROPERTY(QDaqObject* inputChannel READ inputChannel WRITE setInputChannel)
+
+protected:
+    QPointer<QDaqChannel> inputChannel_;
+
+    virtual bool run();
+
+public:
+    QDaqFilterChannel(const QString& name);
+
+    void setInputChannel(QDaqObject* obj);
+    QDaqObject* inputChannel();
+
+};
+#endif // QDAQDATACHANNEL_H
