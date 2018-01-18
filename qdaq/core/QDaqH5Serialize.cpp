@@ -13,13 +13,46 @@
 
 using namespace H5;
 
+/* Rules for H5 serialization
+ * - Objects are written as H5 groups
+ * - Object properties are written as datasets of the group
+ * - Base class QDaqObject::writeH5/readH5 handle all QDaq property types
+ * - Other object data (like in QDaqDataBuffer) are also datasets
+ * - need to override the basic writeH5/readH5 to handle the object data reading/writing
+ * - Root object -> the root group "/"
+ */
+
 #define CLASS_ATTR_NAME "Class"
 
-void writeFileAttribute(H5File* h5obj, const char* name, const char* value);
-QString readFileAttribute(H5File* h5obj, const char* name);
-void writeProperties(H5Object* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject);
-bool readStringAttribute(H5Object* h5obj, const char* name, QByteArray& val);
-void readProperties(H5Object* h5obj, QDaqObject* obj);
+void writeString(CommonFG* h5obj, const char* name, const QString& S)
+{
+    const char* value = S.toLatin1().constData();
+    int len = strlen(value);
+    if (len==0) return;
+    StrType type(PredType::C_S1, len);
+    hsize_t dims = 1;
+    DataSpace space(1,&dims);
+    DataSet ds = h5obj->createDataSet(name, type, space);
+    ds.write(value,type);
+}
+bool readString(CommonFG* h5obj, const char* name, QString& str)
+{
+    DataSet ds = h5obj->openDataSet( name );
+    H5T_class_t type_class = ds.getTypeClass();
+    if (type_class==H5T_STRING)
+    {
+        StrType st = ds.getStrType();
+        int sz = st.getSize();
+        QByteArray buff(sz,'0');
+        ds.read(buff.data(),st);
+        str = QString(buff);
+        return true;
+    }
+    return false;
+}
+
+void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject);
+void readProperties(CommonFG* h5obj, QDaqObject* obj);
 
 
 void loadChildren(CommonFG* h5obj, QDaqObject* parent)
@@ -34,8 +67,8 @@ void loadChildren(CommonFG* h5obj, QDaqObject* parent)
             groupName.fill('\0',256);
             h5obj->getObjnameByIdx(i,groupName.data(),256);
             Group g = h5obj->openGroup(groupName);
-            QByteArray className;
-            if (readStringAttribute(&g,CLASS_ATTR_NAME,className))
+            QString className;
+            if (readString(&g,CLASS_ATTR_NAME,className))
             {
                 QDaqObject* obj  = QDaqObject::root()->createObject(groupName,className);
                 if (obj && obj->readH5(&g))
@@ -100,10 +133,10 @@ void QDaqRoot::h5write(const QString& filename)
          */
 		file = new H5File( filename.toLatin1(), H5F_ACC_TRUNC );
 
-		writeFileAttribute(file, "Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate).toLatin1().constData());
-        writeFileAttribute(file, "FileType", "RtLab");
-        writeFileAttribute(file, "FileVersionMajor", "1");
-        writeFileAttribute(file, "FileVersionMinor", "0");
+        writeString(file, "Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate));
+        writeString(file, "FileType", "RtLab");
+        writeString(file, "FileVersionMajor", "1");
+        writeString(file, "FileVersionMinor", "0");
 
         foreach(QDaqObject* obj, children_) obj->writeH5(file,this);
 
@@ -186,15 +219,18 @@ void QDaqRoot::h5read(const QString& filename)
          */
         file = new H5File( filename.toLatin1(), H5F_ACC_RDONLY );
 
-        QString value;
+        QString fileType, vMajor, vMinor;
 
-        bool ret = readFileAttribute(file,"FileType")==QString("RtLab")
-                && readFileAttribute(file,"FileVersionMajor")==QString("1")
-                && readFileAttribute(file,"FileVersionMinor")==QString("0");
+        bool ret = readString(file,"FileType",fileType) &&
+                readString(file,"FileVersionMajor",vMajor) &&
+                readString(file,"FileVersionMinor",vMinor) &&
+                fileType==QString("QDaq")
+                && vMajor==QString("1")
+                && vMinor==QString("0");
 
         if (ret) loadChildren(file,this);
         else
-            S = "This is not an RtLab-HDF5 file.";
+            S = "This is not an QDaq-HDF5 file.";
 
 
     }  // end of try block
@@ -257,44 +293,20 @@ void QDaqRoot::h5read(const QString& filename)
         qDebug() << S;
     }
 }
-void writeStringAttribute(H5Object* h5obj, const char* name, const char* value)
+
+template<class _VectorType>
+void writeVectorClass(CommonFG* h5obj, const char* name, const QVariant& value, const DataType& type)
 {
-	int len = strlen(value);
-	if (len==0) return;
-	StrType type(PredType::C_S1, len);
-	hsize_t dims = 1;
-	DataSpace space(1,&dims);
-	Attribute* attr = new Attribute( h5obj->createAttribute(name, type, space) );
-	attr->write(type, value);
-	delete attr;
+    _VectorType v = value.value<_VectorType>();
+    hsize_t sz = v.size();
+    if (sz<1) sz=1;
+    hsize_t dims = 1;
+    DataSpace space(1,&dims);
+    DataSet ds = h5obj->createDataSet(name, type, space);
+    if (v.size()) ds.write(v.constData(),type);
 }
-void writeFileAttribute(H5File* h5obj, const char* name, const char* value)
-{
-	int len = strlen(value);
-	if (len==0) return;
-	StrType type(PredType::C_S1, len);
-	hsize_t dims = 1;
-	DataSpace space(1,&dims);
-	DataSet* ds = new DataSet( h5obj->createDataSet(name, type, space) );
-	ds->write(value,type);
-	delete ds;
-}
-QString readFileAttribute(H5File* h5obj, const char* name)
-{
-    QString ret;
-    DataSet ds = h5obj->openDataSet( name );
-    H5T_class_t type_class = ds.getTypeClass();
-    if (type_class==H5T_STRING)
-    {
-        StrType st = ds.getStrType();
-        int sz = st.getSize();
-        QByteArray buff(sz,'0');
-        ds.read(buff.data(),st);
-        ret = QString(buff);
-    }
-    return ret;
-}
-void writeProperties(H5Object* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject)
+
+void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject)
 {
 	// get the super-class meta-object
 	const QMetaObject* super = metaObject->superClass();
@@ -305,7 +317,7 @@ void writeProperties(H5Object* h5obj, const QDaqObject* m_object, const QMetaObj
 	// if this is the first , write the class name
 	if (metaObject==m_object->metaObject())
 	{
-        writeStringAttribute(h5obj,CLASS_ATTR_NAME, metaObject->className());
+        writeString(h5obj,CLASS_ATTR_NAME, metaObject->className());
 	}
 
 	// first write the properties of the super-class (this produces all properties up to the current object)
@@ -322,7 +334,7 @@ void writeProperties(H5Object* h5obj, const QDaqObject* m_object, const QMetaObj
 			{
 				QMetaEnum metaEnum = metaProperty.enumerator();
 				int i = *reinterpret_cast<const int *>(value.constData());
-				writeStringAttribute(h5obj,metaProperty.name(),metaEnum.valueToKey(i));
+                writeString(h5obj,metaProperty.name(),metaEnum.valueToKey(i));
 			}
 			else {
 				int objtype = value.userType();
@@ -330,163 +342,66 @@ void writeProperties(H5Object* h5obj, const QDaqObject* m_object, const QMetaObj
 					objtype==QVariant::Int || objtype==QVariant::UInt)
 				{
 					DataSpace space(H5S_SCALAR);
-					Attribute* attr = new Attribute(
-						h5obj->createAttribute(metaProperty.name(),
-						PredType::NATIVE_INT, space)
-						);
+                    DataSet ds = h5obj->createDataSet(metaProperty.name(),
+                        PredType::NATIVE_INT, space);
 					int i = value.toInt();
-					attr->write(PredType::NATIVE_INT,&i);
-					delete attr;
+                    ds.write(&i,PredType::NATIVE_INT);
 				}
 				else if (objtype==QVariant::String)
 				{
 					QString S = value.toString();
 					if (S.isEmpty()) S=" ";
-					writeStringAttribute(h5obj,metaProperty.name(),S.toLatin1().constData());
+                    writeString(h5obj,metaProperty.name(),S);
 				}
 				else if (objtype==QVariant::Double)
 				{
 					DataSpace space(H5S_SCALAR);
-					Attribute* attr = new Attribute(
-						h5obj->createAttribute(metaProperty.name(),
-						PredType::NATIVE_DOUBLE, space)
-						);
+                    DataSet ds = h5obj->createDataSet(metaProperty.name(),
+                        PredType::NATIVE_DOUBLE, space);
 					double d = value.toDouble();
-					attr->write(PredType::NATIVE_DOUBLE,&d);
-					delete attr;
+                    ds.write(&d,PredType::NATIVE_DOUBLE);
 				}
                 else if (objtype==qMetaTypeId<QDaqIntVector>())
-				{
-                    QDaqIntVector v = value.value<QDaqIntVector>();
-					hsize_t sz = v.size();
-					if (sz<1) sz=1;
-					ArrayType type(PredType::NATIVE_INT, 1, &sz);
-					hsize_t dims = 1;
-					DataSpace space(1,&dims);
-					Attribute* attr = new Attribute(
-						h5obj->createAttribute(metaProperty.name(),
-						type, space)
-						);
-					if (v.size())
-						attr->write(type, v.constData());
-					delete attr;
-				}
+                    writeVectorClass<QDaqIntVector>(h5obj,metaProperty.name(),value,PredType::NATIVE_INT);
                 else if (objtype==qMetaTypeId<QDaqUintVector>())
-				{
-                    QDaqUintVector v = value.value<QDaqUintVector>();
-					hsize_t sz = v.size();
-					if (sz<1) sz=1;
-					ArrayType type(PredType::NATIVE_UINT, 1, &sz);
-					hsize_t dims = 1;
-					DataSpace space(1,&dims);
-					Attribute* attr = new Attribute(
-						h5obj->createAttribute(metaProperty.name(),
-						type, space)
-						);
-					if (v.size())
-						attr->write(type, v.constData());
-					delete attr;
-				}
+                    writeVectorClass<QDaqUintVector>(h5obj,metaProperty.name(),value,PredType::NATIVE_UINT);
                 else if (objtype==qMetaTypeId<QDaqDoubleVector>())
-				{
-                    QDaqDoubleVector v = value.value<QDaqDoubleVector>();
-					hsize_t sz = v.size();
-					if (sz<1) sz=1;
-					ArrayType type(PredType::NATIVE_DOUBLE, 1, &sz);
-					hsize_t dims = 1;
-					DataSpace space(1,&dims);
-					Attribute* attr = new Attribute(
-						h5obj->createAttribute(metaProperty.name(),
-						type, space)
-						);
-					if (v.size())
-						attr->write(type, v.constData());
-					delete attr;
-				}
+                    writeVectorClass<QDaqDoubleVector>(h5obj,metaProperty.name(),value,PredType::NATIVE_DOUBLE);
 			}
 		}
 	}
 }
-bool readStringAttribute(H5Object* h5obj, const char* name, QByteArray& val)
+
+template<class _T>
+bool readScalar(CommonFG* h5obj, const char* name, _T& value, const H5T_class_t& type)
 {
-    Attribute attr = h5obj->openAttribute(name);
-    H5T_class_t typ = attr.getTypeClass();
-    if (typ==H5T_STRING)
+    DataSet ds = h5obj->openDataSet(name);
+    H5T_class_t ds_type = ds.getTypeClass();
+    if (ds_type==type)
     {
-        StrType strType = attr.getStrType();
-        int sz = strType.getSize();
-        val.fill('0',sz);
-        attr.read(strType,val.data());
+        ds.read(&value, ds.getDataType());
         return true;
     }
     return false;
 }
-bool readIntAttribute(H5Object* h5obj, const char* name, int &v)
+
+template<class _T>
+bool readVectorClass(CommonFG* h5obj, const char* name, _T& value, const H5T_class_t& type)
 {
-    Attribute attr = h5obj->openAttribute(name);
-    H5T_class_t typ = attr.getTypeClass();
-    if (typ==H5T_INTEGER)
+    DataSet ds = h5obj->openDataSet(name);
+    H5T_class_t ds_type = ds.getTypeClass();
+    if (ds_type==type)
     {
-        IntType intType = attr.getIntType();
-        attr.read(intType,&v);
+        DataSpace dspace = ds.getSpace();
+        int sz = dspace.getSimpleExtentNpoints();
+        value.fill(0,sz);
+        ds.read(value.data(), ds.getDataType());
         return true;
     }
     return false;
 }
-bool readDoubleAttribute(H5Object* h5obj, const char* name, double &v)
-{
-    Attribute attr = h5obj->openAttribute(name);
-    H5T_class_t typ = attr.getTypeClass();
-    if (typ==H5T_FLOAT)
-    {
-        attr.read(PredType::NATIVE_DOUBLE,&v);
-        return true;
-    }
-    return false;
-}
-bool readQDaqIntVectorAttribute(H5Object* h5obj, const char* name, QDaqIntVector &v)
-{
-    Attribute attr = h5obj->openAttribute(name);
-    H5T_class_t typ = attr.getTypeClass();
-    if (typ==H5T_INTEGER)
-    {
-        ArrayType arrayType = attr.getArrayType();
-        int sz = arrayType.getSize();
-        v.fill(0,sz);
-        attr.read(arrayType,v.data());
-        return true;
-    }
-    return false;
-}
-bool readQDaqUintVectorAttribute(H5Object* h5obj, const char* name, QDaqUintVector &v)
-{
-    Attribute attr = h5obj->openAttribute(name);
-    H5T_class_t typ = attr.getTypeClass();
-    if (typ==H5T_INTEGER)
-    {
-        ArrayType arrayType = attr.getArrayType();
-        int sz = arrayType.getSize();
-        v.fill(0,sz);
-        attr.read(arrayType,v.data());
-        return true;
-    }
-    return false;
-}
-bool readQDaqDoubleVectorAttribute(H5Object* h5obj, const char* name, QDaqDoubleVector &v)
-{
-    Attribute attr = h5obj->openAttribute(name);
-    H5T_class_t typ = attr.getTypeClass();
-    if (typ==H5T_FLOAT)
-    {
-        ArrayType arrayType = attr.getArrayType();
-        int sz = arrayType.getSize();
-        v.fill(0,sz);
-        attr.read(arrayType,v.data());
-        return true;
-    }
-    return false;
-}
-void readProperties(H5Object* h5obj, QDaqObject* obj)
+
+void readProperties(CommonFG *h5obj, QDaqObject* obj)
 {
     // get the meta-object
     const QMetaObject* metaObject = obj->metaObject();
@@ -501,12 +416,12 @@ void readProperties(H5Object* h5obj, QDaqObject* obj)
             if (metaProperty.isEnumType())
             {
                 QMetaEnum metaEnum = metaProperty.enumerator();
-                QByteArray key;
-                if (readStringAttribute(h5obj,metaProperty.name(),key))
+                QString key;
+                if (readString(h5obj,metaProperty.name(),key))
                 {
-                    int v = metaEnum.keyToValue(key);
+                    int v = metaEnum.keyToValue(key.toLatin1().constData());
                     if (v>=0)
-                        metaProperty.write(obj,QVariant(metaEnum.keyToValue(key)));
+                        metaProperty.write(obj,QVariant(v));
                 }
             }
             else {
@@ -515,37 +430,37 @@ void readProperties(H5Object* h5obj, QDaqObject* obj)
                     objtype==QVariant::Int || objtype==QVariant::UInt)
                 {
                     int v;
-                    if (readIntAttribute(h5obj,metaProperty.name(),v))
+                    if (readScalar(h5obj,metaProperty.name(),v,H5T_INTEGER))
                         metaProperty.write(obj,QVariant(objtype,&v));
                 }
                 else if (objtype==QVariant::String)
                 {
-                    QByteArray v;
-                    if (readStringAttribute(h5obj,metaProperty.name(),v))
-                        metaProperty.write(obj,QVariant(QString(v)));
+                    QString v;
+                    if (readString(h5obj,metaProperty.name(),v))
+                        metaProperty.write(obj,QVariant(v));
                 }
                 else if (objtype==QVariant::Double)
                 {
                     double v;
-                    if (readDoubleAttribute(h5obj,metaProperty.name(),v))
+                    if (readScalar(h5obj,metaProperty.name(),v,H5T_FLOAT))
                         metaProperty.write(obj,QVariant(v));
                 }
                 else if (objtype==qMetaTypeId<QDaqIntVector>())
                 {
                     QDaqIntVector v;
-                    if (readQDaqIntVectorAttribute(h5obj,metaProperty.name(),v))
+                    if (readVectorClass(h5obj,metaProperty.name(),v,H5T_INTEGER))
                         metaProperty.write(obj,QVariant::fromValue(v));
                 }
                 else if (objtype==qMetaTypeId<QDaqUintVector>())
                 {
                     QDaqUintVector v;
-                    if (readQDaqUintVectorAttribute(h5obj,metaProperty.name(),v))
+                    if (readVectorClass(h5obj,metaProperty.name(),v,H5T_INTEGER))
                         metaProperty.write(obj,QVariant::fromValue(v));
                 }
                 else if (objtype==qMetaTypeId<QDaqDoubleVector>())
                 {
                     QDaqDoubleVector v;
-                    if (readQDaqDoubleVectorAttribute(h5obj,metaProperty.name(),v))
+                    if (readVectorClass(h5obj,metaProperty.name(),v,H5T_FLOAT))
                         metaProperty.write(obj,QVariant::fromValue(v));
                 }
             }
