@@ -13,5 +13,6 @@
         <file>images/edit_add.png</file>
         <file>images/cut.png</file>
         <file>images/copy.png</file>
+        <file>images/Terminal-128.png</file>
     </qresource>
 </RCC>

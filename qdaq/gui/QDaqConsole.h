@@ -8,13 +8,12 @@ class QDaqSession;
 
 class RTLAB_GUI_EXPORT QDaqConsole : public QConsoleWidget
 {
-    QDaqSession* session;
-    QString execCode_;
-public:
-    explicit QDaqConsole(const QString& startupScript = QString());
+    Q_OBJECT
 
-protected slots:
-    void deferedEvaluate();
+    QDaqSession* session;
+
+public:
+    QDaqConsole(QWidget* parent = 0);
 
 protected:
 	void exec(const QString& code);

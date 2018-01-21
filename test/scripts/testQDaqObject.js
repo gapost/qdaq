@@ -30,22 +30,22 @@ x = qdaq.test2.clone();
 qdaq.test1.appendChild(x);
 print("Tree = \n" + qdaq.objectTree());
 
-print(splitStr)
-print("Remove test 1");
-x = qdaq.test1;
-x = qdaq.removeChild(x);
-print("Tree = \n" + qdaq.objectTree());
+//print(splitStr)
+//print("Remove test 1");
+//x = qdaq.test1;
+//x = qdaq.removeChild(x);
+//print("Tree = \n" + qdaq.objectTree());
 
-print(splitStr)
-print("Replace test2 with test1");
-x = qdaq.replaceChild(x,qdaq.test2);
-print("Tree = \n" + qdaq.objectTree());
+//print(splitStr)
+//print("Replace test2 with test1");
+//x = qdaq.replaceChild(x,qdaq.test2);
+//print("Tree = \n" + qdaq.objectTree());
 
-print(splitStr)
-print("Remove test1")
-qdaq.removeChild(qdaq.test1);
-print("Tree = \n" + qdaq.objectTree());
-print(splitStr)
+//print(splitStr)
+//print("Remove test1")
+//qdaq.removeChild(qdaq.test1);
+//print("Tree = \n" + qdaq.objectTree());
+//print(splitStr)
 
 
 

@@ -9,10 +9,13 @@
 #include <QFile>
 //#include <QTextStream>
 #include <QTimer>
-#include <QCoreApplication>
+//#include <QCoreApplication>
+#include <QApplication>
 #include <QScriptValueIterator>
 #include <QDir>
 #include <QProcess>
+#include <QWidget>
+#include <QtUiTools/QUiLoader>
 
 
 
@@ -142,12 +145,11 @@ QDaqSession::QDaqSession(QObject *parent) : QDaqScriptEngine(parent)
     wait_timer_ = new QTimer(this);
     wait_timer_->setSingleShot(true);
 
-    idx_ = 1;
-    idx_set.contains(1);
-    while (idx_set.contains(idx_)) idx_++;
+    // find a free index number
+    idx_ = nextAvailableIndex();
     idx_set.insert(idx_);
 
-    QString objName = QString("console_%1").arg(idx_);
+    QString objName = QString("session%1").arg(idx_);
     setObjectName(objName);
 
     // create log file
@@ -158,6 +160,24 @@ QDaqSession::QDaqSession(QObject *parent) : QDaqScriptEngine(parent)
         connect(this,SIGNAL(stdOut(QString)),this,SLOT(log_out(QString)));
         connect(this,SIGNAL(stdErr(QString)),this,SLOT(log_err(QString)));
     }
+
+    QScriptValue uiObj = engine_->newObject();
+
+    int iw = 1;
+    foreach (QWidget* w, QApplication::topLevelWidgets()) {
+        QScriptValue wObj = engine_->newQObject(w);
+        QString wname = w->objectName();
+        //QString className =  w->metaObject()->className();
+        if (!wname.isEmpty()) {
+            //wname = QString("widget%1").arg(iw);
+            uiObj.setProperty(wname,wObj);
+        }
+        iw++;
+    }
+
+    engine_->globalObject().setProperty("ui",uiObj);
+
+    connect(qApp,SIGNAL(focusChanged(QWidget*,QWidget*)),this,SLOT(onFocusChanged(QWidget*,QWidget*)));
 }
 
 QDaqSession::~QDaqSession( void)
@@ -169,6 +189,13 @@ QDaqSession::~QDaqSession( void)
         if (logFile_) delete logFile_;
         idx_set.remove(idx_);
     }
+}
+
+int QDaqSession::nextAvailableIndex() const
+{
+    int i = 1;
+    while (idx_set.contains(i)) i++;
+    return i;
 }
 
 void QDaqSession::evaluate(const QString& program)
@@ -302,6 +329,54 @@ void QDaqSession::log__(int fd, const QString &str)
         buff += ln;
         //if (buff.endsWith('\n')) buff.remove(buff.size()-1,1);
         *logFile_ << buff;
+    }
+
+}
+bool QDaqSession::h5write(const QDaqObject *obj, const QString &fname)
+{
+    QDaqObject::h5write(obj,fname);
+    return true;
+}
+QDaqObject* QDaqSession::h5read(const QString &fname)
+{
+    return QDaqObject::h5read(fname);
+}
+QWidget* QDaqSession::loadUi(const QString &fname)
+{
+    QFile file(fname);
+
+    if (!file.open(QFile::ReadOnly))
+    {
+        engine_->currentContext()->throwError(QString("Ui file %1 could not be opened.").arg(fname));
+        return 0;
+    }
+
+    QUiLoader loader;
+    // loader working dir = ui file dir
+    QFileInfo fi(file);
+    loader.setWorkingDirectory(fi.absoluteDir());
+    QWidget* w = loader.load(&file);
+    file.close();
+    if (!w)
+    {
+        engine_->currentContext()->throwError(
+                    QString("Error while loading file %1.\n%2").arg(fname).arg(loader.errorString())
+                    );
+    }
+
+    return w;
+}
+void QDaqSession::onFocusChanged(QWidget* old, QWidget* now)
+{
+    QWidgetList wl = QApplication::topLevelWidgets();
+    int j=0;
+    if (now && now->objectName()=="deltaControl")
+    {
+        j++;
+    }
+    if (wl.contains(now))
+    {
+        j++;
     }
 
 }

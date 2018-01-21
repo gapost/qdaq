@@ -18,7 +18,7 @@
 #include "QDaqObjectBrowser.h"
 #include "QDaqRoot.h"
 
-QDaqIDE::QDaqIDE(const QString &startupScript)
+QDaqIDE::QDaqIDE()
 {
     mdiArea = new QMdiArea;
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -40,11 +40,7 @@ QDaqIDE::QDaqIDE(const QString &startupScript)
     readSettings();
 
     setWindowTitle(tr("QDaq IDE"));
-
-    //QDaqObject::root()->setMainWindow(this);
-
-    newConsole(startupScript);
-
+    setObjectName("ide");
 
 }
 
@@ -66,14 +62,10 @@ void QDaqIDE::newFile()
     child->show();
 }
 
-QDaqConsole *QDaqIDE::newConsole(const QString& startupScript)
+QDaqConsole *QDaqIDE::newConsole()
 {
-    QDaqConsole *child = createQDaqConsole(startupScript);
-
-
-    child->setObjectName(child->windowTitle());
+    QDaqConsole *child = createQDaqConsole();
     child->show();
-
     return child;
 }
 
@@ -249,9 +241,9 @@ QDaqScriptEditor *QDaqIDE::createScriptEditor()
     return child;
 }
 
-QDaqConsole *QDaqIDE::createQDaqConsole(const QString &startupScript)
+QDaqConsole *QDaqIDE::createQDaqConsole()
 {
-    QDaqConsole *child = new QDaqConsole(startupScript);
+    QDaqConsole *child = new QDaqConsole;
     mdiArea->addSubWindow(child);
 
     connect(child, SIGNAL(copyAvailable(bool)),
@@ -269,7 +261,7 @@ void QDaqIDE::createActions()
     newAct->setStatusTip(tr("Create a new script file"));
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
 
-    newConsoleAct = new QAction(tr("New &Console"), this);
+    newConsoleAct = new QAction(QIcon(":/images/Terminal-128.png"), tr("New &Console"), this);
     newConsoleAct->setStatusTip(tr("Open new script console"));
     connect(newConsoleAct, SIGNAL(triggered()), this, SLOT(newConsole()));
 
@@ -395,6 +387,7 @@ void QDaqIDE::createMenus()
 void QDaqIDE::createToolBars()
 {
     fileToolBar = addToolBar(tr("File"));
+    fileToolBar->addAction(newConsoleAct);
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(saveAct);

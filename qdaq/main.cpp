@@ -1,5 +1,6 @@
 #include <QApplication>
 
+#include "QDaqRoot.h"
 #include "QDaqIde.h"
 
 int main(int argc, char *argv[])
@@ -8,6 +9,8 @@ int main(int argc, char *argv[])
 
 
     QApplication app(argc, argv);
+
+    QDaqRoot qdaq;
 
     QDaqIDE mainWin;
     mainWin.show();

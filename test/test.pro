@@ -19,4 +19,8 @@ DISTFILES += \
     scripts/testTimerLoop.js \
     scripts/testH5.js
 
+FORMS += \
+    ui/cryoTemperatureControl.ui \
+    ui/deltaControl.ui
+
 

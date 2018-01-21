@@ -16,6 +16,7 @@ class QScriptEngineDebugger;
 class QScriptContext;
 class QTimer;
 class QDaqLogFile;
+class QDaqObject;
 
 class RTLAB_BASE_EXPORT QDaqScriptEngine : public QObject
 {
@@ -63,6 +64,10 @@ public:
     void evaluate(const QString& program);
     void abortEvaluation();
     int index() const { return idx_; }
+    int nextAvailableIndex() const;
+
+private slots:
+    void onFocusChanged(QWidget* old, QWidget* now);
 
 public slots:
     void quit();
@@ -72,6 +77,9 @@ public slots:
     void textSave(const QString& str, const QString& fname);
     QString textLoad(const QString& fname);
 
+    bool h5write(const QDaqObject* obj, const QString& fname);
+    QDaqObject*  h5read(const QString& fname);
+
     // file and folder
     QString pwd();
     bool cd(const QString& path);
@@ -79,12 +87,15 @@ public slots:
     QStringList dir(const QString& filter);
     bool isDir(const QString& name);
 
+    // widgets
+    QWidget* loadUi(const QString& fname);
+
     // set debugging on (enable Qt script debugger)
     void debug(bool on);
 
     // timing
     void tic() { watch_.start(); }
-    double toc() { watch_.stop(); return watch_.sec(); }
+    double toc() { /*watch_.stop();*/ return watch_.sec(); }
 
     // system call
     QString system(const QString& comm);

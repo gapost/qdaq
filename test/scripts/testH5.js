@@ -11,5 +11,5 @@ print("Tree = \n" + qdaq.objectTree());
 
 
 print("Saving qdaq to h5");
-qdaq.h5write("qdaq.h5");
+h5write(qdaq,"qdaq.h5");
 

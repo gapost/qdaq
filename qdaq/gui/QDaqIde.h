@@ -19,14 +19,14 @@ class QDaqIDE : public QMainWindow
     Q_OBJECT
 
 public:
-    QDaqIDE(const QString& startupScript = QString());
+    QDaqIDE();
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
     void newFile();
-    QDaqConsole* newConsole(const QString &startupScript = QString());
+    QDaqConsole* newConsole();
     void open();
     void save();
     void saveAs();
@@ -39,7 +39,7 @@ private slots:
 	void tabbedView();
 	void windowView();
     QDaqScriptEditor *createScriptEditor();
-    QDaqConsole *createQDaqConsole(const QString& startupScript = QString());
+    QDaqConsole *createQDaqConsole();
     void setActiveSubWindow(QWidget *window);
 
 private:

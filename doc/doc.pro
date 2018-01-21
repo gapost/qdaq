@@ -3,4 +3,5 @@ CONFIG += staticlib
 CONFIG -= qt
 
 DISTFILES += \
-    Doxyfile
+    Doxyfile \
+    html/index.html

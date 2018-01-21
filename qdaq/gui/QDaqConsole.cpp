@@ -11,35 +11,32 @@
 
 #include "QDaqRoot.h"
 
-QDaqConsole::QDaqConsole(const QString &startupScript)
+QDaqConsole::QDaqConsole(QWidget *parent) : QConsoleWidget(parent)
 {
-
 	setTabStopWidth ( 40 );
+    setWindowTitle(QString("Console #%1").arg(session->nextAvailableIndex()));
+    setObjectName(QString("console%1").arg(session->nextAvailableIndex()));
+
+#if defined(Q_OS_MAC)
+    QFont textFont = font();
+    textFont.setPointSize(12);
+    textFont.setFamily("Monaco");
+    setFont(textFont);
+#elif defined(Q_OS_UNIX)
+    QFont textFont = font();
+    textFont.setFamily("Monospace");
+    setFont(textFont);
+#elif defined(Q_OS_WIN)
+    QFont textFont = font();
+    textFont.setFamily("Courier New");
+    setFont(textFont);
+#endif
 
     session = new QDaqSession(this);
 
 	connect(session,SIGNAL(stdOut(const QString&)),this,SLOT(stdOut(const QString&)));
 	connect(session,SIGNAL(stdErr(const QString&)),this,SLOT(stdErr(const QString&)));
 	connect(session,SIGNAL(endSession()),this,SLOT(endSession()),Qt::QueuedConnection);
-
-    if (!startupScript.isEmpty())
-    {
-        execCode_ = startupScript;
-        QTimer::singleShot(1000,this,SLOT(deferedEvaluate()));
-    }
-
-    setWindowTitle(QString("Console #%1").arg(session->index()));
-
-}
-
-void QDaqConsole::deferedEvaluate()
-{
-    session->print(QString("Running startup script %1 ...").arg(execCode_));
-    QFile fin(execCode_);
-    if (fin.open(QFile::ReadOnly))
-    {
-        session->evaluate(fin.readAll());
-    }
 }
 
 void QDaqConsole::exec(const QString& code)

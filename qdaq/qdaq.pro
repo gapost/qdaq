@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets script scripttools network
+QT       += core gui widgets script scripttools network uitools
 
 lessThan(QT_MAJOR_VERSION, 5): error("This app needs Qt5")
 
