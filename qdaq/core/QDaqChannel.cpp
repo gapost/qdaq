@@ -19,6 +19,8 @@ QDaqChannel::QDaqChannel(const QString& name) :
 {
 	range_ << -1e30 << 1.e30;
 	setForgettingFactor(0.99);
+    depth_ = 1;
+    buff_.alloc(1);
 }
 
 QDaqChannel::~QDaqChannel(void)
@@ -203,6 +205,7 @@ bool QDaqChannel::run()
         dataReady_ = dataReady_ && __finite(v_) && (v_>range_[0]) && (v_<range_[1]);
         emit updateWidgets();
 	}
+
     return QDaqJob::run();
 }
 QString QDaqChannel::formatedValue()
@@ -290,6 +293,8 @@ bool QDaqTimeChannel::run()
     v_ = QDaqTimeValue::now();
     // time data is always availiable
     dataReady_ = true;
+
+    emit updateWidgets();
 
     // do not call QDaqChannel::run
     return QDaqJob::run();

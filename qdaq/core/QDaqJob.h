@@ -111,7 +111,7 @@ public:
 
     QDaqLoop* topLoop() const;
     QDaqLoop* loop() const;
-    QDaqScriptEngine* loopEngine() const;
+    virtual QDaqScriptEngine* loopEngine() const;
 
 public slots:
 
@@ -198,6 +198,10 @@ public:
     void setPeriod(uint p);
 
     bool isTop() const { return this==topLoop(); }
+
+    QDaqLoop* parentLoop() const;
+
+    virtual QDaqScriptEngine* loopEngine() const;
 
 signals:
     void abort();

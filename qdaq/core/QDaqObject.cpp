@@ -84,7 +84,10 @@ QString QDaqObject::errorBacktrace() const
 
 void QDaqObject::throwScriptError(const QString& msg) const
 {
-	if (context()) context()->throwError(msg);
+    QScriptContext* ctx = context();
+    if (ctx) ctx->throwError(msg);
+    QDaqError e(QDateTime::currentDateTime(), fullName(), msg);
+    root()->postError(e);
 }
 
 

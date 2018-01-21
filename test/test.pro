@@ -21,6 +21,7 @@ DISTFILES += \
 
 FORMS += \
     ui/cryoTemperatureControl.ui \
-    ui/deltaControl.ui
+    ui/deltaControl.ui \
+    ui/testform.ui
 
 

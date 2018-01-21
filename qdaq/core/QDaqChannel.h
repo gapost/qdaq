@@ -115,13 +115,8 @@ protected:
 	uint depth_;
 	double ff_, ffw_;
 
-
-
-
 	// channel buffer
     math::circular_buffer<double> buff_;
-
-
 
 	virtual bool arm_();
     virtual bool run();

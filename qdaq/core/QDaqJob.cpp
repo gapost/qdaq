@@ -2,7 +2,7 @@
 #include "QDaqSession.h"
 
 QDaqJob::QDaqJob(const QString& name) :
-    QDaqObject(name), armed_(false)
+    QDaqObject(name), armed_(false), program_(0)
 {
 }
 QDaqJob::~QDaqJob(void)
@@ -109,22 +109,24 @@ bool QDaqJob::setArmed(bool on)
 
         // lock & arm me and my sub-jobs
         jobLock();
-        bool ok = arm_();
+        bool ok = true;
         JobList::iterator i = subjobs_.begin();
         while(ok && i!=subjobs_.end()) {
             ok = (*i)->setArmed(true);
             ++i;
         }
 
+
         // Some job failed to arm.
         // the job that failed must send an error
         if (!ok)
         {
 
-            disarm_();
+            //disarm_();
             foreach(QDaqJob* j, subjobs_) j->setArmed(false);
             armed_ = false;
         }
+        else arm_();
 
 
         jobUnlock();
@@ -182,8 +184,9 @@ QDaqScriptEngine* QDaqJob::loopEngine() const
     QDaqScriptEngine* e = 0;
     while (p)
     {
-        if ((e = p->loopEngine())) break;
-        p = p->loop();
+        e = p->loopEngine();
+        if (e) break;
+        p = p->parentLoop();
     }
     return e;
 }
@@ -332,7 +335,21 @@ void QDaqLoop::createLoopEngine()
 
     loop_eng_ = new QDaqScriptEngine(this);
 }
-
+QDaqScriptEngine* QDaqLoop::loopEngine() const
+{
+    return loop_eng_;
+}
+QDaqLoop* QDaqLoop::parentLoop() const
+{
+    QDaqObject* p = parent();
+    while(p && p!=(QDaqObject*)root())
+    {
+        QDaqLoop* q = qobject_cast<QDaqLoop*>(p);
+        if (q) return q;
+        p = p->parent();
+    }
+    return 0;
+}
 
 
 
