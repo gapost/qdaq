@@ -17,6 +17,7 @@ class QScriptContext;
 class QTimer;
 class QDaqLogFile;
 class QDaqObject;
+class QDaqChannel;
 
 class RTLAB_BASE_EXPORT QDaqScriptEngine : public QObject
 {
@@ -89,6 +90,10 @@ public slots:
 
     // widgets
     QWidget* loadUi(const QString& fname);
+    QString pluginPaths();
+    QString availableWidgets();
+    void bind(QDaqChannel* ch, QWidget* w);
+    void bind(QDaqObject* obj, const QString& propertyName, QWidget* w, bool readOnly = false);
 
     // set debugging on (enable Qt script debugger)
     void debug(bool on);

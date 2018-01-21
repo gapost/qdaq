@@ -2,6 +2,7 @@
 #include "QDaqRoot.h"
 #include "QDaqTypes.h"
 #include "QDaqLogFile.h"
+#include "QDaqDelegates.h"
 
 #include <QDebug>
 #include <QScriptEngine>
@@ -378,6 +379,67 @@ void QDaqSession::onFocusChanged(QWidget* old, QWidget* now)
     {
         j++;
     }
+
+}
+QString QDaqSession::pluginPaths()
+{
+    QUiLoader l;
+    return l.pluginPaths().join("\n");
+}
+QString QDaqSession::availableWidgets()
+{
+    QUiLoader l;
+    return l.availableWidgets().join("\n");
+}
+void QDaqSession::bind(QDaqChannel *ch, QWidget* w)
+{
+    if (ch && w)
+    {
+        DisplayDelegate* d = new DisplayDelegate(w,ch);
+        Q_UNUSED(d);
+        //displayDelegates << d;
+    }
+}
+void QDaqSession::bind(QDaqObject *obj, const QString& propertyName, QWidget* w, bool readOnly)
+{
+    if (!obj)
+    {
+        return;
+    }
+    const QMetaObject* metaObj = obj->metaObject();
+    int idx = metaObj->indexOfProperty(propertyName.toLatin1());
+    if (idx<0)
+    {
+        engine_->currentContext()->throwError(
+            QString("%1 is not a property of %2").arg(propertyName).arg(obj->objectName())
+            );
+        return;
+    }
+    QMetaProperty p = metaObj->property(idx);
+    if(!w || !w->isWidgetType())
+    {
+        engine_->currentContext()->throwError(
+            QString("Invalid widget")
+            );
+        return;
+    }
+    WidgetVariant wv(w);
+    if (!wv.canConvert(p.type()))
+    {
+        engine_->currentContext()->throwError(
+            QString("Property %1 (%2) is not compatible with widget %3 (%4)")
+            .arg(propertyName)
+            .arg(p.typeName())
+            .arg(w->objectName())
+            .arg(w->metaObject()->className())
+            );
+        return;
+    }
+
+    PropertyDelegate* d = new PropertyDelegate(w,obj,p,readOnly);
+
+    Q_UNUSED(d);
+
 
 }
 
