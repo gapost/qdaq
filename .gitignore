@@ -1,3 +1,12 @@
 *.pro.user
 
 qdaq/3rdparty/*
+
+doc/html/*
+
+test/log/*
+
+test/_command_history.lst
+
+test/*.h5
+
