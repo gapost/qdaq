@@ -18,22 +18,21 @@ using namespace H5;
  * - Object properties are written as datasets of the group
  * - Base class QDaqObject::writeH5/readH5 handle all QDaq property types
  * - Other object data (like in QDaqDataBuffer) are also datasets
- * - need to override the basic writeH5/readH5 to handle the object data reading/writing
- * - Root object -> the root group "/"
+ * - need to override the basic writeH5/readH5 to handle the object special data reading/writing
+ * - Root object -> write as any other obj / read as a plain QDaqObj
  */
 
 #define CLASS_ATTR_NAME "Class"
 
 void writeString(CommonFG* h5obj, const char* name, const QString& S)
 {
-    const char* value = S.toLatin1().constData();
-    int len = strlen(value);
+    int len = S.length();
     if (len==0) return;
     StrType type(PredType::C_S1, len);
     hsize_t dims = 1;
     DataSpace space(1,&dims);
     DataSet ds = h5obj->createDataSet(name, type, space);
-    ds.write(value,type);
+    ds.write(S.toLatin1().constData(),type);
 }
 bool readString(CommonFG* h5obj, const char* name, QString& str)
 {
@@ -54,66 +53,62 @@ bool readString(CommonFG* h5obj, const char* name, QString& str)
 void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject);
 void readProperties(CommonFG* h5obj, QDaqObject* obj);
 
-
-void loadChildren(CommonFG* h5obj, QDaqObject* parent)
+void QDaqObject::writeH5(Group *h5g) const
 {
-    int n = h5obj->getNumObjs();
+    writeProperties(h5g,this,metaObject());
+}
+
+void writeRecursive(CommonFG* h5g, const QDaqObject* obj)
+{
+    H5::Group objGroup = h5g->createGroup(obj->objectName().toLatin1().constData());
+
+    obj->writeH5(&objGroup);
+
+    foreach(const QDaqObject* ch, obj->children()) writeRecursive(&objGroup, ch);
+
+}
+
+void QDaqObject::readH5(Group *h5g)
+{
+    readProperties(h5g,this);
+}
+
+void readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
+{
+    int n = h5g->getNumObjs();
+
     for(int i=0; i<n; ++i)
     {
-        H5G_obj_t typ = h5obj->getObjTypeByIdx(i);
+        H5G_obj_t typ = h5g->getObjTypeByIdx(i);
         if (typ==H5G_GROUP)
         {
             QByteArray groupName;
             groupName.fill('\0',256);
-            h5obj->getObjnameByIdx(i,groupName.data(),256);
-            Group g = h5obj->openGroup(groupName);
+            h5g->getObjnameByIdx(i,groupName.data(),256);
+            Group g = h5g->openGroup(groupName);
             QString className;
             if (readString(&g,CLASS_ATTR_NAME,className))
             {
+                if (className=="QDaqRoot") className = "QDaqObject";
                 QDaqObject* obj  = QDaqObject::root()->createObject(groupName,className);
-                if (obj && obj->readH5(&g))
-                    parent->appendChild(obj);
+                if (obj)
+                {
+                    obj->setObjectName(groupName);
+                    obj->readH5(&g);
+                    readRecursive(&g, obj);
+                    if (parent_obj) parent_obj->appendChild(obj);
+                    else {
+                        parent_obj = obj;
+                        return;
+                    }
+                }
                 else delete obj;
             }
         }
     }
 }
 
-void QDaqObject::writeH5(H5File *file, QDaqObject *from, bool recursive)
-{
-    Group* group;
-
-    if (this==from)
-        group = new Group(file->openGroup("/"));
-    else {
-        /*
-         * Create a new group in the file
-         */
-        QString name = fullName();
-        QString fromName = from->fullName();
-        name.remove(0,fromName.length());
-        name.replace('.','/');
-
-        group = new Group( file->createGroup( name.toLatin1() ));
-    }
-
-    writeProperties(group,this,metaObject());
-
-    if (recursive)
-        foreach(QDaqObject* obj, children_) obj->writeH5(file, from, recursive);
-
-    delete group;
-}
-bool QDaqObject::readH5(Group *h5obj)
-{
-    readProperties(h5obj,this);
-
-    loadChildren(h5obj,this);
-
-    return true;
-}
-
-void QDaqRoot::h5write(const QString& filename)
+void QDaqObject::h5write(const QDaqObject* obj, const QString& filename)
 {
 	QString S;
 	H5File *file = 0;
@@ -134,11 +129,11 @@ void QDaqRoot::h5write(const QString& filename)
 		file = new H5File( filename.toLatin1(), H5F_ACC_TRUNC );
 
         writeString(file, "Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate));
-        writeString(file, "FileType", "RtLab");
+        writeString(file, "FileType", "QDaq");
         writeString(file, "FileVersionMajor", "1");
         writeString(file, "FileVersionMinor", "0");
 
-        foreach(QDaqObject* obj, children_) obj->writeH5(file,this);
+        writeRecursive(file,obj);
 
     }  // end of try block
 
@@ -196,14 +191,15 @@ void QDaqRoot::h5write(const QString& filename)
 
     if (!S.isEmpty())
     {
-        throwScriptError(S);
+        obj->throwScriptError(S);
         qDebug() << S;
     }
 }
-void QDaqRoot::h5read(const QString& filename)
+QDaqObject *QDaqObject::h5read(const QString& filename)
 {
     QString S;
     H5File *file = 0;
+    QDaqObject* obj(0);
 
     // Try block to detect exceptions raised by any of the calls inside it
     try
@@ -228,9 +224,7 @@ void QDaqRoot::h5read(const QString& filename)
                 && vMajor==QString("1")
                 && vMinor==QString("0");
 
-        if (ret) loadChildren(file,this);
-        else
-            S = "This is not an QDaq-HDF5 file.";
+        if (ret) readRecursive(file,obj);
 
 
     }  // end of try block
@@ -289,9 +283,11 @@ void QDaqRoot::h5read(const QString& filename)
 
     if (!S.isEmpty())
     {
-        throwScriptError(S);
+        //obj->throwScriptError(S);
         qDebug() << S;
     }
+
+    return obj;
 }
 
 template<class _VectorType>

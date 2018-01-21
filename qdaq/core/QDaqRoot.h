@@ -39,8 +39,6 @@ public:
     QString rootDir() const { return rootDir_; }
     QString logDir() const { return logDir_; }
 
-    QString h5write(const QString& filename, const QString& comment);
-
     QString xml();
 
     /** Create a QDaqObject with specified name and class.
@@ -57,10 +55,6 @@ public slots:
 
     /// Return the names of registered object classes.
 	QStringList classNames();
-    /// Serialize contents to a HDF5 file.
-    void h5write(const QString& filename);
-    /// Read object contents from HDF5 file.
-    void h5read(const QString& filename);
 
 private slots:
     void onError(const QDaqError& err);

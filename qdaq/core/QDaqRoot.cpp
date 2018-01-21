@@ -7,10 +7,14 @@
 #include <QCoreApplication>
 #include <QDir>
 
-QDaqRoot QDaqObject::root_;
+QDaqRoot* QDaqObject::root_;
 
 QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq")
 {
+    root_ = this;
+
+    qRegisterMetaType<QDaqError>();
+
     registerClass(&QDaqObject::staticMetaObject);
     registerClass(&QDaqJob::staticMetaObject);
     registerClass(&QDaqLoop::staticMetaObject);
@@ -41,7 +45,7 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq")
 
 QDaqRoot::~QDaqRoot(void)
 {
-    foreach(QDaqObject* obj, children()) obj->detach();
+    //foreach(QDaqObject* obj, children()) obj->detach();
     /*{
 		QDaqObject* rtobj = qobject_cast<QDaqObject*>(obj);
 		if (rtobj) 

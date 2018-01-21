@@ -18,6 +18,13 @@ QObject(0)
 
 QDaqObject::~QDaqObject(void)
 {
+    QDaqObjectList lst = children();
+    foreach(QDaqObject* obj, lst)
+    {
+        obj->setParent(0);
+        delete obj;
+    }
+
 	qDebug() << "destroying" << fullName() << "@" << (void*)this;
 }
 
@@ -31,7 +38,7 @@ void QDaqObject::attach()
 {
     qDebug() << "attaching" << fullName() << "@" << (void*)this;
     foreach(QDaqObject* obj, children_) obj->attach();
-    root_.objectCreation(this,true);
+    root()->objectCreation(this,true);
 }
 /** Detach this QDaqObject from the QDaq-framework.
 This function should always be called before the destructor.
@@ -41,9 +48,9 @@ be safely deleted.
 */
 void QDaqObject::detach()
 {
-    root_.objectCreation(this,false);
-    foreach(QDaqObject* obj, children_) obj->detach();
     qDebug() << "detaching" << fullName() << "@" << (void*)this;
+    root()->objectCreation(this,false);
+    foreach(QDaqObject* obj, children_) obj->detach();   
 }
 /** Return true if this QDaqObject is attached to the QDaq-framework.
 */
@@ -175,7 +182,7 @@ QDaqObject* QDaqObject::findByName(const QString& name)
 	QStringList tokens = name.split('.');
 	if (tokens.isEmpty()) return 0;
 
-	QDaqObject* o = &root_;
+    QDaqObject* o = root();
 
 	if (tokens.front()=="rt")
 	{
@@ -215,7 +222,7 @@ QDaqObjectList QDaqObject::findByWildcard(const QString& wildcard, const QDaqObj
 {
     QDaqObjectList lst;
 
-	if (from==0) from = &root_;
+    if (from==0) from = root();
 
 	QRegExp rx(wildcard);
 	rx.setPatternSyntax(QRegExp::Wildcard);
@@ -233,7 +240,7 @@ void QDaqObject::pushError(const QString& type, const QString& descr)
 		if (error_queue.size()==ERROR_QUEUE_DEPTH) error_queue.pop_back();
 		error_queue.push_front(e);
 	}
-    root_.postError(e);
+    root()->postError(e);
 
 }
 
@@ -353,7 +360,7 @@ void QDaqObject::appendChild(QDaqObject* obj)
 	}
 
     obj->setParent(this);
-    obj->attach();
+    //obj->attach();
 }
 
 void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
@@ -381,15 +388,25 @@ void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
     // put the new object in the correct order
     children_.removeLast();
     children_.insert(i,newobj);
-    newobj->attach();
+    //newobj->attach();
 }
 
 void QDaqObject::childEvent(QChildEvent *event)
 {
     QDaqObject* obj = qobject_cast<QDaqObject*>(event->child()); // maybe reinterpret??
-    int i = children_.indexOf(obj);
-    if (event->added() && i<0) children_.append(obj);
-    if (event->removed() && i>=0) children_.removeAt(i);
+    if (obj) {
+        int i = children_.indexOf(obj);
+
+        if (event->added() && i<0) {
+            children_.append(obj);
+            if (isAttached()) obj->attach();
+        }
+        if (event->removed() && i>=0) {
+            children_.removeAt(i);
+            if (isAttached()) obj->detach();
+        }
+    }
+
 	QObject::childEvent(event);
 }
 
@@ -408,7 +425,7 @@ QDaqObject* QDaqObject::removeChild(QDaqObject *obj)
         return 0;
     }
 
-    childObj->detach();
+    //childObj->detach();
     childObj->setParent(0);
     return childObj;
 }
@@ -441,14 +458,14 @@ QDaqObject* QDaqObject::replaceChild(QDaqObject *newobj, QDaqObject *oldobj)
     if ((newobj->objectName()!=oldobj->objectName()) &&
             !checkName(newobj->objectName())) return 0;
 
-    bool attached = isAttached();
-    if (attached) oldobj->detach();
+    //bool attached = isAttached();
+    //if (attached) oldobj->detach();
     oldobj->setParent(0);
     newobj->setParent(this);
     // put the new object in the correct order
     children_.removeLast();
     children_.insert(i,newobj);
-    if (attached) newobj->attach();
+    //if (attached) newobj->attach();
 
     return oldobj;
 }

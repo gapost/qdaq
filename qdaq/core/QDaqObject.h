@@ -17,7 +17,7 @@
 
 namespace H5
 {
-class H5File;
+class CommonFG;
 class Group;
 }
 
@@ -43,6 +43,8 @@ struct RTLAB_BASE_EXPORT QDaqError
     /// Extended description (optional)
     QString descr;
 
+    QDaqError()
+    {}
 
     QDaqError(const QDateTime& at, const QString& aname, const QString& atype) :
         t(at), objectName(aname), type(atype)
@@ -98,8 +100,13 @@ public:
     /** Write the contents of the QDaqObject to a HDF5 file.
       In this base class implementation, properties are written as attributes.
       */
-    virtual void writeH5(H5::H5File* file, QDaqObject* from, bool recursive = true);
-    virtual bool readH5(H5::Group *file);
+    virtual void writeH5(H5::Group* file) const;
+    virtual void readH5(H5::Group *file);
+
+    /// Serialize contents to a HDF5 file.
+    static void h5write(const QDaqObject* obj, const QString& filename);
+    /// Read object contents from HDF5 file.
+    static QDaqObject* h5read(const QString& filename);
 
 protected:
     // for handling children deletions
@@ -111,11 +118,11 @@ public:
 
 protected:
     // the root object
-    static QDaqRoot root_;
+    static QDaqRoot* root_;
 
 public:
     /// Obtain a pointer to the one-and-only QDaqRoot object.
-    static QDaqRoot* root() { return &root_; }
+    static QDaqRoot* root() { return root_; }
 
 protected:
     // this is a duplicate to QtObjects's list
@@ -193,6 +200,7 @@ signals:
     void updateWidgets();
 };
 
+Q_DECLARE_METATYPE(QDaqError)
 Q_DECLARE_METATYPE(QDaqObject*)
 Q_DECLARE_METATYPE(QDaqObjectList)
 
