@@ -33,7 +33,9 @@ SOURCES += main.cpp\
     gui/QDaqIde.cpp \
     gui/QDaqScriptEditor.cpp \
     gui/QDaqDelegates.cpp \
-    gui/QDaqWindow.cpp
+    gui/QDaqWindow.cpp \
+    daq/tcp_socket.cpp \
+    daq/QDaqInterface.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -60,7 +62,9 @@ HEADERS  += \
     gui/QDaqIde.h \
     gui/QDaqScriptEditor.h \
     gui/QDaqDelegates.h \
-    gui/QDaqWindow.h
+    gui/QDaqWindow.h \
+    daq/tcp_socket.h \
+    daq/QDaqInterface.h
 
 INCLUDEPATH += ./core ./gui ./daq
 

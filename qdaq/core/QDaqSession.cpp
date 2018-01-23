@@ -5,13 +5,11 @@
 #include "QDaqDelegates.h"
 #include "QDaqWindow.h"
 
-#include <QDebug>
 #include <QScriptEngine>
 #include <QScriptEngineDebugger>
 #include <QFile>
-//#include <QTextStream>
+#include <QTextStream>
 #include <QTimer>
-//#include <QCoreApplication>
 #include <QApplication>
 #include <QScriptValueIterator>
 #include <QDir>

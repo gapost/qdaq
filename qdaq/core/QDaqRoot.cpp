@@ -5,6 +5,7 @@
 #include "QDaqDataBuffer.h"
 #include "QDaqIde.h"
 #include "QDaqSession.h"
+#include "QDaqInterface.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -17,7 +18,8 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
 
     qRegisterMetaType<QDaqError>();
 
-    registerClass(&QDaqObject::staticMetaObject);
+    //registerClass(&QDaqObject::staticMetaObject);
+
     registerClass(&QDaqJob::staticMetaObject);
     registerClass(&QDaqLoop::staticMetaObject);
 
@@ -26,6 +28,9 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     registerClass(&QDaqTimeChannel::staticMetaObject);
 
     registerClass(&QDaqDataBuffer::staticMetaObject);
+
+    // DAQ objects/devices
+    registerClass(&QDaqTcpip::staticMetaObject);
 
     // root dir = current dir when app starts
     QDir pwd = QDir::current();
