@@ -85,12 +85,7 @@ void QConsoleWidget::flushStdOut()
   }
 }
 
-void QConsoleWidget::endSession()
-{
-	QWidget* w = window();
-	w->close();
-	//QCoreApplication::postEvent(window(),new QCloseEvent());
-}
+
 
 //-----------------------------------------------------------------------------
 

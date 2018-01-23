@@ -6,10 +6,13 @@
 #include <QHash>
 #include <QMetaObject>
 #include <QStringList>
+#include <QWidgetList>
 
-class QScriptContext;
-class QScriptEngine;
+//class QScriptContext;
+//class QScriptEngine;
 class QDaqLogFile;
+class QDaqIDE;
+class QDaqSession;
 
 
 /** The QDaq root object.
@@ -31,6 +34,8 @@ class RTLAB_BASE_EXPORT QDaqRoot : public QDaqObject
 protected:
     QString rootDir_, logDir_;
     QDaqLogFile* errorLog_;
+    QDaqIDE* ideWindow_;
+    QDaqSession* rootSession_;
 
 public:
     QDaqRoot(void);
@@ -51,6 +56,14 @@ public:
 
     void postError(const QDaqError& e) { emit error(e); }
 
+    void addDaqWindow(QWidget* w);
+    void removeDaqWindow(QWidget* w);
+    QWidgetList daqWindows() const { return daqWindows_; }
+    QDaqIDE* ideWindow() { return ideWindow_; }
+    QDaqIDE* createIdeWindow();
+    QDaqSession* rootSession() { return rootSession_; }
+
+
 public slots:
 
     /// Return the names of registered object classes.
@@ -61,9 +74,12 @@ private slots:
 
 signals:
     void error(const QDaqError& e);
+    void daqWindowsChanged();
 
 
 private:
+
+    QWidgetList daqWindows_;
 
 	/*typedef QScriptValue (*ScriptConstructorFunctionSignature)(QScriptContext *, QScriptEngine *, void *);
 

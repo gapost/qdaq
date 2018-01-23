@@ -6,14 +6,46 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>233</width>
-    <height>137</height>
+    <width>194</width>
+    <height>189</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="btStart">
+       <property name="text">
+        <string>Start/Stop</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>player_play.png</normaloff>
+         <normalon>player_stop.png</normalon>player_play.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">

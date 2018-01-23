@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     gui/QDaqErrorLog.cpp \
     gui/QDaqIde.cpp \
     gui/QDaqScriptEditor.cpp \
-    gui/QDaqDelegates.cpp
+    gui/QDaqDelegates.cpp \
+    gui/QDaqWindow.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -58,7 +59,8 @@ HEADERS  += \
     gui/QDaqErrorLog.h \
     gui/QDaqIde.h \
     gui/QDaqScriptEditor.h \
-    gui/QDaqDelegates.h
+    gui/QDaqDelegates.h \
+    gui/QDaqWindow.h
 
 INCLUDEPATH += ./core ./gui ./daq
 

@@ -27,6 +27,7 @@ protected:
 private slots:
     void newFile();
     QDaqConsole* newConsole();
+    void rootConsole();
     void open();
     void save();
     void saveAs();
@@ -69,6 +70,7 @@ private:
     QToolBar *editToolBar;
     QAction *newAct;
     QAction *newConsoleAct;
+    QAction *rootConsoleAct;
     QAction *openAct;
     QAction *saveAct;
     QAction *saveAsAct;

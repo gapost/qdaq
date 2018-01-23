@@ -3,6 +3,7 @@
 #include "QDaqTypes.h"
 #include "QDaqLogFile.h"
 #include "QDaqDelegates.h"
+#include "QDaqWindow.h"
 
 #include <QDebug>
 #include <QScriptEngine>
@@ -17,8 +18,6 @@
 #include <QProcess>
 #include <QWidget>
 #include <QtUiTools/QUiLoader>
-
-
 
 QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject* metaObject)
 {
@@ -154,31 +153,22 @@ QDaqSession::QDaqSession(QObject *parent) : QDaqScriptEngine(parent)
     setObjectName(objName);
 
     // create log file
-    if (idx_) {
-        logFile_ = new QDaqLogFile(true,' ',this);
-        logFile_->open(QDaqLogFile::getDecoratedName(objName));
 
-        connect(this,SIGNAL(stdOut(QString)),this,SLOT(log_out(QString)));
-        connect(this,SIGNAL(stdErr(QString)),this,SLOT(log_err(QString)));
-    }
+    logFile_ = new QDaqLogFile(true,' ',this);
+    logFile_->open(QDaqLogFile::getDecoratedName(objName));
+
+    connect(this,SIGNAL(stdOut(QString)),this,SLOT(log_out(QString)));
+    connect(this,SIGNAL(stdErr(QString)),this,SLOT(log_err(QString)));
+
+    log_out(QString("*** %1 Start ***").arg(objectName()));
+
 
     QScriptValue uiObj = engine_->newObject();
-
-    int iw = 1;
-    foreach (QWidget* w, QApplication::topLevelWidgets()) {
-        QScriptValue wObj = engine_->newQObject(w);
-        QString wname = w->objectName();
-        //QString className =  w->metaObject()->className();
-        if (!wname.isEmpty()) {
-            //wname = QString("widget%1").arg(iw);
-            uiObj.setProperty(wname,wObj);
-        }
-        iw++;
-    }
-
     engine_->globalObject().setProperty("ui",uiObj);
+    onUiChanged();
 
-    connect(qApp,SIGNAL(focusChanged(QWidget*,QWidget*)),this,SLOT(onFocusChanged(QWidget*,QWidget*)));
+    connect(QDaqObject::root(),SIGNAL(daqWindowsChanged()),this,SLOT(onUiChanged()));
+
 }
 
 QDaqSession::~QDaqSession( void)
@@ -186,15 +176,15 @@ QDaqSession::~QDaqSession( void)
     Q_ASSERT(!isEvaluating());
 
     // close logfile, remove from index set
-    if (idx_) {
-        if (logFile_) delete logFile_;
-        idx_set.remove(idx_);
-    }
+    log_out(QString("*** %1 End ***").arg(objectName()));
+    if (logFile_) delete logFile_;
+    idx_set.remove(idx_);
+
 }
 
-int QDaqSession::nextAvailableIndex() const
+int QDaqSession::nextAvailableIndex()
 {
-    int i = 1;
+    int i = 0;
     while (idx_set.contains(i)) i++;
     return i;
 }
@@ -367,17 +357,46 @@ QWidget* QDaqSession::loadUi(const QString &fname)
 
     return w;
 }
-void QDaqSession::onFocusChanged(QWidget* old, QWidget* now)
+QWidget*  QDaqSession::loadTopLevelUi(const QString &fname)
 {
-    QWidgetList wl = QApplication::topLevelWidgets();
-    int j=0;
-    if (now && now->objectName()=="deltaControl")
-    {
-        j++;
+    static int idx;
+
+    QWidget* w = loadUi(fname);
+    if (!w) return 0;
+    QDaqWindow* ui = new QDaqWindow;
+    ui->setWidget(w);
+    QString name = w->objectName();
+
+    if (name.isEmpty()) {
+        idx++;
+        name = QString("win%1").arg(idx);
     }
-    if (wl.contains(now))
-    {
-        j++;
+
+    w->setObjectName(QString());
+    ui->setObjectName(name);
+    QDaqObject::root()->addDaqWindow(ui);
+    return ui;
+}
+
+void QDaqSession::onUiChanged()
+{
+    QScriptValue uiObj = engine_->globalObject().property("ui");
+
+    QScriptValueIterator it(uiObj);
+    while (it.hasNext()) {
+         it.next();
+         if (it.flags() & (QScriptValue::ReadOnly | QScriptValue::Undeletable | QScriptValue::SkipInEnumeration))
+             continue;
+         it.setValue(QScriptValue());
+     }
+
+    QWidgetList wl = QDaqObject::root()->daqWindows();
+    foreach (QWidget* w, wl) {
+        QScriptValue wObj = engine_->newQObject(w);
+        QString wname = w->objectName();
+        if (!wname.isEmpty()) {
+            uiObj.setProperty(wname,wObj);
+        }
     }
 
 }

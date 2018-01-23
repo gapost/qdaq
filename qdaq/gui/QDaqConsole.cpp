@@ -11,11 +11,12 @@
 
 #include "QDaqRoot.h"
 
-QDaqConsole::QDaqConsole(QWidget *parent) : QConsoleWidget(parent)
+QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(parent), session(s)
 {
 	setTabStopWidth ( 40 );
-    setWindowTitle(QString("Console #%1").arg(session->nextAvailableIndex()));
-    setObjectName(QString("console%1").arg(session->nextAvailableIndex()));
+    setObjectName(QString("console%1").arg(session->index()));
+    if (session->index()) setWindowTitle(QString("Console #%1").arg(session->index()));
+    else setWindowTitle(QString("Console #0 - Root"));
 
 #if defined(Q_OS_MAC)
     QFont textFont = font();
@@ -32,11 +33,14 @@ QDaqConsole::QDaqConsole(QWidget *parent) : QConsoleWidget(parent)
     setFont(textFont);
 #endif
 
-    session = new QDaqSession(this);
-
 	connect(session,SIGNAL(stdOut(const QString&)),this,SLOT(stdOut(const QString&)));
 	connect(session,SIGNAL(stdErr(const QString&)),this,SLOT(stdErr(const QString&)));
 	connect(session,SIGNAL(endSession()),this,SLOT(endSession()),Qt::QueuedConnection);
+}
+
+QDaqConsole::~QDaqConsole()
+{
+    if (session->index()) delete session;
 }
 
 void QDaqConsole::exec(const QString& code)
@@ -48,8 +52,19 @@ bool QDaqConsole::canEvaluate(const QString& code)
 	return session->canEvaluate(code);
 }
 
+void QDaqConsole::endSession()
+{
+    QWidget* w = window();
+    w->close();
+}
+
 void QDaqConsole::closeEvent ( QCloseEvent * e )
 {
+    if (session->index()==0) {
+        e->accept();
+        return;
+    }
+
 	bool ok = true;
 
 	if (session->isEvaluating())
@@ -64,15 +79,13 @@ void QDaqConsole::closeEvent ( QCloseEvent * e )
 		if (ok) 
 		{
 			session->abortEvaluation();
-			QCoreApplication::postEvent(parentWidget(),new QCloseEvent());
+            e->accept();
+            // QCoreApplication::postEvent(parentWidget(),new QCloseEvent());
 		}
-		e->ignore();
+        else e->ignore();
 	}
 	else
 	{
-        //QWidget* p = parentWidget();
-        //if (p) p->close();
-        //parentWidget()->close();
 		e->accept();	
 	}
 

@@ -19,11 +19,18 @@ loop.createLoopEngine();
 
 print("Tree = \n" + qdaq.objectTree());
 
-var w = loadUi('ui/testform.ui');
-bind(qdaq.loop.t,w.chTime)
-bind(qdaq.loop.tst,w.chTest1)
-bind(qdaq.loop.tst2,w.chTest2)
-w.show()
+var w = loadTopLevelUi('ui/testform.ui');
+bind(qdaq.loop.t,w.findChild('chTime'));
+bind(qdaq.loop.tst,w.findChild('chTest1'));
+bind(qdaq.loop.tst2,w.findChild('chTest2'));
 
-qdaq.loop.arm()
+function startPressed(on) {
+    if (on) qdaq.loop.arm();
+    else qdaq.loop.disarm();
+}
+
+startButton = w.findChild("btStart");
+startButton.toggled.connect(startPressed);
+
+w.show()
 

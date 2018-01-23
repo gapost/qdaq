@@ -13,7 +13,12 @@ class RTLAB_GUI_EXPORT QDaqConsole : public QConsoleWidget
     QDaqSession* session;
 
 public:
-    QDaqConsole(QWidget* parent = 0);
+    QDaqConsole(QDaqSession* s, QWidget* parent = 0);
+    virtual ~QDaqConsole();
+
+public slots:
+
+    void endSession();
 
 protected:
 	void exec(const QString& code);
@@ -23,8 +28,8 @@ protected:
 
 	virtual void closeEvent ( QCloseEvent * event );
 
-  //! derived key press event
-  virtual void keyPressEvent (QKeyEvent * e);
+    //! derived key press event
+    virtual void keyPressEvent (QKeyEvent * e);
 };
 
 #endif

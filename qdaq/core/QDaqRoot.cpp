@@ -3,13 +3,15 @@
 #include "QDaqLogFile.h"
 #include "QDaqChannel.h"
 #include "QDaqDataBuffer.h"
+#include "QDaqIde.h"
+#include "QDaqSession.h"
 
 #include <QCoreApplication>
 #include <QDir>
 
 QDaqRoot* QDaqObject::root_;
 
-QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq")
+QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
 {
     root_ = this;
 
@@ -41,12 +43,14 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq")
 
     connect(this,SIGNAL(error(QDaqError)),this,SLOT(onError(QDaqError)));
 
+    rootSession_ = new QDaqSession(this);
+
 }
 
 QDaqRoot::~QDaqRoot(void)
 {
     //foreach(QDaqObject* obj, children()) obj->detach();
-    /*{
+    /*{QDaqIDE*
 		QDaqObject* rtobj = qobject_cast<QDaqObject*>(obj);
 		if (rtobj) 
 		{
@@ -54,6 +58,14 @@ QDaqRoot::~QDaqRoot(void)
 			delete rtobj;
 		}
     }*/
+}
+
+QDaqIDE* QDaqRoot::createIdeWindow()
+{
+    if (!ideWindow_) {
+        ideWindow_ = new QDaqIDE;
+    }
+    return ideWindow_;
 }
 
 QString QDaqRoot::xml()
@@ -117,6 +129,20 @@ void QDaqRoot::objectCreation(QDaqObject* obj, bool create)
     else
         emit objectDeleted(obj);
 }
+void QDaqRoot::addDaqWindow(QWidget* w)
+{
+    if (!daqWindows_.contains(w)) {
+        daqWindows_.push_back(w);
+        emit daqWindowsChanged();
+    }
+}
 
+void QDaqRoot::removeDaqWindow(QWidget* w)
+{
+    if (daqWindows_.contains(w)) {
+        daqWindows_.removeOne(w);
+        emit daqWindowsChanged();
+    }
+}
 
 

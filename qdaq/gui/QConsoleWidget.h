@@ -42,8 +42,6 @@ public slots:
   void stdOut(const QString& s);
   //! output redirection
   void stdErr(const QString& s);
-  //! output redirection
-  void endSession();
 
   void insertCompletion(const QString&);
 

@@ -50,9 +50,7 @@ protected:
     bool wait_aborted_;
     os::stopwatch watch_;
 
-    // console index = 1,2,3,...
-    // idx_ = 0 means not indexed, silent consoles
-    // not indexed consoles have no log file
+    // console index = 0 - ROOT,1,2,3,...
     int idx_;
     // set contains actice index values
     static QSet<int> idx_set;
@@ -65,10 +63,10 @@ public:
     void evaluate(const QString& program);
     void abortEvaluation();
     int index() const { return idx_; }
-    int nextAvailableIndex() const;
+    static int nextAvailableIndex();
 
 private slots:
-    void onFocusChanged(QWidget* old, QWidget* now);
+    void onUiChanged();
 
 public slots:
     void quit();
@@ -90,6 +88,7 @@ public slots:
 
     // widgets
     QWidget* loadUi(const QString& fname);
+    QWidget* loadTopLevelUi(const QString& fname);
     QString pluginPaths();
     QString availableWidgets();
     void bind(QDaqChannel* ch, QWidget* w);

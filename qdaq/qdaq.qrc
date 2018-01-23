@@ -14,5 +14,6 @@
         <file>images/cut.png</file>
         <file>images/copy.png</file>
         <file>images/Terminal-128.png</file>
+        <file>images/RootTerminal-128.png</file>
     </qresource>
 </RCC>

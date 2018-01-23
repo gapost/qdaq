@@ -17,6 +17,7 @@
 #include "QDaqErrorLog.h"
 #include "QDaqObjectBrowser.h"
 #include "QDaqRoot.h"
+#include "QDaqSession.h"
 
 QDaqIDE::QDaqIDE()
 {
@@ -53,6 +54,14 @@ void QDaqIDE::closeEvent(QCloseEvent *event)
         writeSettings();
         event->accept();
     }
+
+//    if (QDaqObject::root()->daqWindows().isEmpty())
+//    {
+
+//    } else {
+//        hide();
+//        event->ignore();
+//    }
 }
 
 void QDaqIDE::newFile()
@@ -67,6 +76,20 @@ QDaqConsole *QDaqIDE::newConsole()
     QDaqConsole *child = createQDaqConsole();
     child->show();
     return child;
+}
+
+void QDaqIDE::rootConsole()
+{
+    QDaqConsole *child = new QDaqConsole(QDaqObject::root()->rootSession());
+
+    mdiArea->addSubWindow(child);
+
+    connect(child, SIGNAL(copyAvailable(bool)),
+            cutAct, SLOT(setEnabled(bool)));
+    connect(child, SIGNAL(copyAvailable(bool)),
+            copyAct, SLOT(setEnabled(bool)));
+
+    child->show();
 }
 
 void QDaqIDE::open()
@@ -243,7 +266,9 @@ QDaqScriptEditor *QDaqIDE::createScriptEditor()
 
 QDaqConsole *QDaqIDE::createQDaqConsole()
 {
-    QDaqConsole *child = new QDaqConsole;
+    QDaqSession* s = new QDaqSession;
+    QDaqConsole *child = new QDaqConsole(s);
+
     mdiArea->addSubWindow(child);
 
     connect(child, SIGNAL(copyAvailable(bool)),
@@ -260,6 +285,10 @@ void QDaqIDE::createActions()
     newAct->setShortcuts(QKeySequence::New);
     newAct->setStatusTip(tr("Create a new script file"));
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
+
+    rootConsoleAct = new QAction(QIcon(":/images/RootTerminal-128.png"), tr("&Root Console"), this);
+    rootConsoleAct->setStatusTip(tr("Open QDaq root console"));
+    connect(rootConsoleAct, SIGNAL(triggered()), this, SLOT(rootConsole()));
 
     newConsoleAct = new QAction(QIcon(":/images/Terminal-128.png"), tr("New &Console"), this);
     newConsoleAct->setStatusTip(tr("Open new script console"));
@@ -360,8 +389,10 @@ void QDaqIDE::createActions()
 void QDaqIDE::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newAct);
+    fileMenu->addAction(rootConsoleAct);
     fileMenu->addAction(newConsoleAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
@@ -387,6 +418,7 @@ void QDaqIDE::createMenus()
 void QDaqIDE::createToolBars()
 {
     fileToolBar = addToolBar(tr("File"));
+    fileToolBar->addAction(rootConsoleAct);
     fileToolBar->addAction(newConsoleAct);
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);

@@ -12,8 +12,8 @@ int main(int argc, char *argv[])
 
     QDaqRoot qdaq;
 
-    QDaqIDE mainWin;
-    mainWin.show();
+    QDaqIDE* mainWin = qdaq.createIdeWindow();
+    mainWin->show();
 
     return app.exec();
 }
