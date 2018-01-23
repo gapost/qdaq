@@ -355,23 +355,15 @@ QWidget* QDaqSession::loadUi(const QString &fname)
 
     return w;
 }
-QWidget*  QDaqSession::loadTopLevelUi(const QString &fname)
+QWidget*  QDaqSession::loadTopLevelUi(const QString &fname, const QString &uiName)
 {
-    static int idx;
-
     QWidget* w = loadUi(fname);
     if (!w) return 0;
+
     QDaqWindow* ui = new QDaqWindow;
     ui->setWidget(w);
-    QString name = w->objectName();
+    ui->setObjectName(uiName);
 
-    if (name.isEmpty()) {
-        idx++;
-        name = QString("win%1").arg(idx);
-    }
-
-    w->setObjectName(QString());
-    ui->setObjectName(name);
     QDaqObject::root()->addDaqWindow(ui);
     return ui;
 }

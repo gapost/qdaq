@@ -90,3 +90,19 @@ void QDaqWindow::openConsole()
 {
 
 }
+
+bool QDaqWindow::replaceWidget(QWidget *from, QWidget *to)
+{
+    if (!isAncestorOf(from)) return false;
+    QWidget* p = from->parentWidget();
+    while(p && !(p->layout())) p = p->parentWidget();
+    if (!p) return false;
+    QLayout* l = p->layout();
+    QLayoutItem* i = l->replaceWidget(from,to);
+    if (i) {
+        delete i;
+        delete from;
+        return true;
+    }
+    else return false;
+}

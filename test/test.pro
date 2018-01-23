@@ -17,11 +17,13 @@ HEADERS +=
 DISTFILES += \
     scripts/testQDaqObject.js \
     scripts/testTimerLoop.js \
-    scripts/testH5.js
+    scripts/testH5.js \
+    scripts/testWidgets.js
 
 FORMS += \
     ui/cryoTemperatureControl.ui \
     ui/deltaControl.ui \
-    ui/testform.ui
+    ui/testform.ui \
+    ui/tabwidget.ui
 
 

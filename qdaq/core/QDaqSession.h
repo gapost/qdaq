@@ -88,7 +88,7 @@ public slots:
 
     // widgets
     QWidget* loadUi(const QString& fname);
-    QWidget* loadTopLevelUi(const QString& fname);
+    QWidget* loadTopLevelUi(const QString& fname, const QString &uiName);
     QString pluginPaths();
     QString availableWidgets();
     void bind(QDaqChannel* ch, QWidget* w);

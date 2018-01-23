@@ -22,6 +22,9 @@ public:
 
 signals:
 
+public slots:
+    bool replaceWidget(QWidget* from, QWidget* to);
+
 private slots:
     void openIde();
     void openConsole();
