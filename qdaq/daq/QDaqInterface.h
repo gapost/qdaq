@@ -5,6 +5,7 @@
 
 #include <QVector>
 #include <QHostAddress>
+#include <QSerialPort>
 
 class QDaqDevice;
 
@@ -97,6 +98,91 @@ public:
 protected:
 	virtual bool open_();
 	virtual void close_();
+};
+
+class QDaqSerial : public QDaqInterface
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QString portName READ portName WRITE setPortName)
+    Q_PROPERTY(QSerialPort::BaudRate baud READ baud WRITE setBaud)
+    Q_PROPERTY(QSerialPort::Parity parity READ parity WRITE setParity)
+    Q_PROPERTY(QSerialPort::DataBits databits READ databits WRITE setDatabits)
+    Q_PROPERTY(QSerialPort::StopBits stopbits READ stopbits WRITE setStopbits)
+    Q_PROPERTY(QSerialPort::FlowControl handshake READ handshake WRITE setHandshake)
+
+protected:
+    QSerialPort* port_;
+
+public:
+    Q_INVOKABLE explicit QDaqSerial(const QString& name, const QString& portName = QString());
+
+    virtual void registerTypes(QScriptEngine* e);
+
+    // getters
+    QString portName() const { return port_->portName(); }
+    QSerialPort::BaudRate baud() const { return (QSerialPort::BaudRate)port_->baudRate(); }
+    QSerialPort::Parity parity() const { return port_->parity(); }
+    QSerialPort::DataBits databits() const { return port_->dataBits(); }
+    QSerialPort::StopBits stopbits() const { return port_->stopBits(); }
+    QSerialPort::FlowControl handshake() const { return port_->flowControl(); }
+
+    // setters
+    void setPortName(const QString& aname);
+    void setBaud(QSerialPort::BaudRate v);
+    void setParity(QSerialPort::Parity v);
+    void setDatabits(QSerialPort::DataBits v);
+    void setStopbits(QSerialPort::StopBits v);
+    void setHandshake(QSerialPort::FlowControl v);
+
+    // io
+    virtual int read(uint port, char* buff, int len, int eos = 0);
+    virtual int write(uint port, const char* buff, int len, int eos = 0);
+
+protected:
+    virtual bool open_();
+    virtual void close_();
+    virtual void clear_();
+};
+
+class QDaqModbusTcp : public QDaqTcpip
+{
+    Q_OBJECT
+
+protected:
+    void* ctx_;
+
+public:
+    Q_INVOKABLE explicit QDaqModbusTcp(const QString& name, const QString& ahost = QString(), uint portno = 0);
+    virtual ~QDaqModbusTcp();
+
+    // io
+    virtual int read(uint port, char* buff, int len, int eos = 0);
+    virtual int write(uint port, const char* buff, int len, int eos = 0);
+
+protected:
+    virtual bool open_();
+    virtual void close_();
+};
+
+class QDaqModbusRtu : public QDaqSerial
+{
+    Q_OBJECT
+
+protected:
+    void* ctx_;
+
+public:
+    Q_INVOKABLE explicit QDaqModbusRtu(const QString& name, const QString& portName = QString());
+    virtual ~QDaqModbusRtu();
+
+    // io
+    virtual int read(uint port, char* buff, int len, int eos = 0);
+    virtual int write(uint port, const char* buff, int len, int eos = 0);
+
+protected:
+    virtual bool open_();
+    virtual void close_();
 };
 
 

@@ -31,6 +31,9 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
 
     // DAQ objects/devices
     registerClass(&QDaqTcpip::staticMetaObject);
+    registerClass(&QDaqSerial::staticMetaObject);
+    registerClass(&QDaqModbusTcp::staticMetaObject);
+    registerClass(&QDaqModbusRtu::staticMetaObject);
 
     // root dir = current dir when app starts
     QDir pwd = QDir::current();

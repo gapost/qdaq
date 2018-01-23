@@ -1,8 +1,13 @@
 #include "QDaqInterface.h"
-//#include "QDaqDevice.h"
 #include "QDaqEnumHelper.h"
 
 #include "tcp_socket.h"
+
+#include <modbus.h>
+
+//#elif __linux__
+#include <errno.h>
+//#endif
 
 QDaqInterface::QDaqInterface(const QString& name) :
 QDaqObject(name), addr_(0), timeout_(300), isOpen_(false)
@@ -187,6 +192,348 @@ void QDaqTcpip::close_()
     QDaqInterface::close_();
     socket_->disconnect();
 }
+
+////////////////// QDaqSerial //////////////////////
+
+Q_SCRIPT_ENUM(BaudRate, QSerialPort)
+Q_SCRIPT_ENUM(Parity, QSerialPort)
+Q_SCRIPT_ENUM(DataBits, QSerialPort)
+Q_SCRIPT_ENUM(StopBits, QSerialPort)
+Q_SCRIPT_ENUM(FlowControl, QSerialPort)
+
+QDaqSerial::QDaqSerial(const QString &name, const QString &portName) :
+    QDaqInterface(name)
+{
+    port_ = new QSerialPort(portName,this); // QextSerialPort::Polling,
+
+    ports_.push_back((QDaqDevice*)0); // only 1 device
+
+}
+
+void QDaqSerial::registerTypes(QScriptEngine* e)
+{
+    qScriptRegisterBaudRate(e);
+    qScriptRegisterParity(e);
+    qScriptRegisterDataBits(e);
+    qScriptRegisterStopBits(e);
+    qScriptRegisterFlowControl(e);
+    QDaqInterface::registerTypes(e);
+}
+
+void QDaqSerial::setPortName(const QString &aname)
+{
+    if (throwIfOpen()) return;
+    else
+    {
+        port_->setPortName(aname);
+        emit propertiesChanged();
+    }
+}
+
+void QDaqSerial::setBaud(QSerialPort::BaudRate v)
+{
+    if (throwIfOpen()) return;
+    else
+    {
+        port_->setBaudRate(v);
+        emit propertiesChanged();
+    }
+}
+void QDaqSerial::setParity(QSerialPort::Parity v)
+{
+    if (throwIfOpen()) return;
+    else
+    {
+        port_->setParity(v);
+        emit propertiesChanged();
+    }
+}
+void QDaqSerial::setDatabits(QSerialPort::DataBits v)
+{
+    if (throwIfOpen()) return;
+    else
+    {
+        port_->setDataBits(v);
+        emit propertiesChanged();
+    }
+}
+void QDaqSerial::setStopbits(QSerialPort::StopBits v)
+{
+    if (throwIfOpen()) return;
+    else
+    {
+        port_->setStopBits(v);
+        emit propertiesChanged();
+    }
+}
+void QDaqSerial::setHandshake(QSerialPort::FlowControl v)
+{
+    if (throwIfOpen()) return;
+    else
+    {
+        port_->setFlowControl(v);
+        emit propertiesChanged();
+    }
+}
+
+int QDaqSerial::read(uint port, char* buff, int len, int eos)
+{
+    os::auto_lock L(comm_lock);
+
+    port=port;
+
+    if (!port_->isOpen()) return 0;
+
+    int read = 0;
+    char c;
+    char eos_char = eos & 0xFF;
+    bool ok;
+    while ( (ok = port_->waitForReadyRead(timeout())) )
+    {
+        port_->read(&c,1);
+        buff[read++] = c;
+        if (eos_char && c==eos_char)
+        {
+            read--;
+            break;
+        }
+        if (read==len) break;
+    }
+    if (!ok)
+    {
+        pushError("Read char failed", "possibly timed-out");
+    }
+    return ok ? read : 0;
+}
+
+int QDaqSerial::write(uint port, const char* buff, int len, int eos)
+{
+    os::auto_lock L(comm_lock);
+
+    port=port;
+
+    if (!port_->isOpen()) return 0;
+
+    char eos_char = eos & 0xFF;
+
+    port_->write(buff,len);
+    port_->write(&eos_char,1);
+    bool ok = port_->waitForBytesWritten(timeout());
+
+    if (!ok)
+    {
+        pushError("Write timeout");
+    }
+    return ok ? len : 0;
+}
+
+bool QDaqSerial::open_()
+{
+    if (isOpen()) return true;
+    os::auto_lock L(comm_lock);
+
+    if (port_->open(QIODevice::ReadWrite))
+        QDaqInterface::open_();
+    else pushError(QString("Open %1 failed").arg(portName()));
+    emit propertiesChanged();
+    return isOpen();
+}
+
+void QDaqSerial::close_()
+{
+    os::auto_lock L(comm_lock);
+    QDaqInterface::close_();
+    port_->close();
+}
+
+void QDaqSerial::clear_()
+{
+    os::auto_lock L(comm_lock);
+    if (port_->isOpen()) port_->flush();
+}
+
+
+
+
+QDaqModbusTcp::QDaqModbusTcp(const QString& name, const QString& host, uint portn) :
+    QDaqTcpip(name, host, portn), ctx_(0)
+{
+}
+
+QDaqModbusTcp::~QDaqModbusTcp(void)
+{
+}
+
+bool QDaqModbusTcp::open_()
+{
+    if (isOpen() && ctx_) return true;
+
+    os::auto_lock L(comm_lock);
+
+    /* TCP */
+    modbus_t* ctx = modbus_new_tcp(host().toLatin1().constData(), port_);
+    //modbus_set_debug(ctx, TRUE);
+
+    if (modbus_connect(ctx) == -1) {
+        pushError("modbus_connect failed", modbus_strerror(errno));
+        modbus_free(ctx);
+        isOpen_ = false;
+    }
+    else {
+        isOpen_ = true;
+        ctx_ = ctx;
+    }
+
+    emit propertiesChanged();
+
+    return isOpen();
+}
+
+void QDaqModbusTcp::close_()
+{
+    os::auto_lock L(comm_lock);
+    QDaqInterface::close_();
+    /* Close the connection */
+    if (ctx_) {
+        modbus_t* ctx = (modbus_t*)ctx_;
+        modbus_close(ctx);
+        modbus_free(ctx);
+        ctx_ = 0;
+        emit propertiesChanged();
+    }
+}
+
+int QDaqModbusTcp::read(uint port, char* buff, int len, int eos)
+{
+    os::auto_lock L(comm_lock);
+
+    modbus_t* ctx = (modbus_t*)ctx_;
+
+    eos = eos;
+    int addr = port;
+    uint16_t* regs = (uint16_t*)buff;
+    int nb = (len/2) + (len%2);
+    int ret = modbus_read_registers(ctx, addr, nb, regs);
+    if (ret == -1) {
+        pushError("modbus_read_registers failed", modbus_strerror(errno));
+        return 0;
+    }
+    else return len;
+}
+
+int QDaqModbusTcp::write(uint port, const char* buff, int len, int eos)
+{
+    os::auto_lock L(comm_lock);
+
+    modbus_t* ctx = (modbus_t*)ctx_;
+
+    eos = eos;
+    int addr = port;
+    const uint16_t* regs = (const uint16_t*)buff;
+    int nb = (len/2) + (len%2);
+    int ret = modbus_write_registers(ctx, addr, nb, regs);
+    if (ret == -1) {
+        pushError("modbus_write_registers failed", modbus_strerror(errno));
+        return 0;
+    }
+    return len;
+}
+
+/**************** QDaqModbusRtu ***********************/
+
+QDaqModbusRtu::QDaqModbusRtu(const QString& name, const QString& portName) :
+    QDaqSerial(name, portName), ctx_(0)
+{
+}
+
+QDaqModbusRtu::~QDaqModbusRtu(void)
+{
+}
+
+bool QDaqModbusRtu::open_()
+{
+    if (isOpen() && ctx_) return true;
+
+    os::auto_lock L(comm_lock);
+
+    const char* device = portName().toLatin1().constData();
+    int baud_ = (int)(this->baud());
+    char par_ = 'N';
+    if (parity()==QSerialPort::EvenParity) par_='E';
+    else if (parity()==QSerialPort::OddParity) par_='O';
+
+    int stop_ = this->stopbits()==QSerialPort::OneStop ? 1 : 2;
+
+    /* Create RTU module */
+    modbus_t* ctx = modbus_new_rtu(device,baud_, par_, (int)(this->databits()), stop_);
+
+    if (modbus_connect(ctx) == -1) {
+        pushError("modbus_connect failed", modbus_strerror(errno));
+        modbus_free(ctx);
+        isOpen_ = false;
+    }
+    else {
+        isOpen_ = true;
+        ctx_ = ctx;
+        modbus_set_slave(ctx,1);
+    }
+
+    emit propertiesChanged();
+
+    return isOpen();
+}
+
+void QDaqModbusRtu::close_()
+{
+    os::auto_lock L(comm_lock);
+    QDaqInterface::close_();
+    /* Close the connection */
+    if (ctx_) {
+        modbus_t* ctx = (modbus_t*)ctx_;
+        modbus_close(ctx);
+        modbus_free(ctx);
+        ctx_ = 0;
+        emit propertiesChanged();
+    }
+}
+
+int QDaqModbusRtu::read(uint port, char* buff, int len, int eos)
+{
+    os::auto_lock L(comm_lock);
+
+    modbus_t* ctx = (modbus_t*)ctx_;
+
+    eos = eos;
+    int addr = port;
+    uint16_t* regs = (uint16_t*)buff;
+    int nb = (len/2) + (len%2);
+    int ret = modbus_read_registers(ctx, addr, nb, regs);
+    if (ret == -1) {
+        pushError("modbus_read_registers failed", modbus_strerror(errno));
+        return 0;
+    }
+    else return len;
+}
+
+int QDaqModbusRtu::write(uint port, const char* buff, int len, int eos)
+{
+    os::auto_lock L(comm_lock);
+
+    modbus_t* ctx = (modbus_t*)ctx_;
+
+    eos = eos;
+    int addr = port;
+    const uint16_t* regs = (const uint16_t*)buff;
+    int nb = (len/2) + (len%2);
+    int ret = modbus_write_registers(ctx, addr, nb, regs);
+    if (ret == -1) {
+        pushError("modbus_write_registers failed", modbus_strerror(errno));
+        return 0;
+    }
+    return len;
+}
+
+
 
 
 
