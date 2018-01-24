@@ -59,6 +59,20 @@ QDaqDoubleVector QDaqBufferProto::toArray() const
         return QDaqDoubleVector(obj->vector());
     return QDaqDoubleVector();
 }
+
+//typedef QDaqBuffer* QDaqBufferStar;
+
+//QScriptValue toScriptValue(QScriptEngine *eng, const QDaqBufferStar& obj)
+//{
+//    return eng->newQObject(obj,
+//                           QScriptEngine::AutoOwnership,
+//                           QScriptEngine::ExcludeDeleteLater);
+//}
+
+//void fromScriptValue(const QScriptValue &value, QDaqBufferStar& obj)
+//{
+//    obj = qobject_cast<QDaqBuffer*>(value.toQObject());
+//}
 void QDaqBufferProto::setup(QScriptEngine *eng)
 {
     QDaqBufferProto *proto = new QDaqBufferProto();

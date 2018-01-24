@@ -1,6 +1,7 @@
 #include "QDaqSession.h"
 #include "QDaqRoot.h"
-#include "QDaqTypes.h"
+
+#include "QDaqBufferProto.h"
 #include "QDaqLogFile.h"
 #include "QDaqDelegates.h"
 #include "QDaqWindow.h"
@@ -73,6 +74,9 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
 	// register basic types with the engine
     registerVectorTypes(engine_);
+
+    //register Buffer proto
+    //QDaqBufferProto::setup(engine_);
 
 	// register root classes
     QList<const QMetaObject*> rtClasses = QDaqObject::root()->registeredClasses();
@@ -450,5 +454,10 @@ void QDaqSession::bind(QDaqObject *obj, const QString& propertyName, QWidget* w,
     Q_UNUSED(d);
 
 
+}
+void QDaqSession::test(QDaqBuffer *b)
+{
+    int n = b->size();
+    for(int i=0; i<n; i++) print(QString::number(b->get(i)));
 }
 

@@ -18,16 +18,21 @@ QDaqDataBuffer::QDaqDataBuffer(const QString &name) : QDaqJob(name),
 	type_(Open)
 {
     connect(this,SIGNAL(dataReady()),this,SLOT(onDataReady()),Qt::QueuedConnection);
+
+    setBackBufferDepth(2);
+    setCapacity(100);
 }
 
 void QDaqDataBuffer::setBackBufferDepth(uint d)
 {
-	if (d>0 && d!=backBufferDepth())
+    if (d>0)
 	{
         os::auto_lock L(comm_lock);
 
         for(int i=0; i<queue_.size(); i++)
             queue_[i].setCapacity(d);
+
+        backBufferDepth_ = d;
 
 		emit propertiesChanged();
 	}
@@ -55,11 +60,15 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
 
 	// create channels
 	channel_objects = chlist;
+
 	uint cap_ = capacity();
 	data_matrix = matrix_t(chlist.size());
+    setCapacity(cap_); // restore the capacity
+
     cap_ = backBufferDepth();
     queue_ = matrix_t(chlist.size());
-    if (cap_) setBackBufferDepth(cap_); // restore the capacity
+    setBackBufferDepth(cap_); // restore the capacity
+
     foreach(QDaqObject* obj, chlist)
 	{
         channel_ptrs.push_back((QDaqChannel*)obj);
@@ -122,11 +131,6 @@ uint QDaqDataBuffer::bufferRowsAvailable() const
     if (queue_.isEmpty()) return 0;
     else return (uint)queue_[0].size();
 }
-uint QDaqDataBuffer::backBufferDepth() const
-{
-    if (queue_.isEmpty()) return 0;
-    else return (uint)queue_[0].capacity();
-}
 uint QDaqDataBuffer::size() const
 {
 	if (data_matrix.isEmpty()) return 0;
@@ -137,15 +141,13 @@ uint QDaqDataBuffer::columns() const
     if (data_matrix.isEmpty()) return 0;
     else return (uint)data_matrix.size();
 }
-uint QDaqDataBuffer::capacity() const
-{
-	if (data_matrix.isEmpty()) return 0;
-	else return (uint)data_matrix[0].capacity();
-}
 void QDaqDataBuffer::setCapacity(uint cap)
 {
+    if (cap>0) {
 	for(int i=0; i<data_matrix.size(); i++)
 		data_matrix[i].setCapacity(cap);
+    capacity_ = cap;
+    }
 }
 void QDaqDataBuffer::setType(BufferType t)
 {

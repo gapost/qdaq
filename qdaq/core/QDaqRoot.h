@@ -8,12 +8,9 @@
 #include <QStringList>
 #include <QWidgetList>
 
-//class QScriptContext;
-//class QScriptEngine;
 class QDaqLogFile;
 class QDaqIDE;
 class QDaqSession;
-
 
 /** The QDaq root object.
 
@@ -36,6 +33,7 @@ protected:
     QDaqLogFile* errorLog_;
     QDaqIDE* ideWindow_;
     QDaqSession* rootSession_;
+    QDaqErrorQueue error_queue_;
 
 public:
     QDaqRoot(void);
@@ -62,6 +60,7 @@ public:
     QDaqIDE* ideWindow() { return ideWindow_; }
     QDaqIDE* createIdeWindow();
     QDaqSession* rootSession() { return rootSession_; }
+    const QDaqErrorQueue* errorQueue() const { return &error_queue_; }
 
 
 public slots:

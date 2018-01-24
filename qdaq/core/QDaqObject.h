@@ -13,8 +13,6 @@
 
 #include "os_utils.h"
 
-#define ERROR_QUEUE_DEPTH 5
-
 namespace H5
 {
 class CommonFG;
@@ -27,16 +25,18 @@ class QDaqObject;
 
 typedef QList<QDaqObject*> QDaqObjectList;
 
-/**
-Structure containing error data.
-
-Emitted every time an error occurs in an QDaqObject.
+/** Structure containing error data.
+ * It is emitted every time an error occurs in a QDaqObject.
+ * Errors are gathered centrally on a QDaqErrorQueue object
+ * that lives in QDaqRoot.
+ * The error queue is accesible through QDaqObject::root()->errorQueue().
+ *
 */
 struct RTLAB_BASE_EXPORT QDaqError
 {
     /// Date/time of occurence
     QDateTime t;
-    /// Name of object causing the error
+    /// (Full)Name of object causing the error
     QString objectName;
     /// Error type description
     QString type;
@@ -62,27 +62,19 @@ struct RTLAB_BASE_EXPORT QDaqError
 
 };
 
+/** Base class of all QDaq objects.
 
-/** Base class of all RtLab objects.
-
-\ingroup RtCore
+\ingroup QDaqCore
 
 */
 class RTLAB_BASE_EXPORT QDaqObject : public QObject, protected QScriptable
 {
 	Q_OBJECT
-	Q_PROPERTY(QString lastError READ lastError)
 
 protected:
-    /// Queue of last errors
-    QList<QDaqError> error_queue;
+
 	/// Push an error in the error queue
-    void pushError(const QString& type, const QString& descr = QString());
-    /// Get the last error that occured in this object
-    QString lastError() const
-    {
-        return error_queue.isEmpty() ? QString() : error_queue.first().toString();
-    }
+    void pushError(const QString& type, const QString& descr = QString()) const;
 
 	/// Throw a script error with message msg
 	void throwScriptError(const QString& msg) const;
@@ -205,6 +197,25 @@ Q_DECLARE_METATYPE(QDaqObject*)
 Q_DECLARE_METATYPE(QDaqObjectList)
 
 int registerQDaqObjectStar(QScriptEngine* eng);
+
+#define ERROR_QUEUE_DEPTH 1000
+
+class QDaqErrorQueue : public QObject
+{
+    Q_OBJECT
+    /// Queue of QDaq errors
+    QList<QDaqError> queue_;
+public:
+    explicit QDaqErrorQueue(QObject *parent = 0);
+    void push(const QDaqError& item);
+    QList<QDaqError> errorQueue() const { return queue_; }
+    const QDaqError& head() const { return queue_.first(); }
+    QList<QDaqError> objectBackTrace(const QDaqObject* obj, int maxItems = 4) const;
+signals:
+    void errorAdded();
+    void errorRemoved();
+public slots:
+};
 
 
 #endif

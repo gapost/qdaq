@@ -119,6 +119,7 @@ QList<const QMetaObject*> QDaqRoot::registeredClasses() const
 
 void QDaqRoot::onError(const QDaqError &err)
 {
+    error_queue_.push(err);
     if (errorLog_) *errorLog_ <<
            QString("%1,%2,%3,%4,%5")
                .arg(err.t.toString("dd.MM.yyyy"))

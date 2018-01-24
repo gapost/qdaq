@@ -14,6 +14,7 @@ QDaqObject::QDaqObject(const QString& name) :
 QObject(0)
 {
     setObjectName(name);
+    qDebug() << "QDaqObject constructor" << fullName() << "@" << (void*)this;
 }
 
 QDaqObject::~QDaqObject(void)
@@ -64,9 +65,10 @@ bool QDaqObject::isAttached() const
 
 QString QDaqObject::errorBacktrace() const
 {
+    QList<QDaqError> lastErrors = root()->errorQueue()->objectBackTrace(this);
 	QString S;
 	int i=0;
-    foreach(const QDaqError& e, error_queue)
+    foreach(const QDaqError& e, lastErrors)
 	{
 		if (i) S += '\n';
 		S += e.toString();
@@ -75,19 +77,11 @@ QString QDaqObject::errorBacktrace() const
 	return S;
 }
 
-
-//QString QDaqObject::toString() const
-//{
-//	return fullName();
-//}
-
-
 void QDaqObject::throwScriptError(const QString& msg) const
 {
     QScriptContext* ctx = context();
     if (ctx) ctx->throwError(msg);
-    QDaqError e(QDateTime::currentDateTime(), fullName(), msg);
-    root()->postError(e);
+    pushError("throwScriptError",msg);
 }
 
 
@@ -235,16 +229,10 @@ QDaqObjectList QDaqObject::findByWildcard(const QString& wildcard, const QDaqObj
 	return lst;
 }
 
-void QDaqObject::pushError(const QString& type, const QString& descr)
+void QDaqObject::pushError(const QString& type, const QString& descr) const
 {
     QDaqError e(QDateTime::currentDateTime(), fullName(), type, descr);
-	{
-        os::auto_lock L(comm_lock);
-		if (error_queue.size()==ERROR_QUEUE_DEPTH) error_queue.pop_back();
-		error_queue.push_front(e);
-	}
     root()->postError(e);
-
 }
 
 void listPropertiesHelper(const QDaqObject* m_object, QString& S, const QMetaObject* metaObject, int& level)
@@ -363,7 +351,6 @@ void QDaqObject::appendChild(QDaqObject* obj)
 	}
 
     obj->setParent(this);
-    //obj->attach();
 }
 
 void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
@@ -391,7 +378,6 @@ void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
     // put the new object in the correct order
     children_.removeLast();
     children_.insert(i,newobj);
-    //newobj->attach();
 }
 
 void QDaqObject::childEvent(QChildEvent *event)
@@ -427,8 +413,6 @@ QDaqObject* QDaqObject::removeChild(QDaqObject *obj)
         throwScriptError("The argument is not a valid child object.");
         return 0;
     }
-
-    //childObj->detach();
     childObj->setParent(0);
     return childObj;
 }
@@ -461,14 +445,12 @@ QDaqObject* QDaqObject::replaceChild(QDaqObject *newobj, QDaqObject *oldobj)
     if ((newobj->objectName()!=oldobj->objectName()) &&
             !checkName(newobj->objectName())) return 0;
 
-    //bool attached = isAttached();
-    //if (attached) oldobj->detach();
+
     oldobj->setParent(0);
     newobj->setParent(this);
     // put the new object in the correct order
     children_.removeLast();
     children_.insert(i,newobj);
-    //if (attached) newobj->attach();
 
     return oldobj;
 }
@@ -548,7 +530,33 @@ int registerQDaqObjectStar(QScriptEngine* eng)
 }
 
 
+QDaqErrorQueue::QDaqErrorQueue(QObject *parent) : QObject(parent)
+{
 
+}
+
+void QDaqErrorQueue::push(const QDaqError& item)
+{
+    queue_.push_front(item);
+    emit errorAdded();
+    if (queue_.size()>ERROR_QUEUE_DEPTH) {
+        queue_.takeLast();
+        emit errorRemoved();
+    }
+}
+
+QList<QDaqError> QDaqErrorQueue::objectBackTrace(const QDaqObject* obj, int maxItems) const
+{
+    QList<QDaqError> errors;
+    QString name = obj->fullName();
+    foreach(const QDaqError& e, queue_)
+    {
+        if (e.objectName==name) errors.push_back(e);
+        if (errors.size()==maxItems) break;
+    }
+
+    return errors;
+}
 
 
 

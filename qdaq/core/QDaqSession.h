@@ -3,6 +3,8 @@
 
 #include "QDaqGlobal.h"
 
+#include "QDaqTypes.h"
+
 #include "os_utils.h"
 
 #include <QObject>
@@ -18,6 +20,7 @@ class QTimer;
 class QDaqLogFile;
 class QDaqObject;
 class QDaqChannel;
+//class QDaqBuffer;
 
 class RTLAB_BASE_EXPORT QDaqScriptEngine : public QObject
 {
@@ -112,6 +115,8 @@ public slots:
         return true;
 #endif
     }
+
+    void test(QDaqBuffer* b);
 
 protected slots:
     void log_in(const QString& str)  { log__(0,str); }

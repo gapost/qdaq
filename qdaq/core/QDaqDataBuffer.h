@@ -13,7 +13,6 @@ class RTLAB_BASE_EXPORT QDaqDataBuffer : public QDaqJob
 	Q_OBJECT
 
 	Q_PROPERTY(uint backBufferDepth READ backBufferDepth WRITE setBackBufferDepth)
-
 	Q_PROPERTY(uint capacity READ capacity WRITE setCapacity)
 	Q_PROPERTY(uint size READ size)
     Q_PROPERTY(uint columns READ columns)
@@ -35,6 +34,7 @@ public:
 	virtual void registerTypes(QScriptEngine *e);
 
 protected:
+    uint backBufferDepth_, capacity_;
     typedef QPointer<QDaqChannel> channel_t;
     typedef QVector<channel_t> channel_vector_t;
 	typedef QVector<vector_t> matrix_t;
@@ -57,8 +57,8 @@ protected:
 public:
     Q_INVOKABLE explicit QDaqDataBuffer(const QString& name);
 
-    uint backBufferDepth() const;
-	uint capacity() const;
+    uint backBufferDepth() const { return backBufferDepth_; }
+    uint capacity() const { return capacity_; }
 	uint size() const;
     uint columns() const;
 	BufferType type() const { return type_ ; }
