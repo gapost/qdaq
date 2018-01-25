@@ -11,7 +11,7 @@ lessThan(QT_MAJOR_VERSION, 5): error("This app needs Qt5")
 include(qdaq.pri)
 
 TARGET = qdaq
-TEMPLATE = app
+TEMPLATE = lib
 
 SOURCES += main.cpp\
     core/QDaqSession.cpp \

@@ -1,6 +1,6 @@
 *.pro.user
 
-qdaq/3rdparty/*
+lib/3rdparty/*
 
 doc/html/*
 
