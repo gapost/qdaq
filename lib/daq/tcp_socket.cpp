@@ -192,6 +192,7 @@ tcp_socket::tcp_socket() : port(0), ip(), slave(-1),
     sfd(-1), debug(0), error_recovery(0),
     timo_s(0), timo_us(300000) // 300 ms initial
 {
+    tcp_init();
 }
 
 tcp_socket::~tcp_socket()

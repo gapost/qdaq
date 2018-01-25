@@ -28,6 +28,5 @@ unix {
     LIBS += -lcomedi
 }
 
-## Qt-solutions
-include(3rdparty/qt-solutions/qtpropertybrowser/src/qtpropertybrowser.pri)
+
 

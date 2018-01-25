@@ -8,12 +8,15 @@ QT       += core gui widgets script scripttools network uitools serialport
 
 lessThan(QT_MAJOR_VERSION, 5): error("This app needs Qt5")
 
-include(qdaq.pri)
+include(../qdaq.pri)
+
+## Qt-solutions
+include(3rdparty/qt-solutions/qtpropertybrowser/src/qtpropertybrowser.pri)
 
 TARGET = qdaq
 TEMPLATE = lib
 
-SOURCES += main.cpp\
+SOURCES += \
     core/QDaqSession.cpp \
     core/QDaqObject.cpp \
     core/QDaqRoot.cpp \

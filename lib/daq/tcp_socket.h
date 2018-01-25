@@ -39,7 +39,6 @@ public:
 
 
     static const char* strerror(int errnum);
-
     static const char* lastErrorStr();
 };
 

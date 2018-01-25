@@ -3,9 +3,10 @@
 #include <QTextStream>
 #include <QCommandLineParser>
 #include <QMessageBox>
-#include "QDaqRoot.h"
-#include "QDaqIde.h"
-#include "QDaqSession.h"
+
+#include "core/QDaqRoot.h"
+#include "gui/QDaqIde.h"
+#include "core/QDaqSession.h"
 
 enum CommandLineParseResult
 {
