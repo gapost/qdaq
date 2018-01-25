@@ -14,13 +14,14 @@ void QDaqDataBuffer::registerTypes(QScriptEngine* e)
     QDaqJob::registerTypes(e);
 }
 
-QDaqDataBuffer::QDaqDataBuffer(const QString &name) : QDaqJob(name),
-	type_(Open)
+QDaqDataBuffer::QDaqDataBuffer(const QString &name) : QDaqJob(name)
 {
     connect(this,SIGNAL(dataReady()),this,SLOT(onDataReady()),Qt::QueuedConnection);
 
+    type_ = Fixed;
     setBackBufferDepth(2);
     setCapacity(100);
+
 }
 
 void QDaqDataBuffer::setBackBufferDepth(uint d)
@@ -29,13 +30,43 @@ void QDaqDataBuffer::setBackBufferDepth(uint d)
 	{
         os::auto_lock L(comm_lock);
 
-        for(int i=0; i<queue_.size(); i++)
-            queue_[i].setCapacity(d);
+        // depth should be power of 2
+        uint n = 1;
+        while (n<d) n <<= 1;
+        backBufferDepth_ = n;
 
-        backBufferDepth_ = d;
+        setupBackBuffer();
 
 		emit propertiesChanged();
 	}
+}
+
+void QDaqDataBuffer::setupBackBuffer()
+{
+    // allocate memory
+    uint cols = columns();
+    uint N = backBufferDepth_*cols;
+    backBuffer_.resize(N);
+
+    // setup packet pointers
+    backPackets_.resize(backBufferDepth_);
+    double* p = backBuffer_.data();
+    for(uint i=0; i<backBufferDepth_; i++)
+    {
+        backPackets_[i] = p;
+        p += cols;
+    }
+
+    // setup semaphores
+    if (freePackets_.available())
+        freePackets_.acquire(freePackets_.available());
+    if (usedPackets_.available())
+        usedPackets_.acquire(usedPackets_.available());
+    freePackets_.release(backBufferDepth_);
+
+    // setup indexes
+    iFree_ = iUsed_ = 0;
+
 }
 
 void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
@@ -55,49 +86,67 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
 	// clear previous channels
 	channel_objects.clear();
 	channel_ptrs.clear();
-    foreach(const QByteArray& ba, channel_names) setProperty(ba,QVariant());
-	channel_names.clear();
+    foreach(const QString& str, columnNames_)
+        setProperty(str.toLatin1(),QVariant());
+    columnNames_.clear();
 
 	// create channels
 	channel_objects = chlist;
 
 	uint cap_ = capacity();
 	data_matrix = matrix_t(chlist.size());
-    setCapacity(cap_); // restore the capacity
+    // restore the capacity && type
+    for(int i=0; i<data_matrix.size(); i++)
+    {
+        data_matrix[i].setCapacity(cap_);
+        data_matrix[i].setType((vector_t::StorageType)type_);
+    }
 
-    cap_ = backBufferDepth();
-    queue_ = matrix_t(chlist.size());
-    setBackBufferDepth(cap_); // restore the capacity
+    setupBackBuffer();
 
     foreach(QDaqObject* obj, chlist)
 	{
         channel_ptrs.push_back((QDaqChannel*)obj);
-		QByteArray channelName = obj->objectName().toLatin1();
-		channel_names.push_back(channelName);
+        columnNames_.push_back(obj->objectName());
 	}
-    for(int i=0; i<data_matrix.size(); ++i)
-        setProperty(channel_names.at(i),QVariant::fromValue(&(data_matrix[i])));
+
+    for(int i=0; i<data_matrix.size(); ++i) {
+        QString str = columnNames_.at(i);
+        setProperty(str.toLatin1(),QVariant::fromValue(&(data_matrix[i])));
+    }
+
+    emit propertiesChanged();
 
 }
 
 bool QDaqDataBuffer::run()
 {
 
-    if (bufferRowsAvailable()==backBufferDepth())
+
+    if (freePackets_.tryAcquire())
+    {
+        double* p = backPackets_[iFree_ % backBufferDepth_];
+        iFree_++;
+
+
+        for(int i=0; i<channel_ptrs.size(); i++)
+        {
+            channel_t ch = channel_ptrs[i];
+            *p = 0.;
+            if (ch && ch->dataReady()) *p = ch->value();
+            p++;
+        }
+
+        usedPackets_.release();
+        emit dataReady();
+
+    }
+    else
 	{
+
 		pushError("Back-buffer full - data lost.");
 		//return;
 	}
-
-    for(int i=0; i<channel_ptrs.size(); i++)
-    {
-        channel_t ch = channel_ptrs[i];
-        double v(0.);
-        if (ch && ch->dataReady()) v = ch->value();
-        queue_[i].push(v);
-    }
-
-    emit dataReady();
 
     return QDaqJob::run();
 }
@@ -110,27 +159,33 @@ void QDaqDataBuffer::onDataReady()
     {
         os::auto_lock L(comm_lock);
 
-        nread = bufferRowsAvailable();
+        nread = usedPackets_.available();
 
-        for(int i=0; i<data_matrix.size(); i++)
-        {
-            vector_t& v = queue_[i];
-            for(int j=nread-1; j>=0; j--) data_matrix[i].push(v[j]);
-            v.clear();
+        if (nread) {
+
+            usedPackets_.acquire(nread);
+
+            for(int i=0; i<nread; i++)
+            {
+                double* p = backPackets_[iUsed_ % backBufferDepth_];
+                iUsed_++;
+                for(int j=0; j<data_matrix.size(); j++)
+                    data_matrix[j].push(*p++);
+            }
+
+            freePackets_.release(nread);
         }
     }
 
     if (nread) {
+        uint c = data_matrix[0].capacity();
+        if (c!=capacity_) capacity_ = c;
         emit updateWidgets();
         emit propertiesChanged();
     }
 
 }
-uint QDaqDataBuffer::bufferRowsAvailable() const
-{
-    if (queue_.isEmpty()) return 0;
-    else return (uint)queue_[0].size();
-}
+
 uint QDaqDataBuffer::size() const
 {
 	if (data_matrix.isEmpty()) return 0;
@@ -147,11 +202,14 @@ void QDaqDataBuffer::setCapacity(uint cap)
 	for(int i=0; i<data_matrix.size(); i++)
 		data_matrix[i].setCapacity(cap);
     capacity_ = cap;
+    emit propertiesChanged();
     }
 }
 void QDaqDataBuffer::setType(BufferType t)
 {
 	for(int i=0; i<data_matrix.size(); i++)
 		data_matrix[i].setType((vector_t::StorageType)t);
+    type_ = t;
+    emit propertiesChanged();
 }
 

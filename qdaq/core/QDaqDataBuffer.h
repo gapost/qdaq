@@ -5,6 +5,7 @@
 #include "QDaqJob.h"
 
 #include <QPointer>
+#include <QSemaphore>
 
 class QDaqChannel;
 
@@ -17,7 +18,8 @@ class RTLAB_BASE_EXPORT QDaqDataBuffer : public QDaqJob
 	Q_PROPERTY(uint size READ size)
     Q_PROPERTY(uint columns READ columns)
 	Q_PROPERTY(BufferType type READ type WRITE setType)
-    Q_PROPERTY(QDaqObjectList channels READ channels WRITE setChannels)
+    Q_PROPERTY(QDaqObjectList channels READ channels WRITE setChannels STORED false)
+    Q_PROPERTY(QStringList columnNames READ columnNames)
 
 	Q_ENUMS(BufferType)
 
@@ -32,6 +34,8 @@ public:
 	};
 
 	virtual void registerTypes(QScriptEngine *e);
+    virtual void writeH5(H5::Group* h5g) const;
+    virtual void readH5(H5::Group *h5g);
 
 protected:
     uint backBufferDepth_, capacity_;
@@ -41,12 +45,16 @@ protected:
 
 	BufferType type_;
 
-    //DataQueue<double> queue_;
-    matrix_t queue_;
-
     QDaqObjectList channel_objects;
     channel_vector_t channel_ptrs;
-	QList<QByteArray> channel_names;
+    QStringList columnNames_;
+
+    // back buffer
+    QVector<double> backBuffer_;
+    QVector<double*> backPackets_;
+    QSemaphore freePackets_, usedPackets_;
+    uint iFree_, iUsed_;
+    void setupBackBuffer();
 
 	matrix_t data_matrix;
 
@@ -63,14 +71,12 @@ public:
     uint columns() const;
 	BufferType type() const { return type_ ; }
     QDaqObjectList channels() const { return channel_objects; }
+    QStringList columnNames() const { return columnNames_; }
 
 	void setBackBufferDepth(uint d);
 	void setCapacity(uint cap);
 	void setType(BufferType t);
     void setChannels(QDaqObjectList chlist);
-
-private:
-    uint bufferRowsAvailable() const;
 
 signals:
     void dataReady();

@@ -214,6 +214,14 @@ public:
         tail = 0;
         recalcBounds = true;
     }
+    void replace(const container_t& other)
+    {
+        clear();
+        buffer = other;
+        sz = buffer.size();
+        cp = buffer.capacity();
+        tail = 0;
+    }
 
     const T& get(int i) const
     {
@@ -246,7 +254,7 @@ public:
     {
         push(v); return (*this);
     }
-    const T* data() const
+    const T* constData() const
     {
         const_cast< _Self * >( this )->normalize_();
         return buffer.constData();
@@ -256,7 +264,6 @@ public:
         const_cast< _Self * >( this )->normalize_();
         return buffer.mid(0,sz);
     }
-
     double vmin() const
     {
         if (recalcBounds)

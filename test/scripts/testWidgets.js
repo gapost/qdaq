@@ -26,9 +26,11 @@ t.format = "Time";
 var X1 = QDaqTestChannel("X1");
 var X2 = QDaqChannel("X2");
 var scr = QDaqJob("scr");
-scr.code = "qdaq.loop.X2.push(qdaq.loop.X1.value())";
+scr.code = "qdaq.loop.X2.push(Math.sqrt(qdaq.loop.X1.value()))";
 var Data = QDaqDataBuffer("Data");
-Data.channels = [X1, X2];
+Data.type = "Open";
+Data.backBufferDepth = 4;
+Data.channels = [t, X1, X2];
 
 loop.appendChild(t);
 loop.appendChild(X1);
@@ -37,6 +39,8 @@ loop.appendChild(X2);
 loop.appendChild(Data);
 qdaq.appendChild(loop);
 loop.createLoopEngine();
+loop.period = 10;
+loop.limit = 1000;
 
 print("Tree = \n" + qdaq.objectTree());
 
@@ -53,4 +57,8 @@ startButton = w.findChild("btStart");
 startButton.toggled.connect(startPressed);
 
 w.show()
+
+
+
+
 
