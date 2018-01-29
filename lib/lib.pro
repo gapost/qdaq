@@ -13,6 +13,10 @@ include(../qdaq.pri)
 ## Qt-solutions
 include(3rdparty/qt-solutions/qtpropertybrowser/src/qtpropertybrowser.pri)
 
+## JSedit
+SOURCES += 3rdparty/jsedit/jsedit.cpp
+HEADERS += 3rdparty/jsedit/jsedit.h
+
 TARGET = qdaq
 TEMPLATE = lib
 
@@ -29,7 +33,6 @@ SOURCES += \
     core/QDaqChannel.cpp \
     core/QDaqDataBuffer.cpp \
     core/QDaqBufferProto.cpp \
-    gui/jsedit.cpp \
     gui/QDaqObjectController.cpp \
     gui/QDaqObjectBrowser.cpp \
     gui/QDaqErrorLog.cpp \
@@ -58,7 +61,6 @@ HEADERS  += \
     core/QDaqEnumHelper.h \
     core/QDaqDataBuffer.h \
     core/QDaqBufferProto.h \
-    gui/jsedit.h \
     gui/QDaqObjectBrowser.h \
     gui/QDaqObjectController.h \
     gui/QDaqErrorLog.h \
