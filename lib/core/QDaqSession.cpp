@@ -227,6 +227,12 @@ void QDaqSession::exec(const QString &fname)
     {
         QTextStream qin(&file);
         QString program = qin.readAll();
+
+        QScriptContext* ctx = engine_->currentContext();
+
+        ctx->setActivationObject(ctx->parentContext()->activationObject());
+        ctx->setThisObject(ctx->parentContext()->thisObject());
+
         engine_->evaluate(program,fname);
     }
     else engine_->currentContext()->throwError(QScriptContext::ReferenceError,"File not found.");

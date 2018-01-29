@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     }
     else {
         QDaqSession* s = qdaq.rootSession();
-        s->exec(startupScript);
+        s->evaluate(QString("exec('%1')").arg(startupScript));
 
         if (QApplication::topLevelWidgets().isEmpty()) return 0;
     }
