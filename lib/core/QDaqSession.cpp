@@ -17,6 +17,7 @@
 #include <QProcess>
 #include <QWidget>
 #include <QtUiTools/QUiLoader>
+#include <QDebug>
 
 QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject* metaObject)
 {
@@ -100,6 +101,10 @@ bool QDaqScriptEngine::evaluate(const QString& program, QString& ret)
 		QStringList backtrace = engine_->uncaughtExceptionBacktrace();
 		ret += '\n';
 		ret += backtrace.join("\n");
+
+        QDaqError e("scriptEngine","evaluation error",ret);
+        QDaqObject::root()->postError(e);
+
 		return false;
 	}
 	return (result.isError()) ? false : true;
@@ -114,6 +119,10 @@ bool QDaqScriptEngine::evaluate(const QScriptProgram& program, QString& ret)
 		QStringList backtrace = engine_->uncaughtExceptionBacktrace();
 		ret += '\n';
 		ret += backtrace.join("\n");
+
+        QDaqError e("scriptEngine","evaluation error",ret);
+        QDaqObject::root()->postError(e);
+
 		return false;
 	}
 	return (result.isError()) ? false : true;
@@ -328,6 +337,8 @@ void QDaqSession::log__(int fd, const QString &str)
         buff += ln;
         //if (buff.endsWith('\n')) buff.remove(buff.size()-1,1);
         *logFile_ << buff;
+
+        if (fd==2) qDebug().noquote() << ln;
     }
 
 }

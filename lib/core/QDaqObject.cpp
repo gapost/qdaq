@@ -231,7 +231,7 @@ QDaqObjectList QDaqObject::findByWildcard(const QString& wildcard, const QDaqObj
 
 void QDaqObject::pushError(const QString& type, const QString& descr) const
 {
-    QDaqError e(QDateTime::currentDateTime(), fullName(), type, descr);
+    QDaqError e(fullName(), type, descr);
     root()->postError(e);
 }
 

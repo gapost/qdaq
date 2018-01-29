@@ -203,7 +203,7 @@ bool QDaqLoop::exec()
 {
     if (aborted_) return false;
 
-    bool ret;
+    bool ret = true;
     comm_lock.lock();
     if (delay_counter_) delay_counter_--;
     if (delay_counter_ == 0) // loop executes

@@ -46,10 +46,7 @@ struct RTLAB_BASE_EXPORT QDaqError
     QDaqError()
     {}
 
-    QDaqError(const QDateTime& at, const QString& aname, const QString& atype) :
-        t(at), objectName(aname), type(atype)
-    {}
-    QDaqError(const QDateTime& at, const QString& aname, const QString& atype, const QString& adesc) :
+    QDaqError(const QString& aname, const QString& atype, const QString& adesc = QString(), const QDateTime& at = QDateTime::currentDateTime()) :
         t(at), objectName(aname), type(atype), descr(adesc)
     {}
     QDaqError(const QDaqError& e) :
