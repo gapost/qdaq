@@ -13,10 +13,6 @@ include(../qdaq.pri)
 ## Qt-solutions
 include(3rdparty/qt-solutions/qtpropertybrowser/src/qtpropertybrowser.pri)
 
-## JSedit
-SOURCES += 3rdparty/jsedit/jsedit.cpp
-HEADERS += 3rdparty/jsedit/jsedit.h
-
 TARGET = qdaq
 TEMPLATE = lib
 
@@ -41,7 +37,8 @@ SOURCES += \
     gui/QDaqDelegates.cpp \
     gui/QDaqWindow.cpp \
     daq/tcp_socket.cpp \
-    daq/QDaqInterface.cpp
+    daq/QDaqInterface.cpp \
+    daq/QDaqDevice.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -69,7 +66,13 @@ HEADERS  += \
     gui/QDaqDelegates.h \
     gui/QDaqWindow.h \
     daq/tcp_socket.h \
-    daq/QDaqInterface.h
+    daq/QDaqInterface.h \
+    daq/QDaqDevice.h
+
+## JSedit
+SOURCES += 3rdparty/jsedit/jsedit.cpp
+HEADERS += 3rdparty/jsedit/jsedit.h
+INCLUDEPATH += 3rdparty/jsedit
 
 INCLUDEPATH += ./core ./gui ./daq
 

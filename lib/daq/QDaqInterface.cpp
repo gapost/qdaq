@@ -1,5 +1,6 @@
 #include "QDaqInterface.h"
 #include "QDaqEnumHelper.h"
+#include "QDaqDevice.h"
 
 #include "tcp_socket.h"
 
@@ -88,7 +89,7 @@ void QDaqInterface::close_()
 	{
         QDaqDevice* dev = ports_[i];
         //TODO
-        //if (dev!=0) dev->forcedOffline(QString("Interface %1 closed").arg(fullName()));
+        if (dev!=0) dev->forcedOffline(QString("Interface %1 closed").arg(fullName()));
 		ports_[i] = 0;
 	}
 	isOpen_ = false;
@@ -372,7 +373,14 @@ bool QDaqModbusTcp::open_()
 
     /* TCP */
     modbus_t* ctx = modbus_new_tcp(host().toLatin1().constData(), port_);
-    //modbus_set_debug(ctx, TRUE);
+
+
+    timeval response_timeout;
+    /* Define a new and too short timeout! */
+    response_timeout.tv_sec = 0;
+    response_timeout.tv_usec = timeout_*1000;
+    modbus_set_response_timeout(ctx, &response_timeout);
+
 
     if (modbus_connect(ctx) == -1) {
         pushError("modbus_connect failed", modbus_strerror(errno));

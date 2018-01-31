@@ -59,10 +59,10 @@ protected:
 
 	bool throwIfOpen();
 
-public: // slots
-	Q_SLOT bool open() { return open_(); } 
-	Q_SLOT void close() { close_(); }
-	Q_SLOT void clear() { clear_(); }
+public slots:
+    bool open() { return open_(); }
+    void close() { close_(); }
+    void clear() { clear_(); }
 };
 
 
