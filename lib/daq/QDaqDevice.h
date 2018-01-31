@@ -20,7 +20,7 @@ class QDaqDevice : public QDaqJob
 	Q_PROPERTY(int eos READ eos WRITE setEos)
 	Q_PROPERTY(int inputChannels READ inputChannels)
 	Q_PROPERTY(int outputChannels READ outputChannels)
-	Q_PROPERTY(QString interfaceName READ interfaceName)
+    Q_PROPERTY(QDaqObject* interface READ interface WRITE setInterface)
 
 protected:
 	int addr_;
@@ -33,7 +33,7 @@ private:
     uint buff_sz_;
 
 protected:
-    QPointer<QDaqInterface> ifc;
+    QPointer<QDaqInterface> ifc_;
 
     QVector<QDaqChannel*> inputChannels_;
     QVector<QDaqChannel*> outputChannels_;
@@ -56,7 +56,7 @@ public:
 	int eos() const { return eos_; }
 	int inputChannels() const { return inputChannels_.size(); }
 	int outputChannels() const { return outputChannels_.size(); }
-	QString interfaceName() const { return ifc ? ifc->fullName() : QString(); }
+    QDaqObject* interface() const { return ifc_; }
 
 	// setters
 	void setBufferSize(unsigned int sz);
@@ -64,8 +64,7 @@ public:
 	void setAddress(int a);
 	void setEot(int e);
 	void setEos(int a);
-
-    void setInterface(QDaqInterface* i);
+    void setInterface(QDaqObject *i);
 
 	// channels
     QDaqChannel* getInputChannel(int i) { return inputChannels_[i]; }
