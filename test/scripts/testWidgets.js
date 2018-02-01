@@ -39,12 +39,22 @@ loop.appendChild(X2);
 loop.appendChild(Data);
 qdaq.appendChild(loop);
 loop.createLoopEngine();
-loop.period = 10;
+loop.period = 200;
 loop.limit = 1000;
+
+var loop2 = new QDaqLoop("loop2");
+loop2.delay = 5;
+
+t = new QDaqTimeChannel("t");
+t.format = "Time";
+loop2.appendChild(t);
+
+loop.appendChild(loop2);
 
 print("Tree = \n" + qdaq.objectTree());
 
 bind(qdaq.loop.t,  w.findChild('t'));
+bind(qdaq.loop.loop2.t,  w.findChild('t2'));
 bind(qdaq.loop.X1, w.findChild('X1'));
 bind(qdaq.loop.X2, w.findChild('X2'));
 
@@ -56,6 +66,7 @@ function startPressed(on) {
 startButton = w.findChild("btStart");
 startButton.toggled.connect(startPressed);
 
+loop2.arm();
 w.show()
 
 

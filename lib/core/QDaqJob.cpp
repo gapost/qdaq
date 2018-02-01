@@ -222,7 +222,7 @@ bool QDaqLoop::exec()
     }
     comm_lock.unlock();
 
-    if (ret && limit_ && count_==limit_)  ret = false;
+    if (ret && limit_ && count_>=limit_)  ret = false;
 
     if (!ret) {
         aborted_ = true;
