@@ -240,12 +240,23 @@ void QDaqSession::exec(const QString &fname)
         QTextStream qin(&file);
         QString program = qin.readAll();
 
+        // TODO: syntax check the program
+
         QScriptContext* ctx = engine_->currentContext();
 
         ctx->setActivationObject(ctx->parentContext()->activationObject());
         ctx->setThisObject(ctx->parentContext()->thisObject());
 
-        engine_->evaluate(program,fname);
+        QScriptValue ret = engine_->evaluate(program,fname);
+
+
+        if (engine_->hasUncaughtException()) {
+            // TODO : better reporting
+            QString s = ret.toString();
+            QStringList backtrace = engine_->uncaughtExceptionBacktrace();
+
+            engine_->currentContext()->throwValue(engine_->uncaughtException());
+        }
     }
     else engine_->currentContext()->throwError(QScriptContext::ReferenceError,"File not found.");
 }

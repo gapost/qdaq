@@ -3,10 +3,12 @@
 #include <QTextStream>
 #include <QCommandLineParser>
 #include <QMessageBox>
+#include <QScriptEngine>
 
 #include "core/QDaqRoot.h"
-#include "gui/QDaqIde.h"
 #include "core/QDaqSession.h"
+#include "gui/QDaqIde.h"
+#include "gui/QDaqConsole.h"
 
 enum CommandLineParseResult
 {
@@ -116,10 +118,29 @@ int main(int argc, char *argv[])
     }
     else {
         QDaqSession* s = qdaq.rootSession();
+
+        QDaqConsole* console = new QDaqConsole(s);
+        console->show();
+
+        const char* intro = "QDaq - Qt-based Data Aqcuisition\n"
+                "Version 1.0\n\n";
+        console->stdOut(intro);
+
+
+
         s->evaluate(QString("print('Executing startup script %1')").arg(startupScript));
         s->evaluate(QString("exec('%1')").arg(startupScript));
 
-        if (QApplication::topLevelWidgets().isEmpty()) return 0;
+
+        if (s->getEngine()->hasUncaughtException())
+        {
+            console->flush();
+            // Do nothing, user interacts with console
+        }
+        else {
+            delete console;
+            if (QApplication::topLevelWidgets().isEmpty()) return 0;
+        }
     }
 
     return app.exec();

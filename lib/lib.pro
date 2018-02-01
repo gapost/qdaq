@@ -77,7 +77,8 @@ INCLUDEPATH += ./core ./gui ./daq
 
 DISTFILES += \
     qdaq.pri \
-    .gitignore
+    .gitignore \
+    ../TODO
 
 RESOURCES += \
     qdaq.qrc

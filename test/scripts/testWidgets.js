@@ -66,7 +66,7 @@ function startPressed(on) {
 startButton = w.findChild("btStart");
 startButton.toggled.connect(startPressed);
 
-loop2.arm();
+loop2.arm()
 w.show()
 
 

@@ -22,5 +22,5 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../lib/release/ -lqdaq
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../lib/debug/ -lqdaq
 else:unix: LIBS += -L$$OUT_PWD/../lib/ -lqdaq
 
-INCLUDEPATH += $$PWD/../lib
+INCLUDEPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
 DEPENDPATH += $$PWD/../lib

@@ -1,8 +1,8 @@
 #ifndef _SCRIPTCONSOLE_H_
 #define _SCRIPTCONSOLE_H_
 
-#include "QDaqGlobal.h"
-#include "QConsoleWidget.h"
+#include "core/QDaqGlobal.h"
+#include "gui/QConsoleWidget.h"
 
 class QDaqSession;
 
@@ -19,6 +19,8 @@ public:
 public slots:
 
     void endSession();
+
+    void flush() { flushStdOut(); }
 
 protected:
 	void exec(const QString& code);

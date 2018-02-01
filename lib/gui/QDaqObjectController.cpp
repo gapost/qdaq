@@ -517,7 +517,6 @@ QDaqObjectController::QDaqObjectController(QWidget *parent)
     d_ptr->m_readOnlyManager = new VariantManager(this);
     d_ptr->m_manager = new VariantManager(this);
     QtVariantEditorFactory *factory = new QtVariantEditorFactory(this);
-    // TODO
     d_ptr->m_browser->setFactoryForManager((QtVariantPropertyManager*) d_ptr->m_manager, factory);
 
     connect(d_ptr->m_manager, SIGNAL(valueChanged(QtProperty *, const QVariant &)),
