@@ -7,4 +7,5 @@ SUBDIRS += \
     qdaq \
     doc \
     test \
-    qtpropertybrowser
+    qtpropertybrowser \
+    widgets
