@@ -6,4 +6,5 @@ SUBDIRS += \
     lib \
     qdaq \
     doc \
-    test
+    test \
+    qtpropertybrowser

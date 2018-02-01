@@ -10,8 +10,7 @@ lessThan(QT_MAJOR_VERSION, 5): error("This app needs Qt5")
 
 include(../qdaq.pri)
 
-## Qt-solutions
-include(3rdparty/qt-solutions/qtpropertybrowser/src/qtpropertybrowser.pri)
+
 
 TARGET = qdaq
 TEMPLATE = lib
@@ -82,3 +81,18 @@ DISTFILES += \
 
 RESOURCES += \
     qdaq.qrc
+
+## QtPropertyBrowser Lib
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../qtpropertybrowser/release/ -lqtpropertybrowser
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../qtpropertybrowser/debug/ -lqtpropertybrowser
+else:unix: LIBS += -L$$OUT_PWD/../qtpropertybrowser/ -lqtpropertybrowser
+
+INCLUDEPATH += $$PWD/../qtpropertybrowser $$PWD/3rdparty/qt-solutions/qtpropertybrowser/src
+DEPENDPATH += $$PWD/../qtpropertybrowser
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qtpropertybrowser/release/libqtpropertybrowser.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qtpropertybrowser/debug/libqtpropertybrowser.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qtpropertybrowser/release/qtpropertybrowser.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qtpropertybrowser/debug/qtpropertybrowser.lib
+else:unix: PRE_TARGETDEPS += $$OUT_PWD/../qtpropertybrowser/libqtpropertybrowser.a
