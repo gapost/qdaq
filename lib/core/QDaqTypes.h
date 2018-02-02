@@ -5,7 +5,6 @@
 
 #include <QVector>
 #include <QMetaType>
-#include <QScriptable>
 
 typedef QVector<int> QDaqIntVector;
 typedef QVector<unsigned int> QDaqUintVector;

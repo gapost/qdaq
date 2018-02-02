@@ -3,9 +3,9 @@ CONFIG += ordered
 
 
 SUBDIRS += \
+    qtpropertybrowser \
     lib \
     qdaq \
     doc \
     test \
-    qtpropertybrowser \
     widgets

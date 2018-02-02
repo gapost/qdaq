@@ -4,6 +4,7 @@
 #include "QDaqTypes.h"
 
 #include <QObject>
+#include <QScriptable>
 
 class RTLAB_BASE_EXPORT QDaqBufferProto : public QObject, public QScriptable
 {

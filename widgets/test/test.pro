@@ -8,6 +8,9 @@ QT       += core gui widgets
 
 lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
 
+INCLUDEPATH += /usr/include/qt5/qwt
+LIBS += -lqwt-qt5
+
 
 TARGET = qdaq_widgets_test
 TEMPLATE = app
@@ -27,3 +30,10 @@ else:unix: LIBS += -L$$OUT_PWD/../src/ -lQDaqWidgets
 
 INCLUDEPATH += $$PWD/../src
 DEPENDPATH += $$PWD/../src
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../lib/release/ -lqdaq
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../lib/debug/ -lqdaq
+else:unix: LIBS += -L$$OUT_PWD/../../lib/ -lqdaq
+
+INCLUDEPATH += $$PWD/../../lib
+DEPENDPATH += $$PWD/../../lib
