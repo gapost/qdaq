@@ -12,7 +12,7 @@ include(../qdaq.pri)
 
 
 
-TARGET = qdaq
+TARGET = QDaq
 TEMPLATE = lib
 
 SOURCES += \

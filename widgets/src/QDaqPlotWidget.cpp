@@ -275,14 +275,14 @@ bool QDaqPlotWidget::autoScaleY() const
 {
     return axisAutoScale(QwtPlot::yLeft);
 }
-QDaqDoubleVector QDaqPlotWidget::xlim() const
+QPointF QDaqPlotWidget::xlim() const
 {
-    return QDaqDoubleVector(axisScaleDiv(QwtPlot::xBottom).lowerBound(),
+    return QPointF(axisScaleDiv(QwtPlot::xBottom).lowerBound(),
                        axisScaleDiv(QwtPlot::xBottom).upperBound());
 }
-QDaqDoubleVector QDaqPlotWidget::ylim() const
+QPointF QDaqPlotWidget::ylim() const
 {
-    return QDaqDoubleVector(axisScaleDiv(QwtPlot::yLeft).lowerBound(),
+    return QPointF(axisScaleDiv(QwtPlot::yLeft).lowerBound(),
                        axisScaleDiv(QwtPlot::yLeft).upperBound());
 }
 
@@ -328,19 +328,13 @@ void QDaqPlotWidget::setGrid(bool on)
     grid_->enableY(on);
     grid_on_ = on;
 }
-void QDaqPlotWidget::setXlim(const QDaqDoubleVector& v)
+void QDaqPlotWidget::setXlim(const QPointF& v)
 {
-    if (v.size()==2) {
-        setAxisScale(QwtPlot::xBottom,v[0],v[1]) ;
-        xlim_ = v;
-    }
+    setAxisScale(QwtPlot::xBottom,v.x(),v.y()) ;
 }
-void QDaqPlotWidget::setYlim(const QDaqDoubleVector& v)
+void QDaqPlotWidget::setYlim(const QPointF &v)
 {
-    if (v.size()==2) {
-        setAxisScale(QwtPlot::yLeft,v[0],v[1]) ;
-        ylim_ = v;
-    }
+    setAxisScale(QwtPlot::yLeft,v.x(),v.y()) ;
 }
 
 void QDaqPlotWidget::plot(const QDaqBuffer& x, const QDaqBuffer& y)

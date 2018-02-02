@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     src \
-    test
+    test \
+    designer
 
 

@@ -1,6 +1,8 @@
 #ifndef _QDaqPlotWidget_H_
 #define _QDaqPlotWidget_H_
 
+#include "qdaq_widgets_global.h"
+
 #include <qwt_plot.h>
 
 #include "core/QDaqTypes.h"
@@ -11,7 +13,7 @@ class QwtPlotZoomer;
 class QwtPlotPanner;
 class QwtPlotPicker;
 
-class QDaqPlotWidget : public QwtPlot
+class  QDAQ_WIDGETS_EXPORT QDaqPlotWidget : public QwtPlot
 {
     Q_OBJECT
 
@@ -23,8 +25,8 @@ class QDaqPlotWidget : public QwtPlot
     Q_PROPERTY(bool timeScaleX READ timeScaleX WRITE setTimeScaleX)
     Q_PROPERTY(bool timeScaleY READ timeScaleY WRITE setTimeScaleY)
     Q_PROPERTY(bool grid READ grid WRITE setGrid)
-    Q_PROPERTY(QDaqDoubleVector xlim READ xlim WRITE setXlim)
-    Q_PROPERTY(QDaqDoubleVector ylim READ ylim WRITE setYlim)
+    Q_PROPERTY(QPointF xlim READ xlim WRITE setXlim)
+    Q_PROPERTY(QPointF ylim READ ylim WRITE setYlim)
 
 
     bool timeScaleX_, timeScaleY_, grid_on_;
@@ -50,8 +52,8 @@ public:
     bool timeScaleX() const { return timeScaleX_; }
     bool timeScaleY() const { return timeScaleY_; }
     bool grid() const { return grid_on_; }
-    QDaqDoubleVector xlim() const;
-    QDaqDoubleVector ylim() const;
+    QPointF xlim() const;
+    QPointF ylim() const;
 
     //setters
     void setTitle(const QString& s);
@@ -62,8 +64,8 @@ public:
     void setTimeScaleX(bool on);
     void setTimeScaleY(bool on);
     void setGrid(bool on);
-    void setXlim(const QDaqDoubleVector& v);
-    void setYlim(const QDaqDoubleVector& v);
+    void setXlim(const QPointF& v);
+    void setYlim(const QPointF& v);
 
 	virtual QSize 	sizeHint () const	{ return QSize(10,10); }
 	virtual QSize 	minimumSizeHint () const { return QSize(10,10); }
