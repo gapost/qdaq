@@ -16,8 +16,6 @@
 
 #include <math.h>
 
-// #define QwtDoublePoint QPointF
-
 class FormattedPicker : public QwtPlotPicker
 {
 public:

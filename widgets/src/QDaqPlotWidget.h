@@ -5,7 +5,7 @@
 
 #include <qwt_plot.h>
 
-#include "core/QDaqTypes.h"
+#include <QDaqBuffer>
 
 class QwtPlotCurve;
 class QwtPlotGrid;
@@ -30,7 +30,6 @@ class  QDAQ_WIDGETS_EXPORT QDaqPlotWidget : public QwtPlot
 
 
     bool timeScaleX_, timeScaleY_, grid_on_;
-    QDaqDoubleVector xlim_, ylim_;
 
     QwtPlotGrid* grid_;
     QwtPlotZoomer* zoomer;

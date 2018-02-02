@@ -8,7 +8,7 @@
 #include <QAction>
 #include <QMenu>
 
-#include "QDaqRoot.h"
+#include "core/QDaqRoot.h"
 
 QDaqWindow::QDaqWindow(QWidget *parent) : QWidget(parent), w_(0)
 {

@@ -66,14 +66,13 @@ HEADERS  += \
     gui/QDaqWindow.h \
     daq/tcp_socket.h \
     daq/QDaqInterface.h \
-    daq/QDaqDevice.h
+    daq/QDaqDevice.h \
+    QDaqBuffer \
+    gui/variantmanager.h
 
 ## JSedit
 SOURCES += 3rdparty/jsedit/jsedit.cpp
 HEADERS += 3rdparty/jsedit/jsedit.h
-INCLUDEPATH += 3rdparty/jsedit
-
-INCLUDEPATH += ./core ./gui ./daq
 
 DISTFILES += \
     qdaq.pri \
@@ -82,6 +81,13 @@ DISTFILES += \
 
 RESOURCES += \
     qdaq.qrc
+
+unix {
+    target.path = $$[QT_INSTALL_LIBS]
+    headers.files  = $${HEADERS}
+    headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
+    INSTALLS += headers target
+}
 
 ## QtPropertyBrowser Lib
 

@@ -16,8 +16,8 @@
 #include "QDaqConsole.h"
 #include "QDaqErrorLog.h"
 #include "QDaqObjectBrowser.h"
-#include "QDaqRoot.h"
-#include "QDaqSession.h"
+#include "core/QDaqRoot.h"
+#include "core/QDaqSession.h"
 
 QDaqIDE::QDaqIDE()
 {

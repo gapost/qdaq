@@ -3,8 +3,8 @@
 
 #include "QDaqBufferProto.h"
 #include "QDaqLogFile.h"
-#include "QDaqDelegates.h"
-#include "QDaqWindow.h"
+#include "gui/QDaqDelegates.h"
+#include "gui/QDaqWindow.h"
 
 #include <QScriptEngine>
 #include <QScriptEngineDebugger>

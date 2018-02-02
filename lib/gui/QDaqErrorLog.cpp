@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include "QDaqRoot.h"
+#include "core/QDaqRoot.h"
 
 QDaqErrorLog::QDaqErrorLog(QWidget* p) : QWidget(p)
 {

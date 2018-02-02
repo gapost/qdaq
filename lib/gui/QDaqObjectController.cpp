@@ -50,13 +50,14 @@
 #include <QScrollArea>
 
 #include "QDaqObjectController.h"
-#include "qtvariantproperty.h"
+#include "variantmanager.h"
+
 #include "qtgroupboxpropertybrowser.h"
 #include "qttreepropertybrowser.h"
 #include "qtpropertybrowser.h"
 
-#include "QDaqTypes.h"
-#include "QDaqObject.h"
+#include "core/QDaqTypes.h"
+#include "core/QDaqObject.h"
 
 bool isQDaqType(int type)
 {

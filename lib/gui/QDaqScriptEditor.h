@@ -1,7 +1,7 @@
 #ifndef _SCRIPTEDITOR_H_
 #define _SCRIPTEDITOR_H_
 
-#include "jsedit.h"
+#include "3rdparty/jsedit/jsedit.h"
 
 class QDaqScriptEditor : public JSEdit
 {

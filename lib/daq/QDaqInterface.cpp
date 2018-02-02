@@ -1,5 +1,5 @@
+#include "core/QDaqEnumHelper.h"
 #include "QDaqInterface.h"
-#include "QDaqEnumHelper.h"
 #include "QDaqDevice.h"
 
 #include "tcp_socket.h"

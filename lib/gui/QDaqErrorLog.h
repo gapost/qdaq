@@ -1,7 +1,7 @@
 #ifndef QDAQERRORLOG_H
 #define QDAQERRORLOG_H
 
-#include "QDaqObject.h"
+#include "core/QDaqObject.h"
 
 #include <QWidget>
 

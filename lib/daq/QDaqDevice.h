@@ -1,9 +1,9 @@
 #ifndef _QDAQDEVICE_H_
 #define _QDAQDEVICE_H_
 
-#include "QDaqJob.h"
+#include "core/QDaqTypes.h"
+#include "core/QDaqJob.h"
 #include "QDaqInterface.h"
-#include "QDaqTypes.h"
 
 #include <QByteArray>
 #include <QVector>

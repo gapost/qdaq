@@ -1,7 +1,7 @@
 #ifndef _RTDELEGATES_H_
 #define _RTDELEGATES_H_
 
-#include "QDaqObject.h"
+#include "core/QDaqObject.h"
 
 #include <QPointer>
 #include <QVariant>

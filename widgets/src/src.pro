@@ -28,14 +28,15 @@ HEADERS +=\
 unix {
     target.path = $$[QT_INSTALL_LIBS]
     headers.files  = $${HEADERS}
-    headers.path   = $$[QT_INSTALL_HEADERS]
+    headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
     INSTALLS += headers target
 }
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../lib/release/ -lqdaq
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../lib/debug/ -lqdaq
-else:unix: LIBS += -L$$OUT_PWD/../../lib/ -lqdaq
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../lib/release/ -lQDaq
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../lib/debug/ -lQDaq
+else:unix: LIBS += -L$$OUT_PWD/../../lib/ -lQDaq
 
 INCLUDEPATH += $$PWD/../../lib
 DEPENDPATH += $$PWD/../../lib
