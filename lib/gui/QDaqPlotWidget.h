@@ -1,19 +1,18 @@
 #ifndef _QDaqPlotWidget_H_
 #define _QDaqPlotWidget_H_
 
-#include "qdaq_widgets_global.h"
+#include "core/QDaqGlobal.h"
 
 #include <qwt_plot.h>
 
-#include <QDaqBuffer>
-
+class QDaqBuffer;
 class QwtPlotCurve;
 class QwtPlotGrid;
 class QwtPlotZoomer;
 class QwtPlotPanner;
 class QwtPlotPicker;
 
-class  QDAQ_WIDGETS_EXPORT QDaqPlotWidget : public QwtPlot
+class  QDAQ_EXPORT QDaqPlotWidget : public QwtPlot
 {
     Q_OBJECT
 

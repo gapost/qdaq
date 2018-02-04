@@ -10,6 +10,8 @@
 #include "gui/QDaqIde.h"
 #include "gui/QDaqConsole.h"
 
+#include "QDaqPlotWidget.h"
+
 enum CommandLineParseResult
 {
     CommandLineOk,
@@ -142,6 +144,8 @@ int main(int argc, char *argv[])
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
         }
     }
+
+    QDaqPlotWidget w;
 
     return app.exec();
 }

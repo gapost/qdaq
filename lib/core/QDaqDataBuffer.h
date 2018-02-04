@@ -84,6 +84,8 @@ signals:
 private slots:
     void onDataReady();
 
+public slots:
+    void clear();
 };
 
 

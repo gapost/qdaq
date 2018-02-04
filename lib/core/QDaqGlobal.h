@@ -32,4 +32,10 @@
 #define RTLAB_BASE_EXPORT
 #define RTLAB_GUI_EXPORT
 
+#if defined(QDAQ_LIBRARY)
+#  define QDAQ_EXPORT Q_DECL_EXPORT
+#else
+#  define QDAQ_EXPORT Q_DECL_IMPORT
+#endif
+
 #endif // RTGLOBAL_H

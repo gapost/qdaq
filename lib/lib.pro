@@ -27,7 +27,6 @@ SOURCES += \
     core/QDaqLogFile.cpp \
     core/QDaqChannel.cpp \
     core/QDaqDataBuffer.cpp \
-    core/QDaqBufferProto.cpp \
     gui/QDaqObjectController.cpp \
     gui/QDaqObjectBrowser.cpp \
     gui/QDaqErrorLog.cpp \
@@ -37,7 +36,9 @@ SOURCES += \
     gui/QDaqWindow.cpp \
     daq/tcp_socket.cpp \
     daq/QDaqInterface.cpp \
-    daq/QDaqDevice.cpp
+    daq/QDaqDevice.cpp \
+    gui/QDaqPlotWidget.cpp \
+    gui/QDaqLed.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -56,7 +57,6 @@ HEADERS  += \
     core/QDaqChannel.h \
     core/QDaqEnumHelper.h \
     core/QDaqDataBuffer.h \
-    core/QDaqBufferProto.h \
     gui/QDaqObjectBrowser.h \
     gui/QDaqObjectController.h \
     gui/QDaqErrorLog.h \
@@ -68,7 +68,9 @@ HEADERS  += \
     daq/QDaqInterface.h \
     daq/QDaqDevice.h \
     QDaqBuffer \
-    gui/variantmanager.h
+    gui/variantmanager.h \
+    gui/QDaqPlotWidget.h \
+    gui/QDaqLed.h
 
 ## JSedit
 SOURCES += 3rdparty/jsedit/jsedit.cpp

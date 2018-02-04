@@ -112,7 +112,8 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
 
     for(int i=0; i<data_matrix.size(); ++i) {
         QString str = columnNames_.at(i);
-        setProperty(str.toLatin1(),QVariant::fromValue(&(data_matrix[i])));
+        QVariant v = QVariant::fromValue(data_matrix[i]);
+        setProperty(str.toLatin1(),v);
     }
 
     emit propertiesChanged();
@@ -211,5 +212,13 @@ void QDaqDataBuffer::setType(BufferType t)
 		data_matrix[i].setType((vector_t::StorageType)t);
     type_ = t;
     emit propertiesChanged();
+}
+void QDaqDataBuffer::clear()
+{
+    for(int i=0; i<data_matrix.size(); i++)
+        data_matrix[i].clear();
+    emit propertiesChanged();
+    emit updateWidgets();
+
 }
 

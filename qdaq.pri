@@ -26,6 +26,10 @@ unix {
 
     ######### comedi #############
     LIBS += -lcomedi
+
+    ######### Qwt ###############
+    INCLUDEPATH += /usr/include/qt5/qwt
+    LIBS += -lqwt-qt5
 }
 
 

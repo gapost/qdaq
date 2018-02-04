@@ -1,11 +1,11 @@
 #ifndef QLED_H
 #define QLED_H
 
-#include "qdaq_widgets_global.h"
+#include "core/QDaqGlobal.h"
 
 #include <QAbstractButton>
 
-class QDAQ_WIDGETS_EXPORT QLed : public QAbstractButton
+class QDAQ_EXPORT QDaqLed : public QAbstractButton
 {
     Q_OBJECT
 
@@ -13,7 +13,7 @@ class QDAQ_WIDGETS_EXPORT QLed : public QAbstractButton
     Q_PROPERTY(bool readOnly READ readOnly WRITE setReadOnly)
 
     public:
-        QLed(QWidget *parent = 0);
+        QDaqLed(QWidget *parent = 0);
 
         enum ledColor { Red=0, Green, Blue }; //Yellow,Grey,Orange,Purple,Blue };
         Q_ENUM(ledColor)

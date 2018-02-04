@@ -1,10 +1,10 @@
 #include <QPainter>
 
-#include "qled.h"
+#include "QDaqLed.h"
 
-const qreal QLed::scaledSize = 1000; /* Visual Studio static const mess */
+const qreal QDaqLed::scaledSize = 1000; /* Visual Studio static const mess */
 
-QLed::QLed(QWidget *parent) : QAbstractButton(parent)
+QDaqLed::QDaqLed(QWidget *parent) : QAbstractButton(parent)
 {
     setMinimumSize(24,24);
     setCheckable(true);
@@ -13,7 +13,7 @@ QLed::QLed(QWidget *parent) : QAbstractButton(parent)
     setReadOnly(true);
 }
 
-void QLed::setColor(ledColor c)
+void QDaqLed::setColor(ledColor c)
 {
     switch (c)
     {
@@ -39,7 +39,7 @@ void QLed::setColor(ledColor c)
     update();
 }
 
-void QLed::setReadOnly(bool b)
+void QDaqLed::setReadOnly(bool b)
 {
     if (b!=readOnly_)
     {
@@ -49,12 +49,12 @@ void QLed::setReadOnly(bool b)
     }
 }
 
-void QLed::resizeEvent(QResizeEvent *event) {
+void QDaqLed::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event)
     update();
 }
 
-void QLed::paintEvent(QPaintEvent *event) {
+void QDaqLed::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
 
     qreal realSize = qMin(width(), height());

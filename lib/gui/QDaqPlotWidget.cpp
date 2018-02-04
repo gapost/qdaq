@@ -1,5 +1,7 @@
 #include "QDaqPlotWidget.h"
 
+#include <QDaqBuffer>
+
 #include <QCloseEvent>
 #include <QCoreApplication>
 #include <QSet>
@@ -132,26 +134,26 @@ public:
 };
 
 
-class RtPlotData : public QwtSeriesData< QPointF >
+class QDaqPlotData : public QwtSeriesData< QPointF >
 {
-    const QDaqBuffer vx;
-    const QDaqBuffer vy;
+    QDaqBuffer vx;
+    QDaqBuffer vy;
     size_t sz;
 public:
-    RtPlotData(const QDaqBuffer& x, const QDaqBuffer& y) : vx(x), vy(y)
+    QDaqPlotData(const QDaqBuffer& x, const QDaqBuffer& y) : vx(x), vy(y)
     {
         sz = qMin(vx.size(),vy.size());
     }
-    RtPlotData(const RtPlotData& other) : vx(other.vx), vy(other.vy), sz(other.sz)
+    QDaqPlotData(const QDaqPlotData& other) : vx(other.vx), vy(other.vy), sz(other.sz)
     {
     }
-    virtual ~RtPlotData()
+    virtual ~QDaqPlotData()
     {
     }
 
-    RtPlotData *copy() const
+    QDaqPlotData *copy() const
     {
-        RtPlotData* cc = new RtPlotData(*this);
+        QDaqPlotData* cc = new QDaqPlotData(*this);
         return cc;
     }
 
@@ -163,7 +165,7 @@ public:
 
     virtual QRectF boundingRect() const
     {
-        const_cast<RtPlotData*>(this)->sz = qMin(vx.size(),vy.size());
+        const_cast<QDaqPlotData*>(this)->sz = qMin(vx.size(),vy.size());
         double x1 = vx.vmin(), x2 = vx.vmax();
         double y1 = vy.vmin(), y2 = vy.vmax();
         return QRectF(x1,y1,x2-x1,y2-y1);
@@ -335,7 +337,7 @@ void QDaqPlotWidget::setYlim(const QPointF &v)
     setAxisScale(QwtPlot::yLeft,v.x(),v.y()) ;
 }
 
-void QDaqPlotWidget::plot(const QDaqBuffer& x, const QDaqBuffer& y)
+void QDaqPlotWidget::plot(const QDaqBuffer &x, const QDaqBuffer &y)
 {
     static int id_;
 
@@ -352,13 +354,14 @@ void QDaqPlotWidget::plot(const QDaqBuffer& x, const QDaqBuffer& y)
     };
 
     QwtPlotCurve* curve = new QwtPlotCurve;
-    curve->setData(new RtPlotData(x,y));
+    curve->setData(new QDaqPlotData(x,y));
 
     curve->setPen(QPen(QColor(eight_colors[id_++ & 0x07])));
 
     curve->attach(this);
 
     replot();
+
 }
 
 void QDaqPlotWidget::setTimeAxis(int axisid, bool on)

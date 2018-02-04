@@ -1,4 +1,4 @@
-#include "QDaqPlotWidget.h"
+#include "gui/QDaqPlotWidget.h"
 
 #include "qdaqplotwidgetplugin.h"
 

@@ -1,7 +1,6 @@
 #include "QDaqSession.h"
 #include "QDaqRoot.h"
 
-#include "QDaqBufferProto.h"
 #include "QDaqLogFile.h"
 #include "gui/QDaqDelegates.h"
 #include "gui/QDaqWindow.h"

@@ -1,4 +1,4 @@
-#include "qled.h"
+#include "gui/QDaqLed.h"
 #include "qledplugin.h"
 
 #include <QtPlugin>
@@ -26,12 +26,12 @@ bool QLedPlugin::isInitialized() const
 
 QWidget *QLedPlugin::createWidget(QWidget *parent)
 {
-    return new QLed(parent);
+    return new QDaqLed(parent);
 }
 
 QString QLedPlugin::name() const
 {
-    return QLatin1String("QLed");
+    return QLatin1String("QDaqLed");
 }
 
 QString QLedPlugin::group() const
@@ -61,7 +61,7 @@ bool QLedPlugin::isContainer() const
 
 QString QLedPlugin::domXml() const
 {
-    return QLatin1String("<widget class=\"QLed\" name=\"qLed\">\n</widget>\n");
+    return QLatin1String("<widget class=\"QDaqLed\" name=\"qLed\">\n</widget>\n");
 }
 
 QString QLedPlugin::includeFile() const
