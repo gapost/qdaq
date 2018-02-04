@@ -49,12 +49,12 @@ void QDaqChannel::setUnit(QString v)
 	unit_ = v;
 	emit propertiesChanged();
 }
-void QDaqChannel::setRange(const QDaqDoubleVector &v)
+void QDaqChannel::setRange(const QDaqVector &v)
 {
     if((v!=range_) && (!v.isEmpty()) && (v.size()==2) && __finite(v[0]) && __finite(v[1]) && (v[1]!=v[0]))
 	{
 		// fix ordering
-        QDaqDoubleVector myv ( v );
+        QDaqVector myv ( v );
 		if (v[1]<v[0]) { myv[0] = v[1]; myv[1] = v[0]; }
 		// set the range
         os::auto_lock L(comm_lock);

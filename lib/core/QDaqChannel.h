@@ -43,7 +43,7 @@ class RTLAB_BASE_EXPORT QDaqChannel : public QDaqJob
 	/** Signal range.
 	When the signal is outside the range an error is raised.
 	*/
-    Q_PROPERTY(QDaqDoubleVector range READ range WRITE setRange)
+    Q_PROPERTY(QDaqVector range READ range WRITE setRange)
 	/** Channel offset.
 	Applied imediately when data is inserted in the channel by the transformation y=a*x+b.
 	b is the offset and a is the multiplier.
@@ -109,7 +109,7 @@ protected:
 	double v_, dv_, offset_, multiplier_;
     mu::Parser* parser_;
     bool dataReady_;
-    QDaqDoubleVector range_;
+    QDaqVector range_;
     // a counter incremented at each new value
     uint counter_;
 	uint depth_;
@@ -137,7 +137,7 @@ public:
 	QString unit() const { return unit_; }
 	NumberFormat format() const { return fmt_; }
 	int digits() const { return digits_; }
-    QDaqDoubleVector range() const { return range_; }
+    QDaqVector range() const { return range_; }
 	AveragingType averaging() const { return type_; }
 	double forgettingFactor() const { return ff_; }
 	double offset() const { return offset_; }
@@ -152,7 +152,7 @@ public:
 	void setUnit(QString v);
 	void setFormat(NumberFormat v) { fmt_ = v; }
 	void setDigits(int n) { digits_ = n; }
-    void setRange(const QDaqDoubleVector& v);
+    void setRange(const QDaqVector& v);
 	void setOffset(double v);
 	void setMultiplier(double v);
 	void setAveraging(AveragingType t);

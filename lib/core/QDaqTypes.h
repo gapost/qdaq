@@ -9,11 +9,11 @@
 
 typedef QVector<int> QDaqIntVector;
 typedef QVector<unsigned int> QDaqUintVector;
-typedef QVector<double> QDaqDoubleVector;
+typedef QVector<double> QDaqVector;
 
 Q_DECLARE_METATYPE(QDaqIntVector)
 Q_DECLARE_METATYPE(QDaqUintVector)
-Q_DECLARE_METATYPE(QDaqDoubleVector)
+Q_DECLARE_METATYPE(QDaqVector)
 
 class QScriptEngine;
 
@@ -392,7 +392,7 @@ public:
     int capacity() const { return d_ptr->capacity(); }
     void setCapacity(int c) { d_ptr->setCapacity(c); }
     void clear() { d_ptr->clear(); }
-    void replace(const QDaqDoubleVector& v) { d_ptr->replace(v); }
+    void replace(const QDaqVector& v) { d_ptr->replace(v); }
     double get(int i) const { return d_ptr->get(i); }
     double operator[](int i) const { return d_ptr->get(i); }
     void push(double v) { d_ptr->push(v); }
@@ -402,7 +402,7 @@ public:
         d_ptr->push(v); return (*this);
     }
     const double* constData() const { return d_ptr->constData(); }
-    QDaqDoubleVector toVector() const { return d_ptr->vector(); }
+    QDaqVector toVector() const { return d_ptr->vector(); }
     double vmin() const { return d_ptr->vmin(); }
     double vmax() const { return d_ptr->vmax(); }
     double mean() const { return d_ptr->mean(); }

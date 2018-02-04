@@ -483,8 +483,8 @@ void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObj
                     writeVectorClass<QDaqIntVector>(h5obj,metaProperty.name(),value,PredType::NATIVE_INT);
                 else if (objtype==qMetaTypeId<QDaqUintVector>())
                     writeVectorClass<QDaqUintVector>(h5obj,metaProperty.name(),value,PredType::NATIVE_UINT);
-                else if (objtype==qMetaTypeId<QDaqDoubleVector>())
-                    writeVectorClass<QDaqDoubleVector>(h5obj,metaProperty.name(),value,PredType::NATIVE_DOUBLE);
+                else if (objtype==qMetaTypeId<QDaqVector>())
+                    writeVectorClass<QDaqVector>(h5obj,metaProperty.name(),value,PredType::NATIVE_DOUBLE);
 			}
 		}
 	}
@@ -581,9 +581,9 @@ void readProperties(CommonFG *h5obj, QDaqObject* obj)
                     if (readVectorClass(h5obj,metaProperty.name(),v,H5T_INTEGER))
                         metaProperty.write(obj,QVariant::fromValue(v));
                 }
-                else if (objtype==qMetaTypeId<QDaqDoubleVector>())
+                else if (objtype==qMetaTypeId<QDaqVector>())
                 {
-                    QDaqDoubleVector v;
+                    QDaqVector v;
                     if (readVectorClass(h5obj,metaProperty.name(),v,H5T_FLOAT))
                         metaProperty.write(obj,QVariant::fromValue(v));
                 }

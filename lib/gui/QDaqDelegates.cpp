@@ -2,10 +2,12 @@
 #include "QDaqChannel.h"
 
 #include <QMetaProperty>
+
 // display widgets
 #include <QLabel>
 #include <QLCDNumber>
-//#include <qwt_thermo.h>
+#include <qwt_thermo.h>
+
 // input widgets
 #include <QLineEdit>
 #include <QComboBox>
@@ -18,7 +20,7 @@ WidgetVariant::WidgetVariant(QWidget* w) : widget_(w), type_(qNone)
 {
 	if (qobject_cast<QLabel*>(w)) type_ = qLabel;
 	else if (qobject_cast<QLCDNumber*>(w)) type_ = qLCDNumber;
-    //else if (qobject_cast<QwtThermo*>(w)) type_ = qwtThermo;
+    else if (qobject_cast<QwtThermo*>(w)) type_ = qwtThermo;
 	else if (qobject_cast<QAbstractButton*>(w)) type_ =  qAbstractButton;
 	else if (qobject_cast<QAbstractSlider*>(w)) type_ = qAbstractSlider;
 	else if (qobject_cast<QSpinBox*>(w)) type_ = qSpinBox;
@@ -37,14 +39,14 @@ bool WidgetVariant::canConvert(QVariant::Type t) const
 		return (type_==qDoubleSpinBox) || 
 			(type_==qLineEdit) || 
 			(type_==qLabel) || 
-            (type_==qLCDNumber); // ||
-            //(type_==qwtThermo);
+            (type_==qLCDNumber) ||
+            (type_==qwtThermo);
 	case QVariant::Int:
 	case QVariant::UInt:
 		return (type_==qSpinBox) || 
 			(type_==qAbstractSlider) || 
 			(type_==qLCDNumber) ||
-            //(type_==qwtThermo) ||
+            (type_==qwtThermo) ||
 			(type_==qLabel) ||
 			(type_==qLineEdit);
 	case QVariant::String:
@@ -91,11 +93,11 @@ QVariant WidgetVariant::read()
 	case qLCDNumber:
 		return QVariant(
 			((QLCDNumber*)(w))->value()
-			);
-//	case qwtThermo:
-//		return QVariant(
-//			((QwtThermo*)(w))->value()
-//			);
+            );
+    case qwtThermo:
+        return QVariant(
+            ((QwtThermo*)(w))->value()
+            );
     default:
         break;
 	}
@@ -141,9 +143,9 @@ void WidgetVariant::write(const QVariant& v)
 			((QLCDNumber*)(w))->display(v.toString());
 		}
 		break;
-//	case qwtThermo:
-//		((QwtThermo*)(w))->setValue(v.toDouble());
-//		break;
+    case qwtThermo:
+        ((QwtThermo*)(w))->setValue(v.toDouble());
+        break;
     default:
         break;
 	}

@@ -30,6 +30,8 @@ class  QDAQ_EXPORT QDaqPlotWidget : public QwtPlot
 
     bool timeScaleX_, timeScaleY_, grid_on_;
 
+    int id_;
+
     QwtPlotGrid* grid_;
     QwtPlotZoomer* zoomer;
     QwtPlotPanner* panner;

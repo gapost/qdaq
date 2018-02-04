@@ -86,6 +86,7 @@ private slots:
 
 public slots:
     void clear();
+    void push(const QDaqVector& v);
 };
 
 

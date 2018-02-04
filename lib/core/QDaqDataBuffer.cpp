@@ -221,4 +221,20 @@ void QDaqDataBuffer::clear()
     emit updateWidgets();
 
 }
+void QDaqDataBuffer::push(const QDaqVector &v)
+{
+    os::auto_lock L(comm_lock);
+
+    if (v.size()!=data_matrix.size()) return;
+
+    for(int j=0; j<data_matrix.size(); j++)
+        data_matrix[j].push(v[j]);
+
+    uint c = data_matrix[0].capacity();
+    if (c!=capacity_) capacity_ = c;
+
+    emit updateWidgets();
+    emit propertiesChanged();
+}
+
 

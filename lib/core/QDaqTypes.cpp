@@ -29,7 +29,7 @@ int registerVectorTypes(QScriptEngine* eng)
 {
     return qScriptRegisterMetaType<QDaqIntVector>(eng,toScriptValue,fromScriptValue) &
         qScriptRegisterMetaType<QDaqUintVector>(eng,toScriptValue,fromScriptValue) &
-        qScriptRegisterMetaType<QDaqDoubleVector>(eng,toScriptValue,fromScriptValue);
+        qScriptRegisterMetaType<QDaqVector>(eng,toScriptValue,fromScriptValue);
 }
 
 

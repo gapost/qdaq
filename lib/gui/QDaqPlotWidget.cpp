@@ -187,7 +187,8 @@ public:
 QDaqPlotWidget::QDaqPlotWidget(QWidget* parent) :
     QwtPlot(parent),
     timeScaleX_(false), timeScaleY_(false),
-    grid_on_(false)
+    grid_on_(false),
+    id_(0)
 {
     setCanvasBackground(QColor(Qt::white));
 
@@ -339,8 +340,6 @@ void QDaqPlotWidget::setYlim(const QPointF &v)
 
 void QDaqPlotWidget::plot(const QDaqBuffer &x, const QDaqBuffer &y)
 {
-    static int id_;
-
     static const Qt::GlobalColor eight_colors[8] =
     {
         Qt::blue,
@@ -381,6 +380,8 @@ void QDaqPlotWidget::setTimeAxis(int axisid, bool on)
 void QDaqPlotWidget::clear()
 {
     detachItems(QwtPlotItem::Rtti_PlotCurve,true);
+
+    id_ = 0;
 
     replot();
 }
