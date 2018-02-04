@@ -1,6 +1,6 @@
 print("Creating Widgets");
 
-var w = loadTopLevelUi('ui/tabwidget.ui','form1');
+var w = loadTopLevelUi('ui/tabwidget.ui','mainForm');
 
 var to = loadUi('ui/testform.ui');
 var from = w.findChild('loopCtrl');
@@ -14,6 +14,11 @@ w.replaceWidget(from,to);
 
 to = loadUi('ui/cryoTemperatureControl.ui');
 from = w.findChild('cryoCtrl');
+
+w.replaceWidget(from,to);
+
+to = loadUi('ui/plotform.ui');
+from = w.findChild('plotWdgt');
 
 w.replaceWidget(from,to);
 
@@ -37,6 +42,8 @@ loop.appendChild(X1);
 loop.appendChild(scr);
 loop.appendChild(X2);
 loop.appendChild(Data);
+
+
 qdaq.appendChild(loop);
 loop.createLoopEngine();
 loop.period = 200;
@@ -65,6 +72,24 @@ function startPressed(on) {
 
 startButton = w.findChild("btStart");
 startButton.toggled.connect(startPressed);
+
+plot1 = w.findChild("plot1");
+Data.updateWidgets.connect(plot1.replot);
+plot1.plot(Data.t,Data.X1);
+
+function onPlotCh1(on) {
+    var plot1 = ui.mainForm.findChild('plot1');
+    var Data = qdaq.loop.Data;
+    plot1.clear();
+    if (on) plot1.plot(Data.t,Data.X1);
+    else plot1.plot(Data.t,Data.X2);
+}
+
+btPlotCh1 = w.findChild('btPlotCh1');
+btPlotCh1.toggled.connect(onPlotCh1);
+
+btClear = w.findChild('btClear');
+btClear.clicked.connect(Data.clear);
 
 loop2.arm()
 w.show()

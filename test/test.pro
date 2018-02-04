@@ -24,6 +24,7 @@ FORMS += \
     ui/cryoTemperatureControl.ui \
     ui/deltaControl.ui \
     ui/testform.ui \
-    ui/tabwidget.ui
+    ui/tabwidget.ui \
+    ui/plotform.ui
 
 
