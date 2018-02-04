@@ -1,4 +1,4 @@
-#include "gui/QDaqLed.h"
+#include "QDaqLed.h"
 #include "qledplugin.h"
 
 #include <QtPlugin>

@@ -56,8 +56,8 @@
 #include "qttreepropertybrowser.h"
 #include "qtpropertybrowser.h"
 
-#include "core/QDaqTypes.h"
-#include "core/QDaqObject.h"
+#include "QDaqTypes.h"
+#include "QDaqObject.h"
 
 bool isQDaqType(int type)
 {

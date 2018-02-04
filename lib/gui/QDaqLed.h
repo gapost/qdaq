@@ -1,7 +1,7 @@
 #ifndef QLED_H
 #define QLED_H
 
-#include "core/QDaqGlobal.h"
+#include "QDaqGlobal.h"
 
 #include <QAbstractButton>
 

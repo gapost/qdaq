@@ -12,7 +12,7 @@
 #include "QDaqObjectController.h"
 
 #include "QDaqObjectBrowser.h"
-#include "core/QDaqRoot.h"
+#include "QDaqRoot.h"
 
 QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QWidget(p)
 {

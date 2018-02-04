@@ -7,9 +7,9 @@
 
 #include "QDaqConsole.h"
 
-#include "core/QDaqSession.h"
+#include "QDaqSession.h"
 
-#include "core/QDaqRoot.h"
+#include "QDaqRoot.h"
 
 QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(parent), session(s)
 {

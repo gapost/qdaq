@@ -1,4 +1,4 @@
-#include "core/QDaqEnumHelper.h"
+#include "QDaqEnumHelper.h"
 #include "QDaqInterface.h"
 #include "QDaqDevice.h"
 

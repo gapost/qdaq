@@ -1,7 +1,7 @@
 #ifndef _QCONSOLEWIDGET_H_
 #define _QCONSOLEWIDGET_H_
 
-#include "core/QDaqGlobal.h"
+#include "QDaqGlobal.h"
 
 #include <QPlainTextEdit>
 

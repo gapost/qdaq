@@ -1,7 +1,7 @@
 #ifndef _QDAQINTERFACE_H_
 #define _QDAQINTERFACE_H_
 
-#include "core/QDaqObject.h"
+#include "QDaqObject.h"
 
 #include <QVector>
 #include <QHostAddress>

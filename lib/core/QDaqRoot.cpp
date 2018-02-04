@@ -4,9 +4,9 @@
 #include "QDaqChannel.h"
 #include "QDaqDataBuffer.h"
 #include "QDaqSession.h"
-#include "gui/QDaqIde.h"
-#include "daq/QDaqInterface.h"
-#include "daq/QDaqDevice.h"
+#include "QDaqIde.h"
+#include "QDaqInterface.h"
+#include "QDaqDevice.h"
 
 #include <QCoreApplication>
 #include <QDir>

@@ -10,10 +10,10 @@ lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
 
 include(../qdaq.pri)
 
-
-
 TARGET = QDaq
 TEMPLATE = lib
+
+INCLUDEPATH += ./core ./gui ./daq
 
 SOURCES += \
     core/QDaqSession.cpp \
@@ -68,9 +68,10 @@ HEADERS  += \
     daq/QDaqInterface.h \
     daq/QDaqDevice.h \
     QDaqBuffer \
-    gui/variantmanager.h \
     gui/QDaqPlotWidget.h \
+    gui/variantmanager.h \
     gui/QDaqLed.h
+
 
 ## JSedit
 SOURCES += 3rdparty/jsedit/jsedit.cpp

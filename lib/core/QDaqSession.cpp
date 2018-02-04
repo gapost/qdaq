@@ -2,8 +2,8 @@
 #include "QDaqRoot.h"
 
 #include "QDaqLogFile.h"
-#include "gui/QDaqDelegates.h"
-#include "gui/QDaqWindow.h"
+#include "QDaqDelegates.h"
+#include "QDaqWindow.h"
 
 #include <QScriptEngine>
 #include <QScriptEngineDebugger>
@@ -77,9 +77,6 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
 	// register basic types with the engine
     registerVectorTypes(engine_);
-
-    //register Buffer proto
-    //QDaqBufferProto::setup(engine_);
 
 	// register root classes
     QList<const QMetaObject*> rtClasses = QDaqObject::root()->registeredClasses();

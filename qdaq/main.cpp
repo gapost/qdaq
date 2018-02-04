@@ -5,10 +5,10 @@
 #include <QMessageBox>
 #include <QScriptEngine>
 
-#include "core/QDaqRoot.h"
-#include "core/QDaqSession.h"
-#include "gui/QDaqIde.h"
-#include "gui/QDaqConsole.h"
+#include "QDaqRoot.h"
+#include "QDaqSession.h"
+#include "QDaqIde.h"
+#include "QDaqConsole.h"
 
 #include "QDaqPlotWidget.h"
 

@@ -1,7 +1,7 @@
 #ifndef _QDaqPlotWidget_H_
 #define _QDaqPlotWidget_H_
 
-#include "core/QDaqGlobal.h"
+#include "QDaqGlobal.h"
 
 #include <qwt_plot.h>
 

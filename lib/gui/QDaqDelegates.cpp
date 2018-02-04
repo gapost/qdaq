@@ -1,5 +1,5 @@
 #include "QDaqDelegates.h"
-#include "core/QDaqChannel.h"
+#include "QDaqChannel.h"
 
 #include <QMetaProperty>
 // display widgets

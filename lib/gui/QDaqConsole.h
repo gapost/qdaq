@@ -1,8 +1,8 @@
 #ifndef _SCRIPTCONSOLE_H_
 #define _SCRIPTCONSOLE_H_
 
-#include "core/QDaqGlobal.h"
-#include "gui/QConsoleWidget.h"
+#include "QDaqGlobal.h"
+#include "QConsoleWidget.h"
 
 class QDaqSession;
 

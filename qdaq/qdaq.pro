@@ -24,14 +24,6 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../lib/release/ -lQDaq
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../lib/debug/ -lQDaq
 else:unix: LIBS += -L$$OUT_PWD/../lib/ -lQDaq
 
-INCLUDEPATH += $$PWD/../lib
-DEPENDPATH += $$PWD/../lib
+INCLUDEPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
+DEPENDPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
 
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../widgets/src/release/ -lQDaqWidgets
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../widgets/src/debug/ -lQDaqWidgets
-else:unix: LIBS += -L$$OUT_PWD/../widgets/src/ -lQDaqWidgets
-
-INCLUDEPATH += $$PWD/../widgets/src
-DEPENDPATH += $$PWD/../widgets/src

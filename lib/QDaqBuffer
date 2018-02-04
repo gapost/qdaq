@@ -1,1 +1,1 @@
-#include "./core/QDaqTypes.h"
+#include "QDaqTypes.h"
