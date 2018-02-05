@@ -218,7 +218,9 @@ bool QDaqLoop::exec()
         count_++;
         // unlock everything in reverse order
         subjobs_.unlock();
+
         emit propertiesChanged();
+        emit updateWidgets();
     }
     comm_lock.unlock();
 

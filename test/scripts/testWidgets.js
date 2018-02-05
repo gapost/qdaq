@@ -46,11 +46,11 @@ loop.appendChild(Data);
 
 qdaq.appendChild(loop);
 loop.createLoopEngine();
-loop.period = 200;
+loop.period = 20;
 loop.limit = 1000;
 
 var loop2 = new QDaqLoop("loop2");
-loop2.delay = 5;
+loop2.delay = 50;
 
 t = new QDaqTimeChannel("t");
 t.format = "Time";
@@ -74,7 +74,9 @@ startButton = w.findChild("btStart");
 startButton.toggled.connect(startPressed);
 
 plot1 = w.findChild("plot1");
-Data.updateWidgets.connect(plot1.replot);
+plot1.timeScaleX = 1;
+loop2.updateWidgets.connect(plot1.replot);
+//Data.updateWidgets.connect(plot1.replot);
 plot1.plot(Data.t,Data.X1);
 
 function onPlotCh1(on) {

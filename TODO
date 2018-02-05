@@ -1,5 +1,3 @@
-  * Make QDaqBuffer explicitly shared
-  * Fix lib headers issue (i.e. core/QDaqObject or what??)
   * Syntax checking in scripts and report to user
   * Implement editing of QDaq Types in property browser. Need to subclass QtVariantEditorFactory.
     Current solution: properties are displayed read-only as a text string

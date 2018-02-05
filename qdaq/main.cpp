@@ -10,8 +10,6 @@
 #include "QDaqIde.h"
 #include "QDaqConsole.h"
 
-#include "QDaqPlotWidget.h"
-
 enum CommandLineParseResult
 {
     CommandLineOk,
@@ -20,10 +18,13 @@ enum CommandLineParseResult
     CommandLineHelpRequested
 };
 
-CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString &startupScript, bool &console, QString &errorMessage)
+CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString &startupScript, bool &console, bool & debug, QString &errorMessage)
 {
-    const QCommandLineOption consoleOption(QStringList() << "c" << "console", "If a console is needed.");
+    const QCommandLineOption consoleOption(QStringList() << "c" << "console", "Start a script console window.");
     parser.addOption(consoleOption);
+
+    const QCommandLineOption debugOption(QStringList() << "d" << "debug", "Start in script-debugging mode.");
+    parser.addOption(debugOption);
 
     parser.addPositionalArgument("script", "A .js script to run at startup.");
     const QCommandLineOption helpOption = parser.addHelpOption();
@@ -41,6 +42,7 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString &sta
         return CommandLineHelpRequested;
 
     console = parser.isSet(consoleOption);
+    debug = parser.isSet(debugOption);
 
     const QStringList positionalArguments = parser.positionalArguments();
 
@@ -73,9 +75,9 @@ int main(int argc, char *argv[])
 
     QCommandLineParser parser;
     QString startupScript, errorMessage;
-    bool console;
+    bool console, debug;
 
-    switch (parseCommandLine(parser, startupScript, console, errorMessage)) {
+    switch (parseCommandLine(parser, startupScript, console, debug, errorMessage)) {
     case CommandLineOk:
         break;
     case CommandLineError:
@@ -113,22 +115,20 @@ int main(int argc, char *argv[])
     }
 
     QDaqRoot qdaq;
+    QDaqSession* s = qdaq.rootSession();
+    if (debug) s->evaluate("debug(1)");
 
     if (startupScript.isEmpty()) {
         QDaqIDE* mainWin = qdaq.createIdeWindow();
         mainWin->show();
     }
     else {
-        QDaqSession* s = qdaq.rootSession();
-
         QDaqConsole* console = new QDaqConsole(s);
         console->show();
 
         const char* intro = "QDaq - Qt-based Data Aqcuisition\n"
                 "Version 1.0\n\n";
         console->stdOut(intro);
-
-
 
         s->evaluate(QString("print('Executing startup script %1')").arg(startupScript));
         s->evaluate(QString("exec('%1')").arg(startupScript));
@@ -144,8 +144,6 @@ int main(int argc, char *argv[])
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
         }
     }
-
-    QDaqPlotWidget w;
 
     return app.exec();
 }
