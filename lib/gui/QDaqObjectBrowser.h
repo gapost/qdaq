@@ -1,50 +1,41 @@
 #ifndef _RTOBJECTBROWSER_H_
 #define _RTOBJECTBROWSER_H_
 
-#include <QWidget> 
-#include <QMap>
+#include <QSplitter>
 
-class QTreeWidget;
-class QTreeWidgetItem;
+class QDaqObjectModel;
+class QTreeView;
 class QTableWidget;
 class QTabWidget;
 class QDaqObjectController;
 class QPushButton;
 class QLineEdit;
+class QTreeWidget;
 
 class QDaqPropertyBrowser;
 class QDaqFunctionBrowser;
 
-
 class QDaqObject;
 
-class QDaqObjectBrowser : public QWidget
+class QDaqObjectBrowser : public QSplitter
 {
 	Q_OBJECT
 
-    QMap<QDaqObject*,QTreeWidgetItem*> objects2items;
-    QMap<QTreeWidgetItem*,QDaqObject*> items2objects;
 public:
     QDaqObjectBrowser(QWidget* p = 0);
     virtual ~QDaqObjectBrowser(void);
 
-protected:
-    void insertObject(QTreeWidgetItem* parent, QDaqObject* obj, bool recursive=false);
-    void removeObject(QDaqObject* obj, bool recursive = true);
-    void change(QDaqObject* obj, bool create);
-
 protected slots:
-    void slotCurrentItemChanged ( QTreeWidgetItem * current, QTreeWidgetItem * previous);
-    void slotInsertObject(QDaqObject* obj);
-    void slotRemoveObject(QDaqObject* obj);
-    void slotUpdateItem(QTreeWidgetItem* i);
+    void onItemActivated(const QModelIndex& index);
+    //void slotUpdateItem(QTreeWidgetItem* i);
 
 signals:
     void currentObjectChanged(QDaqObject* obj);
-    void updateItem(QTreeWidgetItem* i);
+    //void updateItem(QTreeWidgetItem* i);
 
 protected:
-	QTreeWidget* treeWidget;
+    QDaqObjectModel* model;
+    QTreeView* treeView;
     QTabWidget* tabWidget;
     QDaqPropertyBrowser* propertyBrowser;
     QDaqFunctionBrowser* functionBrowser;

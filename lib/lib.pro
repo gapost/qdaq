@@ -38,7 +38,8 @@ SOURCES += \
     daq/QDaqInterface.cpp \
     daq/QDaqDevice.cpp \
     gui/QDaqPlotWidget.cpp \
-    gui/QDaqLed.cpp
+    gui/QDaqLed.cpp \
+    gui/QDaqObjectModel.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -70,7 +71,8 @@ HEADERS  += \
     QDaqBuffer \
     gui/QDaqPlotWidget.h \
     gui/variantmanager.h \
-    gui/QDaqLed.h
+    gui/QDaqLed.h \
+    gui/QDaqObjectModel.h
 
 
 ## JSedit

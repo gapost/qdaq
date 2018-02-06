@@ -391,8 +391,8 @@ void QDaqObject::childEvent(QChildEvent *event)
             if (isAttached()) obj->attach();
         }
         if (event->removed() && i>=0) {
-            children_.removeAt(i);
             if (isAttached()) obj->detach();
+            children_.removeAt(i);           
         }
     }
 

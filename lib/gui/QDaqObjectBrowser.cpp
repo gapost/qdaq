@@ -2,26 +2,33 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QTreeView>
 #include <QTreeWidget>
 #include <QTableWidget>
 #include <QLineEdit>
 #include <QHeaderView>
 #include <QMetaObject>
 #include <QMetaMethod>
+#include <QSplitter>
 
+#include "QDaqObjectModel.h"
 #include "QDaqObjectController.h"
 
 #include "QDaqObjectBrowser.h"
 #include "QDaqRoot.h"
 
-QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QWidget(p)
+QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QSplitter(p)
 {
-	treeWidget = new QTreeWidget(this);
-    treeWidget->setColumnCount(2);
-    QStringList headers;
-    headers << "Object" << "Class";
-    treeWidget->setHeaderLabels(headers);
-    treeWidget->setAlternatingRowColors(true);
+    model = new QDaqObjectModel(this);
+
+    treeView = new QTreeView(this);
+    treeView->setModel(model);
+    //treeWidget->setColumnCount(2);
+    //QStringList headers;
+    //headers << "Object" << "Class";
+    //treeWidget->setHeaderLabels(headers);
+    treeView->setAlternatingRowColors(true);
+    treeView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     currentObject = new QLineEdit(this);
 
@@ -35,36 +42,22 @@ QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QWidget(p)
     vlayout->addWidget(currentObject);
     vlayout->addWidget(tabWidget);
 
-    QHBoxLayout* hlayout = new QHBoxLayout();
-    hlayout->addWidget(treeWidget);
-    hlayout->addLayout(vlayout);
-    setLayout(hlayout);
+    QWidget* rightWidget = new QWidget;
+    rightWidget->setLayout(vlayout);
 
-    insertObject(treeWidget->invisibleRootItem(), QDaqObject::root(), true);
+    //QSplitter* splitter = new QSplitter(this);
+    //splitter->addWidget(treeView);
+    //splitter->addWidget(rightWidget);
+    addWidget(treeView);
+    addWidget(rightWidget);
 
-//	foreach(QObject* o, QDaqObject::root()->children())
-//	{
-//		if (QDaqObject* rto = qobject_cast<QDaqObject*>(o))
-//			insertObject(treeWidget->invisibleRootItem(), rto, true);
-//	}
+    //QHBoxLayout* hlayout = new QHBoxLayout();
+    //hlayout->addWidget(splitter);
+//    hlayout->addLayout(vlayout);
+    //setLayout(hlayout);
 
-	connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-		this, SLOT(slotCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)) );
-
-	connect(this, SIGNAL(updateItem(QTreeWidgetItem* )),
-		this, SLOT(slotUpdateItem(QTreeWidgetItem* )) , Qt::QueuedConnection);
-
-    connect(this, SIGNAL(currentObjectChanged(QDaqObject*)),
-        propertyBrowser, SLOT(setQDaqObject(QDaqObject*)));
-    connect(this, SIGNAL(currentObjectChanged(QDaqObject*)),
-        functionBrowser, SLOT(setQDaqObject(QDaqObject*)));
-
-    // object creation is queued so that object is fully created
-    connect(QDaqObject::root(), SIGNAL(objectCreated(QDaqObject*)),
-        this, SLOT(slotInsertObject(QDaqObject*))); //, Qt::QueuedConnection);
-    // object deletion should be normal so that all objects have the chance to deref
-    connect(QDaqObject::root(), SIGNAL(objectDeleted(QDaqObject*)),
-        this, SLOT(slotRemoveObject(QDaqObject*))); //, Qt::QueuedConnection);
+    connect(treeView,SIGNAL(activated(QModelIndex)),this,SLOT(onItemActivated(QModelIndex)));
+    connect(treeView,SIGNAL(clicked(QModelIndex)),this,SLOT(onItemActivated(QModelIndex)));
 
     //connect(currentObject,SIGNAL(editingFinished()),this,SLOT(setByUser()));
 
@@ -74,98 +67,11 @@ QDaqObjectBrowser::~QDaqObjectBrowser(void)
 {
 }
 
-void QDaqObjectBrowser::change(QDaqObject* obj, bool create)
+void QDaqObjectBrowser::onItemActivated(const QModelIndex &index)
 {
-	if (create)
-	{
-		QTreeWidgetItem* parentitem = objects2items.value(obj->parent());
-		if (parentitem) 
-		{
-            insertObject(parentitem, obj,true);
-			//treeWidget->expandItem(parentitem);
-		}
-	}
-	else removeObject(obj);
-}
-
-void QDaqObjectBrowser::insertObject(QTreeWidgetItem* parent, QDaqObject* obj, bool recursive)
-{
-	QStringList nodedata;
-	nodedata <<  obj->objectName() << obj->metaObject()->className();
-
-    QTreeWidgetItem* node = new QTreeWidgetItem(nodedata);
-
-    QDaqObject* parent_obj = obj->parent();
-
-    if (parent_obj) {
-        int idx = parent_obj->children().indexOf(obj);
-        parent->insertChild(idx,node);
-    } else parent->addChild(node);
-
-    //QTreeWidgetItem* node = new QTreeWidgetItem(parent, nodedata);
-	objects2items.insert(obj,node);
-	items2objects.insert(node,obj);
-	//treeWidget->expandItem(node);
-
-	emit updateItem(node);
-
-	if (recursive)
-	{
-		foreach(QObject* o, obj->children())
-		{
-			if (QDaqObject* rtchild = qobject_cast<QDaqObject*>(o))
-                insertObject(node, rtchild, recursive);
-		}
-	}
-
-}
-
-void QDaqObjectBrowser::removeObject(QDaqObject* obj, bool recursive)
-{
-		QTreeWidgetItem* item = objects2items.value(obj);
-		if (item) 
-		{
-			objects2items.remove(obj);
-			items2objects.remove(item);
-
-			if (recursive)
-			{
-				QList<QTreeWidgetItem *> items = item->takeChildren();
-				foreach(QTreeWidgetItem* i, items)
-				{
-					QDaqObject* obj1 = items2objects.value(i);
-					if (obj1) removeObject(obj1);
-				}
-			}
-			delete item;
-		}
-}
-
-void QDaqObjectBrowser::slotInsertObject(QDaqObject* obj)
-{
-	change(obj,true);
-}
-
-void QDaqObjectBrowser::slotRemoveObject(QDaqObject* obj)
-{
-	change(obj,false);
-}
-
-void QDaqObjectBrowser::slotCurrentItemChanged( QTreeWidgetItem * current, QTreeWidgetItem * previous)
-{
-    Q_UNUSED(previous);
-	QDaqObject* obj = items2objects.value(current);
-    if (obj) {
-        currentObject->setText(obj->fullName());
-        emit currentObjectChanged(obj);
-    }
-}
-
-void QDaqObjectBrowser::slotUpdateItem( QTreeWidgetItem * i)
-{
-	QDaqObject* obj = items2objects.value(i);
-	if (obj)
-		i->setData(1,Qt::DisplayRole,obj->metaObject()->className());
+    QDaqObject* obj = model->objectAt(index);
+    propertyBrowser->setQDaqObject(obj);
+    functionBrowser->setQDaqObject(obj);
 }
 
 //***********************************************************************//
