@@ -47,7 +47,7 @@ QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QSplitter(p)
     connect(treeView,SIGNAL(activated(QModelIndex)),this,SLOT(onItemActivated(QModelIndex)));
     connect(treeView,SIGNAL(clicked(QModelIndex)),this,SLOT(onItemActivated(QModelIndex)));
 
-    //connect(currentObject,SIGNAL(editingFinished()),this,SLOT(setByUser()));
+    connect(currentObject,SIGNAL(editingFinished()),this,SLOT(onSetByUser()));
 
 }
 
@@ -58,6 +58,18 @@ QDaqObjectBrowser::~QDaqObjectBrowser(void)
 void QDaqObjectBrowser::onItemActivated(const QModelIndex &index)
 {
     QDaqObject* obj = model->objectAt(index);
+    currentObject->setText(obj->fullName());
+    propertyBrowser->setQDaqObject(obj);
+    functionBrowser->setQDaqObject(obj);
+}
+
+void QDaqObjectBrowser::onSetByUser()
+{
+    QString str = currentObject->text();
+    QDaqObject* obj = QDaqObject::findByName(str);
+    if (!obj) return;
+    QModelIndex index = model->index(obj);
+    treeView->setCurrentIndex(index);
     propertyBrowser->setQDaqObject(obj);
     functionBrowser->setQDaqObject(obj);
 }

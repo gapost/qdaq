@@ -181,7 +181,7 @@ QDaqObject* QDaqObject::findByName(const QString& name)
 
     QDaqObject* o = root();
 
-	if (tokens.front()=="rt")
+    if (tokens.front()=="qdaq")
 	{
 		tokens.pop_front();
 		if (tokens.isEmpty()) return o;

@@ -27,7 +27,7 @@ public:
 
 protected slots:
     void onItemActivated(const QModelIndex& index);
-    //void slotUpdateItem(QTreeWidgetItem* i);
+    void onSetByUser();
 
 signals:
     void currentObjectChanged(QDaqObject* obj);
