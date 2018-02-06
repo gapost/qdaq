@@ -7,7 +7,7 @@
 QDaqObjectModel::QDaqObjectModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    index(QDaqObject::root());
+    //index(QDaqObject::root());
     connect(QDaqObject::root(), SIGNAL(objectCreated(QDaqObject*)),
         this, SLOT(insert(QDaqObject*)));
     connect(QDaqObject::root(), SIGNAL(objectDeleted(QDaqObject*)),
@@ -51,9 +51,11 @@ QModelIndex QDaqObjectModel::index(int row, int column, const QModelIndex &paren
     if (row < 0 || column < 0 || row >= rowCount(parent) || column >= columnCount(parent))
         return QModelIndex();
 
+    if (!parent.isValid())
+        return createIndex(0, column, QDaqObject::root());
+
     // get the parent node
-    QDaqObject* parentNode = (parent.isValid() ? objectAt(parent) :
-                                                   const_cast<QDaqObject*>((QDaqObject*)QDaqObject::root()));
+    QDaqObject* parentNode = objectAt(parent);
     Q_ASSERT(parentNode);
 
     // now get the internal pointer for the index
@@ -69,20 +71,20 @@ QModelIndex QDaqObjectModel::parent(const QModelIndex &index) const
             return QModelIndex();
 
     QDaqObject* indexNode = objectAt(index);
-
     Q_ASSERT(indexNode != 0);
 
-    QDaqObject* parentNode = indexNode->parent();
-    if (parentNode == 0 || parentNode == QDaqObject::root())
+    if (indexNode == QDaqObject::root())
         return QModelIndex();
+
+    QDaqObject* parentNode = indexNode->parent();
+    if (parentNode == QDaqObject::root())
+        return createIndex(0, 0, parentNode);
 
     // get the parent's row
     QDaqObject* grandParentNode = parentNode->parent();
-
-    Q_ASSERT(grandParentNode->children().contains(parentNode));
+    Q_ASSERT(grandParentNode);
 
     int row = grandParentNode->children().indexOf(parentNode);
-
     if (row == -1)
         return QModelIndex();
 
@@ -94,12 +96,12 @@ int QDaqObjectModel::rowCount(const QModelIndex &parent) const
     if (parent.column() > 0)
          return 0;
 
-    QDaqObject* obj;
-    if (!parent.isValid()) obj = QDaqObject::root();
-    else obj = objectAt(parent);
+    if (!parent.isValid()) return 1;
 
-    int count = obj->children().size();
-    return count;
+    QDaqObject* obj = objectAt(parent);
+    Q_ASSERT(obj);
+
+    return obj->children().size();
 }
 
 int QDaqObjectModel::columnCount(const QModelIndex &parent) const
@@ -112,6 +114,7 @@ bool QDaqObjectModel::hasChildren(const QModelIndex &parent) const
     if (parent.column() > 0)
         return false;
 
+    if (!parent.isValid()) return true;
     const QDaqObject *indexNode = objectAt(parent);
     Q_ASSERT(indexNode);
     return (!indexNode->children().isEmpty());
@@ -164,8 +167,8 @@ QVariant QDaqObjectModel::data(const QModelIndex &index, int role) const
 void QDaqObjectModel::insert(QDaqObject *obj)
 {
     QDaqObject* parent = obj->parent();
-    int row = parent->children().indexOf(obj);
     Q_ASSERT(parent);
+    int row = parent->children().indexOf(obj);
     QModelIndex parentIndex = index(parent);
     beginInsertRows(parentIndex, row, row);
     endInsertRows();
@@ -173,8 +176,8 @@ void QDaqObjectModel::insert(QDaqObject *obj)
 void QDaqObjectModel::remove(QDaqObject *obj)
 {
     QDaqObject* parent = obj->parent();
-    int row = parent->children().indexOf(obj);
     Q_ASSERT(parent);
+    int row = parent->children().indexOf(obj);
     QModelIndex parentIndex = index(parent);
     beginRemoveRows(parentIndex, row, row);
     endRemoveRows();
@@ -182,20 +185,16 @@ void QDaqObjectModel::remove(QDaqObject *obj)
 
 QModelIndex QDaqObjectModel::index(const QDaqObject* obj, int column) const
 {
-    QDaqObject *parent = (obj ? obj->parent() : 0);
-    if (obj == QDaqObject::root() || !parent)
-        return QModelIndex();
+    if (!obj) return QModelIndex();
+
+    if (obj == QDaqObject::root()) return createIndex(0, column, const_cast<QDaqObject*>(obj));
+
+    QDaqObject *parent = obj->parent();
 
     // get the parent's row
-    Q_ASSERT(obj);
-    int row = 0;
-    QDaqObjectList children = parent->children();
-    foreach(const QDaqObject* ch, children)
-    {
-        if (ch==obj) break;
-        row++;
-    }
-    Q_ASSERT(row<children.size());
+    Q_ASSERT(parent);
+    int row = parent->children().indexOf(const_cast<QDaqObject*>(obj));
+    Q_ASSERT(row>=0);
     return createIndex(row, column, const_cast<QDaqObject*>(obj));
 }
 
@@ -207,8 +206,7 @@ QModelIndex QDaqObjectModel::index(const QString &path, int column) const
 
 QDaqObject* QDaqObjectModel::objectAt(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return QDaqObject::root(); //const_cast<QFileSystemNode*>(&root);
+    if (!index.isValid()) return 0;
     QDaqObject* obj = static_cast<QDaqObject*>(index.internalPointer());
     Q_ASSERT(obj);
     return obj;

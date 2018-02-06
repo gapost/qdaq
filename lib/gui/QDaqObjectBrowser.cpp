@@ -23,10 +23,6 @@ QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QSplitter(p)
 
     treeView = new QTreeView(this);
     treeView->setModel(model);
-    //treeWidget->setColumnCount(2);
-    //QStringList headers;
-    //headers << "Object" << "Class";
-    //treeWidget->setHeaderLabels(headers);
     treeView->setAlternatingRowColors(true);
     treeView->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -45,16 +41,8 @@ QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QSplitter(p)
     QWidget* rightWidget = new QWidget;
     rightWidget->setLayout(vlayout);
 
-    //QSplitter* splitter = new QSplitter(this);
-    //splitter->addWidget(treeView);
-    //splitter->addWidget(rightWidget);
     addWidget(treeView);
     addWidget(rightWidget);
-
-    //QHBoxLayout* hlayout = new QHBoxLayout();
-    //hlayout->addWidget(splitter);
-//    hlayout->addLayout(vlayout);
-    //setLayout(hlayout);
 
     connect(treeView,SIGNAL(activated(QModelIndex)),this,SLOT(onItemActivated(QModelIndex)));
     connect(treeView,SIGNAL(clicked(QModelIndex)),this,SLOT(onItemActivated(QModelIndex)));

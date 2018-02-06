@@ -11,14 +11,15 @@ QDaqChannel::QDaqChannel(const QString& name) :
     type_(None),
     fmt_(General),
     digits_(6),
-	v_(0.), dv_(0.),
-	offset_(0.), multiplier_(1.),
-	parser_(0),
-	dataReady_(false),
-	counter_(0)
+    v_(0.), dv_(0.),
+    offset_(0.), multiplier_(1.),
+    parser_(0),
+    dataReady_(false),
+    counter_(0)
 {
-	range_ << -1e30 << 1.e30;
-	setForgettingFactor(0.99);
+    range_ << -1e30 << 1.e30;
+    ff_ = 0.;
+    setForgettingFactor(0.99);
     depth_ = 1;
     buff_.alloc(1);
 }
