@@ -25,8 +25,6 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     registerClass(&QDaqLoop::staticMetaObject);
 
     registerClass(&QDaqChannel::staticMetaObject);
-    registerClass(&QDaqTestChannel::staticMetaObject);
-    registerClass(&QDaqTimeChannel::staticMetaObject);
 
     registerClass(&QDaqDataBuffer::staticMetaObject);
 

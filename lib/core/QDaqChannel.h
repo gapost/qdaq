@@ -24,8 +24,11 @@ class RTLAB_BASE_EXPORT QDaqChannel : public QDaqJob
 {
 	Q_OBJECT
 
-	/** User supplied name.
-	Used when displaying the channel.
+    /// Type of the channel.
+    Q_PROPERTY(ChannelType type READ type WRITE setType)
+    /** User supplied signal name.
+    Used when displaying the channel.
+    It is different from the object name.
 	*/
 	Q_PROPERTY(QString signalName READ signalName WRITE setSignalName)
 	/** User supplied unit of measurement.
@@ -81,8 +84,19 @@ class RTLAB_BASE_EXPORT QDaqChannel : public QDaqJob
 
 	Q_ENUMS(AveragingType)
 	Q_ENUMS(NumberFormat)
+    Q_ENUMS(ChannelType)
 
 public:
+    /** Type of the channel.
+    */
+    enum ChannelType {
+        Normal,  /**< Normal channel - nothing special. */
+        Clock,    /**< Records time in each repetition. Can be used for time measurement. */
+        Random,  /**< Generates random samples. */
+        Inc,     /**< Starting from an initial value increments by 1 in each repetition. */
+        Dec      /**< Starting from an initial value decrements by 1 in each repetition. */
+    };
+
 	/** Type of channel averaging.
 	*/
 	enum AveragingType {
@@ -102,6 +116,7 @@ public:
 	};
 
 protected:
+    ChannelType channeltype_;
 	QString signalName_, unit_;
     AveragingType type_;
     NumberFormat fmt_;
@@ -133,6 +148,7 @@ public:
 	virtual void detach();
 
 	// getters
+    ChannelType type() const { return channeltype_; }
 	QString signalName() const { return signalName_; }
 	QString unit() const { return unit_; }
 	NumberFormat format() const { return fmt_; }
@@ -148,6 +164,7 @@ public:
 	QString parserExpression() const;
 
 	// setters
+    void setType(ChannelType t);
 	void setSignalName(QString v);
 	void setUnit(QString v);
 	void setFormat(NumberFormat v) { fmt_ = v; }
@@ -178,70 +195,7 @@ public slots:
 	double std() const { return dv_; }
 };
 
-/** A channel for time measurement.
 
-  \ingroup RtCore
-
-  Every time the channel is executed it registers the current time.
-
-  Can be used as a timer.
-
-*/
-class RTLAB_BASE_EXPORT QDaqTimeChannel : public QDaqChannel
-{
-    Q_OBJECT
-protected:
-    virtual bool run();
-public:
-    Q_INVOKABLE explicit QDaqTimeChannel(const QString& name);
-    virtual ~QDaqTimeChannel(void);
-};
-
-/** A channel for testing.
-
-  \ingroup RtCore
-
-  The test channel generates data according to the TestType and parameter chosen.
-  The data can be random noise, a continously increasing/decreasing value, or a sine wave.
-
-*/
-class RTLAB_BASE_EXPORT QDaqTestChannel : public QDaqChannel
-{
-    Q_OBJECT
-
-    /// Set the test type.
-    Q_PROPERTY(TestType type READ type WRITE setType)
-    /** A parameter with different meaning according to type of test.
-      For random noise it is the amplitude.
-      For inc/dec it is the increment/decrement.
-      For sine wave it is the frequency.
-      */
-    Q_PROPERTY(double par READ par WRITE setPar)
-
-    Q_ENUMS(TestType)
-
-public:
-    enum TestType { Random, Inc, Dec, Sin };
-
-    virtual void registerTypes(QScriptEngine *e);
-
-protected:
-    TestType type_;
-    double par_;
-    double v;
-
-    virtual bool run();
-
-public:
-    Q_INVOKABLE explicit QDaqTestChannel(const QString& name);
-    virtual ~QDaqTestChannel(void);
-
-
-    TestType type() const { return type_; }
-    void setType(TestType type) { type_ = type; v = 0; }
-    double par() const { return par_; }
-    void setPar(double v) { par_ = v; }
-};
 
 /** A channel for filtering another channel's data.
 

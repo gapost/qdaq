@@ -5,9 +5,11 @@
 #include "QDaqEnumHelper.h"
 Q_SCRIPT_ENUM(AveragingType,QDaqChannel)
 Q_SCRIPT_ENUM(NumberFormat,QDaqChannel)
+Q_SCRIPT_ENUM(ChannelType,QDaqChannel)
 
 QDaqChannel::QDaqChannel(const QString& name) :
     QDaqJob(name),
+    channeltype_(Normal),
     type_(None),
     fmt_(General),
     digits_(6),
@@ -38,7 +40,30 @@ void QDaqChannel::registerTypes(QScriptEngine* e)
 {
 	qScriptRegisterAveragingType(e);
 	qScriptRegisterNumberFormat(e);
+    qScriptRegisterChannelType(e);
     QDaqJob::registerTypes(e);
+}
+void QDaqChannel::setType(ChannelType t)
+{
+    //if (throwIfArmed()) return;
+    if ((int)t==-1)
+    {
+        QString msg(
+            "Invalid channel type specification. Availiable options: "
+            "Normal, Clock, Random, Inc, Dec."
+            );
+        throwScriptError(msg);
+        return;
+    }
+    if (channeltype_ != t)
+    {
+        {
+            os::auto_lock L(comm_lock);
+            channeltype_ = t;
+            if (t==Clock) setFormat(Time);
+        }
+        emit propertiesChanged();
+    }
 }
 void QDaqChannel::setSignalName(QString v)
 {
@@ -115,16 +140,17 @@ bool QDaqChannel::arm_()
 }
 bool QDaqChannel::average()
 {
-	int m = (counter_ < depth_) ? counter_ : depth_;
-	v_ = dv_ = 0;
-
-	if (m==0) return false;
+    int m = (counter_ < depth_) ? counter_ : depth_;
+    if (m==0) return false;
 
 	if (type_==None || m==1)
 	{
 		v_ = buff_[0];
+        dv_ = 0;
 		return true;
 	}
+
+    v_ = dv_ = 0;
 
 	double wt;
 	int sw;
@@ -180,7 +206,29 @@ bool QDaqChannel::average()
 
 bool QDaqChannel::run()
 {
-    if ((dataReady_ = average()))
+    if (!QDaqJob::run()) return false;
+
+    dataReady_ = true;
+    switch (channeltype_)
+    {
+    case Clock:
+        push(QDaqTimeValue::now());
+        break;
+    case Random:
+        push(1.*rand()/RAND_MAX);
+        break;
+    case Inc:
+        push(v_ + 1);
+        break;
+    case Dec:
+        push(v_ - 1);
+        break;
+    case Normal:
+    default:
+        break;
+    }
+
+    if ((dataReady_=average()))
 	{
 		if (parser_)
 		{
@@ -202,12 +250,17 @@ bool QDaqChannel::run()
 			v_ = multiplier_*v_ + offset_;
 			dv_ = multiplier_*dv_ + offset_;
 		}
-		// check limits
-        dataReady_ = dataReady_ && __finite(v_) && (v_>range_[0]) && (v_<range_[1]);
+
+        // handle over/under flow
+        if (v_ < range_[0]) v_ = range_[0];
+        if (v_ > range_[1]) v_ = range_[1];
+
+        dataReady_ = __finite(v_);
+
         emit updateWidgets();
 	}
 
-    return QDaqJob::run();
+    return true;
 }
 QString QDaqChannel::formatedValue()
 {
@@ -277,71 +330,7 @@ void QDaqChannel::setParserExpression(const QString& s)
 	}
 }
 
-/////////////////// QDaqTimeChannel //////////////////////////////////////
-QDaqTimeChannel::QDaqTimeChannel(const QString& name) :
-    QDaqChannel(name)
-{
-    dv_ = 0.001;
-}
 
-QDaqTimeChannel::~QDaqTimeChannel(void)
-{
-}
-
-bool QDaqTimeChannel::run()
-{
-    // disabling averaging etc.
-    v_ = QDaqTimeValue::now();
-    // time data is always availiable
-    dataReady_ = true;
-
-    emit updateWidgets();
-
-    // do not call QDaqChannel::run
-    return QDaqJob::run();
-}
-
-/////////////////////// QDaqTestChannel //////////////////////////////////////
-
-Q_SCRIPT_ENUM(TestType,QDaqTestChannel)
-
-QDaqTestChannel::QDaqTestChannel(const QString& name) :
-    QDaqChannel(name), type_(Random), par_(1.), v(0)
-{
-}
-QDaqTestChannel::~QDaqTestChannel(void)
-{
-}
-void QDaqTestChannel::registerTypes(QScriptEngine* e)
-{
-    qScriptRegisterTestType(e);
-    QDaqChannel::registerTypes(e);
-}
-bool QDaqTestChannel::run()
-{
-    //static int i;
-
-    double t;
-
-    switch (type_)
-    {
-    case Random:
-        v = par_*rand()/RAND_MAX;
-        break;
-    case Inc:
-        v += par_;
-        break;
-    case Dec:
-        v -= par_;
-        break;
-    case Sin:
-        t = QDaqTimeValue::now();
-        v = sin(6.283185307*par_*t);
-    }
-
-    push(v);
-    return QDaqChannel::run();
-}
 //////////////////// QDaqFilterChannel /////////////////////////////
 QDaqFilterChannel::QDaqFilterChannel(const QString& name) : QDaqChannel(name)
 {

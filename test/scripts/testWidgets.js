@@ -26,9 +26,10 @@ print("Creating Loop");
 
 var loop = new QDaqLoop("loop");
 
-var t = new QDaqTimeChannel("t");
-t.format = "Time";
-var X1 = QDaqTestChannel("X1");
+var t = new QDaqChannel("t");
+t.type = "Clock";
+var X1 = QDaqChannel("X1");
+X1.type = "Random";
 var X2 = QDaqChannel("X2");
 var scr = QDaqJob("scr");
 scr.code = "qdaq.loop.X2.push(Math.sqrt(qdaq.loop.X1.value()))";
@@ -52,8 +53,8 @@ loop.limit = 1000;
 var loop2 = new QDaqLoop("loop2");
 loop2.delay = 50;
 
-t = new QDaqTimeChannel("t");
-t.format = "Time";
+t = new QDaqChannel("t");
+t.type = "Clock";
 loop2.appendChild(t);
 
 loop.appendChild(loop2);
