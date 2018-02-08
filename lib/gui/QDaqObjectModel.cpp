@@ -1,8 +1,11 @@
 #include "QDaqObjectModel.h"
 
 #include "QDaqRoot.h"
+#include "QDaqJob.h"
+#include "QDaqChannel.h"
 
 #include <QImage>
+#include <QIcon>
 
 QDaqObjectModel::QDaqObjectModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -133,6 +136,14 @@ void QDaqObjectModel::fetchMore(const QModelIndex &parent)
     Q_UNUSED(parent)
 }
 
+QIcon objectIcon(const QDaqObject* obj)
+{
+    if (qobject_cast<const QDaqChannel*>(obj)) return QIcon(":/images/channel.png");
+    else if (qobject_cast<const QDaqLoop*>(obj)) return QIcon(":/images/loop.png");
+    else if (qobject_cast<const QDaqJob*>(obj)) return QIcon(":/images/gear.png");
+    else return QIcon();
+}
+
 QVariant QDaqObjectModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.model() != this)
@@ -150,10 +161,9 @@ QVariant QDaqObjectModel::data(const QModelIndex &index, int role) const
         }
         break;
     case Qt::DecorationRole:
-//        if (index.column() == 0) {
-//            QIcon icon; // = d->icon(index);
-//            return icon;
-//        }
+        if (index.column() == 0) {
+            return objectIcon(objectAt(index));
+        }
         break;
 //    case Qt::TextAlignmentRole:
 //        if (index.column() == 1)

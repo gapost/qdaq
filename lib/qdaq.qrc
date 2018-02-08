@@ -15,5 +15,8 @@
         <file>images/copy.png</file>
         <file>images/Terminal-128.png</file>
         <file>images/RootTerminal-128.png</file>
+        <file>images/channel.png</file>
+        <file>images/gear.png</file>
+        <file>images/loop.png</file>
     </qresource>
 </RCC>
