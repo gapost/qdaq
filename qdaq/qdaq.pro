@@ -19,6 +19,11 @@ SOURCES += main.cpp
 
 HEADERS  +=
 
+unix {
+    target.path = /usr/bin
+    INSTALLS += target
+}
+
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../lib/release/ -lQDaq
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../lib/debug/ -lQDaq
