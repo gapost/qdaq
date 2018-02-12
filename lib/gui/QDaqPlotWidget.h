@@ -67,8 +67,8 @@ public:
     void setXlim(const QPointF& v);
     void setYlim(const QPointF& v);
 
-	virtual QSize 	sizeHint () const	{ return QSize(10,10); }
-	virtual QSize 	minimumSizeHint () const { return QSize(10,10); }
+    virtual QSize 	sizeHint () const;
+    virtual QSize 	minimumSizeHint () const;
 
 public slots:
     void plot(const QDaqBuffer& x, const QDaqBuffer& y);

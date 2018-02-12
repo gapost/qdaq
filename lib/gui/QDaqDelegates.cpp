@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QLCDNumber>
 #include <qwt_thermo.h>
+#include "QDaqLed.h"
 
 // input widgets
 #include <QLineEdit>
@@ -27,6 +28,7 @@ WidgetVariant::WidgetVariant(QWidget* w) : widget_(w), type_(qNone)
 	else if (qobject_cast<QDoubleSpinBox*>(w)) type_ = qDoubleSpinBox;
 	else if (qobject_cast<QLineEdit*>(w)) type_ = qLineEdit;
 	else if (qobject_cast<QComboBox*>(w)) type_ = qComboBox;
+    else if (qobject_cast<QDaqLed*>(w)) type_ = qdaqLed;
 	else if (w) type_ = qUnsupported;
 }
 bool WidgetVariant::canConvert(QVariant::Type t) const
@@ -34,7 +36,8 @@ bool WidgetVariant::canConvert(QVariant::Type t) const
 	switch(t)
 	{
 	case QVariant::Bool:
-		return (type_==qAbstractButton);
+        return (type_==qAbstractButton) ||
+                (type_ == qdaqLed);
 	case QVariant::Double:
 		return (type_==qDoubleSpinBox) || 
 			(type_==qLineEdit) || 
@@ -84,20 +87,19 @@ QVariant WidgetVariant::read()
 			);
 	case qComboBox:
 		return QVariant(
-			((QComboBox*)(w))->currentIndex()
-			);
+            ((QComboBox*)(w))->currentIndex());
 	case qLabel:
 		return QVariant(
-			((QLabel*)(w))->text()
-			);
+            ((QLabel*)(w))->text());
 	case qLCDNumber:
 		return QVariant(
-			((QLCDNumber*)(w))->value()
-            );
+            ((QLCDNumber*)(w))->value());
     case qwtThermo:
         return QVariant(
-            ((QwtThermo*)(w))->value()
-            );
+            ((QwtThermo*)(w))->value());
+    case qdaqLed:
+        return QVariant(
+            ((QDaqLed*)(w))->isOn());
     default:
         break;
 	}
@@ -146,6 +148,8 @@ void WidgetVariant::write(const QVariant& v)
     case qwtThermo:
         ((QwtThermo*)(w))->setValue(v.toDouble());
         break;
+    case qdaqLed:
+        ((QDaqLed*)(w))->setState(v.toBool());
     default:
         break;
 	}

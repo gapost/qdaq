@@ -13,9 +13,20 @@ class QDaqChannel;
 class WidgetVariant
 {
 public:
-	enum WidgetType { qNone, qUnsupported, 
-		qAbstractButton, qAbstractSlider, qSpinBox, qDoubleSpinBox, qLineEdit, qComboBox, 
-		qLabel, qLCDNumber, qwtThermo };	
+    enum WidgetType {
+        qNone,
+        qUnsupported,
+        qAbstractButton,
+        qAbstractSlider,
+        qSpinBox,
+        qDoubleSpinBox,
+        qLineEdit,
+        qComboBox,
+        qLabel,
+        qLCDNumber,
+        qwtThermo,
+        qdaqLed
+    };
 
 protected:
 	QPointer<QWidget> widget_;

@@ -79,6 +79,10 @@ HEADERS  += \
 SOURCES += 3rdparty/jsedit/jsedit.cpp
 HEADERS += 3rdparty/jsedit/jsedit.h
 
+## KLed
+SOURCES += 3rdparty/kled/kled.cpp
+HEADERS += 3rdparty/kled/kled.h
+
 DISTFILES += \
     qdaq.pri \
     .gitignore \

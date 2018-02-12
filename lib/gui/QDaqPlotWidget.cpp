@@ -386,3 +386,12 @@ void QDaqPlotWidget::clear()
     replot();
 }
 
+QSize QDaqPlotWidget::minimumSizeHint() const
+{
+    return QSize(200, 130);
+}
+QSize QDaqPlotWidget::sizeHint() const
+{
+    return QSize(200, 130);
+}
+

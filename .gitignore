@@ -1,6 +1,6 @@
 *.pro.user
 
-lib/3rdparty/*
+lib/3rdparty/qt-solutions/*
 
 doc/html/*
 
