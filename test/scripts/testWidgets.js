@@ -28,12 +28,12 @@ var loop = new QDaqLoop("loop");
 
 var t = new QDaqChannel("t");
 t.type = "Clock";
-var X1 = QDaqChannel("X1");
+var X1 = new QDaqChannel("X1");
 X1.type = "Random";
-var X2 = QDaqChannel("X2");
-var scr = QDaqJob("scr");
+var X2 = new QDaqChannel("X2");
+var scr = new QDaqJob("scr");
 scr.code = "qdaq.loop.X2.push(Math.sqrt(qdaq.loop.X1.value()))";
-var Data = QDaqDataBuffer("Data");
+var Data = new QDaqDataBuffer("Data");
 Data.type = "Open";
 Data.backBufferDepth = 4;
 Data.channels = [t, X1, X2];
