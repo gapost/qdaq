@@ -33,17 +33,24 @@ QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScrip
 
     if (obj) obj->registerTypes(engine);
 
-	if (context->isCalledAsConstructor())
+    if (context->isCalledAsConstructor())
     {
-        QScriptValue scriptObj = engine->newQObject(context->thisObject(), obj, QScriptEngine::QtOwnership,
-                                  QScriptEngine::ExcludeDeleteLater | QScriptEngine::AutoCreateDynamicProperties);
+        QScriptValue scriptObj = engine->newQObject(context->thisObject(), obj, QScriptEngine::AutoOwnership,
+                                                    QScriptEngine::ExcludeDeleteLater |
+                                                    QScriptEngine::AutoCreateDynamicProperties |
+                                                    QScriptEngine::PreferExistingWrapperObject |
+                                                    QScriptEngine::ExcludeChildObjects);
+
         return scriptObj;
     }
 
-    QScriptValue scriptObj = engine->newQObject(obj, QScriptEngine::QtOwnership,
-                                  QScriptEngine::ExcludeDeleteLater | QScriptEngine::AutoCreateDynamicProperties);
-	scriptObj.setPrototype(context->callee().property(QString::fromLatin1("prototype")));
-	return scriptObj;
+    QScriptValue scriptObj = engine->newQObject(obj, QScriptEngine::AutoOwnership,
+                                                QScriptEngine::ExcludeDeleteLater |
+                                                QScriptEngine::AutoCreateDynamicProperties |
+                                                QScriptEngine::PreferExistingWrapperObject |
+                                                QScriptEngine::ExcludeChildObjects);
+    scriptObj.setPrototype(context->callee().property(QString::fromLatin1("prototype")));
+    return scriptObj;
 }
 
 #define PROC_EVENTS_INTERVAL 250
@@ -69,9 +76,12 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
     QDaqObject* qdaq = QDaqObject::root();
 
     QScriptValue rootObj = engine_->newQObject(qdaq,
-		QScriptEngine::QtOwnership,
-        QScriptEngine::ExcludeDeleteLater | QScriptEngine::AutoCreateDynamicProperties //| QScriptEngine::ExcludeSuperClassContents
-		);
+                                               QScriptEngine::QtOwnership,
+                                               QScriptEngine::ExcludeDeleteLater |
+                                               QScriptEngine::AutoCreateDynamicProperties |
+                                               QScriptEngine::PreferExistingWrapperObject |
+                                               QScriptEngine::ExcludeChildObjects
+                                               );
 
     self.setProperty("qdaq", rootObj, QScriptValue::Undeletable);
 

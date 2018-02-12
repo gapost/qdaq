@@ -9,6 +9,7 @@
 #include <QMetaObject>
 #include <QMetaProperty>
 #include <QMetaEnum>
+#include <QVariant>
 
 QDaqObject::QDaqObject(const QString& name) :
 QObject(0)
@@ -405,10 +406,12 @@ void QDaqObject::childEvent(QChildEvent *event)
 
         if (event->added() && i<0) {
             children_.append(obj);
+            setProperty(obj->objectName().toLatin1().constData(),QVariant::fromValue(obj));
             if (isAttached()) obj->attach();
         }
         if (event->removed() && i>=0) {
             if (isAttached()) obj->detach();
+            setProperty(obj->objectName().toLatin1().constData(),QVariant());
             children_.removeAt(i);           
         }
     }
@@ -506,12 +509,16 @@ QDaqObject* QDaqObject::clone()
 }
 
 typedef QDaqObject* QDaqObjectStar;
+typedef QObject* QObjectStar;
 
 QScriptValue toScriptValue(QScriptEngine *eng, const QDaqObjectStar& obj)
 {
     return eng->newQObject(obj,
-                           QScriptEngine::QtOwnership,
-                           QScriptEngine::ExcludeDeleteLater | QScriptEngine::AutoCreateDynamicProperties);
+                           QScriptEngine::AutoOwnership,
+                           QScriptEngine::ExcludeDeleteLater |
+                           QScriptEngine::AutoCreateDynamicProperties |
+                           QScriptEngine::PreferExistingWrapperObject |
+                           QScriptEngine::ExcludeChildObjects);
 }
 
 void fromScriptValue(const QScriptValue &value, QDaqObjectStar& obj)

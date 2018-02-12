@@ -18,7 +18,8 @@ DISTFILES += \
     scripts/testQDaqObject.js \
     scripts/testTimerLoop.js \
     scripts/testH5.js \
-    scripts/testWidgets.js
+    scripts/testWidgets.js \
+    scripts/testDynamicProperties.js
 
 FORMS += \
     ui/cryoTemperatureControl.ui \

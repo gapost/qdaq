@@ -132,13 +132,15 @@ QStringList QDaqConsole::introspection(const QString& lookup)
     if (scriptObj.isQObject())
     {
         QObject* obj = scriptObj.toQObject();
-        foreach(QObject* ch, obj->children())
-        {
-            QString name = ch->objectName();
-            if (!name.isEmpty())
-                properties << name;
+        QDaqObject* dobj = qobject_cast<QDaqObject*>(obj);
+        if (!dobj) {
+            foreach(QObject* ch, obj->children())
+            {
+                QString name = ch->objectName();
+                if (!name.isEmpty())
+                    properties << name;
+            }
         }
-
     }
 
     // add the script properties
