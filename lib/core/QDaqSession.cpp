@@ -34,9 +34,14 @@ QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScrip
     if (obj) obj->registerTypes(engine);
 
 	if (context->isCalledAsConstructor())
-		return engine->newQObject(context->thisObject(), obj, QScriptEngine::AutoOwnership, QScriptEngine::ExcludeDeleteLater);
+    {
+        QScriptValue scriptObj = engine->newQObject(context->thisObject(), obj, QScriptEngine::QtOwnership,
+                                  QScriptEngine::ExcludeDeleteLater | QScriptEngine::AutoCreateDynamicProperties);
+        return scriptObj;
+    }
 
-	QScriptValue scriptObj = engine->newQObject(obj, QScriptEngine::AutoOwnership, QScriptEngine::ExcludeDeleteLater);
+    QScriptValue scriptObj = engine->newQObject(obj, QScriptEngine::QtOwnership,
+                                  QScriptEngine::ExcludeDeleteLater | QScriptEngine::AutoCreateDynamicProperties);
 	scriptObj.setPrototype(context->callee().property(QString::fromLatin1("prototype")));
 	return scriptObj;
 }
@@ -65,7 +70,7 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
     QScriptValue rootObj = engine_->newQObject(qdaq,
 		QScriptEngine::QtOwnership,
-		QScriptEngine::ExcludeDeleteLater //| QScriptEngine::ExcludeSuperClassContents
+        QScriptEngine::ExcludeDeleteLater | QScriptEngine::AutoCreateDynamicProperties //| QScriptEngine::ExcludeSuperClassContents
 		);
 
     self.setProperty("qdaq", rootObj, QScriptValue::Undeletable);

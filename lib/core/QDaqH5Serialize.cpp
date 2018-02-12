@@ -488,6 +488,17 @@ void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObj
 			}
 		}
 	}
+
+    // write the object's dynamic properties
+    if (metaObject==m_object->metaObject()) {
+        if (!m_object->dynamicPropertyNames().isEmpty()) {
+            foreach(const QByteArray& ba, m_object->dynamicPropertyNames())
+            {
+                QVariant v = m_object->property(ba.constData());
+                writeString(h5obj,ba.constData(),v.toString().toLatin1());
+            }
+        }
+    }
 }
 
 template<class _T>

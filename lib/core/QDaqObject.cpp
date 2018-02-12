@@ -287,6 +287,23 @@ QString QDaqObject::listProperties() const
 	QString S;
 	int level = 0;
 	listPropertiesHelper(this, S, metaObject(), level);
+
+    QList<QByteArray> names = dynamicPropertyNames();
+
+    S += QString("Dynamic properties: %1\n").arg(names.size());
+
+    for(int i=0; i<names.size(); ++i)
+    {
+        QVariant V = property(names.at(i));
+        S += "  ";
+        S += QString(names.at(i));
+        S += " : ";
+        S += QString("<variant typeid=%1>,").arg((int)V.type());
+        S += QString("<typename=%1>,").arg(V.typeName());
+        S += V.toString();
+        S += "\n";
+    }
+
 	return S;
 }
 
@@ -493,8 +510,8 @@ typedef QDaqObject* QDaqObjectStar;
 QScriptValue toScriptValue(QScriptEngine *eng, const QDaqObjectStar& obj)
 {
     return eng->newQObject(obj,
-                           QScriptEngine::AutoOwnership,
-                           QScriptEngine::ExcludeDeleteLater);
+                           QScriptEngine::QtOwnership,
+                           QScriptEngine::ExcludeDeleteLater | QScriptEngine::AutoCreateDynamicProperties);
 }
 
 void fromScriptValue(const QScriptValue &value, QDaqObjectStar& obj)
