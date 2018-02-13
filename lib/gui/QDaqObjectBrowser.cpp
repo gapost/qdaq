@@ -58,7 +58,7 @@ QDaqObjectBrowser::~QDaqObjectBrowser(void)
 void QDaqObjectBrowser::onItemActivated(const QModelIndex &index)
 {
     QDaqObject* obj = model->objectAt(index);
-    currentObject->setText(obj->fullName());
+    currentObject->setText(obj->path());
     propertyBrowser->setQDaqObject(obj);
     functionBrowser->setQDaqObject(obj);
 }

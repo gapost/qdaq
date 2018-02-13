@@ -130,7 +130,7 @@ void QDaqDevice::setInterface(QDaqObject* o)
     if (o) {
         i = qobject_cast<QDaqInterface*>(o);
         if (!i) {
-            throwScriptError(QString("Object %1 is not a QDaqInterface").arg(o->fullName()));
+            throwScriptError(QString("Object %1 is not a QDaqInterface").arg(o->path()));
             return;
         }
     }
@@ -165,7 +165,7 @@ int QDaqDevice::write_(const char* msg, int len)
 {
     os::auto_lock L(comm_lock);
     int ret = ifc_->write(addr_, msg, len, eot_);
-	//if (!ret && armed_) forcedDisarm(QString("Write to device %1 failed").arg(fullName()));
+	//if (!ret && armed_) forcedDisarm(QString("Write to device %1 failed").arg(path()));
 	checkError(msg,len);
 	return ret;
 }
@@ -210,7 +210,7 @@ QByteArray QDaqDevice::read_()
     char* mem = buff_.data();
     int cnt =  ifc_->read(addr_,mem,buff_sz_,eos_);
     buff_.resize(cnt);
-	//if (!buff_cnt_ && armed_) forcedDisarm(QString("Read from device %1 failed").arg(fullName())); 
+	//if (!buff_cnt_ && armed_) forcedDisarm(QString("Read from device %1 failed").arg(path())); 
     return buff_;
 }
 QString QDaqDevice::read()

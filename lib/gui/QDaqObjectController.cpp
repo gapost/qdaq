@@ -101,7 +101,7 @@ QString qdaqTypeToString(const QVariant& v)
     else if (v.canConvert<QDaqVector>()) return qdaqVectorTypeToString<QDaqVector>(v);
     else if (v.canConvert<QDaqObject*>()) {
         QDaqObject* obj = v.value<QDaqObject*>();
-        if (obj) return obj->fullName();
+        if (obj) return obj->path();
         else return QString();
     }
     else if (v.canConvert<QDaqObjectList>()) {
@@ -109,7 +109,7 @@ QString qdaqTypeToString(const QVariant& v)
         QString str('[');
         for(int i=0; i<lst.size(); i++) {
             QDaqObject* obj = lst.at(i);
-            if (obj) str += obj->fullName();
+            if (obj) str += obj->path();
             else str += "0x0";
             if (i<lst.size()-1) str += ",";
         }

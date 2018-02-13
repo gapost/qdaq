@@ -15,7 +15,7 @@ QDaqObject::QDaqObject(const QString& name) :
 QObject(0)
 {
     setObjectName(name);
-    qDebug() << "QDaqObject constructor" << fullName() << "@" << (void*)this;
+    qDebug() << "QDaqObject constructor" << path() << "@" << (void*)this;
 }
 
 QDaqObject::~QDaqObject(void)
@@ -27,7 +27,7 @@ QDaqObject::~QDaqObject(void)
         delete obj;
     }
 
-	qDebug() << "destroying" << fullName() << "@" << (void*)this;
+    qDebug() << "destroying" << path() << "@" << (void*)this;
 }
 
 /** Attach this QDaqObject to the QDaq-framework.
@@ -38,7 +38,7 @@ is fully qualified.
 */
 void QDaqObject::attach()
 {
-    qDebug() << "attaching" << fullName() << "@" << (void*)this;
+    qDebug() << "attaching" << path() << "@" << (void*)this;
     foreach(QDaqObject* obj, children_) obj->attach();
     root()->objectCreation(this,true);
 }
@@ -50,7 +50,7 @@ be safely deleted.
 */
 void QDaqObject::detach()
 {
-    qDebug() << "detaching" << fullName() << "@" << (void*)this;
+    qDebug() << "detaching" << path() << "@" << (void*)this;
     root()->objectCreation(this,false);
     foreach(QDaqObject* obj, children_) obj->detach();   
 }
@@ -162,7 +162,7 @@ bool QDaqObject::isNameValid(const QString& name, int *c)
 	return true;
 }
 
-QString QDaqObject::fullName() const
+QString QDaqObject::path() const
 {
 	QString name = objectName();
 	QDaqObject* p = parent();
@@ -211,7 +211,7 @@ void findByWildcardHelper(const QRegExp& rx, QDaqObjectList& lst, const QDaqObje
 {
     foreach(QDaqObject* o, from->children())
 	{
-        if (rx.exactMatch(o->fullName())) lst.push_back(o);
+        if (rx.exactMatch(o->path())) lst.push_back(o);
         findByWildcardHelper(rx,lst,o);
 	}
 }
@@ -232,7 +232,7 @@ QDaqObjectList QDaqObject::findByWildcard(const QString& wildcard, const QDaqObj
 
 void QDaqObject::pushError(const QString& type, const QString& descr) const
 {
-    QDaqError e(fullName(), type, descr);
+    QDaqError e(path(), type, descr);
     root()->postError(e);
 }
 
@@ -572,7 +572,7 @@ void QDaqErrorQueue::push(const QDaqError& item)
 QList<QDaqError> QDaqErrorQueue::objectBackTrace(const QDaqObject* obj, int maxItems) const
 {
     QList<QDaqError> errors;
-    QString name = obj->fullName();
+    QString name = obj->path();
     foreach(const QDaqError& e, queue_)
     {
         if (e.objectName==name) errors.push_back(e);

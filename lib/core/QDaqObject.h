@@ -61,7 +61,6 @@ struct RTLAB_BASE_EXPORT QDaqError
 
 /** Base class of all QDaq objects.
 
-\ingroup QDaqCore
 
 */
 class RTLAB_BASE_EXPORT QDaqObject : public QObject, protected QScriptable
@@ -77,8 +76,8 @@ protected:
 	void throwScriptError(const QString& msg) const;
 
     /** Check if name is a legal name for an QDaqObject.
-	Names should start with a letter and contain letters, numbers or the underscore _.
-	This function also checks if there are any sibbling objects with the same name.
+    * Names should start with a letter and contain letters, numbers or the underscore _.
+    * This function also checks if there are any sibbling objects with the same name.
 	*/
 	bool checkName(const QString& name) const;
 	static bool isNameValid(const QString& name, int* code = 0);
@@ -98,7 +97,7 @@ public:
     static QDaqObject* h5read(const QString& filename);
 
 protected:
-    // for handling children deletions
+    // for handling children εωεντσ
     virtual void childEvent ( QChildEvent * event );
 
 public:
@@ -119,31 +118,56 @@ protected:
     QDaqObjectList children_;
 
 public:
-    Q_INVOKABLE
-    explicit QDaqObject(const QString& name);
+    /** Construct a QDaqObject with a name.
+     *
+     * The name is actually the objectName property of the QObject super-class.
+     *
+     */
+    Q_INVOKABLE explicit QDaqObject(const QString& name);
     virtual ~QDaqObject(void);
 
+    /** Attach this QDaqObject to the QDaq tree.
+     * This function is called when the object becomes part of the QDaq tree.
+     * Subclasses of QDaqObject may reimplement it to perform specific initialization.
+     */
     virtual void attach();
+    /** Detach this QDaqObject from the QDaq tree.
+     * This function is called just before the object becomes detached from the QDaq tree.
+     * Subclasses of QDaqObject may reimplement it to perform needed actions before detaching.
+     */
 	virtual void detach();
 
+    /// Returns true is this object is attached to the QDaq tree.
     bool isAttached() const;
 
 	void objectTree(QString& S, int level) const;
 
-    /// Register this QDaqObject's types with a script engine.
+    /** Register this QDaqObject's types with a script engine.
+     *
+     * This funtion is called when the QDaqObject is exposed to a script engine
+     * and is used to register specific types needed by the object (enums etc).
+     *
+     */
 	virtual void registerTypes(QScriptEngine* eng) { Q_UNUSED(eng); }
 
-	/// Get the objects full name, e.g., dev.ifc1.obj1
-	QString fullName() const;
+    /** Return the object's path in the QDaq tree.
+     *
+     * Example: qdaq.x.y.z.obj1
+     * If the object is not attached to the tree, the function
+     * returns the name of the object.
+     *
+     */
+    QString path() const;
+
     static QDaqObject* findByName(const QString& name);
     static QDaqObjectList findByWildcard(const QString& wildcard, const QDaqObject* from = 0);
 
 public slots:
-	/// Print a backtrace of recent errors
+    /// Print a backtrace of recent errors in this QDaqObject
 	QString errorBacktrace() const;
 	/// Print a string representation of the object
     // QString toString() const;
-	/// Print the objects children hierarchy
+    /// Output in a string the object hierarchy beneath this object.
 	QString objectTree() const
 	{
 		QString S;

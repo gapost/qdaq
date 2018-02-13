@@ -89,7 +89,7 @@ void QDaqInterface::close_()
 	{
         QDaqDevice* dev = ports_[i];
         //TODO
-        if (dev!=0) dev->forcedOffline(QString("Interface %1 closed").arg(fullName()));
+        if (dev!=0) dev->forcedOffline(QString("Interface %1 closed").arg(path()));
 		ports_[i] = 0;
 	}
 	isOpen_ = false;
