@@ -2,6 +2,8 @@
 
 #include <QScriptEngine>
 
+#include "bytearrayclass.h"
+
 template <class Container>
 QScriptValue toScriptValue(QScriptEngine *eng, const Container &cont)
 {
@@ -27,6 +29,9 @@ void fromScriptValue(const QScriptValue &value, Container &cont)
 
 int registerVectorTypes(QScriptEngine* eng)
 {
+    ByteArrayClass *byteArrayClass = new ByteArrayClass(eng);
+    eng->globalObject().setProperty("ByteArray", byteArrayClass->constructor());
+
     return qScriptRegisterMetaType<QDaqIntVector>(eng,toScriptValue,fromScriptValue) &
         qScriptRegisterMetaType<QDaqUintVector>(eng,toScriptValue,fromScriptValue) &
         qScriptRegisterMetaType<QDaqVector>(eng,toScriptValue,fromScriptValue);

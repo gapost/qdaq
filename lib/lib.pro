@@ -39,7 +39,9 @@ SOURCES += \
     daq/QDaqDevice.cpp \
     gui/QDaqPlotWidget.cpp \
     gui/QDaqLed.cpp \
-    gui/QDaqObjectModel.cpp
+    gui/QDaqObjectModel.cpp \
+    core/bytearrayclass.cpp \
+    core/bytearrayprototype.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -72,7 +74,9 @@ HEADERS  += \
     gui/QDaqPlotWidget.h \
     gui/variantmanager.h \
     gui/QDaqLed.h \
-    gui/QDaqObjectModel.h
+    gui/QDaqObjectModel.h \
+    core/bytearrayclass.h \
+    core/bytearrayprototype.h
 
 
 ## JSedit

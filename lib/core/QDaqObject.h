@@ -131,6 +131,7 @@ public:
      * Subclasses of QDaqObject may reimplement it to perform specific initialization.
      */
     virtual void attach();
+
     /** Detach this QDaqObject from the QDaq tree.
      * This function is called just before the object becomes detached from the QDaq tree.
      * Subclasses of QDaqObject may reimplement it to perform needed actions before detaching.

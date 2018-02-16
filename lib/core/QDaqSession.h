@@ -117,6 +117,7 @@ public slots:
     }
 
     void test(QDaqBuffer* b);
+    QString info(QScriptValue v);
 
 protected slots:
     void log_in(const QString& str)  { log__(0,str); }
