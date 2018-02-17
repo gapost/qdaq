@@ -506,34 +506,23 @@ void QDaqSession::test(QDaqBuffer *b)
 QString QDaqSession::info(QScriptValue v)
 {
     QString S;
-//    if (v.isArray()) {
-//        S = "Array:\n";
-//        S += QString("  length: %1\n").arg(v.property("length").toUInt32());
-//    }
-
-//    QScriptValueIterator it(v);
-//      while (it.hasNext()) {
-//          it.next();
-//          S += it.name();
-//          S += ": ";
-//          S += it.value().toString();
-//          S += "\n";
-//      }
-
-      QScriptValue obj(v); // the object to iterate over
-        while (obj.isObject()) {
-            QScriptValueIterator it(obj);
-            while (it.hasNext()) {
-                it.next();
-                //if (it.flags() & QScriptValue::SkipInEnumeration)
-                //    continue;
-                S += it.name();
-                S += QString("(%1): ").arg((int)it.flags());
-                S += it.value().toString();
-                S += "\n";
-            }
-            obj = obj.prototype();
+    QScriptValue obj(v); // the object to iterate over
+    while (obj.isObject()) {
+        QScriptValueIterator it(obj);
+        while (it.hasNext()) {
+            it.next();
+            //if (it.flags() & QScriptValue::SkipInEnumeration)
+            //    continue;
+            S += it.name();
+            S += QString("(%1): ").arg((int)it.flags());
+            if (it.value().isFunction()) S += "Function";
+            else if (it.value().isQMetaObject()) S += "QMetaObject";
+            else if (it.value().isQObject()) S += "QObject";
+            else S += it.value().toString();
+            S += "\n";
         }
+        obj = obj.prototype();
+    }
     return S;
 }
 

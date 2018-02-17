@@ -141,7 +141,7 @@ QIcon objectIcon(const QDaqObject* obj)
     if (qobject_cast<const QDaqChannel*>(obj)) return QIcon(":/images/channel.png");
     else if (qobject_cast<const QDaqLoop*>(obj)) return QIcon(":/images/loop.png");
     else if (qobject_cast<const QDaqJob*>(obj)) return QIcon(":/images/gear.png");
-    else return QIcon();
+    else return QIcon(":/images/cube.png");
 }
 
 QVariant QDaqObjectModel::data(const QModelIndex &index, int role) const

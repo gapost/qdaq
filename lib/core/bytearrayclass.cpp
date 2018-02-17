@@ -42,7 +42,7 @@ ByteArrayClass::ByteArrayClass(QScriptEngine *engine)
 
     proto = engine->newQObject(new ByteArrayPrototype(this),
                                QScriptEngine::QtOwnership,
-                               QScriptEngine::SkipMethodsInEnumeration |
+    //                           QScriptEngine::SkipMethodsInEnumeration |
                                QScriptEngine::ExcludeSuperClassMethods |
                                QScriptEngine::ExcludeSuperClassProperties);
     QScriptValue global = engine->globalObject();

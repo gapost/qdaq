@@ -18,5 +18,6 @@
         <file>images/channel.png</file>
         <file>images/gear.png</file>
         <file>images/loop.png</file>
+        <file>images/cube.png</file>
     </qresource>
 </RCC>

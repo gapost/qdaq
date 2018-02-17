@@ -118,7 +118,7 @@ void QDaqConsole::keyPressEvent (QKeyEvent * e)
 QStringList QDaqConsole::introspection(const QString& lookup)
 {
     // list of found tokens
-    QStringList properties;
+    QStringList properties, children, functions;
 
     if (lookup.isEmpty()) return properties;
 
@@ -138,23 +138,47 @@ QStringList QDaqConsole::introspection(const QString& lookup)
             {
                 QString name = ch->objectName();
                 if (!name.isEmpty())
-                    properties << name;
+                    children << name;
             }
         }
     }
 
     // add the script properties
     {
-        QScriptValueIterator it(scriptObj);
-        while (it.hasNext()) {
-             it.next();
-             if (it.flags() & QScriptValue::SkipInEnumeration)
-                 continue;
-             properties << it.name();
-         }
+        QScriptValue obj(scriptObj); // the object to iterate over
+        while (obj.isObject()) {
+            QScriptValueIterator it(obj);
+            while (it.hasNext()) {
+                it.next();
+
+                // avoid array indices
+                bool isIdx;
+                it.name().toUInt(&isIdx);
+                if (isIdx) continue;
+
+                // avoid "hidden" properties starting with "__"
+                if (it.name().startsWith("__")) continue;
+
+                // include in list
+                if (it.value().isQObject()) children << it.name();
+                else if (it.value().isFunction()) functions << it.name();
+                else properties << it.name();
+            }
+            obj = obj.prototype();
+        }
     }
 
-    return properties;
+    children.removeDuplicates();
+    children.sort(Qt::CaseInsensitive);
+    functions.removeDuplicates();
+    functions.sort(Qt::CaseInsensitive);
+    properties.removeDuplicates();
+    properties.sort(Qt::CaseInsensitive);
+
+    children.append(properties);
+    children.append(functions);
+
+    return children;
 
 }
 
