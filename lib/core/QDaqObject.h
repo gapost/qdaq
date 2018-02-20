@@ -25,7 +25,20 @@ class QDaqObject;
 
 typedef QList<QDaqObject*> QDaqObjectList;
 
+/**
+ *  @defgroup Core Core QDaq classes
+ *  This is the Core group
+ */
+
+/**
+ *  @defgroup ScriptAPI QDaq QtScript API functions
+ *  This is the ScriptAPI group
+ */
+
 /** Structure containing error data.
+ *
+ * @ingroup Core
+ *
  * It is emitted every time an error occurs in a QDaqObject.
  * Errors are gathered centrally on a QDaqErrorQueue object
  * that lives in QDaqRoot.
@@ -60,9 +73,11 @@ struct RTLAB_BASE_EXPORT QDaqError
 };
 
 /** Base class of all QDaq objects.
-
-
-*/
+ *
+ * @ingroup Core
+ * @ingroup ScriptAPI
+ *
+ */
 class RTLAB_BASE_EXPORT QDaqObject : public QObject, protected QScriptable
 {
 	Q_OBJECT
@@ -120,6 +135,8 @@ protected:
 public:
     /** Construct a QDaqObject with a name.
      *
+     * @ingroup ScriptAPI
+     *
      * The name is actually the objectName property of the QObject super-class.
      *
      */
@@ -164,6 +181,12 @@ public:
     static QDaqObjectList findByWildcard(const QString& wildcard, const QDaqObject* from = 0);
 
 public slots:
+    /** @addtogroup ScriptAPI
+     *
+     *  More documentation for the first group.
+     *  @{
+     */
+
     /// Print a backtrace of recent errors in this QDaqObject
 	QString errorBacktrace() const;
 	/// Print a string representation of the object
@@ -181,7 +204,15 @@ public slots:
 	/// List the objects scriptable functions
 	QString listFunctions() const;
 
-    // Core DOM API 1. implementation
+    /** @def ScriptAPI
+     *
+     *  More documentation for the first group.
+     *  @{
+     */
+    /** @name DOMAPI
+     *  Core DOM API 1. implementation
+     */
+    ///@{
     QDaqObjectList find(const QString& wc) const
     {
         return QDaqObject::findByWildcard(wc,this);
@@ -202,6 +233,9 @@ public slots:
     QDaqObject* removeChild(QDaqObject* obj);
     /// Replace a child and return a pointer to the old child.
     QDaqObject* replaceChild(QDaqObject* newobj, QDaqObject* oldobj);
+    ///@}
+
+    /** @} */ // end of ScriptAPI
 
 signals:
 	/// Fired when object is deleted
