@@ -39,7 +39,6 @@ CONFIG += ordered
 
 
 SUBDIRS += \
-    qtpropertybrowser \
     lib \
     designer \
     qdaq \

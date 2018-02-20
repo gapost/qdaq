@@ -30,6 +30,10 @@ unix {
     ######### Qwt ###############
     INCLUDEPATH += /usr/include/qt5/qwt
     LIBS += -lqwt-qt5
+
+    ######### QtSolutions ###############
+    INCLUDEPATH += /usr/include/qt5/QtSolutions
+    LIBS += -lQtSolutions_PropertyBrowser
 }
 
 
