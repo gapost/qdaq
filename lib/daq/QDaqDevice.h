@@ -98,11 +98,13 @@ public slots:
 	void off();
 
 	int write(const QString& msg);
+    int write(const QByteArray& msg);
     int write(int reg, int val);
+    int write(int start_reg, const QByteArray& msg);
 
-	QString read();
+    QByteArray read();
     int read(int reg);
-    QDaqIntVector read(int reg, int n);
+    QByteArray read(int reg, int n);
 
     QString query(const QString& msg);
 	void clear();

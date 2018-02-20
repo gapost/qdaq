@@ -192,14 +192,25 @@ int QDaqDevice::write(const QString& msg)
 	if (throwIfOffline()) return 0;
 	return write_(msg.toLatin1());
 }
+int QDaqDevice::write(const QByteArray& msg)
+{
+    //if (throwIfArmed()) return 0;
+    if (throwIfOffline()) return 0;
+    return write_(msg);
+}
 int QDaqDevice::write(int reg, int val) // write
 {
     if (throwIfOffline()) return 0;
     os::auto_lock L(comm_lock);
     unsigned short b = val;
     int ret = ifc_->write(reg, (const char *)(&b), sizeof(b), eot_);
-
-
+    return ret;
+}
+int QDaqDevice::write(int start_reg, const QByteArray& msg) // write
+{
+    if (throwIfOffline()) return 0;
+    os::auto_lock L(comm_lock);
+    int ret = ifc_->write(start_reg, msg.constData(), msg.length(), eot_);
     return ret;
 }
 
@@ -213,13 +224,13 @@ QByteArray QDaqDevice::read_()
 	//if (!buff_cnt_ && armed_) forcedDisarm(QString("Read from device %1 failed").arg(path())); 
     return buff_;
 }
-QString QDaqDevice::read()
+QByteArray QDaqDevice::read()
 {
-	//if (throwIfArmed()) return QString();
-	if (throwIfOffline()) return QString();
-	return QString(read_());
+    if (throwIfOffline()) return QByteArray();
+    return read_();
 }
-int QDaqDevice::read(int reg) // read register from device (modbus type)
+// read register from device (modbus type)
+int QDaqDevice::read(int reg)
 {
     if (throwIfOffline()) return 0;
 
@@ -230,25 +241,16 @@ int QDaqDevice::read(int reg) // read register from device (modbus type)
 
     return b;
 }
-QDaqIntVector QDaqDevice::read(int reg, int n) // read n consequtive registers from device (modbus type)
+// read n consequtive registers from device (modbus type)
+QByteArray QDaqDevice::read(int reg, int n)
 {
-
-    if (throwIfOffline()) return QDaqIntVector();
-
+    if (throwIfOffline()) return QByteArray();
     os::auto_lock L(comm_lock);
-
-
     buff_.resize(2*n);
     char* mem = buff_.data();
     int cnt = ifc_->read(reg,mem,2*n,eos_);
-
-    if (cnt) {
-        QDaqIntVector V(n);
-        unsigned short* b = (unsigned short*)mem;
-        for(int i=0; i<n; i++) V[i] = b[i];
-        return V;
-    }
-    else return QDaqIntVector();
+    buff_.resize(cnt);
+    return buff_;
 }
 
 QString QDaqDevice::query(const QString& msg)
