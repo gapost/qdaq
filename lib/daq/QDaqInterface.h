@@ -18,7 +18,6 @@ class QDaqInterface : public QDaqObject
 	Q_PROPERTY(uint timeout READ timeout WRITE setTimeout)
 	Q_PROPERTY(bool isOpen READ isOpen)
 
-protected:
 	uint addr_, 
 		timeout_; // ms
 	bool isOpen_;
@@ -38,7 +37,7 @@ public:
 
 	// setters
 	void setAddress(uint v);
-	void setTimeout(uint v);
+    void setTimeout(uint v);
 
 	// io
     virtual bool open_port(uint i, QDaqDevice*);
@@ -55,7 +54,7 @@ protected:
 	virtual bool open_() { return isOpen_ = true; }
 	virtual void close_();
 	virtual void clear_() {}
-	virtual void setTimeout_(uint v) { timeout_=v; }
+    virtual void setTimeout_(uint v) { timeout_=v; }
 
 	bool throwIfOpen();
 

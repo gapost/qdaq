@@ -3,6 +3,8 @@
 #include "QDaqRoot.h"
 #include "QDaqJob.h"
 #include "QDaqChannel.h"
+#include "QDaqInterface.h"
+#include "QDaqDevice.h"
 
 #include <QImage>
 #include <QIcon>
@@ -139,6 +141,8 @@ void QDaqObjectModel::fetchMore(const QModelIndex &parent)
 QIcon objectIcon(const QDaqObject* obj)
 {
     if (qobject_cast<const QDaqChannel*>(obj)) return QIcon(":/images/channel.png");
+    else if (qobject_cast<const QDaqInterface*>(obj)) return QIcon(":/images/network.png");
+    else if (qobject_cast<const QDaqDevice*>(obj)) return QIcon(":/images/device.png");
     else if (qobject_cast<const QDaqLoop*>(obj)) return QIcon(":/images/loop.png");
     else if (qobject_cast<const QDaqJob*>(obj)) return QIcon(":/images/gear.png");
     else return QIcon(":/images/cube.png");

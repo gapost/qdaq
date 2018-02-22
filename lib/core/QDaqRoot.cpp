@@ -7,6 +7,7 @@
 #include "QDaqIde.h"
 #include "QDaqInterface.h"
 #include "QDaqDevice.h"
+#include "QDaqGpib.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -34,6 +35,7 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     registerClass(&QDaqModbusTcp::staticMetaObject);
     registerClass(&QDaqModbusRtu::staticMetaObject);
     registerClass(&QDaqDevice::staticMetaObject);
+    registerClass(&QDaqGpib::staticMetaObject);
 
     // root dir = current dir when app starts
     QDir pwd = QDir::current();

@@ -17,9 +17,6 @@ unix {
     ############## muParser ##############
     LIBS += -lmuparser
 
-    ######### linux-gpib ############
-    LIBS += -lgpib
-
     ######### libmodbus #############
     LIBS += -lmodbus
     INCLUDEPATH += /usr/include/modbus

@@ -19,5 +19,7 @@
         <file>images/gear.png</file>
         <file>images/loop.png</file>
         <file>images/cube.png</file>
+        <file>images/network.png</file>
+        <file>images/device.png</file>
     </qresource>
 </RCC>

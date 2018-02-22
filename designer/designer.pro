@@ -13,9 +13,10 @@ lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
 
 include(../qdaq.pri)
 
-target.path = $$[QT_INSTALL_PLUGINS]/designer
-INSTALLS    += target
-
+unix {
+  target.path = $$[QT_INSTALL_PLUGINS]/designer
+  INSTALLS    += target
+}
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../lib/release/ -lQDaq
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../lib/debug/ -lQDaq

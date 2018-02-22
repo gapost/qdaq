@@ -39,6 +39,7 @@ void QDaqInterface::setTimeout(uint v)
 	else
 	{
 		setTimeout_(v);
+        timeout_ = v;
 		emit propertiesChanged();
 	}
 }
@@ -178,8 +179,9 @@ bool QDaqTcpip::open_()
 
 	os::auto_lock L(comm_lock);
 
-    isOpen_ = socket_->connect(host_.toString().toLatin1().constData(), port_)!=-1;
-    if (!isOpen_)
+    bool ret = socket_->connect(host_.toString().toLatin1().constData(), port_)!=-1;
+    if (ret) QDaqInterface::open_();
+    else
         pushError("Socket connect failed",tcp_socket::lastErrorStr());
 
 	emit propertiesChanged();
@@ -378,17 +380,17 @@ bool QDaqModbusTcp::open_()
     timeval response_timeout;
     /* Define a new and too short timeout! */
     response_timeout.tv_sec = 0;
-    response_timeout.tv_usec = timeout_*1000;
+    response_timeout.tv_usec = timeout()*1000;
     modbus_set_response_timeout(ctx, &response_timeout);
 
 
     if (modbus_connect(ctx) == -1) {
         pushError("modbus_connect failed", modbus_strerror(errno));
         modbus_free(ctx);
-        isOpen_ = false;
+        QDaqInterface::close_();
     }
     else {
-        isOpen_ = true;
+        QDaqInterface::open_();
         ctx_ = ctx;
     }
 
@@ -478,10 +480,10 @@ bool QDaqModbusRtu::open_()
     if (modbus_connect(ctx) == -1) {
         pushError("modbus_connect failed", modbus_strerror(errno));
         modbus_free(ctx);
-        isOpen_ = false;
+        QDaqInterface::close_();
     }
     else {
-        isOpen_ = true;
+        QDaqInterface::open_();
         ctx_ = ctx;
         modbus_set_slave(ctx,1);
     }

@@ -43,5 +43,6 @@ SUBDIRS += \
     designer \
     qdaq \
     doc \
-    test
+    test \
+    plugins
 

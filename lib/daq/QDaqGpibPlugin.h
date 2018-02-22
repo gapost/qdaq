@@ -8,12 +8,10 @@ class QDaqGpibPlugin
 public:
     virtual ~QDaqGpibPlugin() {}
 
-//    virtual QStringList filters() const = 0;
-//    virtual QImage filterImage(const QString &filter, const QImage &image,
-//                               QWidget *parent) = 0;
     virtual int status() = 0;
     virtual int error() = 0;
     virtual int count() = 0;
+    virtual bool hasError() = 0;
 
     virtual void setTimeout(int boardID, int ms) = 0;
 
@@ -25,6 +23,8 @@ public:
     virtual void Send(int boardID, int address, const char* data, int len, int eotmode) = 0;
     virtual int ReadStatusByte(int boardID, int address) = 0;
     virtual void FindListeners(int boardID, const QVector<int>& addresses, QVector<int>& results) = 0;
+
+    virtual const char* errorMsg(int error_code) = 0;
 };
 
 #define QDaqGpibPlugin_iid "org.qdaq.gpibplugin"

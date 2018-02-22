@@ -12,12 +12,8 @@ class QDaqGpib : public QDaqInterface
     QDaqGpibPlugin* gpib_;
 
 public:
-    QDaqGpib(const QString& name);
+    Q_INVOKABLE explicit QDaqGpib(const QString& name);
     virtual ~QDaqGpib();
-
-    // getters
-
-    // setters
 
     // io
     virtual bool open_port(uint i, QDaqDevice*);
@@ -28,20 +24,22 @@ public:
 
     // diagnostics
     virtual int readStatusByte(uint port);
-
     virtual bool isValidPort(uint i) { return i>0 && i<32; }
 
 protected:
+    // open-close
     virtual bool open_();
     virtual void clear_();
+    virtual void setTimeout_(uint ms);
 
 public slots:
     QDaqIntVector findListeners();
+    QString listPlugins();
+    bool loadPlugin(const QString& fname);
 
 private:
     // error reporting
     void pushGpibError(int code, const QString& comm);
-    static const char* errorCode(int idx);
 
 };
 
