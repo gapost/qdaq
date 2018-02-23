@@ -182,97 +182,97 @@ void ByteArrayPrototype::writeFloatLE(float v, int offset)
     writeLE(v,thisByteArray()->data(),offset);
 }
 // Int 32
-int32_t ByteArrayPrototype::readInt32LE(int offset) const
+int ByteArrayPrototype::readInt32LE(int offset) const
 {
     if (!checkRange(offset,sizeof(int32_t))) return 0;
     return readLE<int32_t>(thisByteArray()->constData(),offset);
 }
-int32_t ByteArrayPrototype::readInt32BE(int offset) const
+int ByteArrayPrototype::readInt32BE(int offset) const
 {
     if (!checkRange(offset,sizeof(int32_t))) return 0;
     return readBE<int32_t>(thisByteArray()->constData(),offset);
 }
-void ByteArrayPrototype::writeInt32LE(int32_t v, int offset)
+void ByteArrayPrototype::writeInt32LE(int v, int offset)
 {
     if (!checkRange(offset,sizeof(int32_t))) return;
-    writeLE(v,thisByteArray()->data(),offset);
+    writeLE((int32_t)v,thisByteArray()->data(),offset);
 }
-void ByteArrayPrototype::writeInt32BE(int32_t v, int offset)
+void ByteArrayPrototype::writeInt32BE(int v, int offset)
 {
     if (!checkRange(offset,sizeof(int32_t))) return;
-    writeBE(v,thisByteArray()->data(),offset);
+    writeBE((int32_t)v,thisByteArray()->data(),offset);
 }
 // UInt32
-uint32_t ByteArrayPrototype::readUInt32LE(int offset) const
+uint ByteArrayPrototype::readUInt32LE(int offset) const
 {
     if (!checkRange(offset,sizeof(uint32_t))) return 0;
     return readLE<uint32_t>(thisByteArray()->constData(),offset);
 }
-uint32_t ByteArrayPrototype::readUInt32BE(int offset) const
+uint ByteArrayPrototype::readUInt32BE(int offset) const
 {
     if (!checkRange(offset,sizeof(uint32_t))) return 0;
     return readBE<uint32_t>(thisByteArray()->constData(),offset);
 }
-void ByteArrayPrototype::writeUInt32LE(uint32_t v, int offset)
+void ByteArrayPrototype::writeUInt32LE(uint v, int offset)
 {
     if (!checkRange(offset,sizeof(uint32_t))) return;
-    writeLE(v,thisByteArray()->data(),offset);
+    writeLE((uint32_t)v,thisByteArray()->data(),offset);
 }
-void ByteArrayPrototype::writeUInt32BE(uint32_t v, int offset)
+void ByteArrayPrototype::writeUInt32BE(uint v, int offset)
 {
     if (!checkRange(offset,sizeof(uint32_t))) return;
-    writeBE(v,thisByteArray()->data(),offset);
+    writeBE((uint32_t)v,thisByteArray()->data(),offset);
 }
 // Int 16
-int16_t ByteArrayPrototype::readInt16LE(int offset) const
+int ByteArrayPrototype::readInt16LE(int offset) const
 {
     if (!checkRange(offset,sizeof(int16_t))) return 0;
     return readLE<int16_t>(thisByteArray()->constData(),offset);
 }
-int16_t ByteArrayPrototype::readInt16BE(int offset) const
+int ByteArrayPrototype::readInt16BE(int offset) const
 {
     if (!checkRange(offset,sizeof(int16_t))) return 0;
     return readBE<int16_t>(thisByteArray()->constData(),offset);
 }
-void ByteArrayPrototype::writeInt16LE(int16_t v, int offset)
+void ByteArrayPrototype::writeInt16LE(int v, int offset)
 {
     if (!checkRange(offset,sizeof(int16_t))) return;
-    writeLE(v,thisByteArray()->data(),offset);
+    writeLE((int16_t)(v & 0xFFFF),thisByteArray()->data(),offset);
 }
-void ByteArrayPrototype::writeInt16BE(int16_t v, int offset)
+void ByteArrayPrototype::writeInt16BE(int v, int offset)
 {
     if (!checkRange(offset,sizeof(int16_t))) return;
-    writeBE(v,thisByteArray()->data(),offset);
+    writeBE((int16_t)(v & 0xFFFF),thisByteArray()->data(),offset);
 }
 // UInt16
-uint16_t ByteArrayPrototype::readUInt16LE(int offset) const
+uint ByteArrayPrototype::readUInt16LE(int offset) const
 {
     if (!checkRange(offset,sizeof(uint16_t))) return 0;
     return readLE<uint16_t>(thisByteArray()->constData(),offset);
 }
-uint16_t ByteArrayPrototype::readUInt16BE(int offset) const
+uint ByteArrayPrototype::readUInt16BE(int offset) const
 {
     if (!checkRange(offset,sizeof(uint16_t))) return 0;
     return readBE<uint16_t>(thisByteArray()->constData(),offset);
 }
-void ByteArrayPrototype::writeUInt16LE(uint16_t v, int offset)
+void ByteArrayPrototype::writeUInt16LE(uint v, int offset)
 {
     if (!checkRange(offset,sizeof(uint16_t))) return;
-    writeLE(v,thisByteArray()->data(),offset);
+    writeLE((uint16_t)(v & 0xFFFF),thisByteArray()->data(),offset);
 }
-void ByteArrayPrototype::writeUInt16BE(uint16_t v, int offset)
+void ByteArrayPrototype::writeUInt16BE(uint v, int offset)
 {
     if (!checkRange(offset,sizeof(uint16_t))) return;
-    writeBE(v,thisByteArray()->data(),offset);
+    writeBE((uint16_t)(v & 0xFFFF),thisByteArray()->data(),offset);
 }
 // Int 8
-int8_t ByteArrayPrototype::readInt8(int offset) const
+int ByteArrayPrototype::readInt8(int offset) const
 {
     if (!checkRange(offset,sizeof(int8_t))) return 0;
     return thisByteArray()->constData()[offset];
 }
-void ByteArrayPrototype::writeInt8(int8_t v, int offset)
+void ByteArrayPrototype::writeInt8(int v, int offset)
 {
     if (!checkRange(offset,sizeof(int8_t))) return;
-    thisByteArray()->data()[offset] = v;
+    thisByteArray()->data()[offset] = (char)(v & 0xFF);
 }
