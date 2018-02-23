@@ -1,5 +1,7 @@
 #include "tcp_socket.h"
 
+#include <cerrno>
+#include <cstring>
 
 #if defined(_WIN32)
 # define OS_WIN32
@@ -396,7 +398,7 @@ const char *tcp_socket::strerror(int errnum) {
     case EMBBADSLAVE:
         return "Response not from requested slave";*/
     default:
-        return strerror(errnum);
+        return std::strerror(errnum);
     }
 }
 

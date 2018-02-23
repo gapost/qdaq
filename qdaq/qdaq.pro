@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets script scripttools network uitools serialport
+QT       += core gui widgets script scripttools network uitools serialport testlib
 
 lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
 

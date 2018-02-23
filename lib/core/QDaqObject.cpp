@@ -39,8 +39,8 @@ is fully qualified.
 void QDaqObject::attach()
 {
     qDebug() << "attaching" << path() << "@" << (void*)this;
-    foreach(QDaqObject* obj, children_) obj->attach();
     root()->objectCreation(this,true);
+    foreach(QDaqObject* obj, children_) obj->attach();    
 }
 /** Detach this QDaqObject from the QDaq-framework.
 This function should always be called before the destructor.
@@ -49,10 +49,10 @@ It stops QDaqLoop objects, disarms QDaqJob objects, etc. so that they can
 be safely deleted.
 */
 void QDaqObject::detach()
-{
-    qDebug() << "detaching" << path() << "@" << (void*)this;
+{    
+    foreach(QDaqObject* obj, children_) obj->detach();
     root()->objectCreation(this,false);
-    foreach(QDaqObject* obj, children_) obj->detach();   
+    qDebug() << "detaching" << path() << "@" << (void*)this;
 }
 /** Return true if this QDaqObject is attached to the QDaq-framework.
 */
@@ -392,10 +392,11 @@ void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
         return;
     }
 
+    children_.insert(i,newobj);
     newobj->setParent(this);
     // put the new object in the correct order
-    children_.removeLast();
-    children_.insert(i,newobj);
+    //children_.removeLast();
+
 }
 
 void QDaqObject::childEvent(QChildEvent *event)
@@ -404,8 +405,8 @@ void QDaqObject::childEvent(QChildEvent *event)
     if (obj) {
         int i = children_.indexOf(obj);
 
-        if (event->added() && i<0) {
-            children_.append(obj);
+        if (event->added()) {
+            if (i<0) children_.append(obj);
             setProperty(obj->objectName().toLatin1().constData(),QVariant::fromValue(obj));
             if (isAttached()) obj->attach();
         }

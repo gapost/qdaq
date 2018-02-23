@@ -6,31 +6,29 @@
 #
 ################################################################
 #
-# 1. qtpropertybrowser
-#
-# Builds the property browser from qt-solutions,
-# https://github.com/qtproject/qt-solutions, as a static lib.
-# The source code resides in lib/3rdparty/qt-solutions/qtpropertybrowser
-#
-# 2. lib
+# 1. lib
 #
 # Builds the QDaq shared library (libQDaq.so or QDaq.dll). All source code is in lib folder.
 #
-# 3. qdaq
+# 2. qdaq
 #
 # Builds the qdaq application, which can be used to run qdaq-javascript scripts.
 #
-# 4. designer
+# 3. designer
 #
 # Builds the QtDesigner plugins for some of the widgets in QDaq lib.
 #
-# 5. doc
+# 4. doc
 #
 # Dummy project, contains the doxygen config file
 #
-# 6. test
+# 5. test
 #
 # Dummy project, contains test qdaq applications for testing and debugging.
+#
+# 6. plugins
+#
+# Project to build plugins
 #
 ###################################################################
 

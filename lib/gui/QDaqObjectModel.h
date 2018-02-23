@@ -18,10 +18,13 @@ class QDaqObjectModel : public QAbstractItemModel
 {
     Q_OBJECT
 
+    void* rootNode;
+
 public:
     enum { NumColumns = 2 };
 
     explicit QDaqObjectModel(QObject *parent = 0);
+    virtual ~QDaqObjectModel();
 
     // Header:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -44,7 +47,7 @@ public:
 
     QModelIndex index(const QDaqObject*, int column = 0) const;
     QModelIndex index(const QString &path, int column = 0) const;
-    QDaqObject *objectAt(const QModelIndex &index) const;
+    QDaqObject * objectAt(const QModelIndex &index) const;
 
 private slots:
     void insert(QDaqObject* obj);
