@@ -1,6 +1,6 @@
 Summary: Qt based data aquisition
 Name: qdaq
-Version: 0.1.1
+Version: 0.2.0
 Release: 1%{?dist}
 License: MIT
 Source0: %{name}.tar.gz
@@ -69,6 +69,9 @@ rm -rf %{buildroot}
 /usr/%{_lib}/*
 
 %changelog
+* Fri Feb 23 2018 George
+- ver 0.2.0
+- 1st release of v0.2
 * Sat Oct 7 2017 George
 - ver 0.1.1
 - initial version of spec file
