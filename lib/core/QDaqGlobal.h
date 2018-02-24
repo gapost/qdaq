@@ -5,9 +5,7 @@
 
 // RTLAB_VERSION is (major << 16) + (minor << 8) + patch.
 
-#define QDAQ_VERSION       0x020000
-#define QDAQ_VERSION_STR   "2.0.0"
-
+#define QDAQ_VERSION       GIT_VERSION
 
 #if defined(_MSC_VER) /* MSVC Compiler */
 /* template-class specialization 'identifier' is already instantiated */
@@ -37,5 +35,14 @@
 #else
 #  define QDAQ_EXPORT Q_DECL_IMPORT
 #endif
+
+namespace QDaq {
+
+inline const char* Version() { return QDAQ_VERSION; }
+inline const char* QtVersion() { return QT_VERSION_STR; }
+
+}
+
+
 
 #endif // RTGLOBAL_H

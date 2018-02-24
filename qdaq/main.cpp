@@ -77,42 +77,42 @@ int main(int argc, char *argv[])
     QString startupScript, errorMessage;
     bool console, debug;
 
-//    switch (parseCommandLine(parser, startupScript, console, debug, errorMessage)) {
-//    case CommandLineOk:
-//        break;
-//    case CommandLineError:
-//#ifdef Q_OS_WIN
-//        QMessageBox::warning(0, QGuiApplication::applicationDisplayName(),
-//                             "<html><head/><body><h2>" + errorMessage + "</h2><pre>"
-//                             + parser.helpText() + "</pre></body></html>");
-//#else
-//        fputs(qPrintable(errorMessage), stderr);
-//        fputs("\n\n", stderr);
-//        fputs(qPrintable(parser.helpText()), stderr);
-//#endif
-//        return 1;
-//    case CommandLineVersionRequested:
-//#ifdef Q_OS_WIN
-//        QMessageBox::information(0, QGuiApplication::applicationDisplayName(),
-//                                 QGuiApplication::applicationDisplayName() + ' '
-//                                 + QCoreApplication::applicationVersion());
-//#else
-//        printf("%s %s\n", qPrintable(QGuiApplication::applicationDisplayName()),
-//               qPrintable(QCoreApplication::applicationVersion()));
-//#endif
-//        return 0;
-//    case CommandLineHelpRequested:
-//#ifdef Q_OS_WIN
-//        QMessageBox::warning(0, QGuiApplication::applicationDisplayName(),
-//                             "<html><head/><body><pre>"
-//                             + parser.helpText() + "</pre></body></html>");
-//        return 0;
-//#else
-//        parser.showHelp();
-//        return 0;
-//        Q_UNREACHABLE();
-//#endif
-//    }
+    switch (parseCommandLine(parser, startupScript, console, debug, errorMessage)) {
+    case CommandLineOk:
+        break;
+    case CommandLineError:
+#ifdef Q_OS_WIN
+        QMessageBox::warning(0, QGuiApplication::applicationDisplayName(),
+                             "<html><head/><body><h2>" + errorMessage + "</h2><pre>"
+                             + parser.helpText() + "</pre></body></html>");
+#else
+        fputs(qPrintable(errorMessage), stderr);
+        fputs("\n\n", stderr);
+        fputs(qPrintable(parser.helpText()), stderr);
+#endif
+        return 1;
+    case CommandLineVersionRequested:
+#ifdef Q_OS_WIN
+        QMessageBox::information(0, QGuiApplication::applicationDisplayName(),
+                                 QGuiApplication::applicationDisplayName() + ' '
+                                 + QCoreApplication::applicationVersion());
+#else
+        printf("%s %s\n", qPrintable(QGuiApplication::applicationDisplayName()),
+               qPrintable(QCoreApplication::applicationVersion()));
+#endif
+        return 0;
+    case CommandLineHelpRequested:
+#ifdef Q_OS_WIN
+        QMessageBox::warning(0, QGuiApplication::applicationDisplayName(),
+                             "<html><head/><body><pre>"
+                             + parser.helpText() + "</pre></body></html>");
+        return 0;
+#else
+        parser.showHelp();
+        return 0;
+        Q_UNREACHABLE();
+#endif
+    }
 
     QDaqRoot qdaq;
     QDaqSession* s = qdaq.rootSession();

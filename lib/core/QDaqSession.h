@@ -72,6 +72,7 @@ private slots:
     void onUiChanged();
 
 public slots:
+    QString version();
     void quit();
     void exec(const QString& fname);
     void print(const QString& str);

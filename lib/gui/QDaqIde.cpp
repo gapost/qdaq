@@ -169,7 +169,7 @@ void QDaqIDE::about()
 {
     QString msg = QString(
                 "<h3>QDaq ver. %1</h3>"
-                "<p>2015 - G. Apostolopoulos "
+                "<p>(c) 2015 - 2018, G. Apostolopoulos "
                 "<a href=\"mailto:gapost@ipta.demokritos.gr\">gapost@ipta.demokritos.gr</a></p>"
                 "<p>This program uses the following Open Source tools:</p>"
                 "<ul>"
@@ -178,9 +178,9 @@ void QDaqIDE::about()
                     " <a href=\"http://www.trolltech.com/qt/\">www.trolltech.com/qt/</a>"
                     "</li>"
                 "</ul>"
-               ).arg("0.1"); //.arg(GIT_VERSION);
+               ).arg(QDAQ_VERSION);
 
-   QMessageBox::about(this, tr("About RtLab"),msg);
+   QMessageBox::about(this, tr("About QDaq"),msg);
 }
 
 void QDaqIDE::updateMenus()

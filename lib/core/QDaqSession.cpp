@@ -526,3 +526,11 @@ QString QDaqSession::info(QScriptValue v)
     return S;
 }
 
+QString QDaqSession::version()
+{
+    QString S = QString("QDaq ver.: %1\n").arg(QDAQ_VERSION);
+    S += QString("Qt compile ver.: %1\n").arg(QT_VERSION_STR);
+    S += QString("Qt run-time ver.: %1\n").arg(qVersion());
+    return S;
+}
+

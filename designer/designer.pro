@@ -12,6 +12,7 @@ LIBS        += -L.
 lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
 
 include(../qdaq.pri)
+include(../gitversion.pri)
 
 unix {
   target.path = $$[QT_INSTALL_PLUGINS]/designer
