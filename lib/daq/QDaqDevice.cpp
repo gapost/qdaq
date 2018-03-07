@@ -206,11 +206,17 @@ int QDaqDevice::write(int reg, int val) // write
     int ret = ifc_->write(reg, (const char *)(&b), sizeof(b), eot_);
     return ret;
 }
-int QDaqDevice::write(int start_reg, const QByteArray& msg) // write
+int QDaqDevice::write(int start_reg, int n, const QByteArray& msg) // write
 {
+    if (2*n > msg.length()) {
+        throwScriptError(tr("QByteArray does not have enough elements."));
+        return 0;
+    }
+
     if (throwIfOffline()) return 0;
+
     os::auto_lock L(comm_lock);
-    int ret = ifc_->write(start_reg, msg.constData(), msg.length(), eot_);
+    int ret = ifc_->write(start_reg, msg.constData(), 2*n, eot_);
     return ret;
 }
 

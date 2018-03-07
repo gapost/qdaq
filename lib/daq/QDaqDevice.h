@@ -100,7 +100,7 @@ public slots:
 	int write(const QString& msg);
     int write(const QByteArray& msg);
     int write(int reg, int val);
-    int write(int start_reg, const QByteArray& msg);
+    int write(int start_reg, int n, const QByteArray& msg);
 
     QByteArray read();
     int read(int reg);
