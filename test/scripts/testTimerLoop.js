@@ -3,9 +3,10 @@ print("Creating Loop");
 var loop = new QDaqLoop("loop");
 
 
-var t = new QDaqTimeChannel("t");
-t.format = "Time";
-var tst = QDaqTestChannel("tst");
+var t = new QDaqChannel("t");
+t.type = "Clock";
+var tst =  QDaqChannel("tst");
+tst.type = "Random";
 var tst2 = QDaqChannel("tst2");
 var scr = QDaqJob("scr");
 scr.code = "qdaq.loop.tst2.push(qdaq.loop.tst.value())"
@@ -19,10 +20,10 @@ loop.createLoopEngine();
 
 print("Tree = \n" + qdaq.objectTree());
 
-var w = loadTopLevelUi('ui/testform.ui');
-bind(qdaq.loop.t,w.findChild('chTime'));
-bind(qdaq.loop.tst,w.findChild('chTest1'));
-bind(qdaq.loop.tst2,w.findChild('chTest2'));
+var w = loadTopLevelUi('ui/testTimerForm.ui','mainForm');
+bind(qdaq.loop.t,w.findChild('t'));
+bind(qdaq.loop.tst,w.findChild('ch1'));
+bind(qdaq.loop.tst2,w.findChild('ch2'));
 
 function startPressed(on) {
     if (on) qdaq.loop.arm();

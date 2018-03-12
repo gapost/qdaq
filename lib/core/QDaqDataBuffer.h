@@ -52,6 +52,14 @@ class RTLAB_BASE_EXPORT QDaqDataBuffer : public QDaqJob
 
 	Q_ENUMS(BufferType)
 
+protected:
+    // typedefs of channel ptr, channel vector, matrix
+    typedef QPointer<QDaqChannel> channel_t;
+    typedef QVector<channel_t> channel_vector_t;
+    typedef QDaqBuffer vector_t;
+    // data store type = QVector of QDaqBuffer
+    typedef QVector<vector_t> matrix_t;
+
 public:
     /**
      * @brief Type of the data buffer.
@@ -63,19 +71,14 @@ public:
 	};
 
 	virtual void registerTypes(QScriptEngine *e);
-    virtual void writeH5(H5::Group* h5g) const;
-    virtual void readH5(H5::Group *h5g);
+
+protected:
+    virtual void writeh5(H5::Group* h5g) const;
+    virtual void readh5(H5::Group *h5g);
 
 protected:
     // properties
     uint backBufferDepth_, capacity_;
-
-    // typedefs of channel ptr, channel vector, matrix
-    typedef QPointer<QDaqChannel> channel_t;
-    typedef QVector<channel_t> channel_vector_t;
-    typedef QDaqBuffer vector_t;
-    // data store type = QVector of QDaqBuffer
-	typedef QVector<vector_t> matrix_t;
 
     // properties
 	BufferType type_;

@@ -78,9 +78,9 @@ QDaqObjectModel::QDaqObjectModel(QObject *parent)
     rootNode = new Node(QDaqObject::root());
     ((Node*)rootNode)->populate();
 
-    connect(QDaqObject::root(), SIGNAL(objectCreated(QDaqObject*)),
+    connect(QDaqObject::root(), SIGNAL(objectAttached(QDaqObject*)),
         this, SLOT(insert(QDaqObject*)));
-    connect(QDaqObject::root(), SIGNAL(objectDeleted(QDaqObject*)),
+    connect(QDaqObject::root(), SIGNAL(objectDetached(QDaqObject*)),
         this, SLOT(remove(QDaqObject*)));
 }
 

@@ -170,27 +170,27 @@ bool readStringList_vl(CommonFG* h5obj, const char* name, QStringList& S)
 void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject);
 void readProperties(CommonFG* h5obj, QDaqObject* obj);
 
-void QDaqObject::writeH5(Group *h5g) const
+void QDaqObject::writeh5(Group *h5g) const
 {
     writeProperties(h5g,this,metaObject());
 }
 
-void writeRecursive(CommonFG* h5g, const QDaqObject* obj)
+void QDaqObject::writeRecursive(CommonFG* h5g, const QDaqObject* obj)
 {
     H5::Group objGroup = h5g->createGroup(obj->objectName().toLatin1().constData());
 
-    obj->writeH5(&objGroup);
+    obj->writeh5(&objGroup);
 
     foreach(const QDaqObject* ch, obj->children()) writeRecursive(&objGroup, ch);
 
 }
 
-void QDaqObject::readH5(Group *h5g)
+void QDaqObject::readh5(Group *h5g)
 {
     readProperties(h5g,this);
 }
 
-void readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
+void QDaqObject::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
 {
     int n = h5g->getNumObjs();
 
@@ -211,7 +211,7 @@ void readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
                 if (obj)
                 {
                     obj->setObjectName(groupName);
-                    obj->readH5(&g);
+                    obj->readh5(&g);
                     readRecursive(&g, obj);
                     if (parent_obj) parent_obj->appendChild(obj);
                     else {
@@ -603,9 +603,9 @@ void readProperties(CommonFG *h5obj, QDaqObject* obj)
     }
 }
 
-void QDaqDataBuffer::writeH5(H5::Group* h5g) const
+void QDaqDataBuffer::writeh5(H5::Group* h5g) const
 {
-    QDaqObject::writeH5(h5g);
+    QDaqObject::writeh5(h5g);
 
     if (!(columns() && size())) return;
 
@@ -619,12 +619,12 @@ void QDaqDataBuffer::writeH5(H5::Group* h5g) const
         ds.write(data_matrix[j].constData(),PredType::NATIVE_DOUBLE,space);
     }
 }
-void QDaqDataBuffer::readH5(H5::Group *h5g)
+void QDaqDataBuffer::readh5(H5::Group *g)
 {
-    QDaqObject::readH5(h5g);
+    QDaqObject::readh5(g);
 
     QStringList S;
-    if ( readStringList(h5g,"columnNames",S) ) columnNames_ = S;
+    if ( readStringList(g,"columnNames",S) ) columnNames_ = S;
 
     int ncols = columnNames_.size();
     if (!ncols) return;
@@ -637,7 +637,7 @@ void QDaqDataBuffer::readH5(H5::Group *h5g)
     for(int j=0; j<ncols; j++)
     {
         QString col_name = columnNames().at(j);
-        DataSet ds = h5g->openDataSet(col_name.toLatin1().constData());
+        DataSet ds = g->openDataSet(col_name.toLatin1().constData());
         DataSpace space = ds.getSpace();
         hsize_t sz;
         space.getSimpleExtentDims(&sz);

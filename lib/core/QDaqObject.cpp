@@ -34,14 +34,14 @@ QDaqObject::~QDaqObject(void)
 void QDaqObject::attach()
 {
     qDebug() << "attaching" << path() << "@" << (void*)this;
-    root()->objectCreation(this,true);
+    root()->objectAttached(this);
     foreach(QDaqObject* obj, children_) obj->attach();    
 }
 
 void QDaqObject::detach()
 {    
     foreach(QDaqObject* obj, children_) obj->detach();
-    root()->objectCreation(this,false);
+    root()->objectDetached(this);
     qDebug() << "detaching" << path() << "@" << (void*)this;
 }
 
@@ -348,13 +348,13 @@ QDaqObject* QDaqObject::appendChild(QDaqObject* obj)
 {
     if (!obj) {
        throwScriptError("The argument is not a valid object.");
-	   return;
+       return 0;
     }
-    if (!checkName(obj->objectName())) return;
+    if (!checkName(obj->objectName())) return 0;
 
 	if (obj->parent()) {
 		throwScriptError("This object is a child of another object.");
-		return;
+        return 0;
 	}
 
     obj->setParent(this);
@@ -366,21 +366,21 @@ QDaqObject* QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj
 {
     if (!newobj) {
        throwScriptError("The 1st argument is not a valid object.");
-	   return;
+       return 0;
     }
 
-    if (!checkName(newobj->objectName())) return;
+    if (!checkName(newobj->objectName())) return 0;
 
 	if (newobj->parent()) {
 		throwScriptError("The 1st object is a child of another object.");
-		return;
+        return 0;
 	}
 
     int i = children_.indexOf(existingobj);
     if (i<0)
     {
 		this->throwScriptError("2nd argument is not a child object.");
-        return;
+        return 0;
     }
 
     children_.insert(i,newobj);

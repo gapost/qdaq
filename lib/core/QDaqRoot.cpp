@@ -130,16 +130,6 @@ void QDaqRoot::onError(const QDaqError &err)
                .arg(err.type).arg(err.descr);
 }
 
-void QDaqRoot::objectCreation(QDaqObject* obj, bool create)
-{
-    if (obj==this) return;
-    if (obj->parent()==0) return;
-
-    if (create)
-        emit objectCreated(obj);
-    else
-        emit objectDeleted(obj);
-}
 void QDaqRoot::addDaqWindow(QWidget* w)
 {
     if (!daqWindows_.contains(w)) {

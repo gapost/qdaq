@@ -82,8 +82,6 @@ public:
      */
     QDaqObject* createObject(const QString& name, const QString& className);
 
-    void objectCreation(QDaqObject* obj, bool c);
-
     /** Called to post an error at the QDaq error queue.
      *
      * This function is thread safe.
@@ -121,7 +119,10 @@ private slots:
 signals:
     void error(const QDaqError& e);
     void daqWindowsChanged();
-
+    /// Fired when object is attached
+    void objectAttached(QDaqObject* obj);
+    /// Fired when object is detached
+    void objectDetached(QDaqObject* obj);
 
 private:
 

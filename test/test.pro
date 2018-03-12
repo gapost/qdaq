@@ -26,6 +26,7 @@ FORMS += \
     ui/deltaControl.ui \
     ui/testform.ui \
     ui/tabwidget.ui \
-    ui/plotform.ui
+    ui/plotform.ui \
+    ui/testTimerForm.ui
 
 

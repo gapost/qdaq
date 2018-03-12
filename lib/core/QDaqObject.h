@@ -93,13 +93,15 @@ struct RTLAB_BASE_EXPORT QDaqError
  *
  * Descendants of QDaqObject can be serialized to
  * <a HREF="https://support.hdfgroup.org/HDF5/">HDF5 files.</a>
- * The complete tree of QDaq objects can be written/read by means of
- * writeH5() and readH5(), respectively. HDF5 serialization is done
+ * A QDaq object with its children can be written/read by means of
+ * h5write() and h5read(), respectively.
+ *
+ * HDF5 serialization is done
  * according to the following rules:
  *   - Each object is written in the HDF5 file as a H5 group. The name of the
  * object becomes the name of the group.
  *   - Properties and data of the object are written as datasets of the group.
- *     QDaqObject descendants reimplement writeH5()/readH5() where necessary.
+ *     QDaqObject descendants reimplement writeh5()/readh5() where necessary.
  *   - Child objects are written as sub-groups
  *
  */
@@ -123,19 +125,42 @@ protected:
 	static bool isNameValid(const QString& name, int* code = 0);
 	bool isNameUnique(const QString& name) const;
 
+    /**
+     * @brief Write contents of the object to a H5 group
+     *
+     * The base class implementation writes all properties (static & dynamic)
+     * as datasets of the HDF5 file group.
+     *
+     * Reimplement in QDaqObject descendants to write additional data.
+     *
+     * @param g HDF5 Group object
+     */
+    virtual void writeh5(H5::Group* g) const;
+    /**
+     * @brief Read contents of the object from a H5 group
+     *
+     * The base class implementation reads all properties (static & dynamic)
+     * from corresponding datasets of the HDF5 file group.
+     *
+     * Reimplement in QDaqObject descendants to read additional data.
+     *
+     * @param g HDF5 Group object
+     */
+    virtual void readh5(H5::Group *g);
+
+private:
+    // HDF5 serialization helpers
+    static void writeRecursive(H5::CommonFG* h5g, const QDaqObject* obj);
+    static void readRecursive(H5::CommonFG* h5g, QDaqObject* &parent_obj);
 
 public:
-    /// Write contents of the object to a H5 group
-    virtual void writeH5(H5::Group* file) const;
-    virtual void readH5(H5::Group *file);
-
-    /// Serialize contents to a HDF5 file.
+    /// Serialize a QDaqObject to a HDF5 file.
     static void h5write(const QDaqObject* obj, const QString& filename);
-    /// Read object contents from HDF5 file.
+    /// Load a QDaqObject from a HDF5 file.
     static QDaqObject* h5read(const QString& filename);
 
 protected:
-    // for handling children events
+    // for handling child events
     virtual void childEvent ( QChildEvent * event );
 
 public:
@@ -276,11 +301,7 @@ public slots:
     /** @} */ // end of ScriptAPI
 
 signals:
-	/// Fired when object is deleted
-    void objectDeleted(QDaqObject* obj);
-	/// Fired when object is created
-    void objectCreated(QDaqObject* obj);
-	/// Fired when properties have changed
+    /// Fired when object properties have changed
 	void propertiesChanged();
     /// Fired when widgets need update
     void updateWidgets();
