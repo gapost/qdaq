@@ -94,7 +94,9 @@ HEADERS += 3rdparty/kled/kled.h
 DISTFILES += \
     qdaq.pri \
     .gitignore \
-    ../TODO
+    ../TODO \
+    ../qdaq.dox \
+    qdaq_modules.dox
 
 RESOURCES += \
     qdaq.qrc

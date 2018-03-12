@@ -33,3 +33,7 @@ else:unix: LIBS += -L$$OUT_PWD/../lib/ -lQDaq
 INCLUDEPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
 DEPENDPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
 
+DISTFILES += \
+    qdaq.dox \
+    qdaq_ide_screenshot.png
+

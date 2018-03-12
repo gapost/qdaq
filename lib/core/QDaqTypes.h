@@ -7,9 +7,16 @@
 #include <QExplicitlySharedDataPointer>
 #include <QMetaType>
 
+/** @addtogroup Types
+ *  @{
+ */
+/// Vector of int
 typedef QVector<int> QDaqIntVector;
+/// Vector of unsigned int
 typedef QVector<unsigned int> QDaqUintVector;
+/// vector of double values
 typedef QVector<double> QDaqVector;
+/** @} */
 
 Q_DECLARE_METATYPE(QDaqIntVector)
 Q_DECLARE_METATYPE(QDaqUintVector)
@@ -22,9 +29,10 @@ int registerVectorTypes(QScriptEngine* eng);
 #include <QString>
 #include <QDateTime>
 
-/** Time representation in RtLab.
+/** Time representation in QDaq.
 
-  \ingroup RtCore
+  @ingroup Core
+  @ingroup Types
 
   Time is represented internaly as a double number
   corresponding to seconds since 1 Jan 1970
@@ -77,6 +85,7 @@ public:
     }
 };
 
+// helper buffer class template
 template<class T>
 class buffer : public QSharedData
 {
@@ -102,7 +111,7 @@ private:
     T x1, x2;
     /// flag set if min & max need recalc
     bool recalcBounds;
-
+    // make the buffer continous in memory
     void normalize_()
     {
         if (type_==Circular && sz && sz==cp && tail)
@@ -125,17 +134,17 @@ private:
             tail = 0;
         }
     }
-
+    // index takes care of circular buffers
     int idx_(int i) const
     {
         return (type_==Circular && sz==cp) ? ((tail+i) % sz) : i;
     }
-
+    // store a value
     void set_(int i, const T& v)
     {
         mem[i] = v;
     }
-
+    // calculated min/max
     void calcBounds_()
     {
         int n(size());
@@ -191,7 +200,7 @@ public:
         normalize_();
 
         if (newt==Circular)
-            mem.resize(cp + cp/2);
+            mem.resize(cp + cp/2); // extra 0.5 size needed to swap mem during normalize_()
         if (type_==Circular)
             mem.resize(cp);
 
@@ -364,15 +373,47 @@ public:
     }
 };
 
+/**
+ * @brief A buffer for storing double numbers.
+ * @ingroup Types
+ *
+ * It is used for storing data from QDaqChannel objects.
+ *
+ * The buffer has 3 modes, according to its StorageType property:
+ * it can be circular, i.e., new data overwrite old data, it can have fixed
+ * size or it can be expandable.
+ *
+ * Data are inserted at the end of the buffer by the function push() or
+ * the operator<<(). The contents can be read by the function get() or the
+ * operator[](). The class provides read-only access to the data. It is not
+ * possible to change the value of a stored element.
+ *
+ * The class defines functions for getting the min/max value,
+ * the mean and std deviation.
+ * The calculation of these quantities is stored internally and multiple
+ * calls to these functions do not cause a recalculation (except if
+ * the buffer contents have changed).
+ *
+ * The buffer is explicitly shared, i.e., multiple instances share
+ * the same underlying data. This is used primarily for displaying
+ * real-time plots of data without copying the buffer.
+ *
+ */
 class QDaqBuffer
 {
     typedef buffer<double> buffer_t;
     QExplicitlySharedDataPointer<buffer_t> d_ptr;
 public:
+    /**
+     * @brief Storage type of the buffer.
+     */
     enum StorageType {
-        Open = buffer_t::Open, Fixed, Circular
+        Open = buffer_t::Open, /**< The buffer may grow indefinately. */
+        Fixed, /**< The buffer capacity is fixed. When the buffer becomes full new data is discarded. */
+        Circular /**< The buffer capacity is fixed and new data overwrite old data. */
     };
 
+    /// Create a buffer with initial capacity cap.
     explicit QDaqBuffer(int cap = 0)
     {
         d_ptr = new buffer_t(cap);
@@ -384,28 +425,46 @@ public:
         d_ptr = rhs.d_ptr;
         return (*this);
     }
+    /// Return the number of elememts stored in the buffer.
     int size() const { return d_ptr->size(); }
+    /// Return the StorageType.
     StorageType type() const { return (StorageType)(d_ptr->type()); }
+    /// Set the StorageType
     void setType(StorageType newt) {
         d_ptr->setType((buffer_t::StorageType)newt);
     }
+    /// Return the currently allocated memory capacity (in number of elements).
     int capacity() const { return d_ptr->capacity(); }
+    /// Set the capacity
     void setCapacity(int c) { d_ptr->setCapacity(c); }
+    /// Empty the buffer.
     void clear() { d_ptr->clear(); }
+    /// Replace the undelying buffer with a the contents of a QDaqVector.
     void replace(const QDaqVector& v) { d_ptr->replace(v); }
+    /// Get the i-th element
     double get(int i) const { return d_ptr->get(i); }
+    /// Return the i-th element
     double operator[](int i) const { return d_ptr->get(i); }
+    /// Append a value to the buffer.
     void push(double v) { d_ptr->push(v); }
+    /// Append n values stored in memory location v to the buffer
     void push(const double* v, int n) { d_ptr->push(v, n); }
+    /// Append a value to the buffer
     QDaqBuffer& operator<<(const double& v)
     {
         d_ptr->push(v); return (*this);
     }
+    /// Return a const pointer to the data.
     const double* constData() const { return d_ptr->constData(); }
+    /// Copy the data to a QDaqVector and return it.
     QDaqVector toVector() const { return d_ptr->vector(); }
+    /// Minimum value in the buffer.
     double vmin() const { return d_ptr->vmin(); }
+    /// Maximum value in the buffer.
     double vmax() const { return d_ptr->vmax(); }
+    /// Mean value in the buffer.
     double mean() const { return d_ptr->mean(); }
+    /// Standard deviation the buffer values.
     double std() const { return d_ptr->std(); }
 };
 

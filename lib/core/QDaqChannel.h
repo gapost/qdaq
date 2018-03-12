@@ -11,20 +11,24 @@ namespace mu
 	class Parser;
 }
 
-/** Objects that represent a stream of numerical data, a signal.
-
-Real time data is handeled in RtLab through the QDaqChannel class.
-An instrument provides measurement data through QDaqChannel objects.
-On-line filtering and all types of data processing is also done with QDaqChannel and its
-descendants.
-
-\ingroup QDaq Core
-*/
+/**
+ * @brief A class that represent a stream of numerical data, a signal.
+ *
+ * @ingroup Core
+ * @ingroup ScriptAPI
+ *
+ * Real time data is handeled in QSaq through the QDaqChannel class.
+ * E.g., an instrument provides measurement data through QDaqChannel objects.
+ *
+ * QDaqChannel provides tools for displaying, transforming, averaging the data
+ * of the channel.
+ *
+ */
 class RTLAB_BASE_EXPORT QDaqChannel : public QDaqJob
 {
 	Q_OBJECT
 
-    /// Type of the channel.
+    /// Type of the channel.  
     Q_PROPERTY(ChannelType type READ type WRITE setType)
     /** User supplied signal name.
     Used when displaying the channel.
@@ -134,6 +138,23 @@ protected:
     math::circular_buffer<double> buff_;
 
 	virtual bool arm_();
+
+    /**
+     * @brief Perform channel tasks.
+     *
+     * The tasks are performed in the following order:
+     *
+     *   - If channel is of a special type, then its function is performed.
+     *     E.g. if the type is Random a random number is generated.
+     *   - averaging is performed
+     *   - the mean value goes through muParser
+     *   - the mean value is scaled and shifted (multiplier*v + offset)
+     *   - the mean value is checked for under/over range
+     *
+     * If new data is available the updateWidgets signal is emitted.
+     *
+     * @return always return true.
+     */
     virtual bool run();
 
 	virtual void registerTypes(QScriptEngine* e);
@@ -182,6 +203,7 @@ public:
 
 	double last() const { return buff_.last(); }
 
+    /// Returns the channel value formatted according to format/digits
 	virtual QString formatedValue();
 
 public slots:
@@ -197,9 +219,8 @@ public slots:
 
 
 
-/** A channel for filtering another channel's data.
+/* A channel for filtering another channel's data.
 
-  \ingroup QDaqCore
 
   Performs filtering operations on data from the specified inputChannel.
 

@@ -203,6 +203,9 @@ bool QDaqLoop::exec()
 {
     if (aborted_) return false;
 
+    // check time for loop statistics
+    t_[1] = (float)clock_.sec();
+
     bool ret = true;
     comm_lock.lock();
     if (delay_counter_) delay_counter_--;
@@ -231,35 +234,34 @@ bool QDaqLoop::exec()
         emit abort();
     }
 
+    // loop statistics
+    perfmon[0] << (t_[1] - t_[0])*1000; t_[0] = t_[1];
+    perfmon[1] << ((float)clock_.sec() - t_[1])*1000;
+
     return ret;
 }
+
 bool QDaqLoop::arm_()
 {
     count_ = 0;
     delay_counter_ = preload_;
     aborted_ = false;
     bool ret = QDaqJob::arm_();
-    if (ret && isTop())
+    if (ret)
     {
         clock_.start();
         t_[0] = (float)clock_.sec();
-        armed_ = thread_.start(this,period_); //,THREAD_PRIORITY_TIME_CRITICAL);
+        if (isTop()) armed_ = thread_.start(this,period_); //,THREAD_PRIORITY_TIME_CRITICAL);
     }
     return armed_;
 }
+
 void QDaqLoop::disarm_()
 {
     thread_.stop();
     QDaqJob::disarm_();
 }
-bool QDaqLoop::operator()()
-{
-    t_[1] = (float)clock_.sec();
-    bool ret = exec();
-    perfmon[0] << (t_[1] - t_[0])*1000; t_[0] = t_[1];
-    perfmon[1] << ((float)clock_.sec() - t_[1])*1000;
-    return ret;
-}
+
 void QDaqLoop::setLimit(uint d)
 {
     if (limit_ != d)
@@ -272,6 +274,7 @@ void QDaqLoop::setLimit(uint d)
         emit propertiesChanged();
     }
 }
+
 void QDaqLoop::setDelay(uint d)
 {
     if (delay_ != d)
@@ -285,6 +288,7 @@ void QDaqLoop::setDelay(uint d)
         emit propertiesChanged();
     }
 }
+
 void QDaqLoop::setPreload(uint d)
 {
     if (preload_ != d)
@@ -293,6 +297,7 @@ void QDaqLoop::setPreload(uint d)
         emit propertiesChanged();
     }
 }
+
 void QDaqLoop::setPeriod(unsigned int p)
 {
     if (p<10) p=10; // minimum 10 ms
@@ -313,6 +318,7 @@ void QDaqLoop::setPeriod(unsigned int p)
         emit propertiesChanged();
     }
 }
+
 QString QDaqLoop::stat()
 {
     QString S("Loop statistics:");
@@ -320,6 +326,7 @@ QString QDaqLoop::stat()
     S += QString("\n  Load-time (ms): %2").arg(perfmon[1]());
     return S;
 }
+
 void QDaqLoop::createLoopEngine()
 {
     if (throwIfArmed()) return;

@@ -31,17 +31,19 @@ t.type = "Clock";
 var X1 = new QDaqChannel("X1");
 X1.type = "Random";
 var X2 = new QDaqChannel("X2");
+var X3 = new QDaqChannel("X3");
 var scr = new QDaqJob("scr");
-scr.code = "qdaq.loop.X2.push(Math.sqrt(qdaq.loop.X1.value()))";
+scr.code = "qdaq.loop.X2.push(Math.sqrt(qdaq.loop.X1.value()));qdaq.loop.X3.push(qdaq.loop.X1.value()>0.5);";
 var Data = new QDaqDataBuffer("Data");
 Data.type = "Open";
 Data.backBufferDepth = 4;
-Data.channels = [t, X1, X2];
+Data.channels = [t, X1, X2, X3];
 
 loop.appendChild(t);
 loop.appendChild(X1);
 loop.appendChild(scr);
 loop.appendChild(X2);
+loop.appendChild(X3);
 loop.appendChild(Data);
 
 
@@ -65,6 +67,7 @@ bind(qdaq.loop.t,  w.findChild('t'));
 bind(qdaq.loop.loop2.t,  w.findChild('t2'));
 bind(qdaq.loop.X1, w.findChild('X1'));
 bind(qdaq.loop.X2, w.findChild('X2'));
+bind(qdaq.loop.X3, w.findChild('qLed'));
 
 function startPressed(on) {
     if (on) qdaq.loop.arm();

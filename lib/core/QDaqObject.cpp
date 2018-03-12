@@ -30,32 +30,21 @@ QDaqObject::~QDaqObject(void)
     qDebug() << "destroying" << path() << "@" << (void*)this;
 }
 
-/** Attach this QDaqObject to the QDaq-framework.
-This function should be called right after the constructor.
-It establishes the required links to other objects of the framework. 
-This has to be done after the constructor so that the object's C++ pointer
-is fully qualified.
-*/
+
 void QDaqObject::attach()
 {
     qDebug() << "attaching" << path() << "@" << (void*)this;
     root()->objectCreation(this,true);
     foreach(QDaqObject* obj, children_) obj->attach();    
 }
-/** Detach this QDaqObject from the QDaq-framework.
-This function should always be called before the destructor.
-It removes links to this object from other objects in the framework.
-It stops QDaqLoop objects, disarms QDaqJob objects, etc. so that they can
-be safely deleted.
-*/
+
 void QDaqObject::detach()
 {    
     foreach(QDaqObject* obj, children_) obj->detach();
     root()->objectCreation(this,false);
     qDebug() << "detaching" << path() << "@" << (void*)this;
 }
-/** Return true if this QDaqObject is attached to the QDaq-framework.
-*/
+
 bool QDaqObject::isAttached() const
 {
     if (this==root()) return true; // root is always atached
@@ -355,7 +344,7 @@ QString QDaqObject::listFunctions() const
 	return S;
 }
 
-void QDaqObject::appendChild(QDaqObject* obj)
+QDaqObject* QDaqObject::appendChild(QDaqObject* obj)
 {
     if (!obj) {
        throwScriptError("The argument is not a valid object.");
@@ -369,9 +358,11 @@ void QDaqObject::appendChild(QDaqObject* obj)
 	}
 
     obj->setParent(this);
+
+    return obj;
 }
 
-void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
+QDaqObject* QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
 {
     if (!newobj) {
        throwScriptError("The 1st argument is not a valid object.");
@@ -394,9 +385,8 @@ void QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj)
 
     children_.insert(i,newobj);
     newobj->setParent(this);
-    // put the new object in the correct order
-    //children_.removeLast();
 
+    return newobj;
 }
 
 void QDaqObject::childEvent(QChildEvent *event)

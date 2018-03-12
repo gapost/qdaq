@@ -1,5 +1,5 @@
-#ifndef _RTOBJECT_H_
-#define _RTOBJECT_H_
+#ifndef _QDAQOBJECT_H_
+#define _QDAQOBJECT_H_
 
 #include <QObject>
 #include <QString>
@@ -22,18 +22,12 @@ class Group;
 class QDaqRoot;
 class QDaqObject;
 
-
+/** A QList of QDaqObject pointers.
+ *
+ * @ingroup Core
+ *
+ */
 typedef QList<QDaqObject*> QDaqObjectList;
-
-/**
- *  @defgroup Core Core QDaq classes
- *  This is the Core group
- */
-
-/**
- *  @defgroup ScriptAPI QDaq QtScript API functions
- *  This is the ScriptAPI group
- */
 
 /** Structure containing error data.
  *
@@ -77,6 +71,37 @@ struct RTLAB_BASE_EXPORT QDaqError
  * @ingroup Core
  * @ingroup ScriptAPI
  *
+ * QDaqObject is derived from QObject and thus inherits all the Qt machinery,
+ * i.e., properties, meta-objects, signals \& slots, etc.
+ *
+ * QDaq objects are organized in a tree-like structure like QObjects. However,
+ * the children of a QDaqObject are ordered ,whereas those of a QObject are not.
+ * The ordering is necessary for QDaq
+ * because QDaq objects take part in loops where the order of execution is essential.
+ *
+ * To create the QDaq object tree structure, the QDaqObject class offers an interface
+ * similar to the Node interface of Document Object Model (DOM) Level 1. The interface is
+ * defined by this \ref domapi "group of functions".
+ *
+ * Initially a QDaqObject is created without a parent
+ * and only its name needs to be specified.
+ * The object can than be incorporated into the QDaq hierarchy by one of the
+ * \ref domapi "DOM API functions".
+ *
+ * There is a static single root object at the top of the tree structure.
+ * The root object is accesible by QDaqObject::root() and it of type QDaqRoot.
+ *
+ * Descendants of QDaqObject can be serialized to
+ * <a HREF="https://support.hdfgroup.org/HDF5/">HDF5 files.</a>
+ * The complete tree of QDaq objects can be written/read by means of
+ * writeH5() and readH5(), respectively. HDF5 serialization is done
+ * according to the following rules:
+ *   - Each object is written in the HDF5 file as a H5 group. The name of the
+ * object becomes the name of the group.
+ *   - Properties and data of the object are written as datasets of the group.
+ *     QDaqObject descendants reimplement writeH5()/readH5() where necessary.
+ *   - Child objects are written as sub-groups
+ *
  */
 class RTLAB_BASE_EXPORT QDaqObject : public QObject, protected QScriptable
 {
@@ -100,9 +125,7 @@ protected:
 
 
 public:
-    /** Write the contents of the QDaqObject to a HDF5 file.
-      In this base class implementation, properties are written as attributes.
-      */
+    /// Write contents of the object to a H5 group
     virtual void writeH5(H5::Group* file) const;
     virtual void readH5(H5::Group *file);
 
@@ -112,7 +135,7 @@ public:
     static QDaqObject* h5read(const QString& filename);
 
 protected:
-    // for handling children εωεντσ
+    // for handling children events
     virtual void childEvent ( QChildEvent * event );
 
 public:
@@ -135,8 +158,6 @@ protected:
 public:
     /** Construct a QDaqObject with a name.
      *
-     * @ingroup ScriptAPI
-     *
      * The name is actually the objectName property of the QObject super-class.
      *
      */
@@ -144,23 +165,36 @@ public:
     virtual ~QDaqObject(void);
 
     /** Attach this QDaqObject to the QDaq tree.
+     *
      * This function is called when the object becomes part of the QDaq tree.
-     * Subclasses of QDaqObject may reimplement it to perform specific initialization.
+     *
+     * In the base class implementation this function signals the root object
+     * that a new QDaqObject has been inserted in the tree and then
+     * calls attach() for each child QDaqObject.
+     *
+     * Subclasses may reimplement this function to perform specific initialization.
      */
     virtual void attach();
 
     /** Detach this QDaqObject from the QDaq tree.
+     *
      * This function is called just before the object becomes detached from the QDaq tree.
-     * Subclasses of QDaqObject may reimplement it to perform needed actions before detaching.
+     *
+     * In the base class implementation it first calls detach() for each child
+     * QDaqObject and then signal root that the object is removed from the qdaq tree.
+     *
+     * Subclasses may reimplement this function to perform needed actions before detaching.
+     *
      */
 	virtual void detach();
 
     /// Returns true is this object is attached to the QDaq tree.
     bool isAttached() const;
 
+    // helper function neede for building the tree string representation
 	void objectTree(QString& S, int level) const;
 
-    /** Register this QDaqObject's types with a script engine.
+    /** Register this QDaqObject's types with a QScriptEngine.
      *
      * This funtion is called when the QDaqObject is exposed to a script engine
      * and is used to register specific types needed by the object (enums etc).
@@ -204,35 +238,39 @@ public slots:
 	/// List the objects scriptable functions
 	QString listFunctions() const;
 
-    /** @def ScriptAPI
+
+    /**
+     * \name DOM Level 1 Node interface
+     * \anchor domapi
      *
-     *  More documentation for the first group.
-     *  @{
-     */
-    /** @name DOMAPI
-     *  Core DOM API 1. implementation
+     * This group of QDaqObject slots implement the Node interface
+     * of DOM API Level 1.
+     *
+     * The functions are slots, thus available in script code.
+     *
      */
     ///@{
-    QDaqObjectList find(const QString& wc) const
-    {
-        return QDaqObject::findByWildcard(wc,this);
-    }
-    /// Return the object's parent
+    /// Return the object's parent or null if the object does not have a parent.
     QDaqObject* parent() const { return qobject_cast<QDaqObject*>(QObject::parent()); }
     /// Return a list of children of this object
     QDaqObjectList children() const { return children_; }
     /// Returns true if the object has children
     bool hasChildren() const { return !children_.isEmpty(); }
-    /// Adds a new child QDaqObject, as the last child.
-    void appendChild(QDaqObject* obj);
-    /// Adds a new child QDaqObject, before an existing child.
-    void insertBefore(QDaqObject* newobj, QDaqObject* existingobj);
+    /// Adds a new child QDaqObject, as the last child and returns a pointer to it.
+    QDaqObject* appendChild(QDaqObject* obj);
+    /// Adds a new child QDaqObject, before an existing child and returns a pointer to it.
+    QDaqObject* insertBefore(QDaqObject* newobj, QDaqObject* existingobj);
     /// Clone a QDaqObject with its child objects.
     QDaqObject* clone();
     /// Remove a child and return a pointer to it.
     QDaqObject* removeChild(QDaqObject* obj);
     /// Replace a child and return a pointer to the old child.
     QDaqObject* replaceChild(QDaqObject* newobj, QDaqObject* oldobj);
+    /// Find objects by a wildcard string wc
+    QDaqObjectList find(const QString& wc) const
+    {
+        return QDaqObject::findByWildcard(wc,this);
+    }
     ///@}
 
     /** @} */ // end of ScriptAPI

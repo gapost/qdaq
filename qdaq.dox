@@ -1,0 +1,19 @@
+/*! \mainpage 
+ *
+ * \section intro Introduction
+ *
+ * Qdaq is a Qt-based set of tools for performing data aqcuisition (Daq) tasks.
+ * It comprises of the following components:
+ *
+ *  - A hierarchy of C++ objects for various Daq-related tasks. The classes are divided into
+ the \ref Core "Core", Gui and Daq modules
+ *  - A set of Qt widgets suitable for Daq applications
+ *  - A scripting interface based on javascript and QtScript
+ *  - The \ref qdaq_app application which offers a complete environment
+ *    for developing and executing QDaq scripts
+ *
+ *
+ * etc...
+ */
+
+

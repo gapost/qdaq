@@ -1,3 +1,11 @@
+  * History file to start with a .
   * Syntax checking in scripts and report to user
   * Implement editing of QDaq Types in property browser. Need to subclass QtVariantEditorFactory.
     Current solution: properties are displayed read-only as a text string
+  * Session error log output should go also to stderr
+  * qdaq errors should also go to stderr
+  * when IDE is closed and opened after error, the error is not displayed
+  * error queue object has to be updated
+  * Syntax highlighting in console widgets
+  * Ui window browser similar to QDaq object browser
+

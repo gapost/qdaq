@@ -39,6 +39,7 @@
 namespace QDaq {
 
 inline const char* Version() { return QDAQ_VERSION; }
+
 inline const char* QtVersion() { return QT_VERSION_STR; }
 
 }

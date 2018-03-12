@@ -9,6 +9,9 @@ QT_BEGIN_NAMESPACE
 class QScriptContext;
 QT_END_NAMESPACE
 
+/*
+ * ByteArray class definition from Qt examples
+ */
 class ByteArrayClass : public QObject, public QScriptClass
 {
     Q_OBJECT
