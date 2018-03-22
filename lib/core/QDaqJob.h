@@ -184,7 +184,12 @@ protected:
 	bool throwIfArmed();
 
 public:
-    Q_INVOKABLE explicit QDaqJob(const QString& name);
+    Q_INVOKABLE
+    /**
+     * @brief QDaqJob constructor.
+     * @param name The QDaqObject name.
+     */
+    explicit QDaqJob(const QString& name);
     virtual ~QDaqJob(void);
 
     virtual void attach();
@@ -201,7 +206,8 @@ public:
 /**
  * @brief A class encapsulating a software loop.
  *
-@ingroup Core
+ * @ingroup Core
+ * @ingroup ScriptAPI
 
 QDaqLoop is used to execute a number of child-jobs or child-loops.
 
@@ -235,12 +241,6 @@ class RTLAB_BASE_EXPORT QDaqLoop : public QDaqJob
 {
     Q_OBJECT
 
-    /** @addtogroup ScriptAPI
-     *
-     *  More documentation for the first group.
-     *  @{
-     */
-
     /** Number of executed loop cycles (read-only).
      * It is reset to 0 when the loop is armed.
      */
@@ -270,8 +270,6 @@ class RTLAB_BASE_EXPORT QDaqLoop : public QDaqJob
      * This is meaningful only for the top level loop.
      */
     Q_PROPERTY(uint period READ period WRITE setPeriod)
-
-    /** @} */ // end of ScriptAPI
 
 protected:
     uint count_, limit_, delay_, preload_,period_; // properties
@@ -340,12 +338,6 @@ public:
 
     virtual QDaqScriptEngine* loopEngine() const;
 
-    /** @addtogroup ScriptAPI
-     *
-     *  More documentation for the first group.
-     *  @{
-     */
-
 signals:
     /// This is emitted if the loop aborts due to an error.
     void abort();
@@ -385,9 +377,6 @@ public slots:
      *
      */
     void createLoopEngine();
-
-    /** @} */ // end of ScriptAPI
-
 };
 
 #endif

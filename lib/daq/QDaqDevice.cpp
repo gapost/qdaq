@@ -46,37 +46,6 @@ bool QDaqDevice::setOnline_(bool on)
 		// set this device to on
         online_ = ifc_->open_port(addr_,this);
         if (online_) ifc_->clear_port(addr_);
-		// switch-on also the sub-devices
-		if (online_)
-		{
-			bool ok = true;
-			int k = 0;
-            foreach(QDaqJob* j, subjobs_)
-			{
-                QDaqDevice* dev = qobject_cast<QDaqDevice*>(j);
-				if (dev)
-				{
-					ok = dev->setOnline_(true);
-					if (!ok) break;
-					k++;
-				}
-			}
-			if (!ok) // switch off all
-			{
-				online_ = false;
-                ifc_->close_port(addr_);
-                foreach(QDaqJob* j, subjobs_)
-				{
-                    QDaqDevice* dev = qobject_cast<QDaqDevice*>(j);
-					if (dev)
-					{
-						ok = dev->setOnline_(false);
-						k--;
-						if (k==0) break;
-					}
-				}
-			}
-		}
 		return online_;
 	}
 	else {  
@@ -161,7 +130,7 @@ bool QDaqDevice::arm_()
     else return QDaqJob::arm_();
 }
 // io
-int QDaqDevice::write_(const char* msg, int len)
+int QDaqDevice::write(const char* msg, int len)
 {
     os::auto_lock L(comm_lock);
     int ret = ifc_->write(addr_, msg, len, eot_);
@@ -169,34 +138,32 @@ int QDaqDevice::write_(const char* msg, int len)
 	checkError(msg,len);
 	return ret;
 }
-int QDaqDevice::write_(const char* msg)
+int QDaqDevice::write(const char* msg)
 {
-	return write_(msg, strlen(msg));
+    return write(msg, strlen(msg));
 }
-int QDaqDevice::write_(const QByteArray& msg)
+int QDaqDevice::write(const QByteArray& msg)
 {
-	return write_(msg.constData(),msg.size());
+    return write(msg.constData(),msg.size());
 }
-bool QDaqDevice::write_(const QList<QByteArray>& msglist)
+bool QDaqDevice::write(const QList<QByteArray>& msglist)
 {
     os::auto_lock L(comm_lock);
 	foreach(const QByteArray& msg, msglist)
 	{
-		if (msg.size() != write_(msg)) return false;
+        if (msg.size() != write(msg)) return false;
 	}
 	return true;
 }
 int QDaqDevice::write(const QString& msg)
 {
-	//if (throwIfArmed()) return 0;
 	if (throwIfOffline()) return 0;
-	return write_(msg.toLatin1());
+    return write(msg.toLatin1());
 }
-int QDaqDevice::write(const QByteArray& msg)
+int QDaqDevice::writeBytes(const QByteArray& msg)
 {
-    //if (throwIfArmed()) return 0;
     if (throwIfOffline()) return 0;
-    return write_(msg);
+    return write(msg);
 }
 int QDaqDevice::write(int reg, int val) // write
 {
@@ -220,21 +187,22 @@ int QDaqDevice::write(int start_reg, int n, const QByteArray& msg) // write
     return ret;
 }
 
-QByteArray QDaqDevice::read_()
+QByteArray QDaqDevice::readBytes()
 {
+    if (throwIfOffline()) return QByteArray();
     os::auto_lock L(comm_lock);
     buff_.resize(buff_sz_);
     char* mem = buff_.data();
     int cnt =  ifc_->read(addr_,mem,buff_sz_,eos_);
     buff_.resize(cnt);
-	//if (!buff_cnt_ && armed_) forcedDisarm(QString("Read from device %1 failed").arg(path())); 
+    //if (!buff_cnt_ && armed_) forcedDisarm(QString("Read from device %1 failed").arg(path()));
     return buff_;
 }
-QByteArray QDaqDevice::read()
+QString QDaqDevice::read()
 {
-    if (throwIfOffline()) return QByteArray();
-    return read_();
+    return readBytes();
 }
+
 // read register from device (modbus type)
 int QDaqDevice::read(int reg)
 {
@@ -264,19 +232,16 @@ QString QDaqDevice::query(const QString& msg)
 	//if (throwIfArmed()) return QString();
 	if (throwIfOffline()) return QString();
     os::auto_lock L(comm_lock);
-	write_(msg.toLatin1());
-	return QString(read_());
+    write(msg);
+    return read();
 }
-int QDaqDevice::statusByte_()
-{
-    return ifc_->readStatusByte(addr_);
-}
+
 int QDaqDevice::statusByte()
 {
-	if (throwIfArmed()) return 0;
 	if (throwIfOffline()) return 0;
-	return statusByte_();
+    return ifc_->readStatusByte(addr_);
 }
+
 void QDaqDevice::clear()
 {
 	if (throwIfArmed()) return;

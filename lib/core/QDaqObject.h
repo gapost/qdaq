@@ -240,14 +240,9 @@ public:
     static QDaqObjectList findByWildcard(const QString& wildcard, const QDaqObject* from = 0);
 
 public slots:
-    /** @addtogroup ScriptAPI
-     *
-     *  More documentation for the first group.
-     *  @{
-     */
 
     /// Print a backtrace of recent errors in this QDaqObject
-	QString errorBacktrace() const;
+    QString errorBacktrace(int maxItems = 10) const;
 	/// Print a string representation of the object
     // QString toString() const;
     /// Output in a string the object hierarchy beneath this object.
@@ -297,8 +292,6 @@ public slots:
         return QDaqObject::findByWildcard(wc,this);
     }
     ///@}
-
-    /** @} */ // end of ScriptAPI
 
 signals:
     /// Fired when object properties have changed

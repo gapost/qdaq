@@ -53,9 +53,10 @@ bool QDaqObject::isAttached() const
     return p;
 }
 
-QString QDaqObject::errorBacktrace() const
+QString QDaqObject::errorBacktrace(int n) const
 {
-    QList<QDaqError> lastErrors = root()->errorQueue()->objectBackTrace(this);
+    if (n==0) n = 1000;
+    QList<QDaqError> lastErrors = root()->errorQueue()->objectBackTrace(this,n);
 	QString S;
 	int i=0;
     foreach(const QDaqError& e, lastErrors)
@@ -563,13 +564,22 @@ void QDaqErrorQueue::push(const QDaqError& item)
 QList<QDaqError> QDaqErrorQueue::objectBackTrace(const QDaqObject* obj, int maxItems) const
 {
     QList<QDaqError> errors;
-    QString name = obj->path();
-    foreach(const QDaqError& e, queue_)
+    if (obj == QDaqObject::root())
     {
-        if (e.objectName==name) errors.push_back(e);
-        if (errors.size()==maxItems) break;
+        foreach(const QDaqError& e, queue_)
+        {
+            errors.push_back(e);
+            if (errors.size()==maxItems) break;
+        }
     }
-
+    else {
+        QString name = obj->path();
+        foreach(const QDaqError& e, queue_)
+        {
+            if (e.objectName==name) errors.push_back(e);
+            if (errors.size()==maxItems) break;
+        }
+    }
     return errors;
 }
 

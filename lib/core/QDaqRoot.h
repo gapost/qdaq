@@ -20,7 +20,8 @@ class QDaqSession;
  * The QDaq root is a single static object which can be accessed by QDaqObject::root().
  *
  * The QDaq root should be instantiated in the main function, after QApplication.
- * @code
+ *
+ @code
  int main()
  {
    QApplication app;
@@ -39,8 +40,6 @@ class QDaqSession;
  *   - a list of all application windows can be obtained by calling daqWindows()
  *   - the IDE window can be obtained by ideWindow()
  *   - the root script session, rootSession()
- *
- *
  *
  * @ingroup Core
  *
@@ -114,10 +113,13 @@ public slots:
 	QStringList classNames();
 
 private slots:
+    // connected (queued connection) to signal error()
     void onError(const QDaqError& err);
 
 signals:
+    // used internally by this class
     void error(const QDaqError& e);
+    /// Fired when a top level window is opened or closed
     void daqWindowsChanged();
     /// Fired when object is attached
     void objectAttached(QDaqObject* obj);
@@ -133,14 +135,13 @@ private:
     object_map_t object_map_;
 
 public:
-    /**Register a QDaqObject class type.
-     *
-     * This allows:
-     *   - serialization of objects to HDF5
-     *   - creation of objects from QtScript with new operator
+    /**
+     * @brief Register a QDaqObject-derived class type
+     * Registered classes can be created by createObject().
+     * @param metaObj meta-object of the class
      */
 	void registerClass(const QMetaObject* metaObj);
-	/// Returns list of registered metaObjects
+    /// Returns list of registered class metaObjects
 	QList<const QMetaObject *> registeredClasses() const;
 
 };

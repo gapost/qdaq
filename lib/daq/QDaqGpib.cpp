@@ -200,9 +200,9 @@ QDaqIntVector QDaqGpib::findListeners()
     return Listeners;
 }
 
-QString QDaqGpib::listPlugins()
+QStringList QDaqGpib::listPlugins()
 {
-    QString S;
+    QStringList S;
     int idx = 0;
     QDir pluginsDir = QDir(qApp->applicationDirPath());
 
@@ -220,15 +220,16 @@ QString QDaqGpib::listPlugins()
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         idx++;
-        S += QString("  %1. %2: ").arg(idx).arg(fileName);
+        //S += QString("  %1. %2: ").arg(idx).arg(fileName);
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
         if (plugin) {
             QDaqGpibPlugin* iGpib = qobject_cast<QDaqGpibPlugin*>(plugin);
-            if (iGpib) S += "Gpib plugin";
-            else S += "Unknown plugin";
+            //if (iGpib) S += "Gpib plugin";
+            //else S += "Unknown plugin";
+            if (iGpib) S.push_back(fileName);
         }
-        else S += loader.errorString();
+        //else S += loader.errorString();
     }
     return S;
 }

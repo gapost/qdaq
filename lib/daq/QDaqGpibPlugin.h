@@ -3,6 +3,19 @@
 
 #include <QtPlugin>
 
+/**
+ * @brief Interface definition for QDaq GPIB plugins.
+ *
+ * @ingroup Daq
+ *
+ * A GPIB plugin is created by sub-classing QDaqGpibPlugin
+ * and implementing all its virtual functions.
+ *
+ * The interface defines a number of GPIB specific functions
+ * that are needed in order to operate a GPIB interface according
+ * to the QDaqInterface class.
+ *
+ */
 class QDaqGpibPlugin
 {
 public:
@@ -27,6 +40,7 @@ public:
     virtual const char* errorMsg(int error_code) = 0;
 };
 
+/// An identifier to be used in IID metadata of GPIB plugins
 #define QDaqGpibPlugin_iid "org.qdaq.gpibplugin"
 
 Q_DECLARE_INTERFACE(QDaqGpibPlugin, QDaqGpibPlugin_iid)

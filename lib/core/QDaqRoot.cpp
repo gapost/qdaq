@@ -21,12 +21,9 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     qRegisterMetaType<QDaqError>();
 
     registerClass(&QDaqObject::staticMetaObject);
-
     registerClass(&QDaqJob::staticMetaObject);
     registerClass(&QDaqLoop::staticMetaObject);
-
     registerClass(&QDaqChannel::staticMetaObject);
-
     registerClass(&QDaqDataBuffer::staticMetaObject);
 
     // DAQ objects/devices

@@ -4,11 +4,16 @@
  */
 
 /**
- *  @defgroup ScriptAPI QDaq QtScript API functions
+ *  @defgroup ScriptAPI QDaq QtScript API
  *  This is the ScriptAPI group
  */
 
 /**
  *  @defgroup Types QDaq types
  *  QDaq type definitions
+ */
+
+/*!
+ *  @defgroup Daq Data aqcuisition classes
+ *  Classes that can be used for data aqcuisition tasks.
  */
