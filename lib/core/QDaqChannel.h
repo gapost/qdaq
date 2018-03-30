@@ -43,7 +43,7 @@ class RTLAB_BASE_EXPORT QDaqChannel : public QDaqJob
 	Used when displaying the channel.
 	*/
 	Q_PROPERTY(NumberFormat format READ format WRITE setFormat)
-	/** # of decimal digits to display.
+    /** Number of decimal digits to display.
 	Used when displaying the channel in fixed or scientific format.
 	*/
 	Q_PROPERTY(int digits READ digits WRITE setDigits)

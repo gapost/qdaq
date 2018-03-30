@@ -96,7 +96,8 @@ DISTFILES += \
     .gitignore \
     ../TODO \
     ../qdaq.dox \
-    qdaq_modules.dox
+    qdaq_modules.dox \
+    qdaq_script_api.dox
 
 RESOURCES += \
     qdaq.qrc
