@@ -2,6 +2,8 @@ QT += designer
 CONFIG      += plugin debug_and_release
 
 TARGET      = $$qtLibraryTarget(qdaqwidgetsplugin)
+# Trick Qt to not add version major to the target dll name
+win32 { TARGET_EXT = .dll }
 TEMPLATE    = lib
 
 HEADERS     = qledplugin.h qdaqplotwidgetplugin.h qdaqwidgetsplugin.h

@@ -32,7 +32,7 @@ class tcp_socket;
  * one-to-one communication with an instrument (RS232, TCP/IP) the port is not used.
  *
  */
-class QDaqInterface : public QDaqObject
+class QDAQ_EXPORT QDaqInterface : public QDaqObject
 {
 	Q_OBJECT
 
@@ -177,7 +177,7 @@ public slots:
  * device port.
  *
  */
-class QDaqTcpip : public QDaqInterface
+class QDAQ_EXPORT QDaqTcpip : public QDaqInterface
 {
 	Q_OBJECT
 
@@ -241,7 +241,7 @@ protected:
  *
  *
  */
-class QDaqSerial : public QDaqInterface
+class QDAQ_EXPORT QDaqSerial : public QDaqInterface
 {
     Q_OBJECT
 
@@ -313,7 +313,7 @@ protected:
  * Implementation of MODBUS in QDaq is based on libmodbus.
  *
  */
-class QDaqModbusTcp : public QDaqTcpip
+class QDAQ_EXPORT QDaqModbusTcp : public QDaqTcpip
 {
     Q_OBJECT
 
@@ -350,7 +350,7 @@ protected:
  * Implementation of MODBUS in QDaq is based on libmodbus.
  *
  */
-class QDaqModbusRtu : public QDaqSerial
+class QDAQ_EXPORT QDaqModbusRtu : public QDaqSerial
 {
     Q_OBJECT
 

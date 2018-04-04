@@ -77,7 +77,7 @@ void QDaqChannel::setUnit(QString v)
 }
 void QDaqChannel::setRange(const QDaqVector &v)
 {
-    if((v!=range_) && (!v.isEmpty()) && (v.size()==2) && __finite(v[0]) && __finite(v[1]) && (v[1]!=v[0]))
+    if((v!=range_) && (!v.isEmpty()) && (v.size()==2) && isfinite(v[0]) && __finite(v[1]) && (v[1]!=v[0]))
 	{
 		// fix ordering
         QDaqVector myv ( v );

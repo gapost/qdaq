@@ -24,7 +24,7 @@ namespace mu
  * of the channel.
  *
  */
-class RTLAB_BASE_EXPORT QDaqChannel : public QDaqJob
+class QDAQ_EXPORT QDaqChannel : public QDaqJob
 {
 	Q_OBJECT
 
@@ -228,7 +228,7 @@ public slots:
   it takes input from its parent (unless another inputChannel is specified).
 
 */
-class RTLAB_BASE_EXPORT QDaqFilterChannel : public QDaqChannel
+class QDAQ_EXPORT QDaqFilterChannel : public QDaqChannel
 {
     Q_OBJECT
 

@@ -37,3 +37,6 @@ DISTFILES += \
     qdaq.dox \
     qdaq_ide_screenshot.png
 
+RESOURCES += \
+    qdaq.qrc
+

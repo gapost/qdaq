@@ -16,7 +16,7 @@
  * to the QDaqInterface class.
  *
  */
-class QDaqGpibPlugin
+class QDAQ_EXPORT QDaqGpibPlugin
 {
 public:
     virtual ~QDaqGpibPlugin() {}

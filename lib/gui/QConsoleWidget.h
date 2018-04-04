@@ -10,7 +10,7 @@ class QCompleter;
 
 //-------------------------------------------------------------------------------
 //! A simple console for python scripting
-class RTLAB_GUI_EXPORT QConsoleWidget : public QPlainTextEdit
+class QDAQ_EXPORT QConsoleWidget : public QPlainTextEdit
 {
   Q_OBJECT
 

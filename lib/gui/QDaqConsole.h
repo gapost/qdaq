@@ -6,7 +6,7 @@
 
 class QDaqSession;
 
-class RTLAB_GUI_EXPORT QDaqConsole : public QConsoleWidget
+class QDAQ_EXPORT QDaqConsole : public QConsoleWidget
 {
     Q_OBJECT
 

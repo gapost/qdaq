@@ -3,10 +3,12 @@
 
 #include <QWidget>
 
+#include "QDaqGlobal.h"
+
 class QMenu;
 class QAction;
 
-class QDaqWindow : public QWidget
+class QDAQ_EXPORT QDaqWindow : public QWidget
 {
     Q_OBJECT
 

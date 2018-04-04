@@ -8,7 +8,7 @@
 class QTableWidget;
 class QPushButton;
 
-class QDaqErrorLog : public QWidget
+class QDAQ_EXPORT QDaqErrorLog : public QWidget
 {
     Q_OBJECT
 public:

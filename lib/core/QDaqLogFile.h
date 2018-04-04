@@ -3,9 +3,12 @@
 
 #include <QObject>
 
+#include "QDaqGlobal.h"
+
+
 class QFile;
 
-class QDaqLogFile : public QObject
+class QDAQ_EXPORT QDaqLogFile : public QObject
 {
     QFile* file_;
 

@@ -39,7 +39,7 @@ typedef QList<QDaqObject*> QDaqObjectList;
  * The error queue is accesible through QDaqObject::root()->errorQueue().
  *
 */
-struct RTLAB_BASE_EXPORT QDaqError
+struct QDAQ_EXPORT QDaqError
 {
     /// Date/time of occurence
     QDateTime t;
@@ -105,7 +105,7 @@ struct RTLAB_BASE_EXPORT QDaqError
  *   - Child objects are written as sub-groups
  *
  */
-class RTLAB_BASE_EXPORT QDaqObject : public QObject, protected QScriptable
+class QDAQ_EXPORT QDaqObject : public QObject, protected QScriptable
 {
 	Q_OBJECT
 
@@ -308,7 +308,7 @@ int registerQDaqObjectStar(QScriptEngine* eng);
 
 #define ERROR_QUEUE_DEPTH 1000
 
-class QDaqErrorQueue : public QObject
+class QDAQ_EXPORT QDaqErrorQueue : public QObject
 {
     Q_OBJECT
     /// Queue of QDaq errors

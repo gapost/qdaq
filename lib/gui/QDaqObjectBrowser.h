@@ -3,6 +3,8 @@
 
 #include <QSplitter>
 
+#include "QDaqGlobal.h"
+
 class QDaqObjectModel;
 class QTreeView;
 class QTableWidget;
@@ -17,7 +19,7 @@ class QDaqFunctionBrowser;
 
 class QDaqObject;
 
-class QDaqObjectBrowser : public QSplitter
+class QDAQ_EXPORT QDaqObjectBrowser : public QSplitter
 {
 	Q_OBJECT
 
@@ -43,7 +45,7 @@ protected:
 
 };
 
-class QDaqPropertyBrowser : public QWidget
+class QDAQ_EXPORT QDaqPropertyBrowser : public QWidget
 {
 	Q_OBJECT
 public:
@@ -60,7 +62,7 @@ protected:
     QDaqObjectController* objectController;
 };
 
-class QDaqFunctionBrowser : public QWidget
+class QDAQ_EXPORT QDaqFunctionBrowser : public QWidget
 {
 	Q_OBJECT
 public:

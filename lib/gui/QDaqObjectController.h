@@ -48,12 +48,13 @@
 #define RTOBJECTCONTROLLER_H
 
 #include <QWidget>
+#include "QDaqGlobal.h"
 
 class QDaqObjectControllerPrivate;
 class QtProperty;
 
 
-class QDaqObjectController : public QWidget
+class QDAQ_EXPORT QDaqObjectController : public QWidget
 {
     Q_OBJECT
 public:

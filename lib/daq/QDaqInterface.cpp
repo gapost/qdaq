@@ -376,12 +376,15 @@ bool QDaqModbusTcp::open_()
     /* TCP */
     modbus_t* ctx = modbus_new_tcp(host().toLatin1().constData(), port_);
 
-
+#if LIBMODBUS_VERSION_MINOR > 0
+    modbus_set_response_timeout(ctx, 0, timeout()*1000);
+#else
     timeval response_timeout;
     /* Define a new and too short timeout! */
     response_timeout.tv_sec = 0;
     response_timeout.tv_usec = timeout()*1000;
     modbus_set_response_timeout(ctx, &response_timeout);
+#endif
 
 
     if (modbus_connect(ctx) == -1) {

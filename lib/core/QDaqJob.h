@@ -40,7 +40,7 @@ Arming does all the necessary initialization and is implemented in the function
 setArmed().
 
 */
-class RTLAB_BASE_EXPORT QDaqJob : public QDaqObject
+class QDAQ_EXPORT QDaqJob : public QDaqObject
 {
 	Q_OBJECT
 
@@ -237,7 +237,7 @@ or under another object that does not have a QDaqLoop anchestor. Thus the loop b
 level.
 
  */
-class RTLAB_BASE_EXPORT QDaqLoop : public QDaqJob
+class QDAQ_EXPORT QDaqLoop : public QDaqJob
 {
     Q_OBJECT
 

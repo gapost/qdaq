@@ -134,7 +134,7 @@ public:
 };
 
 
-class QDaqPlotData : public QwtSeriesData< QPointF >
+class QDAQ_EXPORT QDaqPlotData : public QwtSeriesData< QPointF >
 {
     QDaqBuffer vx;
     QDaqBuffer vy;

@@ -31,7 +31,7 @@ class QDaqChannel;
  * Data may be appended by the push() function.
  *
  */
-class RTLAB_BASE_EXPORT QDaqDataBuffer : public QDaqJob
+class QDAQ_EXPORT QDaqDataBuffer : public QDaqJob
 {
 	Q_OBJECT
 

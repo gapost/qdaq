@@ -21,8 +21,9 @@
 #define KLED_H
 
 // #include <kwidgetsaddons_export.h>
+#include "QDaqGlobal.h"
 
-#define KWIDGETSADDONS_EXPORT
+#define KWIDGETSADDONS_EXPORT QDAQ_EXPORT
 
 #include <QWidget>
 

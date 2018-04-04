@@ -22,7 +22,7 @@ class QDaqObject;
 class QDaqChannel;
 //class QDaqBuffer;
 
-class RTLAB_BASE_EXPORT QDaqScriptEngine : public QObject
+class QDAQ_EXPORT QDaqScriptEngine : public QObject
 {
 protected:
 	QScriptEngine* engine_;
@@ -43,7 +43,7 @@ private:
 
 };
 
-class RTLAB_BASE_EXPORT QDaqSession : public QDaqScriptEngine
+class QDAQ_EXPORT QDaqSession : public QDaqScriptEngine
 {
     Q_OBJECT
 

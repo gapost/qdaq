@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "QDaqGlobal.h"
+
 class QDaqConsole;
 class QDaqScriptEditor;
 class QAction;
@@ -14,7 +16,7 @@ class QPlainTextEdit;
 class QDaqObjectBrowser;
 class QDaqErrorLog;
 
-class QDaqIDE : public QMainWindow
+class QDAQ_EXPORT QDaqIDE : public QMainWindow
 {
     Q_OBJECT
 

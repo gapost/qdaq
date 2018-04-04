@@ -11,17 +11,17 @@ win32 {
 # Need to call git with manually specified paths to repository
 # BASE_GIT_COMMAND = c:\Program Files (x86)\Git\bin\git --git-dir $$PWD/../.git --work-tree $$PWD/..
 win32 {
-BASE_GIT_COMMAND = "c:\Program Files (x86)\Git\bin\git"
+BASE_GIT_COMMAND = "c:\Program Files\Git\bin\git"
 } else {
 BASE_GIT_COMMAND = "git"
 }
 
 message(The current dir is $$PWD)
 
-message(command: "$$BASE_GIT_COMMAND" describe --always --tags)
+message(command: \"$$BASE_GIT_COMMAND\" describe --always --tags)
 
 # Trying to get version from git tag / revision
-GIT_VERSION = $$system($$BASE_GIT_COMMAND describe --always --tags 2> $$NULL_DEVICE)
+GIT_VERSION = $$system(\"$$BASE_GIT_COMMAND\" describe --always --tags 2> $$NULL_DEVICE)
 
 message(git returns: $$GIT_VERSION)
 
@@ -47,13 +47,15 @@ GIT_VERSION ~= s/g/""
 VERSION = $$GIT_VERSION
 win32 { # On windows version can only be numerical so remove commit hash
     VERSION ~= s/\.\d+\.[a-f0-9]{6,}//
+# Take out the v from the version
+    VERSION ~= s/v//
 }
 
 # Adding C preprocessor #DEFINE so we can use it in C++ code
 # also here we want full version on every system so using GIT_VERSION
 DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
 
-
 message(version: $$GIT_VERSION)
+message(qt-version: $$VERSION)
 
 

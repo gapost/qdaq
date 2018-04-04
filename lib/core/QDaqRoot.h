@@ -44,7 +44,7 @@ class QDaqSession;
  * @ingroup Core
  *
  */
-class RTLAB_BASE_EXPORT QDaqRoot : public QDaqObject
+class QDAQ_EXPORT QDaqRoot : public QDaqObject
 {
 	Q_OBJECT
 

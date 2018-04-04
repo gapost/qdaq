@@ -12,7 +12,10 @@ include(../qdaq.pri)
 include(../gitversion.pri)
 
 TARGET = QDaq
+# Trick Qt to not add version major to the target dll name
+win32 { TARGET_EXT = .dll }
 TEMPLATE = lib
+DEFINES += QDAQ_LIBRARY
 
 INCLUDEPATH += ./core ./gui ./daq
 

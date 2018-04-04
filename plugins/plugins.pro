@@ -1,4 +1,4 @@
 TEMPLATE = subdirs
 
-SUBDIRS += \
-    linux-gpib
+
+unix: SUBDIRS +=  linux-gpib

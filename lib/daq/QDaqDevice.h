@@ -41,7 +41,7 @@ else
  * communication.
  *
  */
-class QDaqDevice : public QDaqJob
+class QDAQ_EXPORT QDaqDevice : public QDaqJob
 {
 	Q_OBJECT
 

@@ -3,6 +3,8 @@
 
 #include <QAbstractItemModel>
 
+#include "QDaqGlobal.h"
+
 class QDaqObject;
 
 /** Class QDaqObjectModel represents the QDaq object tree as a Qt item model.
@@ -14,7 +16,7 @@ class QDaqObject;
  * No extra data is generated for the class.
  *
  */
-class QDaqObjectModel : public QAbstractItemModel
+class QDAQ_EXPORT QDaqObjectModel : public QAbstractItemModel
 {
     Q_OBJECT
 

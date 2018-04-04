@@ -3,7 +3,9 @@
 
 #include "3rdparty/jsedit/jsedit.h"
 
-class QDaqScriptEditor : public JSEdit
+#include "QDaqGlobal.h"
+
+class QDAQ_EXPORT QDaqScriptEditor : public JSEdit
 {
     Q_OBJECT
 

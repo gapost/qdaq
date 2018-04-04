@@ -40,7 +40,7 @@ int registerVectorTypes(QScriptEngine* eng);
   It is recorded with millisecond resolution.
   */
 
-class QDaqTimeValue
+class QDAQ_EXPORT QDaqTimeValue
 {
     double v_;
 
@@ -399,7 +399,7 @@ public:
  * real-time plots of data without copying the buffer.
  *
  */
-class QDaqBuffer
+class QDAQ_EXPORT QDaqBuffer
 {
     typedef buffer<double> buffer_t;
     QExplicitlySharedDataPointer<buffer_t> d_ptr;

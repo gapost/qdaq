@@ -27,7 +27,7 @@
  * open().
  *
  */
-class QDaqGpib : public QDaqInterface
+class QDAQ_EXPORT QDaqGpib : public QDaqInterface
 {
     Q_OBJECT
 
