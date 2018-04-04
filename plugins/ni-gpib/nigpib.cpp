@@ -1,5 +1,6 @@
 #include "nigpib.h"
 
+#include <windows.h>
 #include <decl-32.h>
 
 int QDaqNiGpibPlugin::status()
@@ -67,7 +68,7 @@ void QDaqNiGpibPlugin::Receive(int boardID, int address, char* data, int len, in
 }
 void QDaqNiGpibPlugin::Send(int boardID, int address, const char* data, int len, int eotmode)
 {
-    ::Send(boardID,(Addr4882_t)address, data, len, eotmode);
+    ::Send(boardID,(Addr4882_t)address, (PVOID)data, len, eotmode);
 }
 int QDaqNiGpibPlugin::ReadStatusByte(int boardID, int address)
 {

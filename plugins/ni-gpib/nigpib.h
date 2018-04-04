@@ -12,7 +12,7 @@ class QDaqNiGpibPlugin :
         public QDaqGpibPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QDaqGpibPlugin_iid FILE "qdaqlinuxgpib.json")
+    Q_PLUGIN_METADATA(IID QDaqGpibPlugin_iid FILE "ni-gpib.json")
     Q_INTERFACES(QDaqGpibPlugin)
 
 public:
