@@ -77,7 +77,7 @@ void QDaqChannel::setUnit(QString v)
 }
 void QDaqChannel::setRange(const QDaqVector &v)
 {
-    if((v!=range_) && (!v.isEmpty()) && (v.size()==2) && isfinite(v[0]) && __finite(v[1]) && (v[1]!=v[0]))
+    if((v!=range_) && (!v.isEmpty()) && (v.size()==2) && std::isfinite(v[0]) && std::isfinite(v[1]) && (v[1]!=v[0]))
 	{
 		// fix ordering
         QDaqVector myv ( v );
@@ -255,7 +255,7 @@ bool QDaqChannel::run()
         if (v_ < range_[0]) v_ = range_[0];
         if (v_ > range_[1]) v_ = range_[1];
 
-        dataReady_ = __finite(v_);
+        dataReady_ = std::isfinite(v_);
 
         emit updateWidgets();
 	}

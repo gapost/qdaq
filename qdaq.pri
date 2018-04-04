@@ -86,7 +86,6 @@ LIBS += winmm.lib user32.lib ws2_32.lib
 
 DEFINES += _CRT_SECURE_NO_WARNINGS
 
-DEFINES += __finite=isfinite
 }
 
 
