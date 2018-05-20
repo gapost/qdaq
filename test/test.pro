@@ -19,7 +19,9 @@ DISTFILES += \
     scripts/testTimerLoop.js \
     scripts/testH5.js \
     scripts/testWidgets.js \
-    scripts/testDynamicProperties.js
+    scripts/testDynamicProperties.js \
+    scripts/testPID.js \
+    scripts/tbl.dat
 
 FORMS += \
     ui/cryoTemperatureControl.ui \
@@ -27,6 +29,7 @@ FORMS += \
     ui/testform.ui \
     ui/tabwidget.ui \
     ui/plotform.ui \
-    ui/testTimerForm.ui
+    ui/testTimerForm.ui \
+    ui/testPID.ui
 
 

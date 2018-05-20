@@ -187,5 +187,8 @@ bool QDaqFilter::arm_()
         return false;
     }
 
+    inbuff.resize(inputChannels_.size());
+    outbuff.resize(outputChannels_.size());
+
     return QDaqJob::arm_();
 }

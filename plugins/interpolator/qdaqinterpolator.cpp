@@ -41,9 +41,9 @@ bool QDaqInterpolator::init()
     if (interpolator_) gsl_interp_free (interpolator_);
     interpolator_ = 0;
     int it = (int)type_;
-    if (it>0 && xa.begin() && ya.begin())
-    {
-        unsigned int n = xa.size();
+    unsigned int n = xa.size();
+    if (it>0 && n>1)
+    {        
         interpolator_ = gsl_interp_alloc(InterpolationObjects[it],n);
         gsl_interp_init(interpolator_, xa.begin(), ya.begin(), n);
     }

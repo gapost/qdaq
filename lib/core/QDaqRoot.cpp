@@ -8,6 +8,7 @@
 #include "QDaqInterface.h"
 #include "QDaqDevice.h"
 #include "QDaqGpib.h"
+#include "QDaqFilter.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -25,6 +26,7 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     registerClass(&QDaqLoop::staticMetaObject);
     registerClass(&QDaqChannel::staticMetaObject);
     registerClass(&QDaqDataBuffer::staticMetaObject);
+    registerClass(&QDaqFilter::staticMetaObject);
 
     // DAQ objects/devices
     registerClass(&QDaqTcpip::staticMetaObject);
