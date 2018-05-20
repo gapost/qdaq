@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-05-20T18:20:48
+# Project created by QtCreator 2018-05-20T18:44:27
 #
 #-------------------------------------------------
 
@@ -9,19 +9,18 @@ QT       -= gui
 CONFIG   += plugin
 
 INCLUDEPATH  += ../../lib/daq ../../lib/core
+LIBS += -lgsl
 
-TARGET = $$qtLibraryTarget(qdaqpid)
+TARGET = $$qtLibraryTarget(qdaqinterpolator)
 TEMPLATE = lib
 DESTDIR = ../../qdaq/plugins
 
-DEFINES += PID_LIBRARY
+DEFINES += INTERPOLATOR_LIBRARY
 
-SOURCES += qdaqpid.cpp
+SOURCES += qdaqinterpolator.cpp
 
-HEADERS += qdaqpid.h\
-        pid_global.h \
-    relaytuner.h \
-    isa_pid.h
+HEADERS += qdaqinterpolator.h\
+        interpolator_global.h
 
 unix {
     target.path = $$[QT_INSTALL_PLUGINS]/qdaq
@@ -29,4 +28,4 @@ unix {
 }
 
 DISTFILES += \
-    pid.json
+    interpolator.json
