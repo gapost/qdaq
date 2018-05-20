@@ -6,5 +6,7 @@ win32: SUBDIRS +=  ni-gpib
 
 SUBDIRS += \
     pid \
-    interpolator
+    interpolator \
+    lincorr \
+    fopdt
 
