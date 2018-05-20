@@ -1,24 +1,26 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-02-21T17:44:36
+# Project created by QtCreator 2018-05-20T18:20:48
 #
 #-------------------------------------------------
 
-QT       -= gui
 QT       += script
+QT       -= gui
 CONFIG   += plugin
+
 INCLUDEPATH  += ../../lib/daq ../../lib/core
-LIBS += -lgpib
-TARGET = $$qtLibraryTarget(qdaqlinuxgpibplugin)
+
+TARGET = $$qtLibraryTarget(qdaqpid)
 TEMPLATE = lib
-DESTDIR = ../../qdaq/plugins
 
-DEFINES += LINUXGPIB_LIBRARY
+DEFINES += PID_LIBRARY
 
-SOURCES += linuxgpib.cpp
+SOURCES += qdaqpid.cpp
 
-HEADERS += linuxgpib.h\
-        linux-gpib_global.h
+HEADERS += qdaqpid.h\
+        pid_global.h \
+    relaytuner.h \
+    isa_pid.h
 
 unix {
     target.path = $$[QT_INSTALL_PLUGINS]/qdaq
@@ -26,6 +28,4 @@ unix {
 }
 
 DISTFILES += \
-    qdaqlinuxgpib.json
-
-
+    pid.json
