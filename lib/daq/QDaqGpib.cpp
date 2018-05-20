@@ -10,6 +10,7 @@ QDaqInterface(name), gpib_(0)
     // 32 empty places
     ports_.fill(0, 32);
 }
+
 QDaqGpib::~QDaqGpib()
 {
 }
@@ -253,7 +254,10 @@ bool QDaqGpib::loadPlugin(const QString &fname)
     QObject *plugin = loader.instance();
     if (plugin) {
         QDaqGpibPlugin* iGpib = qobject_cast<QDaqGpibPlugin*>(plugin);
-        if (iGpib) gpib_ = iGpib;
+        if (iGpib) {
+            gpib_ = iGpib;
+            plugin->setParent(this);
+        }
     }
     return gpib_!=0;
 }

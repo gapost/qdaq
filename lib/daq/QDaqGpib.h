@@ -31,6 +31,7 @@ class QDAQ_EXPORT QDaqGpib : public QDaqInterface
 {
     Q_OBJECT
 
+    QObject* plugin_;
     QDaqGpibPlugin* gpib_;
 
 public:

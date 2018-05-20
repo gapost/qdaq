@@ -65,7 +65,7 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, QString &sta
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(qdaq);
+    //Q_INIT_RESOURCE(qdaq);
 
 
     QApplication app(argc, argv);

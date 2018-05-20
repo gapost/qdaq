@@ -5,12 +5,13 @@
 
 #include "QDaqGpibPlugin.h"
 
-#include <QObject>
+//#include <QObject>
+#include "QDaqObject.h"
 #include <QtPlugin>
 #include <QVector>
 
 class LINUXGPIBSHARED_EXPORT QDaqLinuxGpibPlugin :
-        public QObject,
+        public QDaqObject,
         public QDaqGpibPlugin
 {
     Q_OBJECT
@@ -18,6 +19,8 @@ class LINUXGPIBSHARED_EXPORT QDaqLinuxGpibPlugin :
     Q_INTERFACES(QDaqGpibPlugin)
 
 public:  
+    QDaqLinuxGpibPlugin() : QDaqObject("linux-gpib")
+    {}
     virtual int status();
     virtual int error();
     virtual int count();

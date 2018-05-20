@@ -178,7 +178,7 @@ void QDaqIDE::about()
                     " <a href=\"http://www.trolltech.com/qt/\">www.trolltech.com/qt/</a>"
                     "</li>"
                 "</ul>"
-               ).arg(QDAQ_VERSION);
+               ).arg(QDaq::Version());
 
    QMessageBox::about(this, tr("About QDaq"),msg);
 }

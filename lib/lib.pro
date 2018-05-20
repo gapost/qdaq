@@ -46,7 +46,8 @@ SOURCES += \
     gui/QDaqObjectModel.cpp \
     core/bytearrayclass.cpp \
     core/bytearrayprototype.cpp \
-    daq/QDaqGpib.cpp
+    daq/QDaqGpib.cpp \
+    core/QDaqFilter.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -83,7 +84,9 @@ HEADERS  += \
     core/bytearrayclass.h \
     core/bytearrayprototype.h \
     daq/QDaqGpib.h \
-    daq/QDaqGpibPlugin.h
+    daq/QDaqGpibPlugin.h \
+    core/QDaqFilter.h \
+    core/QDaqFilterPlugin.h
 
 
 ## JSedit

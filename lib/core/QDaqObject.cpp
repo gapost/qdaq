@@ -11,6 +11,13 @@
 #include <QMetaEnum>
 #include <QVariant>
 
+#define QDAQ_VERSION       GIT_VERSION
+
+const char* QDaq::Version() { return QDAQ_VERSION; }
+
+const char* QDaq::QtVersion() { return QT_VERSION_STR; }
+
+
 QDaqObject::QDaqObject(const QString& name) :
 QObject(0)
 {

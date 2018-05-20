@@ -5,7 +5,7 @@
 
 // RTLAB_VERSION is (major << 16) + (minor << 8) + patch.
 
-#define QDAQ_VERSION       GIT_VERSION
+
 
 #if defined(_MSC_VER) /* MSVC Compiler */
 /* template-class specialization 'identifier' is already instantiated */
@@ -20,9 +20,9 @@
 
 namespace QDaq {
 
-inline const char* Version() { return QDAQ_VERSION; }
+const char* Version();
 
-inline const char* QtVersion() { return QT_VERSION_STR; }
+const char* QtVersion();
 
 }
 

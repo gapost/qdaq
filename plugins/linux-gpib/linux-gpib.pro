@@ -5,9 +5,10 @@
 #-------------------------------------------------
 
 QT       -= gui
+QT       += script
 CONFIG   += plugin
 
-INCLUDEPATH  += ../../lib/daq
+INCLUDEPATH  += ../../lib/daq ../../lib/core
 
 LIBS += -lgpib
 TARGET = $$qtLibraryTarget(qdaqlinuxgpibplugin)
