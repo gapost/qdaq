@@ -44,11 +44,14 @@ public:
     virtual void clear_port(uint i);
     virtual int read(uint port, char* buff, int len, int eos = 0);
     virtual int write(uint port, const char* buff, int len, int eos = 0);
+    /// Send the GPIB TRG signal to the device with address port
+    virtual void trigger(uint port);
 
     // diagnostics
     /// Return the GPIB status byte for a device with address port.
     virtual int readStatusByte(uint port);
     virtual bool isValidPort(uint i) { return i>0 && i<32; }
+
 
 protected:
     // open-close

@@ -152,6 +152,20 @@ int QDaqGpib::write(uint port, const char* buff, int len, int e)
     else return len; // ibcntl; linux-gpib sends +1 byte
 }
 
+void QDaqGpib::trigger(uint id)
+{
+    if (!gpib_) return;
+    os::auto_lock L(comm_lock);
+    gpib_->Trigger(address(),id);
+    if (gpib_->hasError())
+    {
+        pushGpibError(
+            gpib_->error(),
+            QString("Trigger(%1,%2)").arg(address()).arg(id)
+            );
+    }
+}
+
 void QDaqGpib::clear_()
 {
     if (!gpib_) return;

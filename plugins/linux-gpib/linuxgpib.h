@@ -36,6 +36,8 @@ public:
     virtual void Send(int boardID, int address, const char* data, int len, int eotmode);
     virtual int ReadStatusByte(int boardID, int address);
     virtual void FindListeners(int boardID, const QVector<int>& addresses, QVector<int>& results);
+    virtual void Trigger(int boardID, int address);
+    virtual void TriggerList(int boardID, const QVector<int>& addresses);
 
     virtual const char* errorMsg(int error_code);
 };

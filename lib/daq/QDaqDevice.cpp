@@ -248,3 +248,9 @@ void QDaqDevice::clear()
 	if (throwIfOffline()) return;
     ifc_->clear_port(addr_);
 }
+
+void QDaqDevice::trigger()
+{
+    if (throwIfOffline()) return;
+    ifc_->trigger(addr_);
+}

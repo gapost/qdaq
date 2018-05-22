@@ -211,6 +211,9 @@ public slots:
     /// Call QDaqInterface::readStatusByte(). Return value depends on type of interface.
 	int statusByte();
 
+    /// Trigger the device (Must be supported by the interface, e.g. GPIB)
+    void trigger();
+
 };
 
 #endif

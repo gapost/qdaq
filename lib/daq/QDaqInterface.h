@@ -132,6 +132,8 @@ public:
 	virtual bool isValidPort(uint i) { i=i; return true; }
     /// Returns a status byte for a port (interface specific).
 	virtual int readStatusByte(uint port) { port=port; return 0; }
+    /// Trigger a device connected to port (interface specific).
+    virtual void trigger(uint port) { port=port; }
 
 protected:
     /// Implementation of interface open.

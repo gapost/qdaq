@@ -91,6 +91,20 @@ void QDaqLinuxGpibPlugin::FindListeners(int boardID, const QVector<int>& address
         for(int i=0; i<count(); ++i) results[i] = results_[i];
     }
 }
+void QDaqLinuxGpibPlugin::Trigger(int boardID, int address)
+{
+    ::Trigger(boardID,(Addr4882_t)address);
+}
+void QDaqLinuxGpibPlugin::TriggerList(int boardID, const QVector<int>& addresses)
+{
+    Addr4882_t addrlist[32];
+    // int limit = 31;
+    int n =  addresses.size() > 31 ? 31 : addresses.size();
+    for(int i=0; i<n; i++) addrlist[i] = addresses[i];
+    addrlist[n] = NOADDR;
+
+    ::TriggerList(boardID, addrlist);
+}
 const char* QDaqLinuxGpibPlugin::errorMsg(int error_code)
 {
     static const char* message[] = {
