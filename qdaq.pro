@@ -28,7 +28,7 @@
 #
 # 6. plugins
 #
-# Project to build plugins
+# Project to build qdaq plugins
 #
 ###################################################################
 
