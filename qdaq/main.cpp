@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <QScriptEngine>
 
+#include <QLibraryInfo>
+
 #include "QDaqRoot.h"
 #include "QDaqSession.h"
 #include "QDaqIde.h"

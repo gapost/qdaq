@@ -86,7 +86,8 @@ HEADERS  += \
     daq/QDaqGpib.h \
     daq/QDaqGpibPlugin.h \
     core/QDaqFilter.h \
-    core/QDaqFilterPlugin.h
+    core/QDaqFilterPlugin.h \
+    core/qdaqpluginloader.h
 
 
 ## JSedit

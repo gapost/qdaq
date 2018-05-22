@@ -1,8 +1,6 @@
 #include "QDaqGpib.h"
+#include "qdaqpluginloader.h"
 
-#include <QDir>
-#include <QApplication>
-#include <QPluginLoader>
 
 QDaqGpib::QDaqGpib(const QString& name) :
 QDaqInterface(name), gpib_(0)
@@ -217,59 +215,17 @@ QDaqIntVector QDaqGpib::findListeners()
 
 QStringList QDaqGpib::listPlugins()
 {
-    QStringList S;
-    int idx = 0;
-    QDir pluginsDir = QDir(qApp->applicationDirPath());
-
-#if defined(Q_OS_WIN)
-    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-        pluginsDir.cdUp();
-#elif defined(Q_OS_MAC)
-    if (pluginsDir.dirName() == "MacOS") {
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-    }
-#endif
-    pluginsDir.cd("plugins");
-
-    foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
-        idx++;
-        //S += QString("  %1. %2: ").arg(idx).arg(fileName);
-        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-        QObject *plugin = loader.instance();
-        if (plugin) {
-            QDaqGpibPlugin* iGpib = qobject_cast<QDaqGpibPlugin*>(plugin);
-            //if (iGpib) S += "Gpib plugin";
-            //else S += "Unknown plugin";
-            if (iGpib) S.push_back(fileName);
-        }
-        //else S += loader.errorString();
-    }
-    return S;
+    return QDaqPluginLoader<QDaqGpibPlugin*>::findPlugins();
 }
 
 bool QDaqGpib::loadPlugin(const QString &fname)
 {
-    QDir pluginsDir = QDir(qApp->applicationDirPath());
+    QObject *plugin = QDaqPluginLoader<QDaqGpibPlugin*>::loadPlugin(fname);
 
-#if defined(Q_OS_WIN)
-    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-        pluginsDir.cdUp();
-#elif defined(Q_OS_MAC)
-    if (pluginsDir.dirName() == "MacOS") {
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-    }
-#endif
-    pluginsDir.cd("plugins");
-    QPluginLoader loader(pluginsDir.absoluteFilePath(fname));
-    QObject *plugin = loader.instance();
     if (plugin) {
-        QDaqGpibPlugin* iGpib = qobject_cast<QDaqGpibPlugin*>(plugin);
-        if (iGpib) {
-            gpib_ = iGpib;
+        QDaqGpibPlugin* igpib = qobject_cast<QDaqGpibPlugin*>(plugin);
+        if (igpib) {
+            gpib_ = igpib;
             plugin->setParent(this);
         }
     }

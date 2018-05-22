@@ -1,9 +1,6 @@
 #include "QDaqFilter.h"
 #include "QDaqChannel.h"
-
-#include <QDir>
-#include <QApplication>
-#include <QPluginLoader>
+#include "qdaqpluginloader.h"
 
 QDaqFilter::QDaqFilter(const QString& name) : QDaqJob(name),
     filter_(0)
@@ -71,55 +68,13 @@ void QDaqFilter::setOutputChannels(QDaqObjectList lst)
 
 QStringList QDaqFilter::listPlugins()
 {
-    QStringList S;
-    int idx = 0;
-    QDir pluginsDir = QDir(qApp->applicationDirPath());
-
-#if defined(Q_OS_WIN)
-    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-        pluginsDir.cdUp();
-#elif defined(Q_OS_MAC)
-    if (pluginsDir.dirName() == "MacOS") {
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-    }
-#endif
-    pluginsDir.cd("plugins");
-
-    foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
-        idx++;
-        //S += QString("  %1. %2: ").arg(idx).arg(fileName);
-        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-        QObject *plugin = loader.instance();
-        if (plugin) {
-            QDaqFilterPlugin* ifilter = qobject_cast<QDaqFilterPlugin*>(plugin);
-            //if (iGpib) S += "Gpib plugin";
-            //else S += "Unknown plugin";
-            if (ifilter) S.push_back(fileName);
-        }
-        //else S += loader.errorString();
-    }
-    return S;
+    return QDaqPluginLoader<QDaqFilterPlugin*>::findPlugins();
 }
 
 bool QDaqFilter::loadPlugin(const QString &fname)
 {
-    QDir pluginsDir = QDir(qApp->applicationDirPath());
+    QObject *plugin = QDaqPluginLoader<QDaqFilterPlugin*>::loadPlugin(fname);
 
-#if defined(Q_OS_WIN)
-    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-        pluginsDir.cdUp();
-#elif defined(Q_OS_MAC)
-    if (pluginsDir.dirName() == "MacOS") {
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-    }
-#endif
-    pluginsDir.cd("plugins");
-    QPluginLoader loader(pluginsDir.absoluteFilePath(fname));
-    QObject *plugin = loader.instance();
     if (plugin) {
         QDaqFilterPlugin* ifilter = qobject_cast<QDaqFilterPlugin*>(plugin);
         if (ifilter) {
