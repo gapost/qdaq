@@ -110,6 +110,13 @@ void QDaqConsole::keyPressEvent (QKeyEvent * e)
 			e->accept();
 			return;
 		}
+
+        if (k==Qt::Key_C) // Ctrl-C copy
+        {
+            copy();
+            e->accept();
+            return;
+        }
 	}
 	
 	QConsoleWidget::keyPressEvent(e);
