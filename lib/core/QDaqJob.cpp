@@ -2,7 +2,7 @@
 #include "QDaqSession.h"
 
 QDaqJob::QDaqJob(const QString& name) :
-    QDaqObject(name), armed_(false), program_(0)
+    QDaqObject(name), armed_(false), program_(0), isLoop_(false)
 {
 }
 QDaqJob::~QDaqJob(void)
@@ -112,7 +112,9 @@ bool QDaqJob::setArmed(bool on)
         bool ok = true;
         JobList::iterator i = subjobs_.begin();
         while(ok && i!=subjobs_.end()) {
-            ok = (*i)->setArmed(true);
+            // arm only the jobs
+            // the loops must get extra arm command
+            if (!(*i)->isLoop_) ok = (*i)->setArmed(true);
             ++i;
         }
 
@@ -123,7 +125,8 @@ bool QDaqJob::setArmed(bool on)
         {
 
             //disarm_();
-            foreach(QDaqJob* j, subjobs_) j->setArmed(false);
+            foreach(QDaqJob* j, subjobs_)
+                if (!j->isLoop_) j->setArmed(false);
             armed_ = false;
         }
         else arm_();
@@ -194,6 +197,7 @@ QDaqScriptEngine* QDaqJob::loopEngine() const
 QDaqLoop::QDaqLoop(const QString& name) :
     QDaqJob(name), count_(0), limit_(0), delay_(0), preload_(0), period_(1000)
 {
+    isLoop_ = true;
     connect(this,SIGNAL(abort()),this,SLOT(disarm()),Qt::QueuedConnection);
 }
 QDaqLoop::~QDaqLoop(void)
@@ -201,6 +205,8 @@ QDaqLoop::~QDaqLoop(void)
 }
 bool QDaqLoop::exec()
 {
+    if (!armed_) return true;
+
     if (aborted_) return false;
 
     // check time for loop statistics

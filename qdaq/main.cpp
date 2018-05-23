@@ -128,9 +128,9 @@ int main(int argc, char *argv[])
         QDaqConsole* console = new QDaqConsole(s);
         console->show();
 
-        const char* intro = "QDaq - Qt-based Data Aqcuisition\n"
-                "Version 1.0\n\n";
-        console->stdOut(intro);
+
+        console->stdOut("QDaq - Qt-based Data Aqcuisition");
+        console->stdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
 
         s->evaluate(QString("print('Executing startup script %1')").arg(startupScript));
         s->evaluate(QString("exec('%1')").arg(startupScript));

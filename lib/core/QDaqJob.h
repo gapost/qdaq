@@ -71,6 +71,8 @@ protected:
     QScriptProgram* program_;
     // script engine for loop code
     QPointer<QDaqScriptEngine> loop_eng_;
+    // true if it is a loop
+    bool isLoop_;
 
 	/** Performs internal initialization for the job.
      *
