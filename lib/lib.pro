@@ -114,7 +114,10 @@ DISTFILES += \
     ../TODO \
     ../qdaq.dox \
     qdaq_modules.dox \
-    qdaq_script_api.dox
+    qdaq_script_api.dox \
+    ../makeArchive.sh \
+    ../makeGitversion.sh \
+    ../gitversion.txt
 
 RESOURCES += \
     qdaq.qrc
