@@ -1,8 +1,9 @@
 #include "QDaqJob.h"
 #include "QDaqSession.h"
+#include "QDaqRoot.h"
 
 QDaqJob::QDaqJob(const QString& name) :
-    QDaqObject(name), armed_(false), program_(0), isLoop_(false)
+    QDaqObject(name), armed_(0), program_(0), isLoop_(false)
 {
 }
 QDaqJob::~QDaqJob(void)
@@ -19,8 +20,8 @@ void QDaqJob::detach()
 }
 bool QDaqJob::throwIfArmed()
 {
-	if (armed_) throwScriptError("Not possible when armed");
-	return armed_;
+    if (armed()) throwScriptError("Not possible when armed");
+    return armed();
 }
 bool QDaqJob::exec()
 {
@@ -55,7 +56,7 @@ bool QDaqJob::arm_()
 {
     //disarm_();
 
-    if (!code_.isEmpty())
+    if (!runCode_.isEmpty())
     {
         loop_eng_ = loopEngine();
         if (!loop_eng_) {
@@ -63,17 +64,29 @@ bool QDaqJob::arm_()
             return false;
         }
 
-        if (!loop_eng_->canEvaluate(code_))
+        if (!loop_eng_->canEvaluate(runCode_))
         {
             throwScriptError("Error in job script code.");
             return false;
         }
 
-        program_ = new QScriptProgram(code_,objectName() + "_code");
+        program_ = new QScriptProgram(runCode_,objectName() + "_code");
     }
 
-    armed_ = true;
-    return armed_;
+    if (!armCode_.isEmpty())
+    {
+        QDaqScriptEngine* eng = (QDaqScriptEngine*)(root()->rootSession());
+        QString retMsg;
+        bool ret = eng->evaluate(armCode_,retMsg);
+        if (!ret)
+        {
+            throwScriptError(retMsg);
+            return false;
+        }
+    }
+
+    armed_.fetchAndStoreOrdered(1);
+    return true;
 }
 void QDaqJob::disarm_()
 {
@@ -82,6 +95,16 @@ void QDaqJob::disarm_()
     {
         delete program_;
         program_ = 0;
+    }
+    if (!disarmCode_.isEmpty())
+    {
+        QDaqScriptEngine* eng = (QDaqScriptEngine*)(root()->rootSession());
+        QString retMsg;
+        bool ret = eng->evaluate(armCode_,retMsg);
+        if (!ret)
+        {
+            throwScriptError(retMsg);
+        }
     }
 }
 
@@ -140,9 +163,9 @@ bool QDaqJob::setArmed(bool on)
 	emit propertiesChanged();
     return armed();
 }
-void QDaqJob::setCode(const QString& s)
+void QDaqJob::setRunCode(const QString& s)
 {
-    if (s==code_) return;
+    if (s==runCode_) return;
 
     {
         bool onlineChange = armed_;
@@ -151,7 +174,7 @@ void QDaqJob::setCode(const QString& s)
             jobLock();
             disarm_();
         }
-        code_ = s;
+        runCode_ = s;
         if (onlineChange)
         {
             arm_();
@@ -159,6 +182,18 @@ void QDaqJob::setCode(const QString& s)
         }
         emit propertiesChanged();
     }
+}
+void QDaqJob::setArmCode(const QString& s)
+{
+    if (s==armCode_) return;
+    armCode_ = s;
+    emit propertiesChanged();
+}
+void QDaqJob::setDisarmCode(const QString& s)
+{
+    if (s==disarmCode_) return;
+    disarmCode_ = s;
+    emit propertiesChanged();
 }
 QDaqLoop* QDaqJob::topLoop() const
 {

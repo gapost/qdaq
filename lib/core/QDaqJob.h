@@ -54,22 +54,44 @@ class QDAQ_EXPORT QDaqJob : public QDaqObject
      *
      */
     Q_PROPERTY(bool armed READ armed)
+
     /** Script code executed by the job at each repetition.
      *
      * If code is empty then nothing will be executed.
      *
      * The script code is executed by the top loop script engine,
-     * which is obtained by loopEngine().
+     * which is obtained by loopEngine(). This script engine lives in the
+     * top-loop thread.
      *
      */
-    Q_PROPERTY(QString code READ code WRITE setCode)
+    Q_PROPERTY(QString runCode READ runCode WRITE setRunCode)
+
+    /** Script code executed by the job in the arming face.
+     *
+     * If code is empty then nothing will be executed.
+     *
+     * The script code is executed in the root engine, in the
+     * main application thread.
+     *
+     */
+    Q_PROPERTY(QString armCode READ armCode WRITE setArmCode)
+
+    /** Script code executed by the job in the dis-arming face.
+     *
+     * If code is empty then nothing will be executed.
+     *
+     * The script code is executed in the root engine, in the
+     * main application thread.
+     *
+     */
+    Q_PROPERTY(QString disarmCode READ disarmCode WRITE setDisarmCode)
 
     // properties
     QAtomicInt armed_; // only I touch this
 
 protected:
 
-    QString code_;
+    QString runCode_,armCode_,disarmCode_;
     // bytecode of code
     QScriptProgram* program_;
     // script engine for loop code
@@ -123,8 +145,13 @@ public:
      */
     bool setArmed(bool on);
 
-    const QString& code() const { return code_; }
-    void setCode(const QString& s);
+    const QString& runCode() const { return runCode_; }
+    const QString& armCode() const { return armCode_; }
+    const QString& disarmCode() const { return disarmCode_; }
+
+    void setRunCode(const QString& s);
+    void setArmCode(const QString& s);
+    void setDisarmCode(const QString& s);
 
 protected:
 
