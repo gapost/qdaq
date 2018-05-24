@@ -164,6 +164,8 @@ public slots:
      */
     /// Write a string message to the device. Return number of characters written.
     int write(const QString& msg);
+    /// Write a list of string message to the device. Return true if succesfull.
+    bool write(const QStringList& msgs);
     /// Write a byte array to the device. Return number of bytes written.
     int writeBytes(const QByteArray& msg);
     /// Read a string from the device. On error return empty string and emit QDaqError.

@@ -160,6 +160,17 @@ int QDaqDevice::write(const QString& msg)
 	if (throwIfOffline()) return 0;
     return write(msg.toLatin1());
 }
+bool QDaqDevice::write(const QStringList& msglist)
+{
+    if (throwIfOffline()) return false;
+    foreach(const QString& msg, msglist)
+    {
+        QByteArray ba = msg.toLatin1();
+        if (ba.size() != write(ba)) return false;
+    }
+    return true;
+}
+
 int QDaqDevice::writeBytes(const QByteArray& msg)
 {
     if (throwIfOffline()) return 0;
