@@ -1,7 +1,7 @@
 #ifndef QDAQPID_H
 #define QDAQPID_H
 
-#include "pid_global.h"
+#include "filters_global.h"
 
 #include "QDaqFilterPlugin.h"
 #include "QDaqJob.h"
@@ -10,12 +10,11 @@
 #include "isa_pid.h"
 #include "relaytuner.h"
 
-class PIDSHARED_EXPORT QDaqPid :
+class FILTERSSHARED_EXPORT QDaqPid :
         public QDaqJob,
         public QDaqFilterPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QDaqFilterPlugin_iid FILE "pid.json")
     Q_INTERFACES(QDaqFilterPlugin)
 
     Q_PROPERTY(double samplingPeriod READ samplingPeriod WRITE setSamplingPeriod)
@@ -48,6 +47,8 @@ public:
     QDaqPid();
 
     // QDaqFilterPlugin interface implementation
+    virtual QString iid()
+    { return QString("pid-v0.1"); }
     virtual QString errorMsg() { return QString(); }
     virtual bool init();
     virtual bool operator()(const double* vin, double* vout);

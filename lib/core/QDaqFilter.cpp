@@ -3,7 +3,7 @@
 #include "qdaqpluginloader.h"
 
 QDaqFilter::QDaqFilter(const QString& name) : QDaqJob(name),
-    filter_(0)
+    filter_(0), filterWrapper_(0)
 {
 
 }
@@ -68,21 +68,49 @@ void QDaqFilter::setOutputChannels(QDaqObjectList lst)
 
 QStringList QDaqFilter::listPlugins()
 {
-    return QDaqPluginLoader<QDaqFilterPlugin*>::findPlugins();
+    QStringList pluginFiles =  QDaqPluginLoader<QDaqFilterPluginFactory*>::findPlugins();
+
+    if (pluginFiles.isEmpty()) return QStringList();
+
+    QObject* obj = QDaqPluginLoader<QDaqFilterPluginFactory*>::loadPlugin(pluginFiles.front());
+    if (obj)
+    {
+        QDaqFilterPluginFactory* iFactory = qobject_cast<QDaqFilterPluginFactory*>(obj);
+        if (iFactory) return iFactory->availablePlugins();
+    }
+
+    return QStringList();;
 }
 
-bool QDaqFilter::loadPlugin(const QString &fname)
+bool QDaqFilter::loadPlugin(const QString &iid)
 {
-    QObject *plugin = QDaqPluginLoader<QDaqFilterPlugin*>::loadPlugin(fname);
+    QStringList pluginFiles =  QDaqPluginLoader<QDaqFilterPluginFactory*>::findPlugins();
 
-    if (plugin) {
-        QDaqFilterPlugin* ifilter = qobject_cast<QDaqFilterPlugin*>(plugin);
-        if (ifilter) {
-            filter_ = ifilter;
-            plugin->setParent(this);
+    if (pluginFiles.isEmpty()) return false;
+
+    QObject* obj = QDaqPluginLoader<QDaqFilterPluginFactory*>::loadPlugin(pluginFiles.front());
+    if (obj)
+    {
+        QDaqFilterPluginFactory* iFactory = qobject_cast<QDaqFilterPluginFactory*>(obj);
+        if (iFactory) {
+            QObject* plugin = iFactory->createPlugin(iid);
+            if (plugin) {
+                QDaqFilterPlugin* p = qobject_cast<QDaqFilterPlugin*>(plugin);
+                if (p) {
+                    if (filterWrapper_)
+                    {
+                        removeChild(filterWrapper_);
+                        delete filterWrapper_;
+                    }
+                    filterWrapper_ = appendChild((QDaqObject*)plugin);
+                    filter_ = p;
+                    return true;
+                }
+            }
         }
     }
-    return filter_!=0;
+
+    return 0;
 }
 
 bool QDaqFilter::run()

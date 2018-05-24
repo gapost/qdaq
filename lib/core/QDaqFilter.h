@@ -25,6 +25,7 @@ class QDAQ_EXPORT QDaqFilter : public QDaqJob
 
     // the filter
     QDaqFilterPlugin* filter_;
+    QDaqObject* filterWrapper_;
 
     // typedefs of channel ptr, channel vector, matrix
     typedef QPointer<QDaqChannel> channel_t;

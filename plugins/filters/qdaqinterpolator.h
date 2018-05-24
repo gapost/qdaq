@@ -1,21 +1,19 @@
 #ifndef QDAQINTERPOLATOR_H
 #define QDAQINTERPOLATOR_H
 
-#include "interpolator_global.h"
+#include "filters_global.h"
 
 #include "QDaqFilterPlugin.h"
 #include "QDaqJob.h"
 #include "QDaqTypes.h"
-#include <QtPlugin>
 
 #include <gsl/gsl_interp.h>
 
-class INTERPOLATORSHARED_EXPORT QDaqInterpolator :
+class FILTERSSHARED_EXPORT QDaqInterpolator :
         public QDaqJob,
         public QDaqFilterPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QDaqFilterPlugin_iid FILE "interpolator.json")
     Q_INTERFACES(QDaqFilterPlugin)
 
     Q_PROPERTY(InterpolationType type READ type WRITE setType)
@@ -41,6 +39,8 @@ public:
     virtual ~QDaqInterpolator();
 
     // QDaqFilterPlugin interface implementation
+    virtual QString iid()
+    { return QString("interp-v0.1"); }
     virtual QString errorMsg() { return QString(); }
     virtual bool init();
     virtual bool operator()(const double* vin, double* vout);

@@ -10,17 +10,17 @@ var y =  new QDaqChannel("y");
 var y1 =  new QDaqChannel("y1");
 // create sys
 var sys = new QDaqFilter("sys");
-sys.loadPlugin("libqdaqfopdt.so");
+sys.loadPlugin("fopdt-v0.1");
 sys.inputChannels = [u];
 sys.outputChannels = [y];
 // create PID
 var pid = new QDaqFilter("pid");
-pid.loadPlugin("libqdaqpid.so");
+pid.loadPlugin("pid-v0.1");
 pid.inputChannels = [y];
 pid.outputChannels = [u];
 // create interp
 var ip = new QDaqFilter("ip");
-ip.loadPlugin("libqdaqinterpolator.so");
+ip.loadPlugin("interp-v0.1");
 ip.inputChannels = [y];
 ip.outputChannels = [y1];
 ip.interpolator.type = "Linear";

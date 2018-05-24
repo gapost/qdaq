@@ -1,19 +1,17 @@
 #ifndef QDAQLINEARCORRELATOR_H
 #define QDAQLINEARCORRELATOR_H
 
-#include "lincorr_global.h"
+#include "filters_global.h"
 
 #include "QDaqFilterPlugin.h"
 #include "QDaqJob.h"
 #include "QDaqTypes.h"
-#include <QtPlugin>
 
-class LINCORRSHARED_EXPORT QDaqLinearCorrelator :
+class FILTERSSHARED_EXPORT QDaqLinearCorrelator :
         public QDaqJob,
         public QDaqFilterPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QDaqFilterPlugin_iid FILE "lincorr.json")
     Q_INTERFACES(QDaqFilterPlugin)
 
     /** Size of data sample.
@@ -40,6 +38,8 @@ public:
     void setSize(uint sz);
 
     // QDaqFilterPlugin interface implementation
+    virtual QString iid()
+    { return QString("lincorr-v0.1"); }
     virtual QString errorMsg() { return QString(); }
     virtual bool init();
     virtual bool operator()(const double* vin, double* vout);
