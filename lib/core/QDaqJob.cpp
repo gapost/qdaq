@@ -100,7 +100,7 @@ void QDaqJob::disarm_()
     {
         QDaqScriptEngine* eng = (QDaqScriptEngine*)(root()->rootSession());
         QString retMsg;
-        bool ret = eng->evaluate(armCode_,retMsg);
+        bool ret = eng->evaluate(disarmCode_,retMsg);
         if (!ret)
         {
             throwScriptError(retMsg);
