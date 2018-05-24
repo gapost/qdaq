@@ -5,6 +5,7 @@
 #include "math_util.h"
 
 #include <QPointer>
+#include <QAtomicInt>
 
 class QDaqScriptEngine;
 class QScriptProgram;
@@ -63,9 +64,11 @@ class QDAQ_EXPORT QDaqJob : public QDaqObject
      */
     Q_PROPERTY(QString code READ code WRITE setCode)
 
-protected:
     // properties
-    bool armed_;
+    QAtomicInt armed_; // only I touch this
+
+protected:
+
     QString code_;
     // bytecode of code
     QScriptProgram* program_;

@@ -77,27 +77,19 @@ bool QDaqJob::arm_()
 }
 void QDaqJob::disarm_()
 {
+    armed_.fetchAndStoreOrdered(0);
     if (program_)
     {
         delete program_;
         program_ = 0;
     }
-    armed_ = false;
 }
 
 bool QDaqJob::setArmed(bool on)
 {
-    if (on == armed_) return armed_;
+    if (on == armed_) return on;
 
-    if (armed_) // disarm
-    {
-        jobLock();
-        disarm_();
-        foreach(QDaqJob* j, subjobs_) j->setArmed(false);
-        armed_ = false;
-        jobUnlock();
-    }
-    else // arm
+    if (on) // arm
     {
         // select my subjobs
         subjobs_.clear();
@@ -117,6 +109,8 @@ bool QDaqJob::setArmed(bool on)
             if (!(*i)->isLoop_) ok = (*i)->setArmed(true);
             ++i;
         }
+        // finally arm this job also
+        if (ok) ok = arm_();
 
 
         // Some job failed to arm.
@@ -124,19 +118,27 @@ bool QDaqJob::setArmed(bool on)
         if (!ok)
         {
 
-            //disarm_();
+            disarm_();
             foreach(QDaqJob* j, subjobs_)
                 if (!j->isLoop_) j->setArmed(false);
-            armed_ = false;
+
         }
-        else arm_();
+
 
 
         jobUnlock();
 
     }
+    else // disarm
+    {
+        jobLock();
+        disarm_();
+        foreach(QDaqJob* j, subjobs_) j->setArmed(false);
+        jobUnlock();
+    }
+
 	emit propertiesChanged();
-	return armed_;
+    return armed();
 }
 void QDaqJob::setCode(const QString& s)
 {
@@ -205,9 +207,7 @@ QDaqLoop::~QDaqLoop(void)
 }
 bool QDaqLoop::exec()
 {
-    if (!armed_) return true;
-
-    if (aborted_) return false;
+    if (!armed() || aborted_) return true;
 
     // check time for loop statistics
     t_[1] = (float)clock_.sec();
@@ -244,7 +244,8 @@ bool QDaqLoop::exec()
     perfmon[0] << (t_[1] - t_[0])*1000; t_[0] = t_[1];
     perfmon[1] << ((float)clock_.sec() - t_[1])*1000;
 
-    return ret;
+    // loop always return true.
+    return true;
 }
 
 bool QDaqLoop::arm_()
@@ -257,9 +258,10 @@ bool QDaqLoop::arm_()
     {
         clock_.start();
         t_[0] = (float)clock_.sec();
-        if (isTop()) armed_ = thread_.start(this,period_); //,THREAD_PRIORITY_TIME_CRITICAL);
+        if (isTop()) ret = thread_.start(this,period_); //,THREAD_PRIORITY_TIME_CRITICAL);
+        if (!ret) QDaqJob::disarm_();
     }
-    return armed_;
+    return armed();
 }
 
 void QDaqLoop::disarm_()
@@ -309,7 +311,7 @@ void QDaqLoop::setPeriod(unsigned int p)
     if (p<10) p=10; // minimum 10 ms
     if (period_ != p)
     {
-        bool onlineChange = armed_;
+        bool onlineChange = armed();
         if (onlineChange)
         {
             jobLock();

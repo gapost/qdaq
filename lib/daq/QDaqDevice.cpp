@@ -56,7 +56,7 @@ bool QDaqDevice::setOnline_(bool on)
 void QDaqDevice::forcedOffline(const QString& reason)
 {
     os::auto_lock L(comm_lock);
-	if (armed_) disarm_();// forcedDisarm(reason);
+    if (armed()) disarm_();// forcedDisarm(reason);
 	if (online_) 
 	{
 		setOnline_(false);
@@ -126,7 +126,7 @@ bool QDaqDevice::throwIfOnline()
 // arming
 bool QDaqDevice::arm_()
 {
-	if (throwIfOffline()) return armed_ = false;
+    if (throwIfOffline()) return false;
     else return QDaqJob::arm_();
 }
 // io
