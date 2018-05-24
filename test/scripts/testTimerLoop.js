@@ -9,6 +9,7 @@ loop2.delay = 5;
 // create a clock channel
 var t = new QDaqChannel("t");
 t.type = "Clock";
+t.disarmCode = 'var me = qdaq.findChild("t"); me.value(); wait(1000)'
 // create a clock channel
 var t2 = new QDaqChannel("t2");
 t2.type = "Clock";

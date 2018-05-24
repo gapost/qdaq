@@ -56,8 +56,19 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
 
 }
 
+void jobDisarmHelper(QDaqObjectList lst)
+{
+    foreach(QDaqObject* obj, lst)
+    {
+        if (obj->hasChildren()) jobDisarmHelper(obj->children());
+        QDaqLoop* j = qobject_cast<QDaqLoop*>(obj);
+        if (j) j->disarm();
+    }
+}
+
 QDaqRoot::~QDaqRoot(void)
 {
+    jobDisarmHelper(children());
     //foreach(QDaqObject* obj, children()) obj->detach();
     /*{QDaqIDE*
 		QDaqObject* rtobj = qobject_cast<QDaqObject*>(obj);
