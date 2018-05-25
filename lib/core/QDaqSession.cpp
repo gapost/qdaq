@@ -17,6 +17,8 @@
 #include <QWidget>
 #include <QtUiTools/QUiLoader>
 #include <QDebug>
+#include <QComboBox>
+#include <QListWidget>
 
 QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject* metaObject)
 {
@@ -497,6 +499,18 @@ void QDaqSession::bind(QDaqObject *obj, const QString& propertyName, QWidget* w,
 
 
 }
+
+void QDaqSession::addItems(QComboBox* cb, const QStringList& lst)
+{
+    cb->addItems(lst);
+}
+
+void QDaqSession::addItems(QListWidget* cb, const QStringList& lst)
+{
+    cb->addItems(lst);
+}
+
+
 void QDaqSession::test(QDaqBuffer *b)
 {
     int n = b->size();

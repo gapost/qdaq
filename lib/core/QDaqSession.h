@@ -21,6 +21,8 @@ class QDaqLogFile;
 class QDaqObject;
 class QDaqChannel;
 //class QDaqBuffer;
+class QComboBox;
+class QListWidget;
 
 class QDAQ_EXPORT QDaqScriptEngine : public QObject
 {
@@ -97,6 +99,8 @@ public slots:
     QString availableWidgets();
     void bind(QDaqChannel* ch, QWidget* w);
     void bind(QDaqObject* obj, const QString& propertyName, QWidget* w, bool readOnly = false);
+    void addItems(QComboBox* cb, const QStringList& lst);
+    void addItems(QListWidget* cb, const QStringList& lst);
 
     // set debugging on (enable Qt script debugger)
     void debug(bool on);
