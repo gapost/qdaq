@@ -322,6 +322,18 @@ void QDaqPlotWidget::setTimeScaleY(bool on)
     setTimeAxis(QwtPlot::yLeft, on);
     timeScaleY_ = on;
 }
+void QDaqPlotWidget::setLogScaleX(bool on)
+{
+    if (on==timeScaleX_) return;
+    setLogAxis(QwtPlot::xBottom, on);
+    timeScaleX_ = on;
+}
+void QDaqPlotWidget::setLogScaleY(bool on)
+{
+    if (on==timeScaleY_) return;
+    setLogAxis(QwtPlot::yLeft, on);
+    timeScaleY_ = on;
+}
 void QDaqPlotWidget::setGrid(bool on)
 {
     if (grid_on_==on) return;
@@ -338,7 +350,7 @@ void QDaqPlotWidget::setYlim(const QPointF &v)
     setAxisScale(QwtPlot::yLeft,v.x(),v.y()) ;
 }
 
-void QDaqPlotWidget::plot(const QDaqBuffer &x, const QDaqBuffer &y)
+void QDaqPlotWidget::plot(const QDaqBuffer &x, const QDaqBuffer &y, const QColor &clr)
 {
     static const Qt::GlobalColor eight_colors[8] =
     {
@@ -355,7 +367,10 @@ void QDaqPlotWidget::plot(const QDaqBuffer &x, const QDaqBuffer &y)
     QwtPlotCurve* curve = new QwtPlotCurve;
     curve->setData(new QDaqPlotData(x,y));
 
-    curve->setPen(QPen(QColor(eight_colors[id_++ & 0x07])));
+
+    QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
+
+    curve->setPen(plotclr);
 
     curve->attach(this);
 
@@ -372,6 +387,21 @@ void QDaqPlotWidget::setTimeAxis(int axisid, bool on)
     }
     else
     {
+        setAxisScaleEngine(axisid, new QwtLinearScaleEngine());
+        setAxisScaleDraw(axisid, new SciScaleDraw());
+    }
+}
+
+void QDaqPlotWidget::setLogAxis(int axisid, bool on)
+{
+    if (on)
+    {
+        setAxisScaleEngine(axisid, new QwtLogScaleEngine());
+        setAxisScaleDraw(axisid, new SciScaleDraw());
+    }
+    else
+    {
+
         setAxisScaleEngine(axisid, new QwtLinearScaleEngine());
         setAxisScaleDraw(axisid, new SciScaleDraw());
     }

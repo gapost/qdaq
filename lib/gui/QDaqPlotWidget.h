@@ -23,12 +23,15 @@ class  QDAQ_EXPORT QDaqPlotWidget : public QwtPlot
     Q_PROPERTY(bool autoScaleY READ autoScaleY WRITE setAutoScaleY)
     Q_PROPERTY(bool timeScaleX READ timeScaleX WRITE setTimeScaleX)
     Q_PROPERTY(bool timeScaleY READ timeScaleY WRITE setTimeScaleY)
+    Q_PROPERTY(bool logScaleX READ logScaleX WRITE setLogScaleX)
+    Q_PROPERTY(bool logScaleY READ logScaleY WRITE setLogScaleY)
     Q_PROPERTY(bool grid READ grid WRITE setGrid)
     Q_PROPERTY(QPointF xlim READ xlim WRITE setXlim)
     Q_PROPERTY(QPointF ylim READ ylim WRITE setYlim)
 
 
-    bool timeScaleX_, timeScaleY_, grid_on_;
+    bool timeScaleX_, timeScaleY_,
+        logScaleX_, logScaleY_, grid_on_;
 
     int id_;
 
@@ -38,6 +41,7 @@ class  QDAQ_EXPORT QDaqPlotWidget : public QwtPlot
     QwtPlotPicker* picker;
 
     void setTimeAxis(int axisid, bool on);
+    void setLogAxis(int axisid, bool on);
 
 public:
     explicit QDaqPlotWidget(QWidget* parent = 0);
@@ -51,6 +55,8 @@ public:
     bool autoScaleY() const;
     bool timeScaleX() const { return timeScaleX_; }
     bool timeScaleY() const { return timeScaleY_; }
+    bool logScaleX() const { return logScaleX_; }
+    bool logScaleY() const { return logScaleY_; }
     bool grid() const { return grid_on_; }
     QPointF xlim() const;
     QPointF ylim() const;
@@ -63,6 +69,8 @@ public:
     void setAutoScaleY(bool on);
     void setTimeScaleX(bool on);
     void setTimeScaleY(bool on);
+    void setLogScaleX(bool on);
+    void setLogScaleY(bool on);
     void setGrid(bool on);
     void setXlim(const QPointF& v);
     void setYlim(const QPointF& v);
@@ -71,7 +79,7 @@ public:
     virtual QSize 	minimumSizeHint () const;
 
 public slots:
-    void plot(const QDaqBuffer& x, const QDaqBuffer& y);
+    void plot(const QDaqBuffer& x, const QDaqBuffer& y, const QColor& clr = QColor());
     void clear();
 
 
