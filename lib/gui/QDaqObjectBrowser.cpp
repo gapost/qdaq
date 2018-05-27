@@ -25,6 +25,7 @@ QDaqObjectBrowser::QDaqObjectBrowser(QWidget* p) : QSplitter(p)
     treeView->setModel(model);
     treeView->setAlternatingRowColors(true);
     treeView->setSelectionMode(QAbstractItemView::SingleSelection);
+    treeView->setHeaderHidden(true);
 
     currentObject = new QLineEdit(this);
 

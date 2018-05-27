@@ -22,5 +22,6 @@
         <file>images/network.png</file>
         <file>images/device.png</file>
         <file>images/clear.png</file>
+        <file>images/filter.png</file>
     </qresource>
 </RCC>

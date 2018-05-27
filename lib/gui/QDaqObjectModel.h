@@ -23,7 +23,7 @@ class QDAQ_EXPORT QDaqObjectModel : public QAbstractItemModel
     void* rootNode;
 
 public:
-    enum { NumColumns = 2 };
+    enum { NumColumns = 1 };
 
     explicit QDaqObjectModel(QObject *parent = 0);
     virtual ~QDaqObjectModel();
