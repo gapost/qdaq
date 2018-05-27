@@ -4,6 +4,10 @@
 #include <QScriptEngine>
 #include <QScriptValueIterator>
 #include <QTimer>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QTabBar>
 
 #include "QDaqConsole.h"
 
@@ -189,38 +193,58 @@ QStringList QDaqConsole::introspection(const QString& lookup)
 
 }
 
-/*********************** QDaqConsoleTab *********************/
-QDaqConsoleTab::QDaqConsoleTab(QWidget *parent) : QTabWidget(parent)
+/*********************** QDaqConsoleTabWidget *********************/
+QDaqConsoleTabWidget::QDaqConsoleTabWidget(QWidget *parent) : QTabWidget(parent)
 {
-    QDaqConsole *child = new QDaqConsole(QDaqObject::root()->rootSession());
-    addTab(child, child->windowTitle());
     setTabsClosable(false);
+    tabBar()->setExpanding(false);
     connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(onTabClose(int)));
 }
 
-void QDaqConsoleTab::addConsole()
+void QDaqConsoleTabWidget::addConsole()
 {
-    addConsole(new QDaqSession());
-}
-
-void QDaqConsoleTab::addConsole(QDaqSession* s)
-{
-    QDaqConsole *child = new QDaqConsole(s);
+    QDaqConsole *child;
+    if (count()==0) {
+        child = new QDaqConsole(QDaqObject::root()->rootSession());
+    } else child = new QDaqConsole(new QDaqSession);
     addTab(child, child->windowTitle());
-    setTabsClosable(true);
+    if (count()>1) setTabsClosable(true);
 }
 
-void QDaqConsoleTab::tabRemoved(int index)
+void QDaqConsoleTabWidget::tabRemoved(int index)
 {
     Q_UNUSED(index);
     if (count()==1) setTabsClosable(false);
 }
 
-void QDaqConsoleTab::onTabClose(int index)
+void QDaqConsoleTabWidget::onTabClose(int index)
 {
     if (index) {
         QWidget* w = widget(index);
         removeTab(index);
         delete w;
     }
+}
+
+/*********************** QDaqConsoleTab *********************/
+QDaqConsoleTab::QDaqConsoleTab(QWidget *parent) : QWidget(parent)
+{
+    QIcon ico(":/images/Terminal-128.png");
+    QPushButton* bt = new QPushButton(ico,QString());
+    QDaqConsoleTabWidget* tabWidget_ = new QDaqConsoleTabWidget();
+
+    QHBoxLayout* hl = new QHBoxLayout;
+    hl->addWidget(bt);
+    hl->addStretch();
+    QVBoxLayout* vl = new QVBoxLayout;
+    vl->addLayout(hl);
+    vl->addWidget(tabWidget_);
+    setLayout(vl);
+
+    connect(bt,SIGNAL(pressed()),tabWidget_,SLOT(addConsole()));
+}
+
+void QDaqConsoleTab::addConsole()
+{
+    tabWidget_->addConsole();
 }

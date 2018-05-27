@@ -36,12 +36,12 @@ protected:
     virtual void keyPressEvent (QKeyEvent * e);
 };
 
-class QDAQ_EXPORT QDaqConsoleTab : public QTabWidget
+class QDAQ_EXPORT QDaqConsoleTabWidget : public QTabWidget
 {
     Q_OBJECT
 
 public:
-    QDaqConsoleTab(QWidget* parent = 0);
+    QDaqConsoleTabWidget(QWidget* parent = 0);
 
 protected:
     virtual void tabRemoved(int index);
@@ -49,10 +49,23 @@ protected:
 public slots:
 
     void addConsole();
-    void addConsole(QDaqSession* s);
 
 private slots:
     void onTabClose(int index);
+
+};
+
+class QDAQ_EXPORT QDaqConsoleTab : public QWidget
+{
+    Q_OBJECT
+
+    QDaqConsoleTabWidget* tabWidget_;
+
+public:
+    QDaqConsoleTab(QWidget* parent = 0);
+
+public slots:
+    void addConsole();
 
 };
 
