@@ -10,6 +10,8 @@
 #include <QMenuBar>
 #include <QToolBar>
 #include <QDockWidget>
+#include <QFileSystemModel>
+#include <QTreeView>
 
 #include "QDaqIde.h"
 #include "QDaqScriptEditor.h"
@@ -449,6 +451,48 @@ void QDaqIDE::createDockers()
     addDockWidget(Qt::LeftDockWidgetArea,dock);
     toggleDockersActions << dock->toggleViewAction();
 
+    dock = new QDockWidget("File Browser", this);
+    dock->setObjectName("objectFileBrowserDocker");
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+
+    QFileSystemModel* model = new QFileSystemModel();
+    model->setRootPath(QDir::currentPath());
+    model->setFilter(QDir::AllDirs | QDir::Files);
+    //model.setRootPath("");
+    //if (parser.isSet(dontUseCustomDirectoryIconsOption))
+        //model.iconProvider()->setOptions(QFileIconProvider::DontUseCustomDirectoryIcons);
+
+    fileBrowser_ = new QTreeView();
+    fileBrowser_->setModel(model);
+    fileBrowser_->setRootIndex(model->index(QDir::currentPath()));
+
+//    if (!rootPath.isEmpty()) {
+//        const QModelIndex rootIndex = model.index(QDir::cleanPath(rootPath));
+//        if (rootIndex.isValid())
+//            fileBrowser_->setRootIndex(rootIndex);
+//    }
+
+    // Demonstrating look and feel features
+    fileBrowser_->setAnimated(false);
+    fileBrowser_->setIndentation(20);
+    fileBrowser_->setSortingEnabled(true);
+    // const QSize availableSize = QApplication::desktop()->availableGeometry(&tree).size();
+    // fileBrowser_->resize(availableSize / 2);
+    // fileBrowser_->setColumnWidth(0, fileBrowser_->width() / 3);
+
+    // fileBrowser_->setWindowTitle(QObject::tr("Dir View"));
+    connect(fileBrowser_,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(fileItemDoubleClicked(QModelIndex)));
+
+
+
+
+    dock->setWidget(fileBrowser_);
+    dock->setFloating(false);
+    //dock->hide();
+    addDockWidget(Qt::LeftDockWidgetArea,dock);
+    toggleDockersActions << dock->toggleViewAction();
+
 
     dock = new QDockWidget("Error Log", this);
     dock->setObjectName("errorLogDocker");
@@ -507,5 +551,34 @@ void QDaqIDE::setActiveSubWindow(QWidget *window)
     if (!window)
         return;
     mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
+}
+
+void QDaqIDE::fileItemDoubleClicked(const QModelIndex &index)
+{
+    QFileSystemModel* model = (QFileSystemModel*)fileBrowser_->model();
+    QFileInfo fi = model->fileInfo(index);
+    if (fi.isDir()) {
+        QString path = fi.absoluteFilePath(); // .dir().absolutePath();
+        model->setRootPath(path);
+        fileBrowser_->setRootIndex(model->index(path));
+    }
+    if (fi.isFile()) {
+        QString fileName = fi.fileName();
+        if (!fileName.isEmpty()) {
+            QMdiSubWindow *existing = findEditor(fileName);
+            if (existing) {
+                mdiArea->setActiveSubWindow(existing);
+                return;
+            }
+
+            QDaqScriptEditor *child = createScriptEditor();
+            if (child->loadFile(fi.absoluteFilePath())) {
+                statusBar()->showMessage(tr("File loaded"), 2000);
+                child->show();
+            } else {
+                child->close();
+            }
+        }
+    }
 }
 

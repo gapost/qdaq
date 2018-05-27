@@ -28,7 +28,7 @@ QDaqErrorLog::QDaqErrorLog(QWidget* p) : QWidget(p)
     tableWidget->setColumnWidth(2,200);
 
     QHeaderView* hdr = tableWidget->horizontalHeader();
-    hdr->setMinimumSectionSize(300);
+    hdr->setMinimumSectionSize(100);
     hdr->setStretchLastSection(true);
 
     clearButton = new QPushButton(QIcon(":/images/clear.png"),QString(),this);

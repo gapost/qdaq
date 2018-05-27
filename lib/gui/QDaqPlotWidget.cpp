@@ -324,15 +324,15 @@ void QDaqPlotWidget::setTimeScaleY(bool on)
 }
 void QDaqPlotWidget::setLogScaleX(bool on)
 {
-    if (on==timeScaleX_) return;
+    if (on==logScaleX_) return;
     setLogAxis(QwtPlot::xBottom, on);
-    timeScaleX_ = on;
+    logScaleX_ = on;
 }
 void QDaqPlotWidget::setLogScaleY(bool on)
 {
-    if (on==timeScaleY_) return;
+    if (on==logScaleY_) return;
     setLogAxis(QwtPlot::yLeft, on);
-    timeScaleY_ = on;
+    logScaleY_ = on;
 }
 void QDaqPlotWidget::setGrid(bool on)
 {

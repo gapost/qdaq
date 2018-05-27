@@ -12,6 +12,7 @@ class QMenu;
 class QMdiArea;
 class QMdiSubWindow;
 class QSignalMapper;
+class QTreeView;
 class QPlainTextEdit;
 class QDaqObjectBrowser;
 class QDaqErrorLog;
@@ -44,6 +45,7 @@ private slots:
     QDaqScriptEditor *createScriptEditor();
     QDaqConsole *createQDaqConsole();
     void setActiveSubWindow(QWidget *window);
+    void fileItemDoubleClicked(const QModelIndex &index);
 
 private:
     void createActions();
@@ -60,6 +62,7 @@ private:
     QSignalMapper *windowMapper;
     QMdiArea *mdiArea;
     QDaqObjectBrowser* objectBrowser_;
+    QTreeView* fileBrowser_;
     QDaqErrorLog* errorLog_;
 
     QList<QAction*> toggleDockersActions;
