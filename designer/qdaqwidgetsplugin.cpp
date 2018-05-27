@@ -1,12 +1,14 @@
 #include "qledplugin.h"
 #include "qdaqplotwidgetplugin.h"
 #include "qdaqwidgetsplugin.h"
+#include "qdaqconsoletabplugin.h"
 
 QDaqWidgetsPlugin::QDaqWidgetsPlugin(QObject *parent)
     : QObject(parent)
 {
     m_widgets.append(new QLedPlugin(this));
     m_widgets.append(new QDaqPlotWidgetPlugin(this));
+    m_widgets.append(new QDaqConsoleTabPlugin(this));
 
 }
 

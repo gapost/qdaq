@@ -4,6 +4,8 @@
 #include "QDaqGlobal.h"
 #include "QConsoleWidget.h"
 
+#include <QTabWidget>
+
 class QDaqSession;
 
 class QDAQ_EXPORT QDaqConsole : public QConsoleWidget
@@ -33,6 +35,31 @@ protected:
     //! derived key press event
     virtual void keyPressEvent (QKeyEvent * e);
 };
+
+class QDAQ_EXPORT QDaqConsoleTab : public QTabWidget
+{
+    Q_OBJECT
+
+    int idx_;
+    QDaqConsole* c_;
+
+public:
+    QDaqConsoleTab(QWidget* parent = 0);
+
+protected:
+    virtual void tabRemoved(int index);
+
+public slots:
+
+    void addConsole();
+    void addConsole(QDaqSession* s);
+
+private slots:
+    void onTabClose(int index);
+
+};
+
+
 
 #endif
 

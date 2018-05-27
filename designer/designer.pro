@@ -6,8 +6,10 @@ TARGET      = $$qtLibraryTarget(qdaqwidgetsplugin)
 win32 { TARGET_EXT = .dll }
 TEMPLATE    = lib
 
-HEADERS     = qledplugin.h qdaqplotwidgetplugin.h qdaqwidgetsplugin.h
-SOURCES     = qledplugin.cpp qdaqplotwidgetplugin.cpp qdaqwidgetsplugin.cpp
+HEADERS     = qledplugin.h qdaqplotwidgetplugin.h qdaqwidgetsplugin.h \
+    qdaqconsoletabplugin.h
+SOURCES     = qledplugin.cpp qdaqplotwidgetplugin.cpp qdaqwidgetsplugin.cpp \
+    qdaqconsoletabplugin.cpp
 RESOURCES   = icons.qrc
 LIBS        += -L.
 
