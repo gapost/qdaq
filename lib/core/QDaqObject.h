@@ -304,8 +304,6 @@ Q_DECLARE_METATYPE(QDaqError)
 Q_DECLARE_METATYPE(QDaqObject*)
 Q_DECLARE_METATYPE(QDaqObjectList)
 
-int registerQDaqObjectStar(QScriptEngine* eng);
-
 #define ERROR_QUEUE_DEPTH 1000
 
 class QDAQ_EXPORT QDaqErrorQueue : public QObject

@@ -507,50 +507,7 @@ QDaqObject* QDaqObject::clone()
     return _clone;
 }
 
-typedef QDaqObject* QDaqObjectStar;
-typedef QObject* QObjectStar;
 
-QScriptValue toScriptValue(QScriptEngine *eng, const QDaqObjectStar& obj)
-{
-    return eng->newQObject(obj,
-                           QScriptEngine::AutoOwnership,
-                           QScriptEngine::ExcludeDeleteLater |
-                           QScriptEngine::AutoCreateDynamicProperties |
-                           QScriptEngine::PreferExistingWrapperObject |
-                           QScriptEngine::ExcludeChildObjects);
-}
-
-void fromScriptValue(const QScriptValue &value, QDaqObjectStar& obj)
-{
-    obj = qobject_cast<QDaqObject*>(value.toQObject());
-}
-
-QScriptValue toScriptValue(QScriptEngine *eng, const QDaqObjectList& L)
-{
-    QScriptValue V = eng->newArray();
-    QDaqObjectList::const_iterator begin = L.begin();
-    QDaqObjectList::const_iterator end = L.end();
-    QDaqObjectList::const_iterator it;
-    for (it = begin; it != end; ++it)
-        V.setProperty(quint32(it - begin), qScriptValueFromValue(eng, *it));
-    return V;
-}
-
-void fromScriptValue(const QScriptValue &value, QDaqObjectList& L)
-{
-    quint32 len = value.property("length").toUInt32();
-    for (quint32 i = 0; i < len; ++i) {
-        QScriptValue item = value.property(i);
-        L.push_back(qscriptvalue_cast<QDaqObject*>(item));
-    }
-}
-
-int registerQDaqObjectStar(QScriptEngine* eng)
-{
-    int i1 = qScriptRegisterMetaType<QDaqObjectStar>(eng,toScriptValue,fromScriptValue);
-    int i2 = qScriptRegisterMetaType<QDaqObjectList>(eng,toScriptValue,fromScriptValue);
-    return i1 && i2;
-}
 
 
 QDaqErrorQueue::QDaqErrorQueue(QObject *parent) : QObject(parent)

@@ -24,7 +24,7 @@ Q_DECLARE_METATYPE(QDaqVector)
 
 class QScriptEngine;
 
-int registerVectorTypes(QScriptEngine* eng);
+int registerQDaqTypes(QScriptEngine* eng);
 
 #include <QString>
 #include <QDateTime>

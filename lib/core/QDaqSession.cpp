@@ -19,18 +19,7 @@
 #include <QDebug>
 #include <QComboBox>
 #include <QListWidget>
-#include <QColor>
 
-QScriptValue toScriptValue(QScriptEngine *engine, const QColor &clr)
-  {
-    return QScriptValue(clr.name());
-  }
-
-  void fromScriptValue(const QScriptValue &obj, QColor &clr)
-  {
-      clr.setNamedColor(obj.toString());
-
-  }
 
 
 
@@ -105,14 +94,8 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
 	engine_->setGlobalObject(self);
 
-    // register QDaqObject* with the engine (and QDaqObjectList)
-    registerQDaqObjectStar(engine_);
-
-	// register basic types with the engine
-    registerVectorTypes(engine_);
-
-    // register QColor
-    qScriptRegisterMetaType<QColor>(engine_, toScriptValue, fromScriptValue);
+    // register QDaq types with the engine
+    registerQDaqTypes(engine_);
 
 	// register root classes
     QList<const QMetaObject*> rtClasses = QDaqObject::root()->registeredClasses();
