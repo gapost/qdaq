@@ -32,7 +32,7 @@ QWidget *QDaqConsoleTabPlugin::createWidget(QWidget *parent)
 
 QString QDaqConsoleTabPlugin::name() const
 {
-    return QLatin1String("QDaqLed");
+    return QLatin1String("QDaqConsoleTab");
 }
 
 QString QDaqConsoleTabPlugin::group() const
@@ -47,7 +47,7 @@ QIcon QDaqConsoleTabPlugin::icon() const
 
 QString QDaqConsoleTabPlugin::toolTip() const
 {
-    return QLatin1String("A Led indicator/button");
+    return QLatin1String("A tabbed QDaq console widget");
 }
 
 QString QDaqConsoleTabPlugin::whatsThis() const
@@ -62,10 +62,10 @@ bool QDaqConsoleTabPlugin::isContainer() const
 
 QString QDaqConsoleTabPlugin::domXml() const
 {
-    return QLatin1String("<widget class=\"QDaqLed\" name=\"qLed\">\n</widget>\n");
+    return QLatin1String("<widget class=\"QDaqConsoleTab\" name=\"qDaqConsoleTab\">\n</widget>\n");
 }
 
 QString QDaqConsoleTabPlugin::includeFile() const
 {
-    return QLatin1String("qled.h");
+    return QLatin1String("QDaqConsole.h");
 }
