@@ -40,9 +40,6 @@ class QDAQ_EXPORT QDaqConsoleTab : public QTabWidget
 {
     Q_OBJECT
 
-    int idx_;
-    QDaqConsole* c_;
-
 public:
     QDaqConsoleTab(QWidget* parent = 0);
 

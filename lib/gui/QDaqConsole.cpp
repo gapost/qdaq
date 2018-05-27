@@ -190,8 +190,7 @@ QStringList QDaqConsole::introspection(const QString& lookup)
 }
 
 /*********************** QDaqConsoleTab *********************/
-QDaqConsoleTab::QDaqConsoleTab(QWidget *parent) : QTabWidget(parent),
-    idx_(0), c_(0)
+QDaqConsoleTab::QDaqConsoleTab(QWidget *parent) : QTabWidget(parent)
 {
     QDaqConsole *child = new QDaqConsole(QDaqObject::root()->rootSession());
     addTab(child, child->windowTitle());
@@ -213,21 +212,15 @@ void QDaqConsoleTab::addConsole(QDaqSession* s)
 
 void QDaqConsoleTab::tabRemoved(int index)
 {
+    Q_UNUSED(index);
     if (count()==1) setTabsClosable(false);
-    if (index && c_) {
-        delete c_;
-        c_ = 0;
-    }
-    else
-    {
-        insertTab(0,c_,c_->windowTitle());
-        setUpdatesEnabled(true);
-    }
 }
 
 void QDaqConsoleTab::onTabClose(int index)
 {
-    idx_ = index;
-    c_ = (QDaqConsole*)widget(index);
-    if (index==0) setUpdatesEnabled(false);
+    if (index) {
+        QWidget* w = widget(index);
+        removeTab(index);
+        delete w;
+    }
 }
