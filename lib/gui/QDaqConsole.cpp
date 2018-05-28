@@ -231,6 +231,9 @@ QDaqConsoleTab::QDaqConsoleTab(QWidget *parent) : QWidget(parent)
 {
     QIcon ico(":/images/Terminal-128.png");
     QPushButton* bt = new QPushButton(ico,QString());
+    bt->setIconSize(QSize(24,24));
+    bt->setFlat(true);
+    bt->setToolTip("New Console");
     tabWidget_ = new QDaqConsoleTabWidget();
 
     QHBoxLayout* hl = new QHBoxLayout;

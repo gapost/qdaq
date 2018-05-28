@@ -187,6 +187,7 @@ public:
 QDaqPlotWidget::QDaqPlotWidget(QWidget* parent) :
     QwtPlot(parent),
     timeScaleX_(false), timeScaleY_(false),
+    logScaleX_(false),  logScaleY_(false),
     grid_on_(false),
     id_(0)
 {
