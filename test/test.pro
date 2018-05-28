@@ -21,7 +21,9 @@ DISTFILES += \
     scripts/testWidgets.js \
     scripts/testDynamicProperties.js \
     scripts/testPID.js \
-    scripts/tbl.dat
+    scripts/tbl.dat \
+    scripts/testKeithley.js \
+    scripts/test3706.js
 
 FORMS += \
     ui/cryoTemperatureControl.ui \
