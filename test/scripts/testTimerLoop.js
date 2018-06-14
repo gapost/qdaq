@@ -2,10 +2,10 @@ print("Creating Loop");
 
 // create a loop
 var loop = new QDaqLoop("loop");
-loop.period = 200;
+loop.period = 1000;
 // create a loop
 var loop2 = new QDaqLoop("loop2");
-loop2.delay = 5;
+loop2.delay = 2;
 // create a clock channel
 var t = new QDaqChannel("t");
 t.type = "Clock";
@@ -21,7 +21,7 @@ var ch2 = new QDaqChannel("ch2");
 // create a script job
 // that will write to ch2 the square root of ch1
 var scr = new QDaqJob("scr");
-scr.code = "var v = qdaq.loop.ch1.value(); qdaq.loop.loop2.ch2.push(Math.sqrt(v));"
+scr.runCode = "var v = qdaq.loop.ch1.value(); sleep(500); qdaq.loop.loop2.ch2.push(Math.sqrt(v));"
 // build the object hierarchy under the root object "qdaq"
 loop.appendChild(t);
 loop.appendChild(ch1);

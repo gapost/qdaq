@@ -25,7 +25,9 @@ class QComboBox;
 class QListWidget;
 
 class QDAQ_EXPORT QDaqScriptEngine : public QObject
-{
+{    
+    Q_OBJECT
+
 protected:
 	QScriptEngine* engine_;
 
@@ -39,6 +41,9 @@ public:
 	bool evaluate(const QScriptProgram& program, QString& ret);
 	bool evaluate(const QString& program, QString &ret);
 	void abortEvaluation();
+
+public slots:
+    void sleep(int ms);
 
 private:
 	static QScriptValue scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject *metaObj);

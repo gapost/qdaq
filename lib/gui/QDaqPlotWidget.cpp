@@ -314,24 +314,28 @@ void QDaqPlotWidget::setAutoScaleY(bool on)
 void QDaqPlotWidget::setTimeScaleX(bool on)
 {
     if (on==timeScaleX_) return;
+    if (on && logScaleX()) setLogScaleX(false);
     setTimeAxis(QwtPlot::xBottom, on);
     timeScaleX_ = on;
 }
 void QDaqPlotWidget::setTimeScaleY(bool on)
 {
     if (on==timeScaleY_) return;
+    if (on && logScaleY()) setLogScaleY(false);
     setTimeAxis(QwtPlot::yLeft, on);
     timeScaleY_ = on;
 }
 void QDaqPlotWidget::setLogScaleX(bool on)
 {
     if (on==logScaleX_) return;
+    if (on && timeScaleX()) setTimeScaleX(false);
     setLogAxis(QwtPlot::xBottom, on);
     logScaleX_ = on;
 }
 void QDaqPlotWidget::setLogScaleY(bool on)
 {
     if (on==logScaleY_) return;
+    if (on && timeScaleY()) setTimeScaleY(false);
     setLogAxis(QwtPlot::yLeft, on);
     logScaleY_ = on;
 }

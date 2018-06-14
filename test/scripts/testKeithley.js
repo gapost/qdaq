@@ -4,7 +4,7 @@ function init2182(k2182,rangeIdx,nplc,deltapts) {
     var range = ['0', '1e-2', '1e-1',
             '1', '10', '100'];
     k2182.write("*rst");
-    k6220.write("*cls");
+    k2182.write("*cls");
     if (rangeIdx) k2182.write(":sens:volt:rang " + range[rangeIdx]);
     else k2182.write(":sens:volt:rang:auto on");
     k2182.write("sens:volt:nplc " + nplc);

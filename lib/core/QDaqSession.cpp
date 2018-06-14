@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QComboBox>
 #include <QListWidget>
+#include <QThread>
 
 
 
@@ -69,7 +70,7 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
 	QScriptValue self = engine_->newQObject(
 		this, QScriptEngine::QtOwnership,
-		QScriptEngine::ExcludeSuperClassContents);
+        QScriptEngine::ExcludeDeleteLater);
 
 	QScriptValue globObj = engine_->globalObject();
 	{
@@ -156,6 +157,10 @@ bool QDaqScriptEngine::isEvaluating() const
 void QDaqScriptEngine::abortEvaluation()
 {
 	engine_->abortEvaluation();
+}
+void QDaqScriptEngine::sleep(int ms)
+{
+    QThread::msleep(ms);
 }
 
 
