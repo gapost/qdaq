@@ -517,13 +517,6 @@ void QDaqSession::addItems(QListWidget* cb, const QStringList& lst)
     cb->addItems(lst);
 }
 
-
-void QDaqSession::test(QDaqBuffer *b)
-{
-    int n = b->size();
-    for(int i=0; i<n; i++) print(QString::number(b->get(i)));
-}
-
 QString QDaqSession::info(QScriptValue v)
 {
     QString S;
@@ -554,4 +547,8 @@ QString QDaqSession::version()
     S += QString("Qt run-time ver.: %1\n").arg(qVersion());
     return S;
 }
+
+// QDaqBuffer
+
+
 
