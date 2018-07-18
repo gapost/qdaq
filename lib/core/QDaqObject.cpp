@@ -426,7 +426,8 @@ QDaqObject* QDaqObject::removeChild(QDaqObject *obj)
         return 0;
     }
 
-    QDaqObject* childObj = findChild<QDaqObject*>(obj->objectName());
+    QDaqObject* childObj = QObject::findChild<QDaqObject*>(obj->objectName());
+    //QDaqObject* childObj = findChild(obj->objectName());
     if (!childObj)
     {
         throwScriptError("The argument is not a valid child object.");

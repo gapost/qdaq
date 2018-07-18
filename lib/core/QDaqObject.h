@@ -291,6 +291,12 @@ public slots:
     {
         return QDaqObject::findByWildcard(wc,this);
     }
+    QDaqObject* findChild(const QString& name) const
+    {
+        // this function overrides Qt's default findChild
+        // so that it returns always a QDaqObject (not a plain QObject)
+        return QObject::findChild<QDaqObject*>(name);
+    }
     ///@}
 
 signals:
