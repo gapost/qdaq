@@ -23,7 +23,9 @@ DISTFILES += \
     scripts/testPID.js \
     scripts/tbl.dat \
     scripts/testKeithley.js \
-    scripts/test3706.js
+    scripts/test3706.js \
+    scripts/data.json \
+    scripts/testConsolewidget.js
 
 FORMS += \
     ui/cryoTemperatureControl.ui \
@@ -32,6 +34,7 @@ FORMS += \
     ui/tabwidget.ui \
     ui/plotform.ui \
     ui/testTimerForm.ui \
-    ui/testPID.ui
+    ui/testPID.ui \
+    ui/testconsolewidget.ui
 
 

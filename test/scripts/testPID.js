@@ -7,7 +7,15 @@ t.type = "Clock";
 // create the control signal and sys. output channels
 var u =  new QDaqChannel("u");
 var y =  new QDaqChannel("y");
+var dydt =  new QDaqChannel("dydt");
+var y0 =  new QDaqChannel("y0");
 var y1 =  new QDaqChannel("y1");
+// create correlator
+var corr = new QDaqFilter("corr");
+corr.loadPlugin("lincorr-v0.1");
+corr.inputChannels = [t,y];
+corr.outputChannels = [y0,dydt];
+corr.lincorr.size = 100;
 // create sys
 var sys = new QDaqFilter("sys");
 sys.loadPlugin("fopdt-v0.1");
@@ -34,6 +42,9 @@ loop.appendChild(t);
 loop.appendChild(u);
 loop.appendChild(sys);
 loop.appendChild(y);
+loop.appendChild(corr);
+loop.appendChild(y0);
+loop.appendChild(dydt);
 loop.appendChild(pid);
 loop.appendChild(ip);
 loop.appendChild(y1);
@@ -53,6 +64,7 @@ bind(qdaq.loop.t,w.findChild('t'));
 bind(qdaq.loop.u,w.findChild('u'));
 bind(qdaq.loop.y,w.findChild('y'));
 bind(qdaq.loop.y1,w.findChild('y1'));
+bind(qdaq.loop.dydt,w.findChild('dydt'));
 
 function startPressed(on) {
     if (on) qdaq.loop.arm();
