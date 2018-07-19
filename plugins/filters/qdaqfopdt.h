@@ -18,9 +18,13 @@ class FILTERSSHARED_EXPORT QDaqFOPDT :
     Q_PROPERTY(uint tp READ tp WRITE setTp)
     Q_PROPERTY(uint td READ td WRITE setTd)
 
+
     double kp_;
     uint tp_, td_;
     double y_;
+
+
+    double h_;
 
     QDaqVector ubuff;
     uint ibuff;

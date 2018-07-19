@@ -15,6 +15,8 @@ bool QDaqFOPDT::init()
     ubuff.fill(0.);
     ibuff = 0;
 
+    h_ = tp_ ? exp(-1./tp_) : 1.0;
+
     return true;
 }
 
@@ -24,8 +26,12 @@ bool QDaqFOPDT::operator ()(const double* vin, double* vout)
     ibuff++;
     if (ibuff>=td_) ibuff=0;
     double u = ubuff[ibuff];
-    y_ += (kp_*u-y_)/tp_;
+
+    // y_ += (kp_*u-y_)/tp_;
+
+    y_ = h_*y_ + kp_*u*(1-h_);
     *vout = y_;
+
     return true;
 }
 

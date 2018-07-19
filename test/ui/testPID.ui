@@ -6,135 +6,721 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>252</width>
-    <height>263</height>
+    <width>946</width>
+    <height>696</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="btStart">
-       <property name="text">
-        <string>Start/Stop</string>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>player_play.png</normaloff>
-         <normalon>player_stop.png</normalon>player_play.png</iconset>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
+       <widget class="QWidget" name="data">
+        <attribute name="title">
+         <string>Data</string>
+        </attribute>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>45</x>
+           <y>6</y>
+           <width>50</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>T (K)</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="Tc">
+         <property name="geometry">
+          <rect>
+           <x>101</x>
+           <y>6</y>
+           <width>176</width>
+           <height>47</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>DejaVu Sans</family>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLineEdit:enabled { color: rgb(25,25,112); font: bold 20pt &quot;DejaVu Sans&quot;; }
+QLineEdit:!enabled { color: rgb(169,169,169); font: bold 20pt &quot;DejaVu Sans&quot;; }
+</string>
+         </property>
+         <property name="text">
+          <string>300.00</string>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_3">
+         <property name="geometry">
+          <rect>
+           <x>42</x>
+           <y>96</y>
+           <width>53</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>T set (K)</string>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="setTc">
+         <property name="geometry">
+          <rect>
+           <x>101</x>
+           <y>96</y>
+           <width>125</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="frame">
+          <bool>true</bool>
+         </property>
+         <property name="minimum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>320.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="autoModeTc">
+         <property name="geometry">
+          <rect>
+           <x>6</x>
+           <y>133</y>
+           <width>117</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Auto T control</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>32</x>
+           <y>160</y>
+           <width>63</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Power (W)</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="Wc">
+         <property name="geometry">
+          <rect>
+           <x>101</x>
+           <y>160</y>
+           <width>137</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>0.000</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_15">
+         <property name="geometry">
+          <rect>
+           <x>6</x>
+           <y>197</y>
+           <width>89</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set Power (W)</string>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="setWc">
+         <property name="geometry">
+          <rect>
+           <x>101</x>
+           <y>197</y>
+           <width>133</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="frame">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="minimum">
+          <double>0.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="dTcdt">
+         <property name="geometry">
+          <rect>
+           <x>101</x>
+           <y>59</y>
+           <width>137</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_32">
+         <property name="geometry">
+          <rect>
+           <x>24</x>
+           <y>59</y>
+           <width>71</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>dT/dt (K/m)</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="parameters">
+        <attribute name="title">
+         <string>Parameters</string>
+        </attribute>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Gain (W/K)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="gain">
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>0.000010000000000</double>
+           </property>
+           <property name="maximum">
+            <double>100.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
+           <property name="value">
+            <double>0.010000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Ti (s)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="Ti">
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="minimum">
+            <double>0.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="value">
+            <double>10.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Td (s)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="Td">
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="minimum">
+            <double>0.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="value">
+            <double>10.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Tr (s)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QDoubleSpinBox" name="Tr">
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="minimum">
+            <double>0.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="value">
+            <double>10.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>beta</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QDoubleSpinBox" name="beta">
+           <property name="decimals">
+            <number>3</number>
+           </property>
+           <property name="minimum">
+            <double>0.001000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_16">
+           <property name="text">
+            <string>Max Power (W)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QDoubleSpinBox" name="maxPower">
+           <property name="decimals">
+            <number>1</number>
+           </property>
+           <property name="minimum">
+            <double>0.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>100.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>20.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="autotune">
+        <attribute name="title">
+         <string>Autotune</string>
+        </attribute>
+        <layout class="QFormLayout" name="formLayout_3">
+         <item row="0" column="0" colspan="2">
+          <widget class="QCheckBox" name="autoTune">
+           <property name="text">
+            <string>Start Relay Autotuning</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>du (W)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="relayStep">
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>0.001000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
+           <property name="value">
+            <double>0.100000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>dT (K)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="relayThreshold">
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>0.001000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
+           <property name="value">
+            <double>0.100000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_14">
+           <property name="text">
+            <string>Results:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>Kc (W/K)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLabel" name="tunerKc">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::WinPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>Tc (s)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLabel" name="tunerTc">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::WinPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer">
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>FOPDT model</string>
+       </property>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>K (K/W)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="Kp">
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>0.001000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>Tp</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="Tp">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+          <property name="value">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_18">
+          <property name="text">
+           <string>Td</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="foTd">
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>20</width>
+         <height>40</height>
         </size>
        </property>
       </spacer>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="y1">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>u</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="y">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>y1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>t    </string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="t">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="u">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>y</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>dydt</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLineEdit" name="dydt">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="btClear">
+         <property name="text">
+          <string>Clear</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
    <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>63</height>
-      </size>
-     </property>
-    </spacer>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QDaqPlotWidget" name="plotTvst">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>300</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="title">
+        <string>Temperature</string>
+       </property>
+       <property name="xlabel" stdset="0">
+        <string>time</string>
+       </property>
+       <property name="ylabel" stdset="0">
+        <string>K</string>
+       </property>
+       <property name="timeScaleX">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDaqPlotWidget" name="plotWvst">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>300</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="title">
+        <string>Heater Power</string>
+       </property>
+       <property name="xlabel" stdset="0">
+        <string>time</string>
+       </property>
+       <property name="ylabel" stdset="0">
+        <string>Watt</string>
+       </property>
+       <property name="timeScaleX">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QDaqPlotWidget</class>
+   <extends>QwtPlot</extends>
+   <header>QDaqPotWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
