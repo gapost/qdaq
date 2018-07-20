@@ -163,8 +163,12 @@ function createUi()
 }
 
 function clearPressed() {
+    qdaq.mainLoop.disarm();
     qdaq.mainLoop.dataLoop.bfData.clear();
     qdaq.mainLoop.t.push(0);
+    qdaq.mainLoop.tempCtrlLoop.arm();
+    qdaq.mainLoop.dataLoop.arm();
+    qdaq.mainLoop.arm();
 }
 
 function startPressed(on) {

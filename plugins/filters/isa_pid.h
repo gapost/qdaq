@@ -1,12 +1,21 @@
 #ifndef _ISA_PID_H_
 #define _ISA_PID_H_
 
+/*
+ * GA, July 2018
+ *
+ * Removed the "tracking" and "bumpless param change" options
+ * They were causing problems in automatic annealing program
+ *
+ */
+
 template<class T>
 class isa_pid
 {
+public:
 	T h; // sampling time
 
-	// loop parameters
+    // loop parameters
 	T k, // gain
 	  ti, // integration time
 	  td, // diff. time
@@ -26,7 +35,6 @@ class isa_pid
 
 	// internal constants
 	T a1,a2,b1,b2;
-	bool param_changed;
 
 	T limitOut(T u)
 	{
@@ -46,17 +54,15 @@ class isa_pid
 		// D term. if td=0 b1=b2=0
 		b1 = td/(td + N*h);
 		b2 = k*N*b1;
-
-		param_changed = true;
 	}
 
-public:
+
 
     isa_pid(T ats = 1) : h(ats), k(1), ti(0), td(0), tr(0), b(1), N(5), umin(0), umax(1)
 	{
 		update_par();
-		ui = ud = pvp = cvp = 0;
-		atp = false;
+        ui = ud = pvp = cvp = 0;
+        atp = false;
 	}
 
 	~isa_pid(void)
@@ -69,40 +75,23 @@ public:
 		// compute control actions
 
 		// P term
-		T up = k*(b*sp - pv);
+        T up = k*(b*sp - pv);
 
 		// D term
 		ud = b1*ud - b2*(pv-pvp);
 
-		// ensure bumpless switch after a change in the regulator parameters
-		if (param_changed)
-		{
-			// ensure constant I term after change (only if I action is used)
-			ui = (a1>T(0)) ? cvp - up - ud : 0;
-			// reset flag
-			param_changed = false;
-		}
-
-		if (automode && !atp && a1<=T(0)) 
-		{
-			ui = 0;
+        if (automode && !atp) // auto switched on
+        { // reset the state
+            ui = ud = 0;
 		}
 
 		T v = up + ui + ud;
 		T u = limitOut(v);
 		
-		if (automode)
-		{
-			// automatic regulation
-			cv = u;
-			// update integrator 
-            ui += a1*(sp-pv) + a2*(u-v);
-		}
-        else
-		{
-			// manual mode, just update integrator
-            ui = cv - up - ud;
-		}
+        if (automode) cv = u;
+
+        // update integrator
+        ui += a1*(sp-pv) + a2*(cv-v);
 
 		// save status
 		pvp = pv; cvp = cv; atp = automode;
