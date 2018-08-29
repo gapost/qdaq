@@ -219,6 +219,17 @@ public:
     // helper function neede for building the tree string representation
 	void objectTree(QString& S, int level) const;
 
+    /** Return a pointer to an object given its full path in the QDaq tree.
+     *
+     * If the specified path is invalid the function returns a null pointer.
+     *
+     */
+    static QDaqObject* fromPath(const QString& path);
+
+public slots:
+
+    /// Print a backtrace of recent errors in this QDaqObject
+    QString errorBacktrace(int maxItems = 10) const;
     /** Return the object's path in the QDaq tree.
      *
      * Example: qdaq.x.y.z.obj1
@@ -227,16 +238,6 @@ public:
      *
      */
     QString path() const;
-
-    static QDaqObject* findByName(const QString& name);
-    static QDaqObjectList findByWildcard(const QString& wildcard, const QDaqObject* from = 0);
-
-public slots:
-
-    /// Print a backtrace of recent errors in this QDaqObject
-    QString errorBacktrace(int maxItems = 10) const;
-	/// Print a string representation of the object
-    // QString toString() const;
     /// Output in a string the object hierarchy beneath this object.
 	QString objectTree() const
 	{
@@ -278,11 +279,10 @@ public slots:
     QDaqObject* removeChild(QDaqObject* obj);
     /// Replace a child and return a pointer to the old child.
     QDaqObject* replaceChild(QDaqObject* newobj, QDaqObject* oldobj);
-    /// Find objects by a wildcard string wc
-    QDaqObjectList find(const QString& wc) const
-    {
-        return QDaqObject::findByWildcard(wc,this);
-    }
+
+    /** Find the first child QDaqObject with objectName equal to name.
+     *
+     */
     QDaqObject* findChild(const QString& name) const
     {
         // this function overrides Qt's default findChild

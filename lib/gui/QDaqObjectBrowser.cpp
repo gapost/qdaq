@@ -67,7 +67,7 @@ void QDaqObjectBrowser::onItemActivated(const QModelIndex &index)
 void QDaqObjectBrowser::onSetByUser()
 {
     QString str = currentObject->text();
-    QDaqObject* obj = QDaqObject::findByName(str);
+    QDaqObject* obj = QDaqObject::fromPath(str);
     if (!obj) return;
     QModelIndex index = model->index(obj);
     treeView->setCurrentIndex(index);

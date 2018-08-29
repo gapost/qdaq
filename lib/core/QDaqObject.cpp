@@ -172,59 +172,27 @@ QString QDaqObject::path() const
 	return name;
 }
 
-QDaqObject* QDaqObject::findByName(const QString& name)
+QDaqObject* QDaqObject::fromPath(const QString& path)
 {
-	QStringList tokens = name.split('.');
-	if (tokens.isEmpty()) return 0;
+    QStringList tokens = path.split('.');
+    if (tokens.isEmpty()) return 0;
 
     QDaqObject* o = root();
 
     if (tokens.front()=="qdaq")
-	{
-		tokens.pop_front();
-		if (tokens.isEmpty()) return o;
-	}
+    {
+        tokens.pop_front();
+        if (tokens.isEmpty()) return o;
+    }
 
-	do
-	{
-		QString str = tokens.front();
-		tokens.pop_front();
-		QDaqObject* child = 0;
-        foreach(QDaqObject* p, o->children_)
-		{
-            if (p->objectName()==str)
-			{
-				child = p;
-				break;
-			}
-		}
-		o = child;
-	}
-	while (!tokens.isEmpty() && o);
-	return o;
-}
-
-void findByWildcardHelper(const QRegExp& rx, QDaqObjectList& lst, const QDaqObject* from)
-{
-    foreach(QDaqObject* o, from->children())
-	{
-        if (rx.exactMatch(o->path())) lst.push_back(o);
-        findByWildcardHelper(rx,lst,o);
-	}
-}
-
-QDaqObjectList QDaqObject::findByWildcard(const QString& wildcard, const QDaqObject *from)
-{
-    QDaqObjectList lst;
-
-    if (from==0) from = root();
-
-	QRegExp rx(wildcard);
-	rx.setPatternSyntax(QRegExp::Wildcard);
-
-	findByWildcardHelper(rx, lst, from);
-
-	return lst;
+    do
+    {
+        QString str = tokens.front();
+        tokens.pop_front();
+        o = o->findChild(str);
+    }
+    while (!tokens.isEmpty() && o);
+    return o;
 }
 
 void QDaqObject::pushError(const QString& type, const QString& descr) const

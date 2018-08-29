@@ -315,7 +315,7 @@ QModelIndex QDaqObjectModel::index(const QDaqObject* obj, int column) const
 
 QModelIndex QDaqObjectModel::index(const QString &path, int column) const
 {
-    QDaqObject* obj = QDaqObject::findByName(path);
+    QDaqObject* obj = QDaqObject::fromPath(path);
     return index(obj,column);
 }
 
