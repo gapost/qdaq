@@ -21,11 +21,6 @@
 #include <QListWidget>
 #include <QThread>
 
-
-
-
-
-
 QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject* metaObject)
 {
 	QString name;
@@ -38,8 +33,6 @@ QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScrip
 		return QScriptValue();
 	}
     QDaqObject* obj = QDaqObject::root()->createObject(name,metaObject->className());
-
-    if (obj) obj->registerTypes(engine);
 
     if (context->isCalledAsConstructor())
     {

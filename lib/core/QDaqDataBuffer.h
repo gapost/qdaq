@@ -50,8 +50,6 @@ class QDAQ_EXPORT QDaqDataBuffer : public QDaqJob
     /// A list of column names.
     Q_PROPERTY(QStringList columnNames READ columnNames)
 
-	Q_ENUMS(BufferType)
-
 protected:
     // typedefs of channel ptr, channel vector, matrix
     typedef QPointer<QDaqChannel> channel_t;
@@ -69,8 +67,7 @@ public:
         Fixed = vector_t::Fixed, /**< The buffer capacity is fixed. When the buffer becomes full new data is discarded. */
         Circular = vector_t::Circular /**< The buffer capacity is fixed and new data overwrite old data. */
 	};
-
-	virtual void registerTypes(QScriptEngine *e);
+    Q_ENUM(BufferType)
 
 protected:
     virtual void writeh5(H5::Group* h5g) const;

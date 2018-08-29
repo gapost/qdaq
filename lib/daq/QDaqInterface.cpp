@@ -1,4 +1,3 @@
-#include "QDaqEnumHelper.h"
 #include "QDaqInterface.h"
 #include "QDaqDevice.h"
 
@@ -198,12 +197,6 @@ void QDaqTcpip::close_()
 
 ////////////////// QDaqSerial //////////////////////
 
-Q_SCRIPT_ENUM(BaudRate, QSerialPort)
-Q_SCRIPT_ENUM(Parity, QSerialPort)
-Q_SCRIPT_ENUM(DataBits, QSerialPort)
-Q_SCRIPT_ENUM(StopBits, QSerialPort)
-Q_SCRIPT_ENUM(FlowControl, QSerialPort)
-
 QDaqSerial::QDaqSerial(const QString &name, const QString &portName) :
     QDaqInterface(name)
 {
@@ -211,16 +204,6 @@ QDaqSerial::QDaqSerial(const QString &name, const QString &portName) :
 
     ports_.push_back((QDaqDevice*)0); // only 1 device
 
-}
-
-void QDaqSerial::registerTypes(QScriptEngine* e)
-{
-    qScriptRegisterBaudRate(e);
-    qScriptRegisterParity(e);
-    qScriptRegisterDataBits(e);
-    qScriptRegisterStopBits(e);
-    qScriptRegisterFlowControl(e);
-    QDaqInterface::registerTypes(e);
 }
 
 void QDaqSerial::setPortName(const QString &aname)

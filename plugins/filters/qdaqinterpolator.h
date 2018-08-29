@@ -17,7 +17,7 @@ class FILTERSSHARED_EXPORT QDaqInterpolator :
     Q_INTERFACES(QDaqFilterPlugin)
 
     Q_PROPERTY(InterpolationType type READ type WRITE setType)
-    Q_ENUMS(InterpolationType)
+
 
 public:
     enum InterpolationType {
@@ -26,6 +26,7 @@ public:
         Polynomial,
         CubicSpline
     };
+    Q_ENUM(InterpolationType)
 
 protected:
     InterpolationType type_;
@@ -49,8 +50,6 @@ public:
 
     InterpolationType type() const { return type_; }
     void setType(InterpolationType t);
-
-    virtual void registerTypes(QScriptEngine* e);
 
 public slots:
     void setTable(const QDaqVector &x, const QDaqVector &y);

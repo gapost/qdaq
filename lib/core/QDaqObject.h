@@ -219,14 +219,6 @@ public:
     // helper function neede for building the tree string representation
 	void objectTree(QString& S, int level) const;
 
-    /** Register this QDaqObject's types with a QScriptEngine.
-     *
-     * This funtion is called when the QDaqObject is exposed to a script engine
-     * and is used to register specific types needed by the object (enums etc).
-     *
-     */
-	virtual void registerTypes(QScriptEngine* eng) { Q_UNUSED(eng); }
-
     /** Return the object's path in the QDaq tree.
      *
      * Example: qdaq.x.y.z.obj1

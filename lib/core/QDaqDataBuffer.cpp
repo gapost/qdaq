@@ -4,16 +4,6 @@
 #include <QCoreApplication>
 #include <QVariant>
 
-#include "QDaqEnumHelper.h"
-
-Q_SCRIPT_ENUM(BufferType,QDaqDataBuffer)
-
-void QDaqDataBuffer::registerTypes(QScriptEngine* e)
-{
-	qScriptRegisterBufferType(e);
-    QDaqJob::registerTypes(e);
-}
-
 QDaqDataBuffer::QDaqDataBuffer(const QString &name) : QDaqJob(name)
 {
     connect(this,SIGNAL(dataReady()),this,SLOT(onDataReady()),Qt::QueuedConnection);

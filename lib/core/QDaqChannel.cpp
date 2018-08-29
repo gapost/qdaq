@@ -2,11 +2,6 @@
 
 #include <muParser.h>
 
-#include "QDaqEnumHelper.h"
-Q_SCRIPT_ENUM(AveragingType,QDaqChannel)
-Q_SCRIPT_ENUM(NumberFormat,QDaqChannel)
-Q_SCRIPT_ENUM(ChannelType,QDaqChannel)
-
 QDaqChannel::QDaqChannel(const QString& name) :
     QDaqJob(name),
     channeltype_(Normal),
@@ -36,13 +31,6 @@ void QDaqChannel::detach()
     QDaqJob::detach();
 }
 
-void QDaqChannel::registerTypes(QScriptEngine* e)
-{
-	qScriptRegisterAveragingType(e);
-	qScriptRegisterNumberFormat(e);
-    qScriptRegisterChannelType(e);
-    QDaqJob::registerTypes(e);
-}
 void QDaqChannel::setType(ChannelType t)
 {
     //if (throwIfArmed()) return;

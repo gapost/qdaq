@@ -1,8 +1,5 @@
 #include "qdaqinterpolator.h"
 
-#include "QDaqEnumHelper.h"
-Q_SCRIPT_ENUM(InterpolationType, QDaqInterpolator)
-
 #include <QFile>
 #include <QTextStream>
 
@@ -28,12 +25,6 @@ QDaqInterpolator::~QDaqInterpolator(void)
 {
     if (interpolator_) gsl_interp_free (interpolator_);
     gsl_interp_accel_free (accel_);
-}
-
-void QDaqInterpolator::registerTypes(QScriptEngine* e)
-{
-    qScriptRegisterInterpolationType(e);
-    QDaqJob::registerTypes(e);
 }
 
 bool QDaqInterpolator::init()

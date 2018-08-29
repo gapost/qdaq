@@ -272,8 +272,6 @@ public:
      */
     explicit QDaqSerial(const QString& name, const QString& portName = QString());
 
-    virtual void registerTypes(QScriptEngine* e);
-
     // getters
     QString portName() const { return port_->portName(); }
     QSerialPort::BaudRate baud() const { return (QSerialPort::BaudRate)port_->baudRate(); }

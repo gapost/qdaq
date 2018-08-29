@@ -74,7 +74,6 @@ HEADERS  += \
     gui/QDaqConsole.h \
     core/QDaqLogFile.h \
     core/QDaqChannel.h \
-    core/QDaqEnumHelper.h \
     core/QDaqDataBuffer.h \
     gui/QDaqObjectBrowser.h \
     gui/QDaqObjectController.h \

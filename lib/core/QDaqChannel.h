@@ -84,11 +84,7 @@ class QDAQ_EXPORT QDaqChannel : public QDaqJob
 	If set the expression is executed on the channel data.
 	Note that the data goes first through muParser and then they are scaled with multiplier and offset.
 	*/
-	Q_PROPERTY(QString parserExpression READ parserExpression WRITE setParserExpression)
-
-	Q_ENUMS(AveragingType)
-	Q_ENUMS(NumberFormat)
-    Q_ENUMS(ChannelType)
+	Q_PROPERTY(QString parserExpression READ parserExpression WRITE setParserExpression)    
 
 public:
     /** Type of the channel.
@@ -100,6 +96,7 @@ public:
         Inc,     /**< Starting from an initial value increments by 1 in each repetition. */
         Dec      /**< Starting from an initial value decrements by 1 in each repetition. */
     };
+    Q_ENUM(ChannelType)
 
 	/** Type of channel averaging.
 	*/
@@ -109,6 +106,7 @@ public:
 		Delta, /**< Running average for signals of alternating sign. */
 		ForgettingFactor /**< Running average with forgetting (exponential weighting). */
 	};
+    Q_ENUM(AveragingType)
 
 	/** Type of format for textual representation of channel data.
 	*/
@@ -118,6 +116,7 @@ public:
 		Scientific, /**< No special formating. */
 		Time /**< No special formating. */
 	};
+    Q_ENUM(NumberFormat)
 
 protected:
     ChannelType channeltype_;
@@ -156,8 +155,6 @@ protected:
      * @return always return true.
      */
     virtual bool run();
-
-	virtual void registerTypes(QScriptEngine* e);
 
 	// do the averaging operations in the channel
 	bool average();
