@@ -112,9 +112,17 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
 	engine_->collectGarbage();
 }
-bool QDaqScriptEngine::evaluate(const QString& program, QString& ret)
+bool QDaqScriptEngine::evaluate(const QString& program, QString& ret, QDaqObject* thisObj)
 {
-	QScriptValue result = engine_->evaluate(program);
+    QScriptValue result;
+    if (thisObj) {
+        QScriptContext* ctx = engine_->pushContext();
+        ctx->setThisObject(engine_->toScriptValue(thisObj));
+        result = engine_->evaluate(program);
+        engine_->popContext();
+    }
+    else result = engine_->evaluate(program);
+
 	if (!result.isUndefined()) ret = result.toString();
 	if (engine_->hasUncaughtException()) {
 		QStringList backtrace = engine_->uncaughtExceptionBacktrace();
@@ -129,9 +137,17 @@ bool QDaqScriptEngine::evaluate(const QString& program, QString& ret)
 	return (result.isError()) ? false : true;
 }
 
-bool QDaqScriptEngine::evaluate(const QScriptProgram& program, QString& ret)
+bool QDaqScriptEngine::evaluate(const QScriptProgram& program, QString& ret, QDaqObject* thisObj)
 {
-	QScriptValue result = engine_->evaluate(program);
+    QScriptValue result;
+    if (thisObj) {
+        QScriptContext* ctx = engine_->pushContext();
+        ctx->setThisObject(engine_->toScriptValue(thisObj));
+        result = engine_->evaluate(program);
+        engine_->popContext();
+    }
+    else result = engine_->evaluate(program);
+
 	if (!result.isUndefined()) ret = result.toString();
 	if (engine_->hasUncaughtException())
 	{

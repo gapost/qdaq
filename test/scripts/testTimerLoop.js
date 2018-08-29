@@ -2,7 +2,7 @@ print("Creating Loop");
 
 // create a loop
 var loop = new QDaqLoop("loop");
-loop.period = 1000;
+loop.period = 100;
 // create a loop
 var loop2 = new QDaqLoop("loop2");
 loop2.delay = 2;
@@ -21,13 +21,13 @@ var ch2 = new QDaqChannel("ch2");
 // create a script job
 // that will write to ch2 the square root of ch1
 var scr = new QDaqJob("scr");
-scr.runCode = "var v = qdaq.loop.ch1.value(); sleep(500); qdaq.loop.loop2.ch2.push(Math.sqrt(v));"
+scr.runCode = "var v = qdaq.loop.ch1.value(); sleep(50); this.ch2.push(Math.sqrt(v));"
 // build the object hierarchy under the root object "qdaq"
 loop.appendChild(t);
 loop.appendChild(ch1);
 loop2.appendChild(t2);
+scr.appendChild(ch2);
 loop2.appendChild(scr);
-loop2.appendChild(ch2);
 loop.appendChild(loop2);
 qdaq.appendChild(loop);
 
@@ -38,8 +38,8 @@ print("Tree = \n" + qdaq.objectTree());
 var w = loadTopLevelUi('ui/testTimerForm.ui','mainForm');
 bind(qdaq.loop.t,w.findChild('t'));
 bind(qdaq.loop.loop2.t2,w.findChild('t2'));
-bind(qdaq.loop.ch1,w.findChild('ch1'));
-bind(qdaq.loop.loop2.ch2,w.findChild('ch2'));
+bind(qdaq.findChild('ch1'),w.findChild('ch1'));
+bind(qdaq.findChild('ch2'),w.findChild('ch2'));
 
 function startPressed(on) {
     if (on) qdaq.loop.arm();

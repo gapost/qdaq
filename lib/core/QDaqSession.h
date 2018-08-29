@@ -38,8 +38,8 @@ public:
 
 	bool canEvaluate(const QString&);
 	bool isEvaluating() const;
-	bool evaluate(const QScriptProgram& program, QString& ret);
-	bool evaluate(const QString& program, QString &ret);
+    bool evaluate(const QScriptProgram& program, QString& ret, QDaqObject* thisObj = 0);
+    bool evaluate(const QString& program, QString &ret, QDaqObject* thisObj = 0);
 	void abortEvaluation();
 
 public slots:

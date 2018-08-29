@@ -44,7 +44,7 @@ bool QDaqJob::run()
             pushError("Loop script engine not available");
             return false;
         }
-        if (!loop_eng_->evaluate(*program_,msg))
+        if (!loop_eng_->evaluate(*program_,msg,this))
         {
             pushError("Error executing script job",msg);
             return false;
@@ -77,7 +77,7 @@ bool QDaqJob::arm_()
     {
         QDaqScriptEngine* eng = (QDaqScriptEngine*)(root()->rootSession());
         QString retMsg;
-        bool ret = eng->evaluate(armCode_,retMsg);
+        bool ret = eng->evaluate(armCode_,retMsg,this);
         if (!ret)
         {
             throwScriptError(retMsg);
@@ -100,7 +100,7 @@ void QDaqJob::disarm_()
     {
         QDaqScriptEngine* eng = (QDaqScriptEngine*)(root()->rootSession());
         QString retMsg;
-        bool ret = eng->evaluate(disarmCode_,retMsg);
+        bool ret = eng->evaluate(disarmCode_,retMsg,this);
         if (!ret)
         {
             throwScriptError(retMsg);
@@ -244,14 +244,15 @@ bool QDaqLoop::exec()
 {
     if (!armed() || aborted_) return true;
 
-    // check time for loop statistics
-    t_[1] = (float)clock_.sec();
+
 
     bool ret = true;
     comm_lock.lock();
     if (delay_counter_) delay_counter_--;
     if (delay_counter_ == 0) // loop executes
     {
+        // check time for loop statistics
+        t_[1] = (float)clock_.sec();
         // Lock  subjobs
         subjobs_.lock();
         // call base-class exec
@@ -265,6 +266,10 @@ bool QDaqLoop::exec()
 
         emit propertiesChanged();
         emit updateWidgets();
+
+        // loop statistics
+        perfmon[0] << (t_[1] - t_[0])*1000; t_[0] = t_[1];
+        perfmon[1] << ((float)clock_.sec() - t_[1])*1000;
     }
     comm_lock.unlock();
 
@@ -275,9 +280,7 @@ bool QDaqLoop::exec()
         emit abort();
     }
 
-    // loop statistics
-    perfmon[0] << (t_[1] - t_[0])*1000; t_[0] = t_[1];
-    perfmon[1] << ((float)clock_.sec() - t_[1])*1000;
+
 
     // loop always return true.
     return true;
