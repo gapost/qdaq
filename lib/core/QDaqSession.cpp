@@ -318,6 +318,11 @@ QString QDaqSession::textLoad(const QString &fname)
     return str;
 }
 
+void QDaqSession::beep()
+{
+    QApplication::beep();
+}
+
 void QDaqSession::quit()
 {
     emit endSession();

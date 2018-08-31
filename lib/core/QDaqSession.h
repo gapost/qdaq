@@ -86,6 +86,7 @@ public slots:
     void wait(uint ms);
     void textSave(const QString& str, const QString& fname);
     QString textLoad(const QString& fname);
+    void beep();
 
     bool h5write(const QDaqObject* obj, const QString& fname);
     QDaqObject*  h5read(const QString& fname);
