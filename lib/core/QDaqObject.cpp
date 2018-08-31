@@ -19,7 +19,7 @@ const char* QDaq::QtVersion() { return QT_VERSION_STR; }
 
 
 QDaqObject::QDaqObject(const QString& name) :
-QObject(0)
+QObject(0), comm_lock(QMutex::Recursive)
 {
     setObjectName(name);
     qDebug() << "QDaqObject constructor" << path() << "@" << (void*)this;

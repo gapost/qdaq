@@ -22,7 +22,7 @@ void QDaqDevice::detach()
 void QDaqDevice::setOnline(bool on)
 {
 	if (throwIfArmed()) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 	if (on!=online_)
 	{
 		setOnline_(on);
@@ -55,7 +55,7 @@ bool QDaqDevice::setOnline_(bool on)
 }
 void QDaqDevice::forcedOffline(const QString& reason)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     if (armed()) disarm_();// forcedDisarm(reason);
 	if (online_) 
 	{
@@ -67,7 +67,7 @@ void QDaqDevice::forcedOffline(const QString& reason)
 void QDaqDevice::setBufferSize(unsigned int sz)
 {
 	if (throwIfArmed()) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     buff_.resize(sz);
     buff_sz_ = sz;
 	emit propertiesChanged();
@@ -75,20 +75,20 @@ void QDaqDevice::setBufferSize(unsigned int sz)
 void QDaqDevice::setAddress(int a)
 {
 	if (throwIfOnline()) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 	addr_ = a;
 	emit propertiesChanged();
 }
 void QDaqDevice::setEot(int e)
 {
 	if (throwIfArmed()) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 	eot_ = e;
 }
 void QDaqDevice::setEos(int e)
 {
 	if (throwIfArmed()) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 	eos_ = e;
 }
 void QDaqDevice::setInterface(QDaqObject* o)
@@ -132,7 +132,7 @@ bool QDaqDevice::arm_()
 // io
 int QDaqDevice::write(const char* msg, int len)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     int ret = ifc_->write(addr_, msg, len, eot_);
 	//if (!ret && armed_) forcedDisarm(QString("Write to device %1 failed").arg(path()));
 	checkError(msg,len);
@@ -148,7 +148,7 @@ int QDaqDevice::write(const QByteArray& msg)
 }
 bool QDaqDevice::write(const QList<QByteArray>& msglist)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 	foreach(const QByteArray& msg, msglist)
 	{
         if (msg.size() != write(msg)) return false;
@@ -179,7 +179,7 @@ int QDaqDevice::writeBytes(const QByteArray& msg)
 int QDaqDevice::write(int reg, int val) // write
 {
     if (throwIfOffline()) return 0;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     unsigned short b = val;
     int ret = ifc_->write(reg, (const char *)(&b), sizeof(b), eot_);
     return ret;
@@ -193,7 +193,7 @@ int QDaqDevice::write(int start_reg, int n, const QByteArray& msg) // write
 
     if (throwIfOffline()) return 0;
 
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     int ret = ifc_->write(start_reg, msg.constData(), 2*n, eot_);
     return ret;
 }
@@ -201,7 +201,7 @@ int QDaqDevice::write(int start_reg, int n, const QByteArray& msg) // write
 QByteArray QDaqDevice::readBytes()
 {
     if (throwIfOffline()) return QByteArray();
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     buff_.resize(buff_sz_);
     char* mem = buff_.data();
     int cnt =  ifc_->read(addr_,mem,buff_sz_,eos_);
@@ -219,7 +219,7 @@ int QDaqDevice::read(int reg)
 {
     if (throwIfOffline()) return 0;
 
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     unsigned short b = 0;
     ifc_->read(reg,(char *)(&b),sizeof(b),eos_);
@@ -230,7 +230,7 @@ int QDaqDevice::read(int reg)
 QByteArray QDaqDevice::read(int reg, int n)
 {
     if (throwIfOffline()) return QByteArray();
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     buff_.resize(2*n);
     char* mem = buff_.data();
     int cnt = ifc_->read(reg,mem,2*n,eos_);
@@ -242,7 +242,7 @@ QString QDaqDevice::query(const QString& msg)
 {
 	//if (throwIfArmed()) return QString();
 	if (throwIfOffline()) return QString();
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     write(msg);
     return read();
 }

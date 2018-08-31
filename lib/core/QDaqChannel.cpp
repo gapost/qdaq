@@ -46,7 +46,7 @@ void QDaqChannel::setType(ChannelType t)
     if (channeltype_ != t)
     {
         {
-            os::auto_lock L(comm_lock);
+            QMutexLocker L(&comm_lock);
             channeltype_ = t;
             if (t==Clock) setFormat(Time);
         }
@@ -71,19 +71,19 @@ void QDaqChannel::setRange(const QDaqVector &v)
         QDaqVector myv ( v );
 		if (v[1]<v[0]) { myv[0] = v[1]; myv[1] = v[0]; }
 		// set the range
-        os::auto_lock L(comm_lock);
+        QMutexLocker L(&comm_lock);
 		range_ = myv;
 		emit propertiesChanged();
 	}
 }
 void QDaqChannel::setOffset(double v)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 	offset_ = v;
 }
 void QDaqChannel::setMultiplier(double v)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 	multiplier_ = v;
 }
 void QDaqChannel::setAveraging(AveragingType t)
@@ -101,7 +101,7 @@ void QDaqChannel::setAveraging(AveragingType t)
 	if (type_ != t)
 	{
 		{
-            os::auto_lock L(comm_lock);
+            QMutexLocker L(&comm_lock);
 			type_ = t;
 		}
 		emit propertiesChanged();
@@ -112,7 +112,7 @@ void QDaqChannel::setDepth(uint d)
 	if ((d!=depth_) && d>0)
 	{
 		{
-            os::auto_lock L(comm_lock);
+            QMutexLocker L(&comm_lock);
 			depth_ = d;
 			buff_.alloc(d);
 			ffw_ = 1. / (1. - pow(ff_,(int)d));
@@ -272,7 +272,7 @@ QString QDaqChannel::formatedValue()
 
 void QDaqChannel::clear()
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 	counter_ = 0;
 	dataReady_ = false;
 }
@@ -287,7 +287,7 @@ void QDaqChannel::setForgettingFactor(double v)
 {
 	if (v!=ff_ && v>0. && v<1.)
 	{
-        os::auto_lock L(comm_lock);
+        QMutexLocker L(&comm_lock);
 		ff_ = v;
 		ffw_ = 1./(1. - pow(ff_,(int)depth_));
 		emit propertiesChanged();
@@ -297,7 +297,7 @@ void QDaqChannel::setParserExpression(const QString& s)
 {
 	if (s!=parserExpression())
 	{
-        os::auto_lock L(comm_lock);
+        QMutexLocker L(&comm_lock);
 
 		if (s.isEmpty())
 		{
@@ -328,7 +328,7 @@ void QDaqFilterChannel::setInputChannel(QDaqObject* obj)
     QDaqChannel* ch = qobject_cast<QDaqChannel*>(obj);
     if (ch)
     {
-        os::auto_lock L(comm_lock);
+        QMutexLocker L(&comm_lock);
         inputChannel_ = ch;
         emit propertiesChanged();
     }

@@ -57,7 +57,8 @@ SOURCES += \
     core/bytearrayclass.cpp \
     core/bytearrayprototype.cpp \
     daq/QDaqGpib.cpp \
-    core/QDaqFilter.cpp
+    core/QDaqFilter.cpp \
+    core/qtimerthread.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -65,9 +66,6 @@ HEADERS  += \
     core/QDaqGlobal.h \
     core/QDaqRoot.h \
     core/QDaqTypes.h \
-    core/os_utils.h \
-    core/os_utils_linux.h \
-    core/os_utils_win32.h \
     core/QDaqJob.h \
     core/math_util.h \
     gui/QConsoleWidget.h \
@@ -96,7 +94,8 @@ HEADERS  += \
     daq/QDaqGpibPlugin.h \
     core/QDaqFilter.h \
     core/QDaqFilterPlugin.h \
-    core/qdaqpluginloader.h
+    core/qdaqpluginloader.h \
+    core/qtimerthread.h
 
 
 ## JSedit

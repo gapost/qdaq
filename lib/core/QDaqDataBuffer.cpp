@@ -18,7 +18,7 @@ void QDaqDataBuffer::setBackBufferDepth(uint d)
 {
     if (d>0)
 	{
-        os::auto_lock L(comm_lock);
+        QMutexLocker L(&comm_lock);
 
         // depth should be power of 2
         uint n = 1;
@@ -71,7 +71,7 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
 		}
 	}
 
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
 	// clear previous channels
 	channel_objects.clear();
@@ -148,7 +148,7 @@ void QDaqDataBuffer::onDataReady()
     int nread = 0;
     // locked code
     {
-        os::auto_lock L(comm_lock);
+        QMutexLocker L(&comm_lock);
 
         nread = usedPackets_.available();
 
@@ -213,7 +213,7 @@ void QDaqDataBuffer::clear()
 }
 void QDaqDataBuffer::push(const QDaqVector &v)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     if (v.size()!=data_matrix.size()) return;
 

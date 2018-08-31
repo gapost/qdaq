@@ -3,9 +3,11 @@
 
 #include "QDaqObject.h"
 #include "math_util.h"
+#include "qtimerthread.h"
 
 #include <QPointer>
 #include <QAtomicInt>
+#include <QElapsedTimer>
 
 class QDaqScriptEngine;
 class QScriptProgram;
@@ -332,10 +334,16 @@ protected:
     virtual bool arm_();
     virtual void disarm_();
 
-    // OS timer thread
-    typedef os::timer<QDaqLoop> timer_t;
-    friend class os::timer<QDaqLoop>;
-    timer_t thread_;
+    // the timer thread
+    class LoopTimerThread : public QTimerThread
+    {
+    protected:
+        virtual void timer_func() { thisLoop->exec(); }
+    public:
+        QDaqLoop* thisLoop;
+    };
+
+    LoopTimerThread thread_;
 
     // the () operator is defined for the timer thread
     bool operator()() { return exec(); }
@@ -345,7 +353,6 @@ protected:
     // perfmon[1] : average loop load-time (ms)
     typedef math::running_average<float,10> perfmon_t;
     perfmon_t perfmon[2];
-    os::stopwatch clock_;
     float t_[2];
 
 public:

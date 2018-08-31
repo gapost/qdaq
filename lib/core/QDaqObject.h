@@ -8,10 +8,9 @@
 #include <QSet>
 #include <QMetaType>
 #include <QScriptable>
+#include <QMutex>
 
 #include "QDaqGlobal.h"
-
-#include "os_utils.h"
 
 namespace H5
 {
@@ -164,8 +163,8 @@ protected:
     virtual void childEvent ( QChildEvent * event );
 
 public:
-    /// A critical section for synching thread access to this object
-    os::critical_section comm_lock;
+    /// A recursive mutex for synching thread access to this object
+    QMutex comm_lock;
 
 protected:
     // the root object

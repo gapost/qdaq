@@ -52,14 +52,14 @@ bool QDaqInterface::throwIfOpen()
 bool QDaqInterface::open_port(uint i, QDaqDevice* dev)
 {
 	if (!isOpen_) return false;
-	os::auto_lock L(comm_lock);
+	QMutexLocker L(&comm_lock);
 	if (!isValidPort(i) || ports_[i]!=0) return false;
 	else { ports_[i] = dev; return true; }
 }
 
 void QDaqInterface::close_port(uint i)
 {
-	os::auto_lock L(comm_lock);
+	QMutexLocker L(&comm_lock);
 	if (isValidPort(i)) ports_[i]=0;
 }
 
@@ -83,7 +83,7 @@ int QDaqInterface::write(uint port, const char* buff, int len, int eos)
 
 void QDaqInterface::close_()
 {
-	os::auto_lock L(comm_lock);
+	QMutexLocker L(&comm_lock);
 	if (!isOpen()) return;
 	for(int i=0; i<ports_.size(); ++i)
 	{
@@ -137,7 +137,7 @@ void QDaqTcpip::setHost(const QString& h)
 
 int QDaqTcpip::read(uint port, char* buff, int len, int eos)
 {
-	os::auto_lock L(comm_lock);
+	QMutexLocker L(&comm_lock);
 
 	port=port;
 	eos=eos;
@@ -155,7 +155,7 @@ int QDaqTcpip::read(uint port, char* buff, int len, int eos)
 
 int QDaqTcpip::write(uint port, const char* buff, int len, int eos)
 {
-	os::auto_lock L(comm_lock);
+	QMutexLocker L(&comm_lock);
 
 	port=port;
 	eos=eos;
@@ -176,7 +176,7 @@ bool QDaqTcpip::open_()
 {
     if (isOpen() && socket_->is_connected()) return true;
 
-	os::auto_lock L(comm_lock);
+	QMutexLocker L(&comm_lock);
 
     bool ret = socket_->connect(host_.toString().toLatin1().constData(), port_)!=-1;
     if (ret) QDaqInterface::open_();
@@ -190,7 +190,7 @@ bool QDaqTcpip::open_()
 
 void QDaqTcpip::close_()
 {
-	os::auto_lock L(comm_lock);
+	QMutexLocker L(&comm_lock);
     QDaqInterface::close_();
     socket_->disconnect();
 }
@@ -264,7 +264,7 @@ void QDaqSerial::setHandshake(QSerialPort::FlowControl v)
 
 int QDaqSerial::read(uint port, char* buff, int len, int eos)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     port=port;
 
@@ -294,7 +294,7 @@ int QDaqSerial::read(uint port, char* buff, int len, int eos)
 
 int QDaqSerial::write(uint port, const char* buff, int len, int eos)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     port=port;
 
@@ -316,7 +316,7 @@ int QDaqSerial::write(uint port, const char* buff, int len, int eos)
 bool QDaqSerial::open_()
 {
     if (isOpen()) return true;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     if (port_->open(QIODevice::ReadWrite))
         QDaqInterface::open_();
@@ -327,14 +327,14 @@ bool QDaqSerial::open_()
 
 void QDaqSerial::close_()
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     QDaqInterface::close_();
     port_->close();
 }
 
 void QDaqSerial::clear_()
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     if (port_->isOpen()) port_->flush();
 }
 
@@ -354,7 +354,7 @@ bool QDaqModbusTcp::open_()
 {
     if (isOpen() && ctx_) return true;
 
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     /* TCP */
     modbus_t* ctx = modbus_new_tcp(host().toLatin1().constData(), port_);
@@ -387,7 +387,7 @@ bool QDaqModbusTcp::open_()
 
 void QDaqModbusTcp::close_()
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     QDaqInterface::close_();
     /* Close the connection */
     if (ctx_) {
@@ -401,7 +401,7 @@ void QDaqModbusTcp::close_()
 
 int QDaqModbusTcp::read(uint port, char* buff, int len, int eos)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     modbus_t* ctx = (modbus_t*)ctx_;
 
@@ -419,7 +419,7 @@ int QDaqModbusTcp::read(uint port, char* buff, int len, int eos)
 
 int QDaqModbusTcp::write(uint port, const char* buff, int len, int eos)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     modbus_t* ctx = (modbus_t*)ctx_;
 
@@ -450,7 +450,7 @@ bool QDaqModbusRtu::open_()
 {
     if (isOpen() && ctx_) return true;
 
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     const char* device = portName().toLatin1().constData();
     int baud_ = (int)(this->baud());
@@ -481,7 +481,7 @@ bool QDaqModbusRtu::open_()
 
 void QDaqModbusRtu::close_()
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     QDaqInterface::close_();
     /* Close the connection */
     if (ctx_) {
@@ -495,7 +495,7 @@ void QDaqModbusRtu::close_()
 
 int QDaqModbusRtu::read(uint port, char* buff, int len, int eos)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     modbus_t* ctx = (modbus_t*)ctx_;
 
@@ -513,7 +513,7 @@ int QDaqModbusRtu::read(uint port, char* buff, int len, int eos)
 
 int QDaqModbusRtu::write(uint port, const char* buff, int len, int eos)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     modbus_t* ctx = (modbus_t*)ctx_;
 

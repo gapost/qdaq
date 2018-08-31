@@ -14,7 +14,7 @@ void QDaqLinearCorrelator::setSize(uint sz)
     if ((sz!=size()) && sz>1)
     {
         {
-            os::auto_lock L(comm_lock);
+            QMutexLocker L(&comm_lock);
             x_.alloc(sz);
             y_.alloc(sz);
             size_ = sz;
@@ -47,6 +47,6 @@ bool QDaqLinearCorrelator::operator ()(const double* vin, double* vout)
 
 void QDaqLinearCorrelator::clear()
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     len_ = 0;
 }

@@ -236,6 +236,7 @@ QDaqLoop::QDaqLoop(const QString& name) :
 {
     isLoop_ = true;
     connect(this,SIGNAL(abort()),this,SLOT(disarm()),Qt::QueuedConnection);
+    thread_.thisLoop = this;
 }
 QDaqLoop::~QDaqLoop(void)
 {
@@ -252,7 +253,7 @@ bool QDaqLoop::exec()
     if (delay_counter_ == 0) // loop executes
     {
         // check time for loop statistics
-        t_[1] = (float)clock_.sec();
+        t_[1] = 1e-6f*thread_.nsecsElapsed();
         // Lock  subjobs
         subjobs_.lock();
         // call base-class exec
@@ -269,7 +270,7 @@ bool QDaqLoop::exec()
 
         // loop statistics
         perfmon[0] << (t_[1] - t_[0])*1000; t_[0] = t_[1];
-        perfmon[1] << ((float)clock_.sec() - t_[1])*1000;
+        perfmon[1] << (1e-6f*thread_.nsecsElapsed() - t_[1])*1000;
     }
     comm_lock.unlock();
 
@@ -294,17 +295,19 @@ bool QDaqLoop::arm_()
     bool ret = QDaqJob::arm_();
     if (ret)
     {
-        clock_.start();
-        t_[0] = (float)clock_.sec();
-        if (isTop()) ret = thread_.start(this,period_); //,THREAD_PRIORITY_TIME_CRITICAL);
-        if (!ret) QDaqJob::disarm_();
+        t_[0] = 0;
+        if (isTop()) {
+            thread_.setInterval(period_);
+            thread_.start();
+        }
     }
     return armed();
 }
 
 void QDaqLoop::disarm_()
 {
-    thread_.stop();
+    thread_.quit();
+    thread_.wait();
     QDaqJob::disarm_();
 }
 
@@ -314,7 +317,7 @@ void QDaqLoop::setLimit(uint d)
     {
         // locked code
         {
-            os::auto_lock L(comm_lock);
+            QMutexLocker L(&comm_lock);
             limit_ = d;
         }
         emit propertiesChanged();
@@ -327,7 +330,7 @@ void QDaqLoop::setDelay(uint d)
     {
         // locked code
         {
-            os::auto_lock L(comm_lock);
+            QMutexLocker L(&comm_lock);
             delay_ = d;
             //counter_ = delay_;
         }

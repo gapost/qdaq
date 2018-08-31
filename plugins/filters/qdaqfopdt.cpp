@@ -37,19 +37,19 @@ bool QDaqFOPDT::operator ()(const double* vin, double* vout)
 
 void QDaqFOPDT::setKp(double k)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     kp_ = k;
     emit propertiesChanged();
 }
 void QDaqFOPDT::setTp(uint t)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     tp_ = t;
     emit propertiesChanged();
 }
 void QDaqFOPDT::setTd(uint t)
 {
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     td_ = t;
     init();
     emit propertiesChanged();

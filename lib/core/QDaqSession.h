@@ -5,13 +5,12 @@
 
 #include "QDaqTypes.h"
 
-#include "os_utils.h"
-
 #include <QObject>
 #include <QScriptValue>
 #include <QScriptProgram>
 #include <QStringList>
 #include <QSet>
+#include <QElapsedTimer>
 
 class QScriptEngine;
 class QScriptEngineDebugger;
@@ -58,7 +57,7 @@ protected:
     QScriptEngineDebugger* debugger_;
     QTimer* wait_timer_;
     bool wait_aborted_;
-    os::stopwatch watch_;
+    QElapsedTimer watch_;
 
     // console index = 0 - ROOT,1,2,3,...
     int idx_;
@@ -118,7 +117,7 @@ public slots:
 
     // timing
     void tic() { watch_.start(); }
-    double toc() { /*watch_.stop();*/ return watch_.sec(); }
+    double toc() { return 0.000001*watch_.nsecsElapsed(); }
 
     // system call
     QString system(const QString& comm);

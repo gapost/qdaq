@@ -27,7 +27,7 @@ bool QDaqGpib::open_()
 
     if (isOpen()) return true;
 
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     gpib_->SendIFC(address());
 
@@ -53,7 +53,7 @@ bool QDaqGpib::open_()
 bool QDaqGpib::open_port(uint id, QDaqDevice* dev)
 {
     if (!gpib_) return false;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     if (QDaqInterface::open_port(id,dev))
     {
         gpib_->EnableRemote(address(), id);
@@ -74,7 +74,7 @@ bool QDaqGpib::open_port(uint id, QDaqDevice* dev)
 void QDaqGpib::close_port(uint id)
 {
     if (!gpib_) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     gpib_->EnableLocal(address(), id);
     if (gpib_->hasError())
     {
@@ -89,7 +89,7 @@ void QDaqGpib::close_port(uint id)
 void QDaqGpib::clear_port(uint id)
 {
     if (!gpib_) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     gpib_->DeviceClear(address(),id);
     if (gpib_->hasError())
     {
@@ -103,7 +103,7 @@ void QDaqGpib::clear_port(uint id)
 int QDaqGpib::read(uint port, char* data, int len, int eoi)
 {
     if (!gpib_) return 0;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     gpib_->Receive(address(), port, data, len, eoi);
     if (gpib_->hasError())
     {
@@ -119,7 +119,7 @@ int QDaqGpib::read(uint port, char* data, int len, int eoi)
 int QDaqGpib::readStatusByte(uint port)
 {
     if (!gpib_) return 0;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     int result = gpib_->ReadStatusByte (address(), port);
     if (gpib_->hasError())
     {
@@ -135,7 +135,7 @@ int QDaqGpib::readStatusByte(uint port)
 int QDaqGpib::write(uint port, const char* buff, int len, int e)
 {
     if (!gpib_) return 0;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     int eot =  (e & 0x0000FF00) >> 8;
     gpib_->Send(address(), port, buff, len, eot);
     if (gpib_->hasError())
@@ -153,7 +153,7 @@ int QDaqGpib::write(uint port, const char* buff, int len, int e)
 void QDaqGpib::trigger(uint id)
 {
     if (!gpib_) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     gpib_->Trigger(address(),id);
     if (gpib_->hasError())
     {
@@ -167,7 +167,7 @@ void QDaqGpib::trigger(uint id)
 void QDaqGpib::clear_()
 {
     if (!gpib_) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     gpib_->SendIFC(address());
     if (gpib_->hasError())
     {
@@ -181,7 +181,7 @@ void QDaqGpib::clear_()
 void QDaqGpib::setTimeout_(uint ms)
 {
     if (!gpib_) return;
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
     gpib_->setTimeout(address(),ms);
     if (gpib_->hasError())
     {
@@ -196,7 +196,7 @@ QDaqIntVector QDaqGpib::findListeners()
 {
     if (!gpib_) return QDaqIntVector();
 
-    os::auto_lock L(comm_lock);
+    QMutexLocker L(&comm_lock);
 
     QDaqIntVector Addresses(31), Listeners;
 
