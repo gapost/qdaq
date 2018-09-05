@@ -3,16 +3,13 @@
 
 #include "filters_global.h"
 
-#include "QDaqFilterPlugin.h"
-#include "QDaqJob.h"
+#include "QDaqFilter.h"
 #include "QDaqTypes.h"
 
 class FILTERSSHARED_EXPORT QDaqFOPDT :
-        public QDaqJob,
-        public QDaqFilterPlugin
+        public QDaqFilter
 {
     Q_OBJECT
-    Q_INTERFACES(QDaqFilterPlugin)
 
     Q_PROPERTY(double kp READ kp WRITE setKp)
     Q_PROPERTY(uint tp READ tp WRITE setTp)
@@ -30,9 +27,11 @@ class FILTERSSHARED_EXPORT QDaqFOPDT :
     uint ibuff;
 
 public:
-    QDaqFOPDT();
+    Q_INVOKABLE explicit QDaqFOPDT(const QString& name);
 
     // getters
+    virtual int nInputChannels() const { return 1; }
+    virtual int nOutputChannels() const { return 1; }
     double kp() const { return kp_; }
     uint tp() const { return tp_; }
     uint td() const { return td_; }
@@ -42,14 +41,10 @@ public:
     void setTp(uint t);
     void setTd(uint t);
 
-    // QDaqFilterPlugin interface implementation
-    virtual QString iid()
-    { return QString("fopdt-v0.1"); }
-    virtual QString errorMsg() { return QString(); }
-    virtual bool init();
-    virtual bool operator()(const double* vin, double* vout);
-    virtual int nInputChannels() const { return 1; }
-    virtual int nOutputChannels() const { return 1; }
+protected:
+    virtual bool filterinit();
+    virtual bool filterfunc(const double* vin, double* vout);
+
 
 };
 

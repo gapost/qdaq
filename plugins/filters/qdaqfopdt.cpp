@@ -1,7 +1,7 @@
 #include "qdaqfopdt.h"
 
-QDaqFOPDT::QDaqFOPDT() :
-    QDaqJob("fopdt"),
+QDaqFOPDT::QDaqFOPDT(const QString& name) :
+    QDaqFilter(name),
     kp_(1.),
     tp_(60),
     td_(10),
@@ -9,7 +9,7 @@ QDaqFOPDT::QDaqFOPDT() :
 {
 }
 
-bool QDaqFOPDT::init()
+bool QDaqFOPDT::filterinit()
 {
     ubuff.resize(td_);
     ubuff.fill(0.);
@@ -20,7 +20,7 @@ bool QDaqFOPDT::init()
     return true;
 }
 
-bool QDaqFOPDT::operator ()(const double* vin, double* vout)
+bool QDaqFOPDT::filterfunc(const double* vin, double* vout)
 {
     ubuff[ibuff] = *vin;
     ibuff++;
@@ -51,6 +51,6 @@ void QDaqFOPDT::setTd(uint t)
 {
     QMutexLocker L(&comm_lock);
     td_ = t;
-    init();
+    filterinit();
     emit propertiesChanged();
 }

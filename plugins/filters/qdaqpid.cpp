@@ -1,15 +1,16 @@
 #include "qdaqpid.h"
 
 
-QDaqPid::QDaqPid() : QDaqJob("pid"),
-  auto_(false),
-  autotune_(false),
-  Ts_(0),
-  W_(0)
+QDaqPid::QDaqPid(const QString& name) :
+    QDaqFilter(name),
+    auto_(false),
+    autotune_(false),
+    Ts_(0),
+    W_(0)
 {
 }
 
-bool QDaqPid::init()
+bool QDaqPid::filterinit()
 {
     auto_ = false;
     autotune_ = false;
@@ -17,7 +18,7 @@ bool QDaqPid::init()
     return true;
 }
 
-bool QDaqPid::operator ()(const double* vin, double *vout)
+bool QDaqPid::filterfunc(const double* vin, double *vout)
 {
     double T = *vin;
 

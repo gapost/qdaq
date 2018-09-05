@@ -3,19 +3,16 @@
 
 #include "filters_global.h"
 
-#include "QDaqFilterPlugin.h"
-#include "QDaqJob.h"
+#include "QDaqFilter.h"
 #include <QtPlugin>
 
 #include "isa_pid.h"
 #include "relaytuner.h"
 
 class FILTERSSHARED_EXPORT QDaqPid :
-        public QDaqJob,
-        public QDaqFilterPlugin
+        public QDaqFilter
 {
     Q_OBJECT
-    Q_INTERFACES(QDaqFilterPlugin)
 
     Q_PROPERTY(double samplingPeriod READ samplingPeriod WRITE setSamplingPeriod)
     Q_PROPERTY(double maxPower READ maxPower WRITE setMaxPower)
@@ -44,18 +41,12 @@ protected:
     autotuner<double> tuner;
 
 public:
-    QDaqPid();
+    Q_INVOKABLE explicit QDaqPid(const QString& name);
 
-    // QDaqFilterPlugin interface implementation
-    virtual QString iid()
-    { return QString("pid-v0.1"); }
-    virtual QString errorMsg() { return QString(); }
-    virtual bool init();
-    virtual bool operator()(const double* vin, double* vout);
-    virtual int nInputChannels() const { return 1; }
-    virtual int nOutputChannels() const { return 1; }
 
     // getters
+    virtual int nInputChannels() const { return 1; }
+    virtual int nOutputChannels() const { return 1; }
     bool autoMode() const { return auto_; }
     double maxPower() const { return pid.get_umax(); }
     double power() const { return W_; }
@@ -92,6 +83,10 @@ public:
     void setRelayThreshold(double v);
     void setRelayIterations(int v);
     void setAutoTune(bool on);
+
+protected:
+    virtual bool filterinit();
+    virtual bool filterfunc(const double* vin, double* vout);
 };
 
 #endif // QDAQPID_H

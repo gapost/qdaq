@@ -1,7 +1,8 @@
 #include "qdaqlinearcorrelator.h"
 #include "linefit.h"
 
-QDaqLinearCorrelator::QDaqLinearCorrelator() : QDaqJob("lincorr"),
+QDaqLinearCorrelator::QDaqLinearCorrelator(const QString& name) :
+    QDaqFilter(name),
     size_(2),
     len_(0)
 {
@@ -24,13 +25,13 @@ void QDaqLinearCorrelator::setSize(uint sz)
     }
 }
 
-bool QDaqLinearCorrelator::init()
+bool QDaqLinearCorrelator::filterinit()
 {
     len_ = 0;
     return true;
 }
 
-bool QDaqLinearCorrelator::operator ()(const double* vin, double* vout)
+bool QDaqLinearCorrelator::filterfunc(const double* vin, double* vout)
 {
     x_ << vin[0];
     y_ << vin[1];

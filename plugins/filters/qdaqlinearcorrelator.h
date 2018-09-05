@@ -3,16 +3,13 @@
 
 #include "filters_global.h"
 
-#include "QDaqFilterPlugin.h"
-#include "QDaqJob.h"
+#include "QDaqFilter.h"
 #include "QDaqTypes.h"
 
 class FILTERSSHARED_EXPORT QDaqLinearCorrelator :
-        public QDaqJob,
-        public QDaqFilterPlugin
+        public QDaqFilter
 {
     Q_OBJECT
-    Q_INTERFACES(QDaqFilterPlugin)
 
     /** Size of data sample.
     Number of past (x,y) data points used in deriving correlation parameters.
@@ -28,23 +25,21 @@ class FILTERSSHARED_EXPORT QDaqLinearCorrelator :
     uint size_, len_;
 
 public:
-    QDaqLinearCorrelator();
+    Q_INVOKABLE explicit QDaqLinearCorrelator(const QString& name);
 
     // getters
     uint size() const { return size_; }
     uint length() const { return len_; }
+    virtual int nInputChannels() const { return 2; }
+    virtual int nOutputChannels() const { return 2; }
 
     // setters
     void setSize(uint sz);
 
-    // QDaqFilterPlugin interface implementation
-    virtual QString iid()
-    { return QString("lincorr-v0.1"); }
-    virtual QString errorMsg() { return QString(); }
-    virtual bool init();
-    virtual bool operator()(const double* vin, double* vout);
-    virtual int nInputChannels() const { return 2; }
-    virtual int nOutputChannels() const { return 2; }
+protected:
+
+    virtual bool filterinit();
+    virtual bool filterfunc(const double* vin, double* vout);
 
 public slots:
     void clear();

@@ -10,8 +10,8 @@ static const gsl_interp_type* InterpolationObjects[] = {
     gsl_interp_cspline
 };
 
-QDaqInterpolator::QDaqInterpolator() :
-    QDaqJob("interpolator"),
+QDaqInterpolator::QDaqInterpolator(const QString& name) :
+    QDaqFilter(name),
     type_(None),
     interpolator_(0),
     accel_(0),
@@ -27,7 +27,7 @@ QDaqInterpolator::~QDaqInterpolator(void)
     gsl_interp_accel_free (accel_);
 }
 
-bool QDaqInterpolator::init()
+bool QDaqInterpolator::filterinit()
 {
     if (interpolator_) gsl_interp_free (interpolator_);
     interpolator_ = 0;
@@ -41,7 +41,7 @@ bool QDaqInterpolator::init()
     return true;
 }
 
-bool QDaqInterpolator::operator()(const double* vin, double* vout)
+bool QDaqInterpolator::filterfunc(const double* vin, double* vout)
 {
     if (interpolator_)
     {
@@ -59,7 +59,7 @@ void QDaqInterpolator::setType(InterpolationType t)
     if (!throwIfArmed() && type_ != t && (int)t!=-1)
     {
         type_ = t;
-        init();
+        filterinit();
         emit propertiesChanged();
     }
 }

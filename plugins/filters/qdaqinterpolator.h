@@ -3,18 +3,15 @@
 
 #include "filters_global.h"
 
-#include "QDaqFilterPlugin.h"
-#include "QDaqJob.h"
+#include "QDaqFilter.h"
 #include "QDaqTypes.h"
 
 #include <gsl/gsl_interp.h>
 
 class FILTERSSHARED_EXPORT QDaqInterpolator :
-        public QDaqJob,
-        public QDaqFilterPlugin
+        public QDaqFilter
 {
     Q_OBJECT
-    Q_INTERFACES(QDaqFilterPlugin)
 
     Q_PROPERTY(InterpolationType type READ type WRITE setType)
 
@@ -36,20 +33,18 @@ protected:
     QDaqVector xa, ya;
 
 public:
-    QDaqInterpolator();
+    Q_INVOKABLE explicit QDaqInterpolator(const QString& name);
     virtual ~QDaqInterpolator();
 
-    // QDaqFilterPlugin interface implementation
-    virtual QString iid()
-    { return QString("interp-v0.1"); }
-    virtual QString errorMsg() { return QString(); }
-    virtual bool init();
-    virtual bool operator()(const double* vin, double* vout);
     virtual int nInputChannels() const { return 1; }
     virtual int nOutputChannels() const { return 1; }
 
     InterpolationType type() const { return type_; }
     void setType(InterpolationType t);
+
+protected:
+    virtual bool filterinit();
+    virtual bool filterfunc(const double* vin, double* vout);
 
 public slots:
     void setTable(const QDaqVector &x, const QDaqVector &y);

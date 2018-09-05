@@ -3,22 +3,22 @@
 
 #include "filters_global.h"
 
-#include "QDaqFilterPlugin.h"
+#include "qdaqplugin.h"
+
+#include <QObject>
 
 class FILTERSSHARED_EXPORT FilterFactory :
         public QObject,
-        public QDaqFilterPluginFactory
+        public QDaqPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QDaqFilterPluginFactory_iid FILE "filters.json")
-    Q_INTERFACES(QDaqFilterPluginFactory)
+    Q_PLUGIN_METADATA(IID QDaqPluginIID FILE "filters.json")
+    Q_INTERFACES(QDaqPlugin)
 
 public:
     FilterFactory();
 
-    virtual QStringList availablePlugins();
-
-    virtual QObject* createPlugin(const QString& iid);
+    virtual QList<const QMetaObject *> pluginClasses() const;
 };
 
 #endif // FILTERFACTORY_H
