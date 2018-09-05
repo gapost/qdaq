@@ -1,9 +1,7 @@
 #include "QDaqFilter.h"
 #include "QDaqChannel.h"
-#include "qdaqpluginloader.h"
 
-QDaqFilter::QDaqFilter(const QString& name) : QDaqJob(name),
-    filter_(0), filterWrapper_(0)
+QDaqFilter::QDaqFilter(const QString& name) : QDaqJob(name)
 {
 
 }
@@ -66,53 +64,6 @@ void QDaqFilter::setOutputChannels(QDaqObjectList lst)
     }
 }
 
-QStringList QDaqFilter::listPlugins()
-{
-    QStringList pluginFiles =  QDaqPluginLoader<QDaqFilterPluginFactory*>::findPlugins();
-
-    if (pluginFiles.isEmpty()) return QStringList();
-
-    QObject* obj = QDaqPluginLoader<QDaqFilterPluginFactory*>::loadPlugin(pluginFiles.front());
-    if (obj)
-    {
-        QDaqFilterPluginFactory* iFactory = qobject_cast<QDaqFilterPluginFactory*>(obj);
-        if (iFactory) return iFactory->availablePlugins();
-    }
-
-    return QStringList();;
-}
-
-bool QDaqFilter::loadPlugin(const QString &iid)
-{
-    QStringList pluginFiles =  QDaqPluginLoader<QDaqFilterPluginFactory*>::findPlugins();
-
-    if (pluginFiles.isEmpty()) return false;
-
-    QObject* obj = QDaqPluginLoader<QDaqFilterPluginFactory*>::loadPlugin(pluginFiles.front());
-    if (obj)
-    {
-        QDaqFilterPluginFactory* iFactory = qobject_cast<QDaqFilterPluginFactory*>(obj);
-        if (iFactory) {
-            QObject* plugin = iFactory->createPlugin(iid);
-            if (plugin) {
-                QDaqFilterPlugin* p = qobject_cast<QDaqFilterPlugin*>(plugin);
-                if (p) {
-                    if (filterWrapper_)
-                    {
-                        removeChild(filterWrapper_);
-                        delete filterWrapper_;
-                    }
-                    filterWrapper_ = appendChild((QDaqObject*)plugin);
-                    filter_ = p;
-                    return true;
-                }
-            }
-        }
-    }
-
-    return 0;
-}
-
 bool QDaqFilter::run()
 {
     // get input values
@@ -126,7 +77,7 @@ bool QDaqFilter::run()
         }
     }
 
-    bool ret = (*filter_)(inbuff.constData(), outbuff.data());
+    bool ret = filterfunc(inbuff.constData(), outbuff.data());
     if (!ret) return false;
 
     // push output values
@@ -145,33 +96,22 @@ bool QDaqFilter::run()
 
 bool QDaqFilter::arm_()
 {
-    if (!filter_)
-    {
-        throwScriptError("No filter plugin loaded.");
-        return false;
-    }
-
-    if (filter_->nInputChannels() != inputChannels_.size())
+    if (nInputChannels() != inputChannels_.size())
     {
         throwScriptError("Incorrect number of input channels.");
         return false;
     }
 
-    if (filter_->nOutputChannels() != outputChannels_.size())
+    if (nOutputChannels() != outputChannels_.size())
     {
         throwScriptError("Incorrect number of output channels.");
         return false;
     }
 
-    bool ret = filter_->init();
-    if (!ret)
-    {
-        throwScriptError(QString("Filter initialization failed: %1").arg(filter_->errorMsg()));
-        return false;
-    }
-
     inbuff.resize(inputChannels_.size());
     outbuff.resize(outputChannels_.size());
+
+    if (!filterinit()) return false;
 
     return QDaqJob::arm_();
 }

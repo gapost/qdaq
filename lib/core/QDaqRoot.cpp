@@ -10,8 +10,13 @@
 #include "QDaqGpib.h"
 #include "QDaqFilter.h"
 
+#include "qdaqplugin.h"
+
 #include <QCoreApplication>
 #include <QDir>
+#include <QPluginLoader>
+#include <QLibraryInfo>
+#include <QDebug>
 
 QDaqRoot* QDaqObject::root_;
 
@@ -26,7 +31,6 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     registerClass(&QDaqLoop::staticMetaObject);
     registerClass(&QDaqChannel::staticMetaObject);
     registerClass(&QDaqDataBuffer::staticMetaObject);
-    registerClass(&QDaqFilter::staticMetaObject);
 
     // DAQ objects/devices
     registerClass(&QDaqTcpip::staticMetaObject);
@@ -35,6 +39,9 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     registerClass(&QDaqModbusRtu::staticMetaObject);
     registerClass(&QDaqDevice::staticMetaObject);
     registerClass(&QDaqGpib::staticMetaObject);
+
+    pluginManager.loadPlugins();
+    object_map_.unite(pluginManager.object_map_);
 
     // root dir = current dir when app starts
     QDir pwd = QDir::current();
@@ -154,6 +161,52 @@ void QDaqRoot::removeDaqWindow(QWidget* w)
         daqWindows_.removeOne(w);
         emit daqWindowsChanged();
     }
+}
+
+void QDaqPluginManager::loadFrom(const QString &path)
+{
+    QDir pluginsDir = QDir(path);
+    foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
+        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+        qDebug() << "Loading plugin " << loader.fileName();
+        QObject* instance = loader.instance();
+        if (instance) {
+            QDaqPlugin *plugin = qobject_cast<QDaqPlugin*>(instance);
+            if (plugin) {
+                QList<const QMetaObject *> metaObjects = plugin->pluginClasses();
+
+                foreach (const QMetaObject* metaObj, metaObjects)
+                    if (metaObj->inherits(&QDaqObject::staticMetaObject))
+                    {
+                        object_map_[metaObj->className()] = metaObj;
+                    }
+            }
+        } else {
+            QString errString = loader.errorString();
+            qDebug() << errString;
+        }
+    }
+}
+
+void QDaqPluginManager::loadPlugins()
+{
+    // first look at app path
+    QDir pluginsDir = QDir(qApp->applicationDirPath());
+#if defined(Q_OS_WIN)
+    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+        pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+    if (pluginsDir.dirName() == "MacOS") {
+        pluginsDir.cdUp();
+        pluginsDir.cdUp();
+        pluginsDir.cdUp();
+    }
+#endif
+    if (pluginsDir.cd("plugins")) loadFrom(pluginsDir.absolutePath());
+
+    // now look at Qt plugin folder
+    pluginsDir = QDir(QLibraryInfo::location(QLibraryInfo::PluginsPath));
+    if (pluginsDir.cd("qdaq")) loadFrom(pluginsDir.absolutePath());
 }
 
 

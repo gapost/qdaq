@@ -12,6 +12,18 @@ class QDaqLogFile;
 class QDaqIDE;
 class QDaqSession;
 
+struct QDaqPluginManager
+{
+    typedef QHash<QString, const QMetaObject*> object_map_t;
+
+    object_map_t object_map_;
+
+    QList<const QMetaObject *> pluginClasses() const;
+
+    void loadPlugins();
+    void loadFrom(const QString& path);
+};
+
 /** QDaq root object class.
  *
  * At the top of the QDaq tree structure there is an object of type QDaqRoot.
@@ -134,6 +146,8 @@ private:
 
     object_map_t object_map_;
 
+    QDaqPluginManager pluginManager;
+
 public:
     /**
      * @brief Register a QDaqObject-derived class type
@@ -145,6 +159,8 @@ public:
 	QList<const QMetaObject *> registeredClasses() const;
 
 };
+
+
 
 
 
