@@ -5,11 +5,11 @@
 #-------------------------------------------------
 
 QT       -= gui
-QT       += script
+QT       += script network serialport
 CONFIG   += plugin
 INCLUDEPATH  += ../../lib/daq ../../lib/core
 LIBS += -lgpib
-TARGET = $$qtLibraryTarget(qdaqlinuxgpibplugin)
+TARGET = $$qtLibraryTarget(qdaqlinuxgpib)
 TEMPLATE = lib
 DESTDIR = ../../qdaq/plugins
 

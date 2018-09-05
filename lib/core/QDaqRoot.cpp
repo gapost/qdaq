@@ -7,7 +7,6 @@
 #include "QDaqIde.h"
 #include "QDaqInterface.h"
 #include "QDaqDevice.h"
-#include "QDaqGpib.h"
 #include "QDaqFilter.h"
 
 #include "qdaqplugin.h"
@@ -38,7 +37,6 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     registerClass(&QDaqModbusTcp::staticMetaObject);
     registerClass(&QDaqModbusRtu::staticMetaObject);
     registerClass(&QDaqDevice::staticMetaObject);
-    registerClass(&QDaqGpib::staticMetaObject);
 
     pluginManager.loadPlugins();
     object_map_.unite(pluginManager.object_map_);

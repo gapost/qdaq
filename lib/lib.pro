@@ -56,7 +56,6 @@ SOURCES += \
     gui/QDaqObjectModel.cpp \
     core/bytearrayclass.cpp \
     core/bytearrayprototype.cpp \
-    daq/QDaqGpib.cpp \
     core/QDaqFilter.cpp \
     core/qtimerthread.cpp
 
@@ -90,8 +89,6 @@ HEADERS  += \
     gui/QDaqObjectModel.h \
     core/bytearrayclass.h \
     core/bytearrayprototype.h \
-    daq/QDaqGpib.h \
-    daq/QDaqGpibPlugin.h \
     core/QDaqFilter.h \
     core/qtimerthread.h \
     core/qdaqplugin.h
