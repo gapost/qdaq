@@ -310,6 +310,9 @@ protected:
     uint delay_counter_;
     bool aborted_;
 
+    // for loop timing
+    QElapsedTimer clock_;
+
     /**
      * @brief Called when a loop is executed.
      *

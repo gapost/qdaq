@@ -4,8 +4,6 @@
 
 #include <QThread>
 #include <QTimer>
-#include <QElapsedTimer>
-
 
 /** timer thread
   * A timer thread implemented using timer_create() + signal
@@ -17,7 +15,7 @@ class QTimerThread : public QThread
     Q_OBJECT
 
     QTimer timer_;
-    QElapsedTimer clock_;
+
 
 protected slots:
     virtual void timer_func() {}
@@ -32,11 +30,6 @@ public:
 
     int interval() const { return timer_.interval(); }
     void setInterval(int ms) { timer_.setInterval(ms); }
-
-    quint64 elapsed() const { return clock_.elapsed(); }
-    quint64 nsecsElapsed() const { return clock_.nsecsElapsed(); }
-
-
 
 };
 

@@ -18,7 +18,6 @@ void QTimerThread::run()
 {
 
     timer_.start();
-    clock_.start();
     QThread::run();
     timer_.stop();
 }

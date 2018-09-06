@@ -253,7 +253,7 @@ bool QDaqLoop::exec()
     if (delay_counter_ == 0) // loop executes
     {
         // check time for loop statistics
-        t_[1] = 1e-6f*thread_.nsecsElapsed();
+        t_[1] = 1e-6f*clock_.nsecsElapsed();
         // Lock  subjobs
         subjobs_.lock();
         // call base-class exec
@@ -269,8 +269,8 @@ bool QDaqLoop::exec()
         emit updateWidgets();
 
         // loop statistics
-        perfmon[0] << (t_[1] - t_[0])*1000; t_[0] = t_[1];
-        perfmon[1] << (1e-6f*thread_.nsecsElapsed() - t_[1])*1000;
+        perfmon[0] << (t_[1] - t_[0]); t_[0] = t_[1];
+        perfmon[1] << (1e-6f*clock_.nsecsElapsed() - t_[1]);
     }
     comm_lock.unlock();
 
@@ -296,6 +296,7 @@ bool QDaqLoop::arm_()
     if (ret)
     {
         t_[0] = 0;
+        clock_.start();
         if (isTop()) {
             thread_.setInterval(period_);
             thread_.start();
