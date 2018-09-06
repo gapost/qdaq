@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets script scripttools network uitools serialport testlib
+QT       += core gui widgets script scripttools uitools testlib
 
 lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
 
@@ -48,7 +48,6 @@ SOURCES += \
     gui/QDaqScriptEditor.cpp \
     gui/QDaqDelegates.cpp \
     gui/QDaqWindow.cpp \
-    daq/tcp_socket.cpp \
     daq/QDaqInterface.cpp \
     daq/QDaqDevice.cpp \
     gui/QDaqPlotWidget.cpp \
@@ -79,7 +78,6 @@ HEADERS  += \
     gui/QDaqScriptEditor.h \
     gui/QDaqDelegates.h \
     gui/QDaqWindow.h \
-    daq/tcp_socket.h \
     daq/QDaqInterface.h \
     daq/QDaqDevice.h \
     QDaqBuffer \

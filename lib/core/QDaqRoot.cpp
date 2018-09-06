@@ -32,10 +32,6 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
     registerClass(&QDaqDataBuffer::staticMetaObject);
 
     // DAQ objects/devices
-    registerClass(&QDaqTcpip::staticMetaObject);
-    registerClass(&QDaqSerial::staticMetaObject);
-    registerClass(&QDaqModbusTcp::staticMetaObject);
-    registerClass(&QDaqModbusRtu::staticMetaObject);
     registerClass(&QDaqDevice::staticMetaObject);
 
     pluginManager.loadPlugins();

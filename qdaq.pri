@@ -17,10 +17,6 @@ unix {
     ############## muParser ##############
     LIBS += -lmuparser
 
-    ######### libmodbus #############
-    LIBS += -lmodbus
-    INCLUDEPATH += /usr/include/modbus
-
     ######### comedi #############
     LIBS += -lcomedi
 
@@ -65,10 +61,7 @@ LIBS += -L$$MUPARSER_PATH/lib/
         LIBS += -lmuparser
     }
 
-############# libmodbus ##############
-LIBMODBUS_PATH = $$PWD/../3rdparty/libmodbus-3.1.4-msvc2015
-INCLUDEPATH += $$LIBMODBUS_PATH/include
-LIBS += -L$$LIBMODBUS_PATH/lib -lmodbus
+
 
 ######### QtSolutions ###############
 QTSOLUTIONS_PATH = $$PWD/../3rdparty/qtpropertybrowser

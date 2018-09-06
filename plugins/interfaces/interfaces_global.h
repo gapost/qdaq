@@ -1,0 +1,12 @@
+#ifndef INTERFACES_GLOBAL_H
+#define INTERFACES_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(INTERFACES_LIBRARY)
+#  define INTERFACESSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define INTERFACESSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // INTERFACES_GLOBAL_H
