@@ -173,7 +173,12 @@ void QDaqPluginManager::loadFrom(const QString &path)
                     if (metaObj->inherits(&QDaqObject::staticMetaObject))
                     {
                         object_map_[metaObj->className()] = metaObj;
+                        qDebug() << "  " << metaObj->className();
                     }
+            }
+            else
+            {
+                qDebug() << "Error: could not cast to QDaqPlugin";
             }
         } else {
             QString errString = loader.errorString();
