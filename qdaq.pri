@@ -34,7 +34,7 @@ unix {
 win32 {
 # Qwt-6
 DEFINES += QWT_DLL
-QWT_PATH = $$PWD/../3rdparty/Qwt-6.1.3-qt-5.6.3-msvc2015
+QWT_PATH = $$PWD/../3rdparty/Qwt-6.1.3-qt-5.9.2
 LIBS += -L$$QWT_PATH/lib/
 CONFIG(release, debug|release) {
     LIBS += -lqwt
@@ -45,41 +45,49 @@ INCLUDEPATH += $$QWT_PATH/include
 DEPENDPATH += $$QWT_PATH/include
 
 ############## HDF5 ##############
-HDF5_PATH = $$PWD/../3rdparty/hdf5-1.8.20-msvc2015
-DEFINES += _HDF5USEDLL_ HDF5CPP_USEDLL H5_BUILT_AS_DYNAMIC_LIB
-INCLUDEPATH += $$HDF5_PATH/include
-LIBS += -L$$HDF5_PATH/lib -lhdf5 -lhdf5_cpp
-
+win32: LIBS += -L$$PWD/../3rdparty/HDF5/1.8.20/lib/ -lhdf5 -lhdf5_cpp
+INCLUDEPATH += $$PWD/../3rdparty/HDF5/1.8.20/include
+DEPENDPATH += $$PWD/../3rdparty/HDF5/1.8.20/include
+DEFINES += H5_BUILT_AS_DYNAMIC_LIB
 
 ############## muParser ##############
-MUPARSER_PATH = $$PWD/../3rdparty/muparser-2.2.5
-INCLUDEPATH += $$MUPARSER_PATH/include
-LIBS += -L$$MUPARSER_PATH/lib/
-    CONFIG(debug, debug|release) {
-        LIBS += -lmuparserd
-    } else {
-        LIBS += -lmuparser
-    }
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../3rdparty/muparser-2.2.5/lib/ -lmuparser
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../3rdparty/muparser-2.2.5/lib/ -lmuparserd
 
+INCLUDEPATH += $$PWD/../3rdparty/muparser-2.2.5/include
+DEPENDPATH += $$PWD/../3rdparty/muparser-2.2.5/include
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../3rdparty/muparser-2.2.5/lib/libmuparser.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../3rdparty/muparser-2.2.5/lib/libmuparserd.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../3rdparty/muparser-2.2.5/lib/muparser.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../3rdparty/muparser-2.2.5/lib/muparserd.lib
 
 
 ######### QtSolutions ###############
-QTSOLUTIONS_PATH = $$PWD/../3rdparty/qtpropertybrowser
+QTSOLUTIONS_PATH = $$PWD/../3rdparty/qt-solutions/qtpropertybrowser
 INCLUDEPATH += $$QTSOLUTIONS_PATH/src
 LIBS += -L$$QTSOLUTIONS_PATH/lib
 DEFINES += QT_QTPROPERTYBROWSER_IMPORT
-    CONFIG(debug, debug|release) {
-        LIBS += -lQtSolutions_PropertyBrowser-headd
-    } else {
-        LIBS += -lQtSolutions_PropertyBrowser-head
-    }
+CONFIG(debug, debug|release) {
+	LIBS += -lQtSolutions_PropertyBrowser-headd
+} else {
+	LIBS += -lQtSolutions_PropertyBrowser-head
+}
 
 ######## Win32 Libs ##########
-LIBS += winmm.lib user32.lib ws2_32.lib
+# LIBS += winmm.lib user32.lib ws2_32.lib
 
 DEFINES += _CRT_SECURE_NO_WARNINGS
 
 }
+
+
+
+
+
+
+
+
 
 
 

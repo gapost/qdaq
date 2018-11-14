@@ -14,6 +14,20 @@ include(../qdaq.pri)
 TARGET = qdaq
 TEMPLATE = app
 
+win32 {
+CONFIG(debug, debug|release) {
+    DESTDIR = $$PWD/../../bin-debug
+} else {
+    DESTDIR = $$PWD/../../bin-release
+}
+}
+
+INCLUDEPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
+DEPENDPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../bin-release/ -llibQDaq
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../bin-debug/ -llibQDaq
+else:unix: LIBS += -L$$OUT_PWD/../lib/ -lQDaq
 
 SOURCES += main.cpp
 
@@ -23,14 +37,6 @@ unix {
     target.path = /usr/bin
     INSTALLS += target
 }
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../lib/release/ -lQDaq
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../lib/debug/ -lQDaq
-else:unix: LIBS += -L$$OUT_PWD/../lib/ -lQDaq
-
-INCLUDEPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
-DEPENDPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
 
 DISTFILES += \
     qdaq.dox \

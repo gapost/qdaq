@@ -21,11 +21,20 @@ GIT_VERSION ~= s/g/""
 # also here we want full version on every system so using GIT_VERSION
 DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
 
-TARGET = QDaq
+win32:TARGET = libQDaq
+unix:TARGET = QDaq
 # Trick Qt to not add version major to the target dll name
 win32 { TARGET_EXT = .dll }
 TEMPLATE = lib
 DEFINES += QDAQ_LIBRARY
+
+win32 {
+CONFIG(debug, debug|release) {
+    DESTDIR = $$PWD/../../bin-debug
+} else {
+    DESTDIR = $$PWD/../../bin-release
+}
+}
 
 INCLUDEPATH += ./core ./gui ./daq
 

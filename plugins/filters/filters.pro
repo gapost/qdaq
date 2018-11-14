@@ -9,12 +9,29 @@ QT       -= gui
 CONFIG   += plugin
 
 
-INCLUDEPATH  +=  ../../lib/core
+INCLUDEPATH += $$PWD/../../lib/core
+DEPENDPATH += $$PWD/../../lib/core
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../bin-release/ -llibQDaq
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../bin-debug/ -llibQDaq
+else:unix: LIBS += -L$$OUT_PWD/../../lib/ -lQDaq
+
+######### gsl ###############
+unix:LIBS += -lgsl
+win32 {
+    GSL_PATH = $$PWD/../../../3rdparty/gsl-1.16-msvc2015_32
+    INCLUDEPATH += $$GSL_PATH/include
+    LIBS += -L$$GSL_PATH/lib/gsl
+    LIBS += gsl.lib gslcblas.lib
+}
 
 
 TARGET = $$qtLibraryTarget(qdaqfilters)
 TEMPLATE = lib
-DESTDIR = ../../qdaq/plugins
+
+win32:CONFIG(release, debug|release): DESTDIR = $$PWD/../../../bin-release/plugins
+else:win32:CONFIG(debug, debug|release): DESTDIR = $$PWD/../../../bin-debug/plugins
+else:unix: DESTDIR = ../../qdaq/plugins
 
 DEFINES += FILTERS_LIBRARY
 
@@ -41,3 +58,9 @@ unix {
 
 DISTFILES += \
     filters.json
+
+
+
+
+
+
