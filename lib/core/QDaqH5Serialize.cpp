@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QDateTime>
 
+#include <hdf5.h>
 #include <H5Cpp.h>
 
 #include <string>

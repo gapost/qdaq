@@ -1,5 +1,5 @@
 #include "QDaqChannel.h"
-
+#include <QChar>
 #include <muParser.h>
 
 QDaqChannel::QDaqChannel(const QString& name) :
@@ -227,8 +227,13 @@ bool QDaqChannel::run()
 			catch (mu::Parser::exception_type &e)
 			{
 				//Q_UNUSED(e);
-				const mu::string_type& msg = e.GetMsg();
+
+                const mu::string_type& msg = e.GetMsg();
+#if defined(_UNICODE)
+                pushError(QString("muParser"),QString::fromStdWString(msg));
+#else
 				pushError(QString("muParser"),QString(msg.c_str()));
+#endif
 				//std::cout << e.GetMsg() << endl;
 				dataReady_ = false;
 			}
@@ -280,7 +285,11 @@ void QDaqChannel::clear()
 
 QString QDaqChannel::parserExpression() const
 {
+#if defined(_UNICODE)
+    if (parser_) return QString::fromStdWString(parser_->GetExpr());
+#else
 	if (parser_) return QString(parser_->GetExpr().c_str());
+#endif
 	else return QString();
 }
 void QDaqChannel::setForgettingFactor(double v)
@@ -306,12 +315,21 @@ void QDaqChannel::setParserExpression(const QString& s)
 		}
 		else
 		{
+#if defined(_UNICODE)
+            if (!parser_)
+            {
+                parser_= new mu::Parser();
+                parser_->DefineVar(QString("x").toStdWString(),&v_);
+            }
+            parser_->SetExpr(s.toStdWString());
+#else
 			if (!parser_)
 			{
 				parser_= new mu::Parser();
 				parser_->DefineVar("x",&v_);
 			}
 			parser_->SetExpr(s.toStdString());
+#endif
 		}
 
 		emit propertiesChanged();

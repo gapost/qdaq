@@ -20,9 +20,9 @@
 
 namespace QDaq {
 
-const char* Version();
+QDAQ_EXPORT const char* Version();
 
-const char* QtVersion();
+QDAQ_EXPORT const char* QtVersion();
 
 }
 
