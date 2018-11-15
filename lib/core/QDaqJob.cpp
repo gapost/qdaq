@@ -108,20 +108,30 @@ void QDaqJob::disarm_()
     }
 }
 
+// this function finds all sub-jobs. It is called by QDaqLoop::arm()
+void QDaqJob::discoverJobs()
+{
+    // Find all my sub-jobs
+    subjobs_.clear();
+    foreach(QDaqObject* obj, children_)
+    {
+        QDaqJob* job = qobject_cast<QDaqJob*>(obj);
+        if (job) {
+            subjobs_ << job;
+            // call discoverJobs() on job only if it is not a loop.
+            // If it is a loop it will discover its sub-jobs
+            // when it is armed.
+            if (!job->isLoop_) job->discoverJobs();
+        }
+    }
+}
+
 bool QDaqJob::setArmed(bool on)
 {
     if (on == armed_) return on;
 
     if (on) // arm
     {
-        // select my subjobs
-        subjobs_.clear();
-        foreach(QDaqObject* obj, children_)
-        {
-            QDaqJob* job = qobject_cast<QDaqJob*>(obj);
-            if (job) subjobs_ << job;
-        }
-
         // lock & arm me and my sub-jobs
         jobLock();
         bool ok = true;
@@ -140,23 +150,19 @@ bool QDaqJob::setArmed(bool on)
         // the job that failed must send an error
         if (!ok)
         {
-
             disarm_();
             foreach(QDaqJob* j, subjobs_)
                 if (!j->isLoop_) j->setArmed(false);
-
         }
 
-
-
         jobUnlock();
-
     }
     else // disarm
     {
         jobLock();
         disarm_();
-        foreach(QDaqJob* j, subjobs_) j->setArmed(false);
+        foreach(QDaqJob* j, subjobs_)
+            if (!j->isLoop_) j->setArmed(false);
         jobUnlock();
     }
 

@@ -128,24 +128,29 @@ protected:
      */
     virtual void disarm_();
 
-public:
-	bool armed() { return armed_; }
-
     /**
      * @brief Arms or disarms a job
      *
-     * If on is true then setArmed() is called for each child-job and
-     * finally arm_() is called to initialize this job. If any of those calls
+     * If on is true then setArmed() is called for each child-QDaqJob (not QDaqLoop)
+     * and finally arm_() is called to initialize this job.
+     * If any of those calls
      * return false the arming is aborted and false is returned.
      *
      * If on is false then disarm_() is called first and then setArmed() with parameter
      * false is
      * called for each child job.
      *
-     * @param on If true the job is armed else it is disarmed.
+     * This funtion is protected so that it cannot be called directly.
+     * QDaqJob objects are armed by their parent QDaqLoop, when calling
+     * QDaqLoop::arm().
+     *
+     * @param on If true the job is armed otherwise it is disarmed.
      * @return true if the operation was sucesfull.
      */
     bool setArmed(bool on);
+
+public:
+	bool armed() { return armed_; }
 
     const QString& runCode() const { return runCode_; }
     const QString& armCode() const { return armCode_; }
@@ -156,6 +161,8 @@ public:
     void setDisarmCode(const QString& s);
 
 protected:
+    // finds all subjobs
+    void discoverJobs();
 
     // a helper class to manage child-jobs
 	friend class JobList;
@@ -182,9 +189,15 @@ protected:
     JobList subjobs_;
 
     // lock my child jobs
-    void jobLock() { comm_lock.lock(); subjobs_.lock(); }
+    void jobLock() {
+        comm_lock.lock();
+        subjobs_.lock();
+    }
     // unlock my child jobs
-    void jobUnlock() { subjobs_.unlock(); comm_lock.unlock(); }
+    void jobUnlock() {
+        subjobs_.unlock();
+        comm_lock.unlock();
+    }
 
 protected:
     /**
@@ -243,7 +256,7 @@ public:
  * @ingroup Core
  * @ingroup ScriptAPI
 
-QDaqLoop is used to execute a number of child-jobs or child-loops.
+QDaqLoop is used to execute a number of child-jobs and/or child-loops.
 
 By setting the class properties we can arrange for a number of different
 execution scenarios:
@@ -255,10 +268,8 @@ execution scenarios:
 A QDaqLoop that has no QDaqLoop ancestor is considered a "top level loop"
 (isTop() returns true). Otherwise the loop is a child-loop.
 
-When arm() is called on a top level loop, a new timer thread is spawned that
+When arm() is called on a top level loop, a new QTimerThread is spawned that
 calls exec() at each timer repetition.
-
-The timer thread uses facilities of the operating system (see os::timer class).
 
 If arm() is called on a child loop, then it simply arms all child jobs.
 The exec() function of a child loop is called from the top level loop thread.
@@ -397,7 +408,11 @@ public slots:
      *
      * @return true if the loop is succesfully armed.
      */
-    bool arm() { return setArmed(true); }
+    bool arm() {
+        if (armed()) return true;
+        discoverJobs();
+        return setArmed(true);
+    }
 
     /// Disarm the loop.
     void disarm() { setArmed(false); }
