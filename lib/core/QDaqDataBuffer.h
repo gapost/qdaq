@@ -70,8 +70,8 @@ public:
     Q_ENUM(BufferType)
 
 protected:
-    virtual void writeh5(H5::Group* h5g) const;
-    virtual void readh5(H5::Group *h5g);
+    virtual void writeh5(H5::Group* h5g, QDaqH5File *f) const;
+    virtual void readh5(H5::Group *h5g, QDaqH5File *f);
 
 protected:
     // properties

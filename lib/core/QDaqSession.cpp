@@ -4,6 +4,7 @@
 #include "QDaqLogFile.h"
 #include "QDaqDelegates.h"
 #include "QDaqWindow.h"
+#include "qdaqh5file.h"
 
 #include <QScriptEngine>
 #include <QScriptEngineDebugger>
@@ -392,12 +393,17 @@ void QDaqSession::log__(int fd, const QString &str)
 }
 bool QDaqSession::h5write(const QDaqObject *obj, const QString &fname)
 {
-    QDaqObject::h5write(obj,fname);
+    QDaqH5File f;
+    bool ret = f.h5write(obj,fname);
+    if (!ret) engine_->currentContext()->throwError(QString("Error writing file: %1.").arg(f.lastError()));
     return true;
 }
 QDaqObject* QDaqSession::h5read(const QString &fname)
 {
-    return QDaqObject::h5read(fname);
+    QDaqH5File f;
+    QDaqObject* o = f.h5read(fname);
+    if (!o) engine_->currentContext()->throwError(QString("Error reading file: %1.").arg(f.lastError()));
+    return o;
 }
 QWidget* QDaqSession::loadUi(const QString &fname)
 {

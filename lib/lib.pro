@@ -65,7 +65,9 @@ SOURCES += \
     core/bytearrayclass.cpp \
     core/bytearrayprototype.cpp \
     core/QDaqFilter.cpp \
-    core/qtimerthread.cpp
+    core/qtimerthread.cpp \
+    core/h5helper_v1_0.cpp \
+    core/qdaqh5file.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -98,7 +100,9 @@ HEADERS  += \
     core/bytearrayprototype.h \
     core/QDaqFilter.h \
     core/qtimerthread.h \
-    core/qdaqplugin.h
+    core/qdaqplugin.h \
+    core/h5helper_v1_0.h \
+    core/qdaqh5file.h
 
 
 ## JSedit

@@ -20,6 +20,7 @@ class Group;
 
 class QDaqRoot;
 class QDaqObject;
+class QDaqH5File;
 
 /** A QList of QDaqObject pointers.
  *
@@ -134,7 +135,7 @@ protected:
      *
      * @param g HDF5 Group object
      */
-    virtual void writeh5(H5::Group* g) const;
+    virtual void writeh5(H5::Group* g, QDaqH5File* f) const;
     /**
      * @brief Read contents of the object from a H5 group
      *
@@ -145,18 +146,9 @@ protected:
      *
      * @param g HDF5 Group object
      */
-    virtual void readh5(H5::Group *g);
+    virtual void readh5(H5::Group *g, QDaqH5File* f);
 
-private:
-    // HDF5 serialization helpers
-    static void writeRecursive(H5::CommonFG* h5g, const QDaqObject* obj);
-    static void readRecursive(H5::CommonFG* h5g, QDaqObject* &parent_obj);
-
-public:
-    /// Serialize a QDaqObject to a HDF5 file.
-    static void h5write(const QDaqObject* obj, const QString& filename);
-    /// Load a QDaqObject from a HDF5 file.
-    static QDaqObject* h5read(const QString& filename);
+    friend class QDaqH5File;
 
 protected:
     // for handling child events
