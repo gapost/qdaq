@@ -350,5 +350,27 @@ Group h5helper_v1_0::createGroup(CommonFG* loc, const char* name)
     return loc->createGroup(name);
 }
 
+QByteArrayList h5helper_v1_0::getGroupNames(CommonFG* h5g, bool isRoot)
+{
+    Q_UNUSED(isRoot);
+
+    QByteArrayList names;
+
+    int n = h5g->getNumObjs();
+    for(int i=0; i<n; ++i)
+    {
+        H5G_obj_t typ = h5g->getObjTypeByIdx(i);
+        if (typ==H5G_GROUP)
+        {
+            QByteArray groupName;
+            groupName.fill('\0',256);
+            h5g->getObjnameByIdx(i,groupName.data(),256);
+            names.push_back(groupName);
+        }
+    }
+
+    return names;
+}
+
 
 

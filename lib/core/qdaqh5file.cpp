@@ -6,7 +6,7 @@
 
 #include <QDebug>
 
-#include "h5helper_v1_0.h"
+#include "h5helper_v1_1.h"
 
 #define CLASS_ATTR_NAME "Class"
 
@@ -45,8 +45,8 @@ bool QDaqH5File::h5write(const QDaqObject* obj, const QString& filename)
 
         helper()->write(file, "Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate));
         helper()->write(file, "FileType", "QDaq");
-        helper()->write(file, "FileVersionMajor", "1");
-        helper()->write(file, "FileVersionMinor", "0");
+        helper()->write(file, "FileVersionMajor", QString::number(helper()->major()));
+        helper()->write(file, "FileVersionMinor", QString::number(helper()->minor()));
 
         writeRecursive(file,obj);
 
@@ -103,11 +103,30 @@ bool QDaqH5File::h5write(const QDaqObject* obj, const QString& filename)
         S += error.getCDetailMsg();
     }
 
+    // catch failure caused by the DataType operations
+    catch( PropListIException error )
+    {
+        S = "HDF5 PropList Error.";
+        S += " In function ";
+        S += error.getCFuncName();
+        S += ". ";
+        S += error.getCDetailMsg();
+    }
+
+    // catch failure caused by the DataType operations
+    catch( GroupIException error )
+    {
+        S = "HDF5 Group Error.";
+        S += " In function ";
+        S += error.getCFuncName();
+        S += ". ";
+        S += error.getCDetailMsg();
+    }
+
     if (file) delete file;
 
     if (!S.isEmpty())
     {
-        obj->throwScriptError(S);
         qDebug() << S;
         lastError_ = S;
         return false;
@@ -140,15 +159,34 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
 
         QString fileType, vMajor, vMinor;
 
-        bool ret = helper()->read(file,"FileType",fileType) &&
-                helper()->read(file,"FileVersionMajor",vMajor) &&
-                helper()->read(file,"FileVersionMinor",vMinor) &&
-                fileType==QString("QDaq")
-                && vMajor==QString("1")
-                && vMinor==QString("0");
+        bool ret = helper()->read(file,"FileType",fileType);
+        if (!ret) {
+            lastError_ = "Error reading file: 'FileType' field not found";
+            return 0;
+        }
+        if (fileType!="QDaq") {
+            lastError_ = "Error reading file: 'FileType' is not 'QDaq'";
+            return 0;
+        }
+        ret = helper()->read(file,"FileVersionMajor",vMajor);
+        if (!ret) {
+            lastError_ = "Error reading file: 'FileVersionMajor' field not found";
+            return 0;
+        }
+        ret = helper()->read(file,"FileVersionMinor",vMinor);
+        if (!ret) {
+            lastError_ = "Error reading file: 'FileVersionMinor' field not found";
+            return 0;
+        }
+        Version fileVersion = toVersion(vMajor.toInt(),vMinor.toInt());
+        if (fileVersion==V_INVALID) {
+            lastError_ = QString("Error reading file: Not a valid version, vMajor = %1, vMinor = %2").arg(vMajor).arg(vMinor);
+            return 0;
+        }
 
-        if (ret) readRecursive(file,obj);
+        getHelper(fileVersion);
 
+        readRecursive(file,obj);
 
     }  // end of try block
 
@@ -202,11 +240,30 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
         S += error.getCDetailMsg();
     }
 
+    // catch failure caused by the DataType operations
+    catch( PropListIException error )
+    {
+        S = "HDF5 PropList Error.";
+        S += " In function ";
+        S += error.getCFuncName();
+        S += ". ";
+        S += error.getCDetailMsg();
+    }
+
+    // catch failure caused by the DataType operations
+    catch( GroupIException error )
+    {
+        S = "HDF5 Group Error.";
+        S += " In function ";
+        S += error.getCFuncName();
+        S += ". ";
+        S += error.getCDetailMsg();
+    }
+
     if (file) delete file;
 
     if (!S.isEmpty())
     {
-        //obj->throwScriptError(S);
         qDebug() << S;
         lastError_ = S;
     }
@@ -226,42 +283,47 @@ void QDaqH5File::writeRecursive(CommonFG* h5g, const QDaqObject* obj)
 
 void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
 {
-    int n = h5g->getNumObjs();
+    QByteArrayList groups = helper()->getGroupNames(h5g, parent_obj==0);
 
-    for(int i=0; i<n; ++i)
-    {
-        H5G_obj_t typ = h5g->getObjTypeByIdx(i);
-        if (typ==H5G_GROUP)
+    foreach(QByteArray groupName, groups) {
+        Group g = h5g->openGroup(groupName);
+        QString className;
+        if (helper()->read(&g,CLASS_ATTR_NAME,className))
         {
-            QByteArray groupName;
-            groupName.fill('\0',256);
-            h5g->getObjnameByIdx(i,groupName.data(),256);
-            Group g = h5g->openGroup(groupName);
-            QString className;
-            if (helper()->read(&g,CLASS_ATTR_NAME,className))
+            if (className=="QDaqRoot") className = "QDaqObject";
+            QDaqObject* obj  = QDaqObject::root()->createObject(groupName,className);
+            if (obj)
             {
-                if (className=="QDaqRoot") className = "QDaqObject";
-                QDaqObject* obj  = QDaqObject::root()->createObject(groupName,className);
-                if (obj)
-                {
-                    obj->setObjectName(groupName);
-                    obj->readh5(&g,this);
-                    readRecursive(&g, obj);
-                    if (parent_obj) parent_obj->appendChild(obj);
-                    else {
-                        parent_obj = obj;
-                        return;
-                    }
+                obj->setObjectName(groupName);
+                obj->readh5(&g,this);
+                readRecursive(&g, obj);
+                if (parent_obj) parent_obj->appendChild(obj);
+                else {
+                    parent_obj = obj;
+                    return;
                 }
-                else delete obj;
             }
+            else delete obj;
         }
     }
 }
 
 void QDaqH5File::getHelper(Version v)
 {
-    Q_UNUSED(v);
-    if (helper_) return;
-    else helper_ = new h5helper_v1_0;
+    if (helper_ && helper_->version()==v) return;
+
+    if (helper_) {
+        delete helper_;
+        helper_ = 0;
+    }
+
+    switch (v) {
+    case V_1_0:
+        helper_ = new h5helper_v1_0; return;
+    case V_1_1:
+        helper_ = new h5helper_v1_1; return;
+    default:
+        helper_ = new h5helper_v1_1; return;
+    }
+
 }

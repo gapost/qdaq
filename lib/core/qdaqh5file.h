@@ -18,8 +18,10 @@ class QDaqH5File
 {
 public:
     enum Version {
+        V_INVALID,
         V_1_0,
-        V_LAST = V_1_0
+        V_1_1,
+        V_LAST = V_1_1
     };
 
 private:
@@ -29,6 +31,13 @@ private:
     void getHelper(Version v);
     void writeRecursive(CommonFG* h5g, const QDaqObject* obj);
     void readRecursive(CommonFG* h5g, QDaqObject* &parent_obj);
+
+    static Version toVersion(int mj, int mn)
+    {
+        if (mj==1 && mn==0) return V_1_0;
+        if (mj==1 && mn==1) return V_1_1;
+        return V_INVALID;
+    }
 
 public:
     QDaqH5File();
@@ -47,14 +56,19 @@ public:
 
 class h5helper
 {
+protected:
     QDaqH5File::Version ver_;
+    int major_, minor_;
 public:
-    h5helper(QDaqH5File::Version v) : ver_(v)
+    h5helper(QDaqH5File::Version v, int mj, int mn) : ver_(v), major_(mj), minor_(mn)
     {}
     virtual ~h5helper()
     {}
 
     QDaqH5File::Version version() const { return ver_; }
+
+    int major() const { return major_; }
+    int minor() const { return minor_; }
 
     virtual void write(CommonFG* h5obj, const char* name, const int &v) = 0;
     virtual void write(CommonFG* h5obj, const char* name, const double& v) = 0;
@@ -76,6 +90,8 @@ public:
     virtual void readProperties(CommonFG* h5obj, QDaqObject* obj) = 0;
 
     virtual Group createGroup(CommonFG* loc, const char* name) = 0;
+
+    virtual QByteArrayList getGroupNames(CommonFG* h5obj, bool isRoot = false) = 0;
 };
 
 #endif // QDAQH5FILE_H

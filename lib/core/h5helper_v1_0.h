@@ -16,8 +16,9 @@
 class h5helper_v1_0 : public h5helper
 {
 public:
-    h5helper_v1_0() : h5helper(QDaqH5File::V_1_0)
+    h5helper_v1_0() : h5helper(QDaqH5File::V_1_0, 1, 0)
     {}
+
     virtual void write(CommonFG* h5obj, const char* name, const int &v);
     virtual void write(CommonFG* h5obj, const char* name, const double& v);
     virtual void write(CommonFG* h5obj, const char* name, const QString& S);
@@ -38,6 +39,8 @@ public:
     virtual void readProperties(CommonFG* h5obj, QDaqObject* obj);
 
     virtual Group createGroup(CommonFG* loc, const char* name);
+
+    virtual QByteArrayList getGroupNames(CommonFG* h5g, bool isRoot = false);
 };
 
 
