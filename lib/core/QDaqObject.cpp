@@ -365,6 +365,16 @@ QDaqObject* QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj
     return newobj;
 }
 
+bool QDaqObject::setQDaqProperty(const char *name, const QVariant &value)
+{
+    bool ret = setProperty(name,value);
+    if (!ret) {
+        if (value.isValid()) qdaqProps_.insert(QByteArray(name));
+        else qdaqProps_.remove(QByteArray(name));
+    }
+    return ret;
+}
+
 void QDaqObject::childEvent(QChildEvent *event)
 {
     QDaqObject* obj = qobject_cast<QDaqObject*>(event->child()); // maybe reinterpret??
@@ -373,12 +383,12 @@ void QDaqObject::childEvent(QChildEvent *event)
 
         if (event->added()) {
             if (i<0) children_.append(obj);
-            setProperty(obj->objectName().toLatin1().constData(),QVariant::fromValue(obj));
+            setQDaqProperty(obj->objectName().toLatin1().constData(),QVariant::fromValue(obj));
             if (isAttached()) obj->attach();
         }
         if (event->removed() && i>=0) {
             if (isAttached()) obj->detach();
-            setProperty(obj->objectName().toLatin1().constData(),QVariant());
+            setQDaqProperty(obj->objectName().toLatin1().constData(),QVariant());
             children_.removeAt(i);           
         }
     }
@@ -476,6 +486,13 @@ QDaqObject* QDaqObject::clone()
     return _clone;
 }
 
+QList<QByteArray> QDaqObject::dynamicPropertyNames() const
+{
+    QSet<QByteArray> all = QObject::dynamicPropertyNames().toSet();
+    all.subtract(qdaqProps_);
+    return all.toList();
+}
+
 
 
 
@@ -515,6 +532,7 @@ QList<QDaqError> QDaqErrorQueue::objectBackTrace(const QDaqObject* obj, int maxI
     }
     return errors;
 }
+
 
 
 

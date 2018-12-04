@@ -150,28 +150,27 @@ protected:
 
     friend class QDaqH5File;
 
-protected:
     // for handling child events
     virtual void childEvent ( QChildEvent * event );
+
+    // this is a duplicate to QtObjects's list
+    // so that we can handle child ordering stuff (insertBefore etc.)
+    QDaqObjectList children_;
+
+    QSet<QByteArray> qdaqProps_;
+
+    bool setQDaqProperty(const char* name, const QVariant& value);
+
+    // the root object
+    static QDaqRoot* root_;
 
 public:
     /// A recursive mutex for synching thread access to this object
     QMutex comm_lock;
 
-protected:
-    // the root object
-    static QDaqRoot* root_;
-
-public:
     /// Obtain a pointer to the one-and-only QDaqRoot object.
     static QDaqRoot* root() { return root_; }
 
-protected:
-    // this is a duplicate to QtObjects's list
-    // so that we can handle child ordering stuff (insertBefore etc.)
-    QDaqObjectList children_;
-
-public:
     /** Construct a QDaqObject with a name.
      *
      * The name is actually the objectName property of the QObject super-class.
@@ -216,6 +215,8 @@ public:
      *
      */
     static QDaqObject* fromPath(const QString& path);
+
+    QList<QByteArray> dynamicPropertyNames() const;
 
 public slots:
 
