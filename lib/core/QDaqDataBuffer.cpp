@@ -77,7 +77,7 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
 	channel_objects.clear();
 	channel_ptrs.clear();
     foreach(const QString& str, columnNames_)
-        setProperty(str.toLatin1(),QVariant());
+        setQDaqProperty(str.toLatin1(),QVariant());
     columnNames_.clear();
 
 	// create channels
@@ -103,7 +103,42 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
     for(int i=0; i<data_matrix.size(); ++i) {
         QString str = columnNames_.at(i);
         QVariant v = QVariant::fromValue(data_matrix[i]);
-        setProperty(str.toLatin1(),v);
+        setQDaqProperty(str.toLatin1(),v);
+    }
+
+    emit propertiesChanged();
+
+}
+
+void QDaqDataBuffer::setColumnNames(QStringList collist)
+{
+    QMutexLocker L(&comm_lock);
+
+    // clear previous channels & columns
+    channel_objects.clear();
+    channel_ptrs.clear();
+    foreach(const QString& str, columnNames_)
+        setQDaqProperty(str.toLatin1(),QVariant());
+    columnNames_.clear();
+
+    // create channels
+    columnNames_ = collist;
+
+    uint cap_ = capacity();
+    data_matrix = matrix_t(collist.size());
+    // restore the capacity && type
+    for(int i=0; i<data_matrix.size(); i++)
+    {
+        data_matrix[i].setCapacity(cap_);
+        data_matrix[i].setType((vector_t::StorageType)type_);
+    }
+
+    setupBackBuffer();
+
+    for(int i=0; i<data_matrix.size(); ++i) {
+        QString str = columnNames_.at(i);
+        QVariant v = QVariant::fromValue(data_matrix[i]);
+        setQDaqProperty(str.toLatin1(),v);
     }
 
     emit propertiesChanged();

@@ -48,7 +48,7 @@ class QDAQ_EXPORT QDaqDataBuffer : public QDaqJob
     /// A QList of the channels monitored by this object.
     Q_PROPERTY(QDaqObjectList channels READ channels WRITE setChannels STORED false)
     /// A list of column names.
-    Q_PROPERTY(QStringList columnNames READ columnNames)
+    Q_PROPERTY(QStringList columnNames READ columnNames WRITE setColumnNames)
 
 protected:
     // typedefs of channel ptr, channel vector, matrix
@@ -125,6 +125,7 @@ public:
 	void setCapacity(uint cap);
 	void setType(BufferType t);
     void setChannels(QDaqObjectList chlist);
+    void setColumnNames(QStringList collist);
 
 signals:
     // emitted when a data packet becomes available
