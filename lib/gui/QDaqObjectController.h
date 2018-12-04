@@ -52,7 +52,7 @@
 
 class QDaqObjectControllerPrivate;
 class QtProperty;
-
+class QDaqObject;
 
 class QDAQ_EXPORT QDaqObjectController : public QWidget
 {
@@ -61,11 +61,12 @@ public:
     QDaqObjectController(QWidget *parent = 0);
     ~QDaqObjectController();
 
-    void setObject(QObject *object);
-    QObject *object() const;
+    void setObject(QDaqObject *object);
+    QDaqObject *object() const;
 
-public: // slots:
-	Q_SLOT void updateProperties();
+public slots:
+    void updateProperties();
+    void updateDynamicProperties();
 
 private:
     QDaqObjectControllerPrivate *d_ptr;
@@ -73,7 +74,8 @@ private:
     Q_DISABLE_COPY(QDaqObjectController)
 
 	//Q_PRIVATE_SLOT(d_func(), void slotValueChanged(QtProperty *, const QVariant &))
-	Q_SLOT void valueChanged(QtProperty*, const QVariant&);
+private slots:
+    void valueChanged(QtProperty*, const QVariant&);
 };
 
 

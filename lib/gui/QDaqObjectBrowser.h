@@ -52,6 +52,8 @@ public:
     QDaqPropertyBrowser(QWidget *parent = 0);
     ~QDaqPropertyBrowser();
 
+    virtual bool eventFilter(QObject *watched, QEvent *event);
+
 public slots:
     void setQDaqObject(QDaqObject* obj);
 

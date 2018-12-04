@@ -66,20 +66,12 @@ bool isQDaqType(int type)
             type == qMetaTypeId<QDaqIntVector>() ||
             type == qMetaTypeId<QDaqUintVector>() ||
             type == qMetaTypeId<QDaqVector>() ||
-            type == qMetaTypeId<QStringList>();
+            type == qMetaTypeId<QStringList>() ||
+            type == qMetaTypeId<QVariantList>();
 
 }
 
-bool isQDaqType(QVariant v)
-{
-    return v.canConvert<QDaqObject*>() ||
-            v.canConvert<QDaqObjectList>() ||
-            v.canConvert<QDaqIntVector>() ||
-            v.canConvert<QDaqUintVector>() ||
-            v.canConvert<QDaqVector>() ||
-            v.type() == QVariant::StringList;
-
-}
+bool isQDaqType(const QVariant& v) { return isQDaqType(v.userType()); }
 
 template <class T>
 QString qdaqVectorTypeToString(const QVariant& var)
@@ -96,15 +88,16 @@ QString qdaqVectorTypeToString(const QVariant& var)
 }
 QString qdaqTypeToString(const QVariant& v)
 {
-    if (v.canConvert<QDaqIntVector>()) return qdaqVectorTypeToString<QDaqIntVector>(v);
-    else if (v.canConvert<QDaqUintVector>()) return qdaqVectorTypeToString<QDaqUintVector>(v);
-    else if (v.canConvert<QDaqVector>()) return qdaqVectorTypeToString<QDaqVector>(v);
-    else if (v.canConvert<QDaqObject*>()) {
+    int type = v.userType();
+    if (type == qMetaTypeId<QDaqIntVector>()) return qdaqVectorTypeToString<QDaqIntVector>(v);
+    else if (type == qMetaTypeId<QDaqUintVector>()) return qdaqVectorTypeToString<QDaqUintVector>(v);
+    else if (type == qMetaTypeId<QDaqVector>()) return qdaqVectorTypeToString<QDaqVector>(v);
+    else if (type == qMetaTypeId<QDaqObject*>()) {
         QDaqObject* obj = v.value<QDaqObject*>();
         if (obj) return obj->path();
         else return QString();
     }
-    else if (v.canConvert<QDaqObjectList>()) {
+    else if (type == qMetaTypeId<QDaqObjectList>()) {
         QDaqObjectList lst = v.value<QDaqObjectList>();
         QString str('[');
         for(int i=0; i<lst.size(); i++) {
@@ -116,11 +109,22 @@ QString qdaqTypeToString(const QVariant& v)
         str += "]";
         return str;
     }
-    else if (v.canConvert<QStringList>()) {
+    else if (type == QMetaType::QStringList) {
         QStringList lst = v.value<QStringList>();
         QString str('[');
         for(int i=0; i<lst.size(); i++) {
             QString s = lst.at(i);
+            str += s;
+            if (i<lst.size()-1) str += ",";
+        }
+        str += "]";
+        return str;
+    }
+    else if (type == QMetaType::QVariantList) {
+        QVariantList lst = v.value<QVariantList>();
+        QString str('[');
+        for(int i=0; i<lst.size(); i++) {
+            QString s = lst.at(i).toString();
             str += s;
             if (i<lst.size()-1) str += ",";
         }
@@ -173,7 +177,9 @@ QString VariantManager::valueText(const QtProperty *property) const
 
 void VariantManager::setValue(QtProperty *property, const QVariant &val)
 {
-QtVariantPropertyManager::setValue(property, val);
+   QtVariantPropertyManager::setValue(property, val);
+   //QVariant chk = value(property);
+   //Q_ASSERT(val==chk);
 }
 
 void VariantManager::initializeProperty(QtProperty *property)
@@ -194,6 +200,10 @@ public:
 
     void addClassProperties(const QMetaObject *metaObject);
     void updateClassProperties(const QMetaObject *metaObject, bool recursive);
+
+    void addDynProperties();
+    void updateDynProperties();
+
     void saveExpandedState();
     void restoreExpandedState();
     void slotValueChanged(QtProperty *property, const QVariant &value);
@@ -204,7 +214,7 @@ public:
     bool isSubValue(int value, int subValue) const;
     bool isPowerOf2(int value) const;
 
-    QObject                  *m_object;
+    QDaqObject                  *m_object;
 
     QMap<const QMetaObject *, QtProperty *> m_classToProperty;
     QMap<QtProperty *, const QMetaObject *> m_propertyToClass;
@@ -212,6 +222,9 @@ public:
     QMap<const QMetaObject *, QMap<int, QtVariantProperty *> > m_classToIndexToProperty;
 
     QMap<QtProperty *, bool>    m_propertyToExpanded;
+
+    QMap<QByteArray, QtVariantProperty *> m_dynPropNameToProperty;
+    QMap<QtVariantProperty *, QByteArray> m_propertyToDynPropName;
 
     QList<QtProperty *>         m_topLevelProperties;
 
@@ -356,6 +369,19 @@ void QDaqObjectControllerPrivate::updateClassProperties(const QMetaObject *metaO
     }
 }
 
+void QDaqObjectControllerPrivate::updateDynProperties()
+{
+    QByteArrayList dynProps = m_object->dynamicPropertyNames();
+    foreach(const QByteArray& propName, dynProps) {
+        if (m_dynPropNameToProperty.contains(propName)) {
+            QtVariantProperty *subProperty = m_dynPropNameToProperty[propName];
+            QVariant var = m_object->property(propName.constData());
+            if (isQDaqType(var)) subProperty->setValue(qdaqTypeToString(var));
+            else subProperty->setValue(var);
+        }
+    }
+}
+
 void QDaqObjectControllerPrivate::addClassProperties(const QMetaObject *metaObject)
 {
     //if (!metaObject)
@@ -364,19 +390,19 @@ void QDaqObjectControllerPrivate::addClassProperties(const QMetaObject *metaObje
 
     addClassProperties(metaObject->superClass());
 
+    QString className = QLatin1String(metaObject->className());
     QtProperty *classProperty = m_classToProperty.value(metaObject);
     if (!classProperty) {
-        QString className = QLatin1String(metaObject->className());
         classProperty = m_manager->addProperty(QtVariantPropertyManager::groupTypeId(), className);
         m_classToProperty[metaObject] = classProperty;
         m_propertyToClass[classProperty] = metaObject;
 
-        for (int idx = metaObject->propertyOffset(); idx < metaObject->propertyCount(); idx++) {
+        int idx = metaObject->propertyOffset();
+        for (; idx < metaObject->propertyCount(); idx++) {
             QMetaProperty metaProperty = metaObject->property(idx);
             int type = metaProperty.userType();
             QtVariantProperty *subProperty = 0;
             QVariant var;
-            int rtType;
             if (!metaProperty.isReadable()) {
                 subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
                 subProperty->setValue(QLatin1String("< Non Readable >"));
@@ -411,7 +437,7 @@ void QDaqObjectControllerPrivate::addClassProperties(const QMetaObject *metaObje
 					int i = *reinterpret_cast<const int *>(metaProperty.read(m_object).constData());
                     subProperty->setValue(enumToInt(metaEnum, i));
                }
-            } else if ((rtType = isQDaqType(var = metaProperty.read(m_object)))) {
+            } else if (isQDaqType(type)) {
                 // TODO
 //                if (!metaProperty.isWritable())
 //                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Writable)"));
@@ -429,7 +455,7 @@ void QDaqObjectControllerPrivate::addClassProperties(const QMetaObject *metaObje
                 if (!metaProperty.isDesignable())
                     subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Designable)"));
                 else
-                    subProperty = m_manager->addProperty(type, QLatin1String(metaProperty.name()));
+                subProperty = m_manager->addProperty(type, QLatin1String(metaProperty.name()));
                 subProperty->setValue(metaProperty.read(m_object));
 			} else if (type == QVariant::UInt) {
 				type = QVariant::Int;
@@ -450,12 +476,62 @@ void QDaqObjectControllerPrivate::addClassProperties(const QMetaObject *metaObje
             m_propertyToIndex[subProperty] = idx;
             m_classToIndexToProperty[metaObject][idx] = subProperty;
         }
+
     } else {
         updateClassProperties(metaObject, false);
     }
 
     m_topLevelProperties.append(classProperty);
     m_browser->addProperty(classProperty);
+}
+
+void QDaqObjectControllerPrivate::addDynProperties()
+{
+    QtProperty *classProperty = m_classToProperty.value(&QDaqObject::staticMetaObject);
+
+    QList<QtVariantProperty*> lst = m_dynPropNameToProperty.values();
+    QListIterator<QtVariantProperty *> it(lst);
+    while (it.hasNext()) {
+        classProperty->removeSubProperty(it.next());
+    }
+    m_dynPropNameToProperty.clear();
+    m_propertyToDynPropName.clear();
+
+    QByteArrayList dynProps = m_object->dynamicPropertyNames();
+    QStringList sorted;
+    foreach(const QByteArray& propName, dynProps) sorted << QString(propName);
+    sorted.sort();
+
+    foreach(const QString& propNameStr, sorted) {
+        QByteArray propName = propNameStr.toLatin1();
+        QVariant var = m_object->property(propName.constData());
+        int type = var.userType();
+        QtVariantProperty *subProperty = 0;
+        if (isQDaqType(type)) {
+            subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(propName));
+            subProperty->setValue(qdaqTypeToString(var));
+            subProperty->setEnabled(false);
+        } else if (m_manager->isPropertyTypeSupported(type)) {
+            subProperty = m_manager->addProperty(type, QLatin1String(propName));
+            subProperty->setValue(var);
+        } else if (type == QVariant::UInt) {
+            type = QVariant::Int;
+            subProperty = m_manager->addProperty(type, QLatin1String(propName));
+            subProperty->setValue(var);
+            subProperty->setAttribute("minimum",QVariant((int)0));
+        } else { // could not convert the type
+            subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(propName));
+            QString str = var.toString();
+            if (str.isEmpty()) {
+                subProperty->setValue(QLatin1String("< Unknown Type >"));
+                subProperty->setEnabled(false);
+            } else subProperty->setValue(str);
+
+        }
+        classProperty->addSubProperty(subProperty);
+        m_dynPropNameToProperty[propName] = subProperty;
+        m_propertyToDynPropName[subProperty] = propName;
+    }
 }
 
 void QDaqObjectControllerPrivate::saveExpandedState()
@@ -470,8 +546,8 @@ void QDaqObjectControllerPrivate::restoreExpandedState()
 
 void QDaqObjectControllerPrivate::slotValueChanged(QtProperty *property, const QVariant &value)
 {
-    if (!m_propertyToIndex.contains(property))
-        return;
+    if (m_propertyToIndex.contains(property)) {
+
 
     int idx = m_propertyToIndex.value(property);
 
@@ -487,6 +563,16 @@ void QDaqObjectControllerPrivate::slotValueChanged(QtProperty *property, const Q
     }
 
     updateClassProperties(metaObject, true);
+
+    return;
+    }
+
+    if (m_propertyToDynPropName.contains((QtVariantProperty*)property))
+    {
+        QByteArray propName = m_propertyToDynPropName.value((QtVariantProperty*)property);
+        m_object->setProperty(propName,value);
+        updateDynProperties();
+    }
 }
 
 ///////////////////
@@ -536,7 +622,7 @@ QDaqObjectController::~QDaqObjectController()
     delete d_ptr;
 }
 
-void QDaqObjectController::setObject(QObject *object)
+void QDaqObjectController::setObject(QDaqObject *object)
 {
     if (d_ptr->m_object == object)
         return;
@@ -556,11 +642,12 @@ void QDaqObjectController::setObject(QObject *object)
         return;
 
     d_ptr->addClassProperties(d_ptr->m_object->metaObject());
+    d_ptr->addDynProperties();
 
     d_ptr->restoreExpandedState();
 }
 
-QObject *QDaqObjectController::object() const
+QDaqObject *QDaqObjectController::object() const
 {
     return d_ptr->m_object;
 }
@@ -569,6 +656,12 @@ void QDaqObjectController::updateProperties()
 {
 	d_ptr->updateClassProperties(object()->metaObject(), true);
 }
+
+void QDaqObjectController::updateDynamicProperties()
+{
+    d_ptr->addDynProperties();
+}
+
 
 
 

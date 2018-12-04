@@ -25,8 +25,7 @@ DISTFILES += \
     scripts/testKeithley.js \
     scripts/test3706.js \
     scripts/data.json \
-    scripts/testConsolewidget.js \
-    scripts/testDynProp.js
+    scripts/testConsolewidget.js
 
 FORMS += \
     ui/cryoTemperatureControl.ui \

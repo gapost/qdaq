@@ -97,7 +97,7 @@ void QDaqPropertyBrowser::setQDaqObject(QDaqObject* obj)
 	{
 		disconnect(old_obj,SIGNAL(propertiesChanged()),objectController,SLOT(updateProperties()));
         disconnect(old_obj,SIGNAL(destroyed(QObject*)),this,SLOT(removeQDaqObject()));
-		//currentObject->setText("");
+        old_obj->removeEventFilter(this);
 	}
 
 	objectController->setObject(obj);
@@ -105,7 +105,18 @@ void QDaqPropertyBrowser::setQDaqObject(QDaqObject* obj)
 	{
 		connect(obj,SIGNAL(propertiesChanged()),objectController,SLOT(updateProperties()));
         connect(obj,SIGNAL(destroyed(QObject*)),this,SLOT(removeQDaqObject()));
+        obj->installEventFilter(this);
 	}
+}
+
+bool QDaqPropertyBrowser::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == objectController->object() &&
+        event->type() == QEvent::DynamicPropertyChange)
+            objectController->updateDynamicProperties();
+
+    // pass the event on to the parent class
+    return QWidget::eventFilter(obj, event);
 }
 
 
