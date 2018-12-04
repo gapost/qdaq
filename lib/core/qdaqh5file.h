@@ -59,6 +59,10 @@ class h5helper
 protected:
     QDaqH5File::Version ver_;
     int major_, minor_;
+
+    virtual void writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object) = 0;
+    virtual void readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object) = 0;
+
 public:
     h5helper(QDaqH5File::Version v, int mj, int mn) : ver_(v), major_(mj), minor_(mn)
     {}

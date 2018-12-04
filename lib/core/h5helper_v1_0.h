@@ -15,6 +15,11 @@
 
 class h5helper_v1_0 : public h5helper
 {
+protected:
+    virtual void writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object);
+    virtual void readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object);
+
+
 public:
     h5helper_v1_0() : h5helper(QDaqH5File::V_1_0, 1, 0)
     {}

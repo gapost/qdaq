@@ -261,13 +261,17 @@ void h5helper_v1_0::writeProperties(CommonFG* h5obj, const QDaqObject* m_object,
     }
 
     // write the object's dynamic properties
-    if (metaObject==m_object->metaObject()) {
-        if (!m_object->dynamicPropertyNames().isEmpty()) {
-            foreach(const QByteArray& ba, m_object->dynamicPropertyNames())
-            {
-                QVariant v = m_object->property(ba.constData());
-                write(h5obj,ba.constData(),v.toString());
-            }
+    if (metaObject==m_object->metaObject()) writeDynamicProperties(h5obj,m_object);
+
+}
+
+void h5helper_v1_0::writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object)
+{
+    if (!m_object->dynamicPropertyNames().isEmpty()) {
+        foreach(const QByteArray& ba, m_object->dynamicPropertyNames())
+        {
+            QVariant v = m_object->property(ba.constData());
+            write(h5obj,ba.constData(),v.toString());
         }
     }
 }
@@ -343,6 +347,14 @@ void h5helper_v1_0::readProperties(CommonFG *h5obj, QDaqObject* obj)
             }
         }
     }
+
+    readDynamicProperties(h5obj,obj);
+}
+
+void h5helper_v1_0::readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object)
+{
+    Q_UNUSED(h5obj);
+    Q_UNUSED(m_object);
 }
 
 Group h5helper_v1_0::createGroup(CommonFG* loc, const char* name)
