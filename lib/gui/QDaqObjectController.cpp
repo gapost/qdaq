@@ -59,8 +59,7 @@
 #include "QDaqTypes.h"
 #include "QDaqObject.h"
 
-bool isQDaqType(int type)
-{
+bool isQDaqType(int type) {
     return type == qMetaTypeId<QDaqObject*>() ||
             type == qMetaTypeId<QDaqObjectList>() ||
             type == qMetaTypeId<QDaqIntVector>() ||
@@ -69,9 +68,28 @@ bool isQDaqType(int type)
             type == qMetaTypeId<QStringList>() ||
             type == qMetaTypeId<QVariantList>();
 
+    return false;
 }
 
-bool isQDaqType(const QVariant& v) { return isQDaqType(v.userType()); }
+bool isQDaqType(const QVariant& v) {
+    int type = v.userType();
+
+    if (type == qMetaTypeId<QDaqObject*>() ||
+            type == qMetaTypeId<QDaqObjectList>() ||
+            type == qMetaTypeId<QDaqIntVector>() ||
+            type == qMetaTypeId<QDaqUintVector>() ||
+            type == qMetaTypeId<QDaqVector>() ||
+            type == qMetaTypeId<QStringList>() ||
+            type == qMetaTypeId<QVariantList>()) return true;
+
+    if (type==QMetaType::QObjectStar) {
+        QObject* obj = v.value<QObject*>();
+        QDaqObject* dacobj = qobject_cast<QDaqObject*>(obj);
+        if (dacobj) return true;
+    }
+
+    return false;
+}
 
 template <class T>
 QString qdaqVectorTypeToString(const QVariant& var)
@@ -92,6 +110,11 @@ QString qdaqTypeToString(const QVariant& v)
     if (type == qMetaTypeId<QDaqIntVector>()) return qdaqVectorTypeToString<QDaqIntVector>(v);
     else if (type == qMetaTypeId<QDaqUintVector>()) return qdaqVectorTypeToString<QDaqUintVector>(v);
     else if (type == qMetaTypeId<QDaqVector>()) return qdaqVectorTypeToString<QDaqVector>(v);
+    else if (type == QMetaType::QObjectStar) {
+        QDaqObject* obj = qobject_cast<QDaqObject*>(v.value<QObject*>());
+        if (obj) return obj->path();
+        else return QString();
+    }
     else if (type == qMetaTypeId<QDaqObject*>()) {
         QDaqObject* obj = v.value<QDaqObject*>();
         if (obj) return obj->path();
@@ -402,79 +425,82 @@ void QDaqObjectControllerPrivate::addClassProperties(const QMetaObject *metaObje
             QMetaProperty metaProperty = metaObject->property(idx);
             int type = metaProperty.userType();
             QtVariantProperty *subProperty = 0;
-            QVariant var;
+
             if (!metaProperty.isReadable()) {
                 subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
                 subProperty->setValue(QLatin1String("< Non Readable >"));
-            } else if (metaProperty.isEnumType()) {
-                if (metaProperty.isFlagType()) {
-                    subProperty = m_manager->addProperty(QtVariantPropertyManager::flagTypeId(), QLatin1String(metaProperty.name()));
-                    QMetaEnum metaEnum = metaProperty.enumerator();
-                    QMap<int, bool> valueMap;
-                    QStringList flagNames;
-                    for (int i = 0; i < metaEnum.keyCount(); i++) {
-                        int value = metaEnum.value(i);
-                        if (!valueMap.contains(value) && isPowerOf2(value)) {
-                            valueMap[value] = true;
-                            flagNames.append(QLatin1String(metaEnum.key(i)));
+            } else {
+                QVariant var = metaProperty.read(m_object);
+                if (metaProperty.isEnumType()) {
+                    if (metaProperty.isFlagType()) {
+                        subProperty = m_manager->addProperty(QtVariantPropertyManager::flagTypeId(), QLatin1String(metaProperty.name()));
+                        QMetaEnum metaEnum = metaProperty.enumerator();
+                        QMap<int, bool> valueMap;
+                        QStringList flagNames;
+                        for (int i = 0; i < metaEnum.keyCount(); i++) {
+                            int value = metaEnum.value(i);
+                            if (!valueMap.contains(value) && isPowerOf2(value)) {
+                                valueMap[value] = true;
+                                flagNames.append(QLatin1String(metaEnum.key(i)));
+                            }
+                            subProperty->setAttribute(QLatin1String("flagNames"), flagNames);
+                            subProperty->setValue(flagToInt(metaEnum, var.toInt()));
                         }
-                    subProperty->setAttribute(QLatin1String("flagNames"), flagNames);
-                    subProperty->setValue(flagToInt(metaEnum, metaProperty.read(m_object).toInt()));
-                    }
-                } else {
-                    subProperty = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), QLatin1String(metaProperty.name()));
-                    QMetaEnum metaEnum = metaProperty.enumerator();
-                    QMap<int, bool> valueMap; // dont show multiple enum values which have the same values
-                    QStringList enumNames;
-                    for (int i = 0; i < metaEnum.keyCount(); i++) {
-                        int value = metaEnum.value(i);
-                        if (!valueMap.contains(value)) {
-                            valueMap[value] = true;
-                            enumNames.append(QLatin1String(metaEnum.key(i)));
+                    } else {
+                        subProperty = m_manager->addProperty(QtVariantPropertyManager::enumTypeId(), QLatin1String(metaProperty.name()));
+                        QMetaEnum metaEnum = metaProperty.enumerator();
+                        QMap<int, bool> valueMap; // dont show multiple enum values which have the same values
+                        QStringList enumNames;
+                        for (int i = 0; i < metaEnum.keyCount(); i++) {
+                            int value = metaEnum.value(i);
+                            if (!valueMap.contains(value)) {
+                                valueMap[value] = true;
+                                enumNames.append(QLatin1String(metaEnum.key(i)));
+                            }
                         }
+                        subProperty->setAttribute(QLatin1String("enumNames"), enumNames);
+                        int i = *reinterpret_cast<const int *>(var.constData());
+                        subProperty->setValue(enumToInt(metaEnum, i));
                     }
-                    subProperty->setAttribute(QLatin1String("enumNames"), enumNames);
-					int i = *reinterpret_cast<const int *>(metaProperty.read(m_object).constData());
-                    subProperty->setValue(enumToInt(metaEnum, i));
-               }
-            } else if (isQDaqType(type)) {
-                // TODO
-//                if (!metaProperty.isWritable())
-//                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Writable)"));
-//                if (!metaProperty.isDesignable())
-//                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Designable)"));
-//                else
-//                    subProperty = m_manager->addProperty(type, QLatin1String(metaProperty.name()));
-//                subProperty->setValue(var);
-                subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
-                subProperty->setValue(qdaqTypeToString(var));
-                subProperty->setEnabled(false);
-            } else if (m_manager->isPropertyTypeSupported(type)) {
-                if (!metaProperty.isWritable())
-                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Writable)"));
-                if (!metaProperty.isDesignable())
-                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Designable)"));
-                else
-                subProperty = m_manager->addProperty(type, QLatin1String(metaProperty.name()));
-                subProperty->setValue(metaProperty.read(m_object));
-			} else if (type == QVariant::UInt) {
-				type = QVariant::Int;
-                if (!metaProperty.isWritable())
-                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Writable)"));
-                if (!metaProperty.isDesignable())
-                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Designable)"));
-                else
-                    subProperty = m_manager->addProperty(type, QLatin1String(metaProperty.name()));
-                subProperty->setValue(metaProperty.read(m_object));
-				subProperty->setAttribute("minimum",QVariant((int)0));
-            } else { // could not convert the type
-                subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
-                subProperty->setValue(QLatin1String("< Unknown Type >"));
-                subProperty->setEnabled(false);
+                } else if (isQDaqType(var)) {
+                    // TODO
+                    //                if (!metaProperty.isWritable())
+                    //                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Writable)"));
+                    //                if (!metaProperty.isDesignable())
+                    //                    subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Designable)"));
+                    //                else
+                    //                    subProperty = m_manager->addProperty(type, QLatin1String(metaProperty.name()));
+                    //                subProperty->setValue(var);
+                    subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
+                    subProperty->setValue(qdaqTypeToString(var));
+                    subProperty->setEnabled(false);
+                } else if (m_manager->isPropertyTypeSupported(type)) {
+                    if (!metaProperty.isWritable())
+                        subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Writable)"));
+                    if (!metaProperty.isDesignable())
+                        subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Designable)"));
+                    else
+                        subProperty = m_manager->addProperty(type, QLatin1String(metaProperty.name()));
+                    subProperty->setValue(var);
+                } else if (type == QVariant::UInt) {
+                    type = QVariant::Int;
+                    if (!metaProperty.isWritable())
+                        subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Writable)"));
+                    if (!metaProperty.isDesignable())
+                        subProperty = m_readOnlyManager->addProperty(type, QLatin1String(metaProperty.name()) + QLatin1String(" (Non Designable)"));
+                    else
+                        subProperty = m_manager->addProperty(type, QLatin1String(metaProperty.name()));
+                    subProperty->setValue(var);
+                    subProperty->setAttribute("minimum",QVariant((int)0));
+                } else { // could not convert the type
+                    subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
+                    subProperty->setValue(QLatin1String(var.typeName()));
+                    subProperty->setEnabled(false);
+                }
+                classProperty->addSubProperty(subProperty);
+                m_propertyToIndex[subProperty] = idx;
+                m_classToIndexToProperty[metaObject][idx] = subProperty;
             }
-            classProperty->addSubProperty(subProperty);
-            m_propertyToIndex[subProperty] = idx;
-            m_classToIndexToProperty[metaObject][idx] = subProperty;
         }
 
     } else {
@@ -507,7 +533,7 @@ void QDaqObjectControllerPrivate::addDynProperties()
         QVariant var = m_object->property(propName.constData());
         int type = var.userType();
         QtVariantProperty *subProperty = 0;
-        if (isQDaqType(type)) {
+        if (isQDaqType(var)) {
             subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(propName));
             subProperty->setValue(qdaqTypeToString(var));
             subProperty->setEnabled(false);
@@ -523,7 +549,7 @@ void QDaqObjectControllerPrivate::addDynProperties()
             subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(propName));
             QString str = var.toString();
             if (str.isEmpty()) {
-                subProperty->setValue(QLatin1String("< Unknown Type >"));
+                subProperty->setValue(QLatin1String(var.typeName()));
                 subProperty->setEnabled(false);
             } else subProperty->setValue(str);
 
