@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QExplicitlySharedDataPointer>
 #include <QMetaType>
+#include <QScriptValue>
 
 /** @addtogroup Types
  *  @{
@@ -23,8 +24,13 @@ Q_DECLARE_METATYPE(QDaqUintVector)
 Q_DECLARE_METATYPE(QDaqVector)
 
 class QScriptEngine;
+class QDaqObject;
 
 int registerQDaqTypes(QScriptEngine* eng);
+
+QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject* const  &obj, int ownership = 2);
+QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject* const &obj, int ownership = 2);
+void fromScriptValue(const QScriptValue &value, QDaqObject* &obj);
 
 #include <QString>
 #include <QDateTime>

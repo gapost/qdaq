@@ -37,20 +37,13 @@ QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScrip
 
     if (context->isCalledAsConstructor())
     {
-        QScriptValue scriptObj = engine->newQObject(context->thisObject(), obj, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeDeleteLater |
-                                                    QScriptEngine::AutoCreateDynamicProperties |
-                                                    QScriptEngine::PreferExistingWrapperObject |
-                                                    QScriptEngine::ExcludeChildObjects);
+        QScriptValue scriptObj = toScriptValue(engine, context->thisObject(), obj);
 
         return scriptObj;
     }
 
-    QScriptValue scriptObj = engine->newQObject(obj, QScriptEngine::AutoOwnership,
-                                                QScriptEngine::ExcludeDeleteLater |
-                                                QScriptEngine::AutoCreateDynamicProperties |
-                                                QScriptEngine::PreferExistingWrapperObject |
-                                                QScriptEngine::ExcludeChildObjects);
+    QScriptValue scriptObj = toScriptValue(engine, obj);
+
     scriptObj.setPrototype(context->callee().property(QString::fromLatin1("prototype")));
     return scriptObj;
 }
@@ -77,15 +70,9 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
     QDaqObject* qdaq = QDaqObject::root();
 
-    QScriptValue rootObj = engine_->newQObject(qdaq,
-                                               QScriptEngine::QtOwnership,
-                                               QScriptEngine::ExcludeDeleteLater |
-                                               QScriptEngine::AutoCreateDynamicProperties |
-                                               QScriptEngine::PreferExistingWrapperObject |
-                                               QScriptEngine::ExcludeChildObjects
-                                               );
+    QScriptValue rootObj = toScriptValue(engine_, qdaq, QScriptEngine::QtOwnership);
 
-    self.setProperty("qdaq", rootObj, QScriptValue::Undeletable);
+    self.setProperty("qdaq", rootObj, QScriptValue::Undeletable | QScriptValue::ReadOnly);
 
 	engine_->setGlobalObject(self);
 

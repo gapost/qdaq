@@ -36,7 +36,7 @@ void fromScriptValue(const QScriptValue &obj, QPointF &p)
 
 
 template <class Container>
-QScriptValue toScriptValue(QScriptEngine *eng, const Container &cont)
+QScriptValue toScriptValueContainer(QScriptEngine *eng, const Container &cont)
 {
     QScriptValue a = eng->newArray();
     typename Container::const_iterator begin = cont.begin();
@@ -48,7 +48,7 @@ QScriptValue toScriptValue(QScriptEngine *eng, const Container &cont)
 }
 
 template <class Container>
-void fromScriptValue(const QScriptValue &value, Container &cont)
+void fromScriptValueContainer(const QScriptValue &value, Container &cont)
 {
     quint32 len = value.property("length").toUInt32();
     for (quint32 i = 0; i < len; ++i) {
@@ -58,20 +58,23 @@ void fromScriptValue(const QScriptValue &value, Container &cont)
     }
 }
 
-typedef QDaqObject* QDaqObjectStar;
-typedef QObject* QObjectStar;
-
-QScriptValue toScriptValue(QScriptEngine *eng, const QDaqObjectStar& obj)
+QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject * const &obj, int ownership)
 {
-    return eng->newQObject(obj,
-                           QScriptEngine::AutoOwnership,
+    return eng->newQObject(obj, QScriptEngine::ValueOwnership(ownership),
                            QScriptEngine::ExcludeDeleteLater |
                            QScriptEngine::AutoCreateDynamicProperties |
-                           QScriptEngine::PreferExistingWrapperObject |
-                           QScriptEngine::ExcludeChildObjects);
+                           QScriptEngine::PreferExistingWrapperObject ); //| QScriptEngine::ExcludeChildObjects
 }
 
-void fromScriptValue(const QScriptValue &value, QDaqObjectStar& obj)
+QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject * const &obj, int ownership)
+{
+    return eng->newQObject(scriptObj, obj, QScriptEngine::ValueOwnership(ownership),
+                           QScriptEngine::ExcludeDeleteLater |
+                           QScriptEngine::AutoCreateDynamicProperties |
+                           QScriptEngine::PreferExistingWrapperObject ); //| QScriptEngine::ExcludeChildObjects
+}
+
+void fromScriptValue(const QScriptValue &value, QDaqObject*& obj)
 {
     obj = qobject_cast<QDaqObject*>(value.toQObject());
 }
@@ -96,16 +99,29 @@ void fromScriptValue(const QScriptValue &value, QDaqObjectList& L)
     }
 }
 
+typedef QDaqObject* QDaqObjectStar;
+
+
+QScriptValue toScriptValueQDaqObjectStar(QScriptEngine *eng, const QDaqObjectStar& obj)
+{
+    return toScriptValue(eng,obj);
+}
+
+void fromScriptValueQDaqObjectStar(const QScriptValue &value, QDaqObjectStar &obj)
+{
+    fromScriptValue(value, obj);
+}
+
 int registerQDaqTypes(QScriptEngine* eng)
 {
     ByteArrayClass *byteArrayClass = new ByteArrayClass(eng);
     eng->globalObject().setProperty("ByteArray", byteArrayClass->constructor());
 
-    return qScriptRegisterMetaType<QDaqObjectStar>(eng,toScriptValue,fromScriptValue) &
+    return qScriptRegisterMetaType<QDaqObjectStar>(eng,toScriptValueQDaqObjectStar,fromScriptValueQDaqObjectStar) &
         qScriptRegisterMetaType<QDaqObjectList>(eng,toScriptValue,fromScriptValue) &
-        qScriptRegisterMetaType<QDaqIntVector>(eng,toScriptValue,fromScriptValue) &
-        qScriptRegisterMetaType<QDaqUintVector>(eng,toScriptValue,fromScriptValue) &
-        qScriptRegisterMetaType<QDaqVector>(eng,toScriptValue,fromScriptValue) &
+        qScriptRegisterMetaType<QDaqIntVector>(eng,toScriptValueContainer,fromScriptValueContainer) &
+        qScriptRegisterMetaType<QDaqUintVector>(eng,toScriptValueContainer,fromScriptValueContainer) &
+        qScriptRegisterMetaType<QDaqVector>(eng,toScriptValueContainer,fromScriptValueContainer) &
         qScriptRegisterMetaType<QColor>(eng,toScriptValue,fromScriptValue) &
         qScriptRegisterMetaType<QPointF>(eng,toScriptValue,fromScriptValue);
 
