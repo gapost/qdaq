@@ -1,3 +1,4 @@
+  * type marshalling in setQDaqProperty - handle special cases like ByteArray, Vector, etc...
   * History file to start with a .
   * Syntax checking in scripts and report to user
   * Implement editing of QDaq Types in property browser. Need to subclass QtVariantEditorFactory.
