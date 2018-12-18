@@ -157,10 +157,6 @@ protected:
     // so that we can handle child ordering stuff (insertBefore etc.)
     QDaqObjectList children_;
 
-    QSet<QByteArray> qdaqProps_;
-
-    bool setQDaqProperty(const char* name, const QVariant& value);
-
     // the root object
     static QDaqRoot* root_;
 
@@ -216,8 +212,6 @@ public:
      */
     static QDaqObject* fromPath(const QString& path);
 
-    QList<QByteArray> dynamicPropertyNames() const;
-
 public slots:
 
     /// Print a backtrace of recent errors in this QDaqObject
@@ -242,6 +236,9 @@ public slots:
 	QString listProperties() const;
 	/// List the objects scriptable functions
 	QString listFunctions() const;
+
+
+    bool setQDaqProperty(QString name, const QScriptValue& value);
 
 
     /**

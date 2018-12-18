@@ -62,16 +62,14 @@ QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject * const &obj, int owne
 {
     return eng->newQObject(obj, QScriptEngine::ValueOwnership(ownership),
                            QScriptEngine::ExcludeDeleteLater |
-                           QScriptEngine::AutoCreateDynamicProperties |
-                           QScriptEngine::PreferExistingWrapperObject ); //| QScriptEngine::ExcludeChildObjects
+                           QScriptEngine::PreferExistingWrapperObject );
 }
 
 QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject * const &obj, int ownership)
 {
     return eng->newQObject(scriptObj, obj, QScriptEngine::ValueOwnership(ownership),
                            QScriptEngine::ExcludeDeleteLater |
-                           QScriptEngine::AutoCreateDynamicProperties |
-                           QScriptEngine::PreferExistingWrapperObject ); //| QScriptEngine::ExcludeChildObjects
+                           QScriptEngine::PreferExistingWrapperObject );
 }
 
 void fromScriptValue(const QScriptValue &value, QDaqObject*& obj)

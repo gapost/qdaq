@@ -526,25 +526,90 @@ void QDaqSession::addItems(QListWidget* cb, const QStringList& lst)
 
 QString QDaqSession::info(QScriptValue v)
 {
-    QString S;
-    QScriptValue obj(v); // the object to iterate over
-    while (obj.isObject()) {
-        QScriptValueIterator it(obj);
-        while (it.hasNext()) {
-            it.next();
-            //if (it.flags() & QScriptValue::SkipInEnumeration)
-            //    continue;
-            S += it.name();
-            S += QString("(%1): ").arg((int)it.flags());
-            if (it.value().isFunction()) S += "Function";
-            else if (it.value().isQMetaObject()) S += "QMetaObject";
-            else if (it.value().isQObject()) S += "QObject";
-            else S += it.value().toString();
-            S += "\n";
-        }
-        obj = obj.prototype();
+    if (!v.isValid()) return QString("invalid");
+
+    if (v.isBool())
+        return QString("Boolean: %1").arg(v.toString());
+
+    if (v.isNumber())
+        return QString("Number: %1").arg(v.toNumber());
+
+    if (v.isString())
+        return QString("String: %1").arg(v.toString());
+
+    if (v.isDate())
+        return QString("Date: %1").arg(v.toString());
+
+    if (v.isNull())
+        return QString("null");
+
+    if (v.isUndefined())
+        return QString("undefined");
+
+    if (v.isFunction())
+        return QString("Function");
+
+    if (v.isVariant()) {
+        QVariant var = v.toVariant();
+        return QString("Variant (%1): %2").arg(var.typeName()).arg(var.toString());
     }
-    return S;
+
+    if (v.isQObject()) {
+        QObject* obj = v.toQObject();
+        const QMetaObject* metaobj = obj->metaObject();
+        QString S =  QString(metaobj->className());
+        S += "\n";
+        for(int i=0; i< metaobj->propertyCount(); i++)
+        {
+            QMetaProperty metaProperty = metaobj->property(i);
+            QVariant var = metaProperty.read(obj);
+            S += QString("  %1 (%2): %3\n").arg(metaProperty.name())
+                    .arg(var.typeName())
+                    .arg(var.toString());
+        }
+        if (!obj->dynamicPropertyNames().isEmpty()) {
+            S += "Dynamic Properties\n";
+            foreach(const QByteArray& ba, obj->dynamicPropertyNames())
+            {
+                QVariant var = obj->property(ba.constData());
+                S += QString("  %1 (%2): %3\n").arg(ba.constData())
+                        .arg(var.typeName())
+                        .arg(var.toString());
+            }
+        }
+        return S;
+    }
+
+    if (v.isArray())
+        return QString("Array: %1").arg(v.toString());
+
+
+    if (v.isObject())
+        return QString("Object: %1").arg(v.toString());
+
+    return QString();
+
+
+
+//    QString S;
+//    QScriptValue obj(v); // the object to iterate over
+//    while (obj.isObject()) {
+//        QScriptValueIterator it(obj);
+//        while (it.hasNext()) {
+//            it.next();
+//            //if (it.flags() & QScriptValue::SkipInEnumeration)
+//            //    continue;
+//            S += it.name();
+//            S += QString("(%1): ").arg((int)it.flags());
+//            if (it.value().isFunction()) S += "Function";
+//            else if (it.value().isQMetaObject()) S += "QMetaObject";
+//            else if (it.value().isQObject()) S += "QObject";
+//            else S += it.value().toString();
+//            S += "\n";
+//        }
+//        obj = obj.prototype();
+//    }
+//    return S;
 }
 
 QString QDaqSession::version()

@@ -77,7 +77,7 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
 	channel_objects.clear();
 	channel_ptrs.clear();
     foreach(const QString& str, columnNames_)
-        setQDaqProperty(str.toLatin1(),QVariant());
+        setProperty(str.toLatin1(),QVariant());
     columnNames_.clear();
 
 	// create channels
@@ -103,7 +103,7 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
     for(int i=0; i<data_matrix.size(); ++i) {
         QString str = columnNames_.at(i);
         QVariant v = QVariant::fromValue(data_matrix[i]);
-        setQDaqProperty(str.toLatin1(),v);
+        setProperty(str.toLatin1(),v);
     }
 
     emit propertiesChanged();
@@ -118,7 +118,7 @@ void QDaqDataBuffer::setColumnNames(QStringList collist)
     channel_objects.clear();
     channel_ptrs.clear();
     foreach(const QString& str, columnNames_)
-        setQDaqProperty(str.toLatin1(),QVariant());
+        setProperty(str.toLatin1(),QVariant());
     columnNames_.clear();
 
     // create channels
@@ -138,7 +138,7 @@ void QDaqDataBuffer::setColumnNames(QStringList collist)
     for(int i=0; i<data_matrix.size(); ++i) {
         QString str = columnNames_.at(i);
         QVariant v = QVariant::fromValue(data_matrix[i]);
-        setQDaqProperty(str.toLatin1(),v);
+        setProperty(str.toLatin1(),v);
     }
 
     emit propertiesChanged();

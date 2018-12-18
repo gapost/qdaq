@@ -365,30 +365,54 @@ QDaqObject* QDaqObject::insertBefore(QDaqObject *newobj, QDaqObject *existingobj
     return newobj;
 }
 
-bool QDaqObject::setQDaqProperty(const char *name, const QVariant &value)
+bool QDaqObject::setQDaqProperty(QString name, const QScriptValue &value)
 {
-    bool ret = setProperty(name,value);
-    if (!ret) {
-        if (value.isValid()) qdaqProps_.insert(QByteArray(name));
-        else qdaqProps_.remove(QByteArray(name));
+    static const char* errmsg[] = {
+        "Empty string is not allowed for property name.",
+        "Property names must start with a letter.",
+        "Property names may only contain letters, numbers and the underscore."
+    };
+    int cd;
+    if (!isNameValid(name,&cd))
+    {
+        throwScriptError(errmsg[cd]);
+        return false;
     }
-    return ret;
+    if (!isNameUnique(name))
+    {
+        throwScriptError("Name is used by a child object.");
+        return false;
+    }
+    const QMetaObject* obj = metaObject();
+    QByteArray nm = name.toLatin1();
+    if (obj->indexOfConstructor(nm)+1 ||
+            obj->indexOfEnumerator(nm)+1 ||
+            obj->indexOfMethod(nm)+1 ||
+            obj->indexOfProperty(nm)+1 ||
+            obj->indexOfSignal(nm)+1 ||
+            obj->indexOfSlot(nm)+1) {
+        throwScriptError("New property name masks QDaq object properties.");
+        return false;
+    }
+    setProperty(name.toLatin1(),value.toVariant());
+    return true;
 }
 
 void QDaqObject::childEvent(QChildEvent *event)
 {
+
     QDaqObject* obj = qobject_cast<QDaqObject*>(event->child()); // maybe reinterpret??
     if (obj) {
         int i = children_.indexOf(obj);
 
         if (event->added()) {
             if (i<0) children_.append(obj);
-            setQDaqProperty(obj->objectName().toLatin1().constData(),QVariant::fromValue(obj));
+            //setQDaqProperty(obj->objectName().toLatin1().constData(),QVariant::fromValue(obj));
             if (isAttached()) obj->attach();
         }
         if (event->removed() && i>=0) {
             if (isAttached()) obj->detach();
-            setQDaqProperty(obj->objectName().toLatin1().constData(),QVariant());
+            //setQDaqProperty(obj->objectName().toLatin1().constData(),QVariant());
             children_.removeAt(i);           
         }
     }
@@ -485,16 +509,6 @@ QDaqObject* QDaqObject::clone()
 
     return _clone;
 }
-
-QList<QByteArray> QDaqObject::dynamicPropertyNames() const
-{
-    QSet<QByteArray> all = QObject::dynamicPropertyNames().toSet();
-    all.subtract(qdaqProps_);
-    return all.toList();
-}
-
-
-
 
 QDaqErrorQueue::QDaqErrorQueue(QObject *parent) : QObject(parent)
 {
