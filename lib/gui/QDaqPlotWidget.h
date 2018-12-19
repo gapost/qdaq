@@ -5,7 +5,7 @@
 
 #include <qwt_plot.h>
 
-class QDaqBuffer;
+class QDaqVector;
 class QwtPlotCurve;
 class QwtPlotGrid;
 class QwtPlotZoomer;
@@ -79,7 +79,7 @@ public:
     virtual QSize 	minimumSizeHint () const;
 
 public slots:
-    void plot(const QDaqBuffer& x, const QDaqBuffer& y, const QColor& clr = QColor());
+    void plot(const QDaqVector& x, const QDaqVector& y, const QColor& clr = QColor());
     void clear();
 
 

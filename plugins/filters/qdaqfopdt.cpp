@@ -11,9 +11,9 @@ QDaqFOPDT::QDaqFOPDT(const QString& name) :
 
 bool QDaqFOPDT::filterinit()
 {
-    ubuff.resize(td_);
-    ubuff.fill(0.);
-    ibuff = 0;
+    ubuff.setCapacity(td_);
+    ubuff.setCircular(true);
+    for(uint i=0; i<td_; i++) ubuff << 0.;
 
     h_ = tp_ ? exp(-1./tp_) : 1.0;
 
@@ -22,12 +22,8 @@ bool QDaqFOPDT::filterinit()
 
 bool QDaqFOPDT::filterfunc(const double* vin, double* vout)
 {
-    ubuff[ibuff] = *vin;
-    ibuff++;
-    if (ibuff>=td_) ibuff=0;
-    double u = ubuff[ibuff];
-
-    // y_ += (kp_*u-y_)/tp_;
+    ubuff << *vin;
+    double u = ubuff[0];
 
     y_ = h_*y_ + kp_*u*(1-h_);
     *vout = y_;

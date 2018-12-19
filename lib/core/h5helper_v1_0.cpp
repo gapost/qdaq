@@ -99,24 +99,6 @@ void h5helper_v1_0::write(CommonFG* h5obj, const char* name, const QDaqVector& v
     if (v.size()) ds.write(v.constData(),PredType::NATIVE_DOUBLE);
 }
 
-void h5helper_v1_0::write(CommonFG* h5obj, const char* name, const QDaqIntVector& v)
-{
-    hsize_t dims = v.size();
-    if (dims<1) dims=1;
-    DataSpace space(1,&dims);
-    DataSet ds = h5obj->createDataSet(name, PredType::NATIVE_INT, space);
-    if (v.size()) ds.write(v.constData(),PredType::NATIVE_INT);
-}
-
-void h5helper_v1_0::write(CommonFG* h5obj, const char* name, const QDaqUintVector& v)
-{
-    hsize_t dims = v.size();
-    if (dims<1) dims=1;
-    DataSpace space(1,&dims);
-    DataSet ds = h5obj->createDataSet(name, PredType::NATIVE_UINT, space);
-    if (v.size()) ds.write(v.constData(),PredType::NATIVE_UINT);
-}
-
 bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QDaqVector& value)
 {
     DataSet ds = h5obj->openDataSet(name);
@@ -125,37 +107,7 @@ bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QDaqVector& value)
     {
         DataSpace dspace = ds.getSpace();
         int sz = dspace.getSimpleExtentNpoints();
-        value.fill(0,sz);
-        ds.read(value.data(), ds.getDataType());
-        return true;
-    }
-    return false;
-}
-
-bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QDaqIntVector& value)
-{
-    DataSet ds = h5obj->openDataSet(name);
-    H5T_class_t ds_type = ds.getTypeClass();
-    if (ds_type==H5T_INTEGER)
-    {
-        DataSpace dspace = ds.getSpace();
-        int sz = dspace.getSimpleExtentNpoints();
-        value.fill(0,sz);
-        ds.read(value.data(), ds.getDataType());
-        return true;
-    }
-    return false;
-}
-
-bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QDaqUintVector& value)
-{
-    DataSet ds = h5obj->openDataSet(name);
-    H5T_class_t ds_type = ds.getTypeClass();
-    if (ds_type==H5T_INTEGER)
-    {
-        DataSpace dspace = ds.getSpace();
-        int sz = dspace.getSimpleExtentNpoints();
-        value.fill(0,sz);
+        value.setCapacity(sz);
         ds.read(value.data(), ds.getDataType());
         return true;
     }
@@ -250,10 +202,6 @@ void h5helper_v1_0::writeProperties(CommonFG* h5obj, const QDaqObject* m_object,
                     write(h5obj,metaProperty.name(),S);
                 }
                 else if (objtype==QVariant::Double) write(h5obj,metaProperty.name(),value.toDouble());
-                else if (objtype==qMetaTypeId<QDaqIntVector>())
-                    write(h5obj,metaProperty.name(),value.value<QDaqIntVector>());
-                else if (objtype==qMetaTypeId<QDaqUintVector>())
-                    write(h5obj,metaProperty.name(),value.value<QDaqUintVector>());
                 else if (objtype==qMetaTypeId<QDaqVector>())
                     write(h5obj,metaProperty.name(),value.value<QDaqVector>());
             }
@@ -325,18 +273,6 @@ void h5helper_v1_0::readProperties(CommonFG *h5obj, QDaqObject* obj)
                     double v;
                     if (read(h5obj,metaProperty.name(),v))
                         metaProperty.write(obj,QVariant(v));
-                }
-                else if (objtype==qMetaTypeId<QDaqIntVector>())
-                {
-                    QDaqIntVector v;
-                    if (read(h5obj,metaProperty.name(),v))
-                        metaProperty.write(obj,QVariant::fromValue(v));
-                }
-                else if (objtype==qMetaTypeId<QDaqUintVector>())
-                {
-                    QDaqUintVector v;
-                    if (read(h5obj,metaProperty.name(),v))
-                        metaProperty.write(obj,QVariant::fromValue(v));
                 }
                 else if (objtype==qMetaTypeId<QDaqVector>())
                 {

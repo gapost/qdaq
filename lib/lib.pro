@@ -68,7 +68,9 @@ SOURCES += \
     core/qtimerthread.cpp \
     core/h5helper_v1_0.cpp \
     core/qdaqh5file.cpp \
-    core/h5helper_v1_1.cpp
+    core/h5helper_v1_1.cpp \
+    core/vectorclass.cpp \
+    core/vectorprototype.cpp
 
 HEADERS  += \
     core/QDaqSession.h \
@@ -104,7 +106,9 @@ HEADERS  += \
     core/qdaqplugin.h \
     core/h5helper_v1_0.h \
     core/qdaqh5file.h \
-    core/h5helper_v1_1.h
+    core/h5helper_v1_1.h \
+    core/vectorprototype.h \
+    core/vectorclass.h
 
 
 ## JSedit

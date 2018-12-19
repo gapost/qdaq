@@ -79,16 +79,12 @@ public:
     virtual void write(CommonFG* h5obj, const char* name, const QString& S) = 0;
     virtual void write(CommonFG* h5obj, const char* name, const QStringList& S) = 0;
     virtual void write(CommonFG* h5obj, const char* name, const QDaqVector& value) = 0;
-    virtual void write(CommonFG* h5obj, const char* name, const QDaqIntVector& value) = 0;
-    virtual void write(CommonFG* h5obj, const char* name, const QDaqUintVector& value) = 0;
 
     virtual bool read(CommonFG* h5obj, const char* name, int& value) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, double& value) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QString& str) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QStringList& S) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QDaqVector& value) = 0;
-    virtual bool read(CommonFG* h5obj, const char* name, QDaqIntVector& value) = 0;
-    virtual bool read(CommonFG* h5obj, const char* name, QDaqUintVector& value) = 0;
 
     virtual void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject) = 0;
     virtual void readProperties(CommonFG* h5obj, QDaqObject* obj) = 0;

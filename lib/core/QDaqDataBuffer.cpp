@@ -8,7 +8,7 @@ QDaqDataBuffer::QDaqDataBuffer(const QString &name) : QDaqJob(name)
 {
     connect(this,SIGNAL(dataReady()),this,SLOT(onDataReady()),Qt::QueuedConnection);
 
-    type_ = Fixed;
+    circular_ = false;
     setBackBufferDepth(2);
     setCapacity(100);
 
@@ -89,7 +89,7 @@ void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
     for(int i=0; i<data_matrix.size(); i++)
     {
         data_matrix[i].setCapacity(cap_);
-        data_matrix[i].setType((vector_t::StorageType)type_);
+        data_matrix[i].setCircular(circular_);
     }
 
     setupBackBuffer();
@@ -130,7 +130,7 @@ void QDaqDataBuffer::setColumnNames(QStringList collist)
     for(int i=0; i<data_matrix.size(); i++)
     {
         data_matrix[i].setCapacity(cap_);
-        data_matrix[i].setType((vector_t::StorageType)type_);
+        data_matrix[i].setCircular(circular_);
     }
 
     setupBackBuffer();
@@ -224,27 +224,32 @@ uint QDaqDataBuffer::columns() const
 }
 void QDaqDataBuffer::setCapacity(uint cap)
 {
+    if (cap==capacity()) return;
+
     if (cap>0) {
-	for(int i=0; i<data_matrix.size(); i++)
-		data_matrix[i].setCapacity(cap);
-    capacity_ = cap;
-    emit propertiesChanged();
+        QMutexLocker L(&comm_lock);
+        for(int i=0; i<data_matrix.size(); i++)
+            data_matrix[i].setCapacity(cap);
+        capacity_ = cap;
+        emit propertiesChanged();
     }
 }
-void QDaqDataBuffer::setType(BufferType t)
+void QDaqDataBuffer::setCircular(bool on)
 {
+    if (on==circular_) return;
+    QMutexLocker L(&comm_lock);
 	for(int i=0; i<data_matrix.size(); i++)
-		data_matrix[i].setType((vector_t::StorageType)t);
-    type_ = t;
+        data_matrix[i].setCircular(on);
+    circular_ = on;
     emit propertiesChanged();
 }
 void QDaqDataBuffer::clear()
 {
+    QMutexLocker L(&comm_lock);
     for(int i=0; i<data_matrix.size(); i++)
         data_matrix[i].clear();
     emit propertiesChanged();
     emit updateWidgets();
-
 }
 void QDaqDataBuffer::push(const QDaqVector &v)
 {

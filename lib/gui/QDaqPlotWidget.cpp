@@ -1,6 +1,6 @@
 #include "QDaqPlotWidget.h"
 
-#include <QDaqBuffer>
+#include "QDaqTypes.h"
 
 #include <QCloseEvent>
 #include <QCoreApplication>
@@ -136,11 +136,11 @@ public:
 
 class QDAQ_EXPORT QDaqPlotData : public QwtSeriesData< QPointF >
 {
-    QDaqBuffer vx;
-    QDaqBuffer vy;
+    QDaqVector vx;
+    QDaqVector vy;
     size_t sz;
 public:
-    QDaqPlotData(const QDaqBuffer& x, const QDaqBuffer& y) : vx(x), vy(y)
+    QDaqPlotData(const QDaqVector& x, const QDaqVector& y) : vx(x), vy(y)
     {
         sz = qMin(vx.size(),vy.size());
     }
@@ -171,7 +171,7 @@ public:
         return QRectF(x1,y1,x2-x1,y2-y1);
     }
 
-    void update(const QDaqPlotWidget* w, const QDaqBuffer* v)
+    void update(const QDaqPlotWidget* w, const QDaqVector* v)
     {
         Q_UNUSED(v);
         sz = qMin(vx.size(),vy.size());
@@ -355,7 +355,7 @@ void QDaqPlotWidget::setYlim(const QPointF &v)
     setAxisScale(QwtPlot::yLeft,v.x(),v.y()) ;
 }
 
-void QDaqPlotWidget::plot(const QDaqBuffer &x, const QDaqBuffer &y, const QColor &clr)
+void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QColor &clr)
 {
     static const Qt::GlobalColor eight_colors[8] =
     {

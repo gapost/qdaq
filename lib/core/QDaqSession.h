@@ -107,11 +107,6 @@ public slots:
     void addItems(QComboBox* cb, const QStringList& lst);
     void addItems(QListWidget* cb, const QStringList& lst);
 
-    // QDaqBuffer handling
-    double mean(const QDaqBuffer& b) const { return b.mean(); }
-    double std(const QDaqBuffer& b) const { return b.std(); }
-    QDaqVector toVector(const QDaqBuffer& b) const { return b.toVector(); }
-
     // set debugging on (enable Qt script debugger)
     void debug(bool on);
 

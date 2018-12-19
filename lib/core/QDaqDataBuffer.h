@@ -43,8 +43,8 @@ class QDAQ_EXPORT QDaqDataBuffer : public QDaqJob
 	Q_PROPERTY(uint size READ size)
     /// Number of data columns.
     Q_PROPERTY(uint columns READ columns)
-    /// Type of the buffer.
-	Q_PROPERTY(BufferType type READ type WRITE setType)
+    /// True if buffer is circular
+    Q_PROPERTY(bool circular READ circular WRITE setCircular)
     /// A QList of the channels monitored by this object.
     Q_PROPERTY(QDaqObjectList channels READ channels WRITE setChannels STORED false)
     /// A list of column names.
@@ -54,22 +54,10 @@ protected:
     // typedefs of channel ptr, channel vector, matrix
     typedef QPointer<QDaqChannel> channel_t;
     typedef QVector<channel_t> channel_vector_t;
-    typedef QDaqBuffer vector_t;
+    typedef QDaqVector vector_t;
     // data store type = QVector of QDaqBuffer
     typedef QVector<vector_t> matrix_t;
 
-public:
-    /**
-     * @brief Type of the data buffer.
-     */
-	enum BufferType {
-        Open = vector_t::Open, /**< The buffer may grow indefinately. */
-        Fixed = vector_t::Fixed, /**< The buffer capacity is fixed. When the buffer becomes full new data is discarded. */
-        Circular = vector_t::Circular /**< The buffer capacity is fixed and new data overwrite old data. */
-	};
-    Q_ENUM(BufferType)
-
-protected:
     virtual void writeh5(H5::Group* h5g, QDaqH5File *f) const;
     virtual void readh5(H5::Group *h5g, QDaqH5File *f);
 
@@ -78,7 +66,7 @@ protected:
     uint backBufferDepth_, capacity_;
 
     // properties
-	BufferType type_;
+    bool circular_;
     QDaqObjectList channel_objects;
     channel_vector_t channel_ptrs;
     QStringList columnNames_;
@@ -116,14 +104,14 @@ public:
     uint capacity() const { return capacity_; }
 	uint size() const;
     uint columns() const;
-	BufferType type() const { return type_ ; }
+    bool circular() const { return circular_ ; }
     QDaqObjectList channels() const { return channel_objects; }
     QStringList columnNames() const { return columnNames_; }
 
     // setters
 	void setBackBufferDepth(uint d);
 	void setCapacity(uint cap);
-	void setType(BufferType t);
+    void setCircular(bool on);
     void setChannels(QDaqObjectList chlist);
     void setColumnNames(QStringList collist);
 
@@ -145,7 +133,7 @@ public slots:
     void push(const QDaqVector& v);
 
     /// Return the i-th QDaqBuffer
-    QDaqBuffer get(int i) { return data_matrix[i]; }
+    QDaqVector get(int i) { return data_matrix[i]; }
 };
 
 

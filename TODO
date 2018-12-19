@@ -1,3 +1,4 @@
+  * load/save properties and file version, e.g. QDaqDataBuffer prop "type" changed. how to load from old file??
   * type marshalling in setQDaqProperty - handle special cases like ByteArray, Vector, etc...
   * History file to start with a .
   * Syntax checking in scripts and report to user

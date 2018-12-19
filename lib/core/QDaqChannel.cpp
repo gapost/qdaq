@@ -68,8 +68,11 @@ void QDaqChannel::setRange(const QDaqVector &v)
     if((v!=range_) && (!v.isEmpty()) && (v.size()==2) && std::isfinite(v[0]) && std::isfinite(v[1]) && (v[1]!=v[0]))
 	{
 		// fix ordering
-        QDaqVector myv ( v );
-		if (v[1]<v[0]) { myv[0] = v[1]; myv[1] = v[0]; }
+        QDaqVector myv(v);
+        if (v[1]<v[0]) {
+            myv.clear();
+            myv << v[1] << v[0];
+        }
 		// set the range
         QMutexLocker L(&comm_lock);
 		range_ = myv;

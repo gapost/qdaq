@@ -108,8 +108,8 @@ bool QDaqFilter::arm_()
         return false;
     }
 
-    inbuff.resize(inputChannels_.size());
-    outbuff.resize(outputChannels_.size());
+    inbuff.setCapacity(inputChannels_.size());
+    outbuff.setCapacity(outputChannels_.size());
 
     if (!filterinit()) return false;
 

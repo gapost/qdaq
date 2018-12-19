@@ -14,9 +14,7 @@ QDaqInterpolator::QDaqInterpolator(const QString& name) :
     QDaqFilter(name),
     type_(None),
     interpolator_(0),
-    accel_(0),
-    xa(0,1),
-    ya(0,1)
+    accel_(0)
 {
     accel_ = gsl_interp_accel_alloc ();
 }
@@ -36,7 +34,7 @@ bool QDaqInterpolator::filterinit()
     if (it>0 && n>1)
     {        
         interpolator_ = gsl_interp_alloc(InterpolationObjects[it],n);
-        gsl_interp_init(interpolator_, xa.begin(), ya.begin(), n);
+        gsl_interp_init(interpolator_, xa.constData(), ya.constData(), n);
     }
     return true;
 }
@@ -46,7 +44,7 @@ bool QDaqInterpolator::filterfunc(const double* vin, double* vout)
     if (interpolator_)
     {
         double val;
-        int ret = gsl_interp_eval_e(interpolator_, xa.begin(), ya.begin(), *vin, accel_, &val);
+        int ret = gsl_interp_eval_e(interpolator_, xa.constData(), ya.constData(), *vin, accel_, &val);
         *vout = (ret==0) ? val : *vin;
     }
     else *vout = *vin;
@@ -89,12 +87,12 @@ void QDaqInterpolator::setTable(const QDaqVector& x, const QDaqVector& y)
     }
 
     // copy the data
-    xa.resize(n);
-    ya.resize(n);
+    xa.setCapacity(n);
+    ya.setCapacity(n);
     if (d0>0.0)
     {
-        double *px = xa.begin();
-        double *py = ya.begin();
+        double *px = xa.data();
+        double *py = ya.data();
         for(int i=0; i<n; ++i)
         {
             *px++ = x[i]; *py++ = y[i];
@@ -102,8 +100,8 @@ void QDaqInterpolator::setTable(const QDaqVector& x, const QDaqVector& y)
     }
     else
     {
-        double *px = xa.begin() + n - 1;
-        double *py = ya.begin() + n - 1;
+        double *px = xa.data() + n - 1;
+        double *py = ya.data() + n - 1;
         for(int i=0; i<n; ++i)
         {
             *px-- = x[i]; *py-- = y[i];
@@ -161,13 +159,13 @@ void QDaqInterpolator::fromTextFile(const QString& fname)
 
 
     // copy the data
-    xa.resize(n);
-    ya.resize(n);
+    xa.setCapacity(n);
+    ya.setCapacity(n);
     if (d>0.0)
     {
-        double *px = xa.begin();
-        double *py = ya.begin();
-        const double *p = x.data();
+        double *px = xa.data();
+        double *py = ya.data();
+        const double *p = x.constData();
         for(int i=0; i<n; ++i)
         {
             *px++ = *p++;
@@ -176,9 +174,9 @@ void QDaqInterpolator::fromTextFile(const QString& fname)
     }
     else
     {
-        double *px = xa.begin() + n - 1;
-        double *py = ya.begin() + n - 1;
-        const double *p = x.data();
+        double *px = xa.data() + n - 1;
+        double *py = ya.data() + n - 1;
+        const double *p = x.constData();
         for(int i=0; i<n; ++i)
         {
             *px-- = *p++;

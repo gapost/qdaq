@@ -49,8 +49,8 @@ void QDaqDataBuffer::readh5(H5::Group *g, QDaqH5File *f)
     data_matrix = matrix_t(ncols);
     // restore the capacity && type
     for(int i=0; i<data_matrix.size(); i++)
-        data_matrix[i].setType((vector_t::StorageType)type_);
-    QVector<double> rbuff(cap_);
+        data_matrix[i].setCircular(circular_);
+    QDaqVector rbuff(cap_);
     for(int j=0; j<ncols; j++)
     {
         QString col_name = columnNames().at(j);
@@ -59,9 +59,9 @@ void QDaqDataBuffer::readh5(H5::Group *g, QDaqH5File *f)
         hsize_t sz;
         space.getSimpleExtentDims(&sz);
 
-        rbuff.resize((int)sz);
+        rbuff.setCapacity((int)sz);
         ds.read(rbuff.data(),PredType::NATIVE_DOUBLE,space);
-        data_matrix[j].replace(rbuff);
+        data_matrix[j] = rbuff;
     }
     for(int i=0; i<data_matrix.size(); i++)
         data_matrix[i].setCapacity(cap_);

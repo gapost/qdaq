@@ -4,6 +4,7 @@
 #include <QScriptEngine>
 
 #include "bytearrayclass.h"
+#include "vectorclass.h"
 
 #include <QColor>
 #include <QPointF>
@@ -115,11 +116,12 @@ int registerQDaqTypes(QScriptEngine* eng)
     ByteArrayClass *byteArrayClass = new ByteArrayClass(eng);
     eng->globalObject().setProperty("ByteArray", byteArrayClass->constructor());
 
+    VectorClass *vectorClass = new VectorClass(eng);
+    eng->globalObject().setProperty("Vector", vectorClass->constructor());
+
+
     return qScriptRegisterMetaType<QDaqObjectStar>(eng,toScriptValueQDaqObjectStar,fromScriptValueQDaqObjectStar) &
         qScriptRegisterMetaType<QDaqObjectList>(eng,toScriptValue,fromScriptValue) &
-        qScriptRegisterMetaType<QDaqIntVector>(eng,toScriptValueContainer,fromScriptValueContainer) &
-        qScriptRegisterMetaType<QDaqUintVector>(eng,toScriptValueContainer,fromScriptValueContainer) &
-        qScriptRegisterMetaType<QDaqVector>(eng,toScriptValueContainer,fromScriptValueContainer) &
         qScriptRegisterMetaType<QColor>(eng,toScriptValue,fromScriptValue) &
         qScriptRegisterMetaType<QPointF>(eng,toScriptValue,fromScriptValue);
 

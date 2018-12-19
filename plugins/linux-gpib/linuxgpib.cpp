@@ -245,11 +245,11 @@ void QDaqLinuxGpib::setTimeout_(uint ms)
     }
 }
 
-QDaqIntVector QDaqLinuxGpib::findListeners()
+QDaqVector QDaqLinuxGpib::findListeners()
 {
     QMutexLocker L(&comm_lock);
 
-    QDaqIntVector Listeners;
+    QDaqVector Listeners;
     Addr4882_t addrlist[31], results_[30];
 
     for(int i=0; i<30; i++) addrlist[i] = i+1;
@@ -267,7 +267,7 @@ QDaqIntVector QDaqLinuxGpib::findListeners()
     else
     {
         int n = ThreadIbcnt();
-        Listeners.resize(n);
+        Listeners.setCapacity(n);
         for(int i=0; i<n; ++i) Listeners[i] = results_[i];
     }
 

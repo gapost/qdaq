@@ -126,10 +126,6 @@ void h5helper_v1_1::writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_
         }
         else if (id==qMetaTypeId<QDaqVector>())
             write(h5obj,propName.constData(),v.value<QDaqVector>());
-        else if (id==qMetaTypeId<QDaqIntVector>())
-            write(h5obj,propName.constData(),v.value<QDaqIntVector>());
-        else if (id==qMetaTypeId<QDaqUintVector>())
-            write(h5obj,propName.constData(),v.value<QDaqUintVector>());
 
         try {
             DataSet ds = h5obj->openDataSet(propName.constData());
@@ -179,7 +175,7 @@ void h5helper_v1_1::readDynamicProperties(CommonFG* h5g, QDaqObject* m_object)
                 if (type_class==H5T_INTEGER) {
                     int sz = dspace.getSimpleExtentNpoints();
                     if (sz>1) {
-                        QDaqIntVector val;
+                        QVector<int> val;
                         val.fill(0,sz);
                         ds.read(val.data(), ds.getDataType());
                         m_object->setProperty(propName.constData(),QVariant::fromValue(val));
@@ -192,7 +188,7 @@ void h5helper_v1_1::readDynamicProperties(CommonFG* h5g, QDaqObject* m_object)
                     int sz = dspace.getSimpleExtentNpoints();
                     if (sz>1) {
                         QDaqVector val;
-                        val.fill(0.,sz);
+                        val.setCapacity(sz);
                         ds.read(val.data(), ds.getDataType());
                         m_object->setProperty(propName.constData(),QVariant::fromValue(val));
                     } else {

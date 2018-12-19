@@ -8,21 +8,6 @@
 #include <QMetaType>
 #include <QScriptValue>
 
-/** @addtogroup Types
- *  @{
- */
-/// Vector of int
-typedef QVector<int> QDaqIntVector;
-/// Vector of unsigned int
-typedef QVector<unsigned int> QDaqUintVector;
-/// vector of double values
-typedef QVector<double> QDaqVector;
-/** @} */
-
-Q_DECLARE_METATYPE(QDaqIntVector)
-Q_DECLARE_METATYPE(QDaqUintVector)
-Q_DECLARE_METATYPE(QDaqVector)
-
 class QScriptEngine;
 class QDaqObject;
 
@@ -96,8 +81,6 @@ template<class T>
 class buffer : public QSharedData
 {
 public:
-    enum StorageType { Open, Fixed, Circular };
-
     typedef QVector<T> container_t;
 
 private:
@@ -109,18 +92,20 @@ private:
     int sz;
     /// vector capacity
     int cp;
-    /// vector type
-    StorageType type_;
+    /// true for a circular buffer
+    bool circular_;
     /// pointer to next position for circular vectors
     int tail;
     /// min & max values
     T x1, x2;
     /// flag set if min & max need recalc
     bool recalcBounds;
+
+
     // make the buffer continous in memory
     void normalize_()
     {
-        if (type_==Circular && sz && sz==cp && tail)
+        if (circular_ && sz && sz==cp && tail)
         {
             int m = sz-tail;
             T* head = mem.data();
@@ -143,7 +128,7 @@ private:
     // index takes care of circular buffers
     int idx_(int i) const
     {
-        return (type_==Circular && sz==cp) ? ((tail+i) % sz) : i;
+        return (circular_ && sz==cp) ? ((tail+i) % sz) : i;
     }
     // store a value
     void set_(int i, const T& v)
@@ -170,12 +155,12 @@ private:
 
 public:
     explicit buffer(int acap = 0) : mem((int)acap),
-        sz(0), cp(acap), type_(Fixed), tail(0),
+        sz(0), cp(acap), circular_(false), tail(0),
         x1(0), x2(0), recalcBounds(true)
     {
     }
     buffer(const _Self& rhs) : mem(rhs.mem),
-        sz(rhs.sz), cp(rhs.cp), type_(rhs.type_), tail(rhs.tail),
+        sz(rhs.sz), cp(rhs.cp), circular_(rhs.circular_), tail(rhs.tail),
         x1(rhs.x1), x2(rhs.x2), recalcBounds(rhs.recalcBounds)
     {
     }
@@ -188,7 +173,7 @@ public:
         mem = rhs.mem;
         sz = rhs.sz;
         cp = rhs.cp;
-        type_ = rhs.type_;
+        circular_ = rhs.circular_;
         tail = rhs.tail;
         x1 = rhs.x1;
         x2 = rhs.x2;
@@ -196,21 +181,37 @@ public:
         return (*this);
     }
 
+    bool operator == (const _Self& rhs) const
+    {
+        if (sz != rhs.sz) return false;
+
+        if (mem.constData() == rhs.mem.constData()) return true;
+
+        for(int i=0; i<size(); i++)
+            if ((*this)[i]!=rhs[i]) return false;
+
+        return true;
+    }
+    bool operator != (const _Self& rhs) const
+    {
+        return !((*this)==rhs);
+    }
+
     int size() const { return (int)sz; }
 
-    StorageType type() const { return type_; }
-    void setType(StorageType newt)
+    bool isCircular() const { return circular_; }
+    void setCircular(bool on)
     {
-        if (newt==type_) return;
+        if (on==circular_) return;
 
         normalize_();
 
-        if (newt==Circular)
+        if (on)
             mem.resize(cp + cp/2); // extra 0.5 size needed to swap mem during normalize_()
-        if (type_==Circular)
+        else
             mem.resize(cp);
 
-        type_ = newt;
+        circular_ = on;
     }
 
     int capacity() const { return (int)cp; }
@@ -221,15 +222,7 @@ public:
 
         normalize_();
 
-        switch (type_)
-        {
-        case Fixed:
-        case Open:
-            mem.resize(c);
-            if (sz>c) sz = c;
-            recalcBounds = true;
-            break;
-        case Circular:
+        if (circular_) {
             mem.resize(c + c/2);
             if (c>cp)
             {
@@ -243,7 +236,10 @@ public:
                     recalcBounds = true;
                 }
             }
-            break;
+        } else {
+            mem.resize(c);
+            if (sz>c) sz = c;
+            recalcBounds = true;
         }
         cp = c;
     }
@@ -253,16 +249,9 @@ public:
         tail = 0;
         recalcBounds = true;
     }
-    void replace(const container_t& other)
-    {
-        clear();
-        mem = other;
-        sz = mem.size();
-        cp = mem.capacity();
-        if (type_==Circular) mem.resize(cp  + cp/2);
-        tail = 0;
-    }
-    const T& get(int i) const
+
+
+    T& operator[](int i)
     {
         return mem[idx_(i)];
     }
@@ -270,44 +259,27 @@ public:
     {
         return get(i);
     }
+    const T& get(int i) const
+    {
+        return mem[idx_(i)];
+    }
     void push(const T& v)
     {
-        switch (type_)
-        {
-        case Open:
-            if (sz==cp) mem.resize(++cp);
-            set_(sz++,v);
-            break;
-        case Fixed:
-            if (sz<cp) set_(sz++,v);
-            break;
-        case Circular:
+        if (circular_) {
             set_(tail++,v);
             if (sz<cp) sz++;
             if (sz==cp) tail %= sz;
-            break;
+        } else {
+            if (sz==cp) mem.resize(++cp);
+            set_(sz++,v);
         }
         recalcBounds = true;
     }
     void push(const T* v, int n)
     {
-        int m;
-        switch (type_)
-        {
-        case Open:
-            if (sz+n>cp) { cp = sz+n; mem.resize(cp); }
-            memcpy(mem.data()+sz,v,n*sizeof(T));
-            sz += n;
-            break;
-        case Fixed:
-            m = n;
-            if (sz+n>cp) m = cp - sz;
-            if (m) {
-                memcpy(mem.data()+sz,v,m*sizeof(T));
-                sz += m;
-            }
-            break;
-        case Circular:
+        if (n<1) return;
+
+        if (circular_) {
             if (n>=cp) {
                 memcpy(mem.data(),v+n-cp,cp*sizeof(T));
                 tail = 0;
@@ -319,25 +291,30 @@ public:
                 if (sz<cp) sz += n;
                 if (sz==cp) tail %= cp;
             } else {
-                m = cp-tail;
+                int m = cp-tail;
                 memcpy(mem.data()+tail,v,m*sizeof(T));
                 v += m; n -= m;
                 memcpy(mem.data(),v,n*sizeof(T));
                 tail = n;
                 sz = cp;
             }
-            break;
+        } else {
+            if (sz+n>cp) { cp = sz+n; mem.resize(cp); }
+            memcpy(mem.data()+sz,v,n*sizeof(T));
+            sz += n;
         }
         recalcBounds = true;
     }
-    _Self& operator<<(const T& v)
-    {
-        push(v); return (*this);
-    }
+
     const T* constData() const
     {
         const_cast< _Self * >( this )->normalize_();
         return mem.constData();
+    }
+    T* data()
+    {
+        normalize_();
+        return mem.data();
     }
     container_t vector() const
     {
@@ -405,65 +382,53 @@ public:
  * real-time plots of data without copying the buffer.
  *
  */
-class QDAQ_EXPORT QDaqBuffer
+class QDAQ_EXPORT QDaqVector
 {
     typedef buffer<double> buffer_t;
     QExplicitlySharedDataPointer<buffer_t> d_ptr;
 public:
-    /**
-     * @brief Storage type of the buffer.
-     */
-    enum StorageType {
-        Open = buffer_t::Open, /**< The buffer may grow indefinately. */
-        Fixed, /**< The buffer capacity is fixed. When the buffer becomes full new data is discarded. */
-        Circular /**< The buffer capacity is fixed and new data overwrite old data. */
-    };
-
     /// Create a buffer with initial capacity cap.
-    explicit QDaqBuffer(int cap = 0)
-    {
-        d_ptr = new buffer_t(cap);
-    }
-    QDaqBuffer(const QDaqBuffer& other) : d_ptr(other.d_ptr)
+    explicit QDaqVector(int cap = 0) : d_ptr(new buffer_t(cap))
     {}
-    QDaqBuffer& operator=(const QDaqBuffer& rhs)
+    QDaqVector(const QDaqVector& other) : d_ptr(other.d_ptr)
+    {}
+    QDaqVector& operator=(const QDaqVector& rhs)
     {
         d_ptr = rhs.d_ptr;
         return (*this);
     }
     /// Return the number of elememts stored in the buffer.
     int size() const { return d_ptr->size(); }
-    /// Return the StorageType.
-    StorageType type() const { return (StorageType)(d_ptr->type()); }
-    /// Set the StorageType
-    void setType(StorageType newt) {
-        d_ptr->setType((buffer_t::StorageType)newt);
-    }
+    /// Return true if Circular
+    bool isCircular() const { return d_ptr->isCircular(); }
+    /// Set circular on or off
+    void setCircular(bool on) { d_ptr->setCircular(on); }
     /// Return the currently allocated memory capacity (in number of elements).
     int capacity() const { return d_ptr->capacity(); }
     /// Set the capacity
     void setCapacity(int c) { d_ptr->setCapacity(c); }
     /// Empty the buffer.
     void clear() { d_ptr->clear(); }
-    /// Replace the undelying buffer with a the contents of a QDaqVector.
-    void replace(const QDaqVector& v) { d_ptr->replace(v); }
     /// Get the i-th element
     double get(int i) const { return d_ptr->get(i); }
     /// Return the i-th element
     double operator[](int i) const { return d_ptr->get(i); }
+    /// Return the i-th element
+    double& operator[](int i) { return (*d_ptr)[i]; }
     /// Append a value to the buffer.
     void push(double v) { d_ptr->push(v); }
     /// Append n values stored in memory location v to the buffer
     void push(const double* v, int n) { d_ptr->push(v, n); }
+    /// Append another vector
+    void push(const QDaqVector& v) { d_ptr->push(v.constData(), v.size()); }
     /// Append a value to the buffer
-    QDaqBuffer& operator<<(const double& v)
-    {
-        d_ptr->push(v); return (*this);
-    }
+    QDaqVector& operator<<(const double& v) { d_ptr->push(v); return (*this); }
+    /// Append another vector
+    QDaqVector& operator<<(const QDaqVector& v) { push(v); return (*this); }
     /// Return a const pointer to the data.
     const double* constData() const { return d_ptr->constData(); }
-    /// Copy the data to a QDaqVector and return it.
-    QDaqVector toVector() const { return d_ptr->vector(); }
+    /// Return a pointer to the data.
+    double* data() { return d_ptr->data(); }
     /// Minimum value in the buffer.
     double vmin() const { return d_ptr->vmin(); }
     /// Maximum value in the buffer.
@@ -472,9 +437,22 @@ public:
     double mean() const { return d_ptr->mean(); }
     /// Standard deviation the buffer values.
     double std() const { return d_ptr->std(); }
+
+    bool operator ==(const QDaqVector& other) const
+    {
+        return *d_ptr == *(other.d_ptr);
+    }
+    bool operator !=(const QDaqVector& other) const
+    {
+        return *d_ptr != *(other.d_ptr);
+    }
+    bool isEmpty() const
+    {
+        return d_ptr->size()==0;
+    }
 };
 
-Q_DECLARE_METATYPE(QDaqBuffer)
+Q_DECLARE_METATYPE(QDaqVector)
 
 #endif
 

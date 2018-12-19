@@ -62,8 +62,6 @@
 bool isQDaqType(int type) {
     return type == qMetaTypeId<QDaqObject*>() ||
             type == qMetaTypeId<QDaqObjectList>() ||
-            type == qMetaTypeId<QDaqIntVector>() ||
-            type == qMetaTypeId<QDaqUintVector>() ||
             type == qMetaTypeId<QDaqVector>() ||
             type == qMetaTypeId<QStringList>() ||
             type == qMetaTypeId<QVariantList>();
@@ -76,8 +74,6 @@ bool isQDaqType(const QVariant& v) {
 
     if (type == qMetaTypeId<QDaqObject*>() ||
             type == qMetaTypeId<QDaqObjectList>() ||
-            type == qMetaTypeId<QDaqIntVector>() ||
-            type == qMetaTypeId<QDaqUintVector>() ||
             type == qMetaTypeId<QDaqVector>() ||
             type == qMetaTypeId<QStringList>() ||
             type == qMetaTypeId<QVariantList>()) return true;
@@ -107,9 +103,7 @@ QString qdaqVectorTypeToString(const QVariant& var)
 QString qdaqTypeToString(const QVariant& v)
 {
     int type = v.userType();
-    if (type == qMetaTypeId<QDaqIntVector>()) return qdaqVectorTypeToString<QDaqIntVector>(v);
-    else if (type == qMetaTypeId<QDaqUintVector>()) return qdaqVectorTypeToString<QDaqUintVector>(v);
-    else if (type == qMetaTypeId<QDaqVector>()) return qdaqVectorTypeToString<QDaqVector>(v);
+    if (type == qMetaTypeId<QDaqVector>()) return qdaqVectorTypeToString<QDaqVector>(v);
     else if (type == QMetaType::QObjectStar) {
         QDaqObject* obj = qobject_cast<QDaqObject*>(v.value<QObject*>());
         if (obj) return obj->path();
