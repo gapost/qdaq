@@ -42,14 +42,14 @@ bool QDaqH5File::h5write(const QDaqObject* obj, const QString& filename)
 
         // get a last version helper
         getHelper(V_LAST);
+        warnings_.clear();
 
         helper()->write(file, "Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate));
         helper()->write(file, "FileType", "QDaq");
         helper()->write(file, "FileVersionMajor", QString::number(helper()->major()));
-        helper()->write(file, "FileVersionMinor", QString::number(helper()->minor()));
+        //helper()->write(file, "FileVersionMinor", QString::number(helper()->minor()));
 
         writeRecursive(file,obj);
-
 
     }  // end of try block
 
@@ -156,6 +156,7 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
         file = new H5File( filename.toLatin1(), H5F_ACC_RDONLY );
 
         getHelper(V_LAST);
+        warnings_.clear();
 
         QString fileType, vMajor, vMinor;
 
@@ -185,7 +186,6 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
         }
 
         getHelper(fileVersion);
-
         readRecursive(file,obj);
 
     }  // end of try block
@@ -278,7 +278,6 @@ void QDaqH5File::writeRecursive(CommonFG* h5g, const QDaqObject* obj)
     obj->writeh5(&objGroup, this);
 
     foreach(const QDaqObject* ch, obj->children()) writeRecursive(&objGroup, ch);
-
 }
 
 void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
@@ -319,11 +318,30 @@ void QDaqH5File::getHelper(Version v)
 
     switch (v) {
     case V_1_0:
-        helper_ = new h5helper_v1_0; return;
+        helper_ = new h5helper_v1_0(this); return;
     case V_1_1:
-        helper_ = new h5helper_v1_1; return;
+        helper_ = new h5helper_v1_1(this); return;
     default:
-        helper_ = new h5helper_v1_1; return;
+        helper_ = new h5helper_v1_1(this); return;
     }
 
+}
+
+// Check if a dataset "name" exists in H5 file/group
+bool h5helper::h5exist_ds(CommonFG* h5obj, const char* name)
+{
+    H5O_info_t info;
+    return H5Lexists(h5obj->getLocId(),name,0) &&
+           H5Oget_info_by_name(h5obj->getLocId(),name,&info,0)>=0 &&
+           info.type==H5O_TYPE_DATASET;
+}
+
+QString h5helper::groupName(CommonFG* h5obj)
+{
+    int sz = H5Iget_name(h5obj->getLocId(),0,0);
+    if (sz) {
+        QByteArray ba(sz+1,char(0));
+        H5Iget_name(h5obj->getLocId(),ba.data(),sz+1);
+        return QString(ba);
+    } else return QString();
 }

@@ -261,13 +261,7 @@ QString QDaqObject::listProperties() const
     for(int i=0; i<names.size(); ++i)
     {
         QVariant V = property(names.at(i));
-        S += "  ";
-        S += QString(names.at(i));
-        S += " : ";
-        S += QString("<variant typeid=%1>,").arg((int)V.type());
-        S += QString("<typename=%1>,").arg(V.typeName());
-        S += V.toString();
-        S += "\n";
+        S += QString("  %1 (%2): %3\n").arg(QString(names.at(i))).arg(V.typeName()).arg(V.toString());
     }
 
 	return S;

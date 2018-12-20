@@ -11,7 +11,7 @@ protected:
     virtual void readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object);
 
 public:
-    h5helper_v1_1()
+    h5helper_v1_1(QDaqH5File* f) : h5helper_v1_0(f)
     {
         ver_ = QDaqH5File::V_1_1;
         major_ = 1;

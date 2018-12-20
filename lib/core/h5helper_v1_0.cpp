@@ -48,6 +48,11 @@ void h5helper_v1_0::write(CommonFG* h5obj, const char* name, const QStringList& 
 
 bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QString& str)
 {
+    if (!h5exist_ds(h5obj,name)) {
+        pushWarning(QString("DataSet '%1' not found in group '%2'")
+                .arg(name).arg(groupName(h5obj)));
+        return false;
+    }
     DataSet ds = h5obj->openDataSet( name );
     H5T_class_t type_class = ds.getTypeClass();
     if (type_class==H5T_STRING)
@@ -63,6 +68,11 @@ bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QString& str)
 }
 bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QStringList& S)
 {
+    if (!h5exist_ds(h5obj,name)) {
+        pushWarning(QString("DataSet '%1' not found in group '%2'")
+                .arg(name).arg(groupName(h5obj)));
+        return false;
+    }
     DataSet ds = h5obj->openDataSet( name );
     H5T_class_t type_class = ds.getTypeClass();
     if (type_class==H5T_STRING)
@@ -101,6 +111,11 @@ void h5helper_v1_0::write(CommonFG* h5obj, const char* name, const QDaqVector& v
 
 bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QDaqVector& value)
 {
+    if (!h5exist_ds(h5obj,name)) {
+        pushWarning(QString("DataSet '%1' not found in group '%2'")
+                .arg(name).arg(groupName(h5obj)));
+        return false;
+    }
     DataSet ds = h5obj->openDataSet(name);
     H5T_class_t ds_type = ds.getTypeClass();
     if (ds_type==H5T_FLOAT)
@@ -116,6 +131,11 @@ bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, QDaqVector& value)
 
 bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, int& value)
 {
+    if (!h5exist_ds(h5obj,name)) {
+        pushWarning(QString("DataSet '%1' not found in group '%2'")
+                .arg(name).arg(groupName(h5obj)));
+        return false;
+    }
     DataSet ds = h5obj->openDataSet(name);
     H5T_class_t ds_type = ds.getTypeClass();
     if (ds_type==H5T_INTEGER)
@@ -128,6 +148,11 @@ bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, int& value)
 
 bool h5helper_v1_0::read(CommonFG* h5obj, const char* name, double& value)
 {
+    if (!h5exist_ds(h5obj,name)) {
+        pushWarning(QString("DataSet '%1' not found in group '%2'")
+                .arg(name).arg(groupName(h5obj)));
+        return false;
+    }
     DataSet ds = h5obj->openDataSet(name);
     H5T_class_t ds_type = ds.getTypeClass();
     if (ds_type==H5T_FLOAT)

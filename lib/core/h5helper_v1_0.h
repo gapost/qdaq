@@ -21,7 +21,7 @@ protected:
 
 
 public:
-    h5helper_v1_0() : h5helper(QDaqH5File::V_1_0, 1, 0)
+    explicit h5helper_v1_0(QDaqH5File* f) : h5helper(QDaqH5File::V_1_0, 1, 0, f)
     {}
 
     virtual void write(CommonFG* h5obj, const char* name, const int &v);

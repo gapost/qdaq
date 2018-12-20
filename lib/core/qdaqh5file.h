@@ -25,8 +25,10 @@ public:
     };
 
 private:
+    friend class h5helper;
     h5helper* helper_;
     QString lastError_;
+    QStringList warnings_;
 
     void getHelper(Version v);
     void writeRecursive(CommonFG* h5g, const QDaqObject* obj);
@@ -51,6 +53,7 @@ public:
     h5helper* helper() { return helper_; }
 
     QString lastError() const { return lastError_; }
+    const QStringList& warnings() const { return warnings_; }
 
 };
 
@@ -59,12 +62,14 @@ class h5helper
 protected:
     QDaqH5File::Version ver_;
     int major_, minor_;
+    QDaqH5File* file_;
 
     virtual void writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object) = 0;
     virtual void readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object) = 0;
 
 public:
-    h5helper(QDaqH5File::Version v, int mj, int mn) : ver_(v), major_(mj), minor_(mn)
+    h5helper(QDaqH5File::Version v, int mj, int mn, QDaqH5File* f) :
+        ver_(v), major_(mj), minor_(mn), file_(f)
     {}
     virtual ~h5helper()
     {}
@@ -92,6 +97,13 @@ public:
     virtual Group createGroup(CommonFG* loc, const char* name) = 0;
 
     virtual QByteArrayList getGroupNames(CommonFG* h5obj, bool isRoot = false) = 0;
+
+    // Check if a dataset "name" exists in H5 file/group
+    bool h5exist_ds(CommonFG* h5obj, const char* name);
+    // Get group name from obj pointer
+    QString groupName(CommonFG* h5obj);
+
+    void pushWarning(const QString& w) { file_->warnings_.push_back(w); }
 };
 
 #endif // QDAQH5FILE_H

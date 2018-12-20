@@ -382,6 +382,7 @@ bool QDaqSession::h5write(const QDaqObject *obj, const QString &fname)
 {
     QDaqH5File f;
     bool ret = f.h5write(obj,fname);
+    if (!f.warnings().isEmpty()) emit stdErr(f.warnings().join(QChar('\n'))+QChar('\n'));
     if (!ret) engine_->currentContext()->throwError(QString("Error writing file: %1.").arg(f.lastError()));
     return true;
 }
@@ -389,6 +390,7 @@ QDaqObject* QDaqSession::h5read(const QString &fname)
 {
     QDaqH5File f;
     QDaqObject* o = f.h5read(fname);
+    if (!f.warnings().isEmpty()) emit stdErr(f.warnings().join(QChar('\n'))+QChar('\n'));
     if (!o) engine_->currentContext()->throwError(QString("Error reading file: %1.").arg(f.lastError()));
     return o;
 }
