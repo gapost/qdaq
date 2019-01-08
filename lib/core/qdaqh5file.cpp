@@ -47,7 +47,7 @@ bool QDaqH5File::h5write(const QDaqObject* obj, const QString& filename)
         helper()->write(file, "Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate));
         helper()->write(file, "FileType", "QDaq");
         helper()->write(file, "FileVersionMajor", QString::number(helper()->major()));
-        //helper()->write(file, "FileVersionMinor", QString::number(helper()->minor()));
+        helper()->write(file, "FileVersionMinor", QString::number(helper()->minor()));
 
         writeRecursive(file,obj);
 

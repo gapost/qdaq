@@ -65,28 +65,17 @@ QByteArrayList h5helper_v1_1::getGroupNames(CommonFG* h5g, bool isRoot)
     return names;
 }
 
-bool isTypeNumeric(int id)
-{
-    return id==QMetaType::Bool || id==QMetaType::Int || id==QMetaType::UInt ||
-            id==QMetaType::Long || id==QMetaType::ULong || id==QMetaType::LongLong ||
-            id==QMetaType::ULongLong || id==QMetaType::Short || id==QMetaType::UShort ||
-            id==QMetaType::Float || id==QMetaType::Double;
-}
-
-bool isTypeString(int id)
-{
-    return id==QMetaType::QString || id==QMetaType::QByteArray ||
-            id==QMetaType::QChar || id==QMetaType::Char || id==QMetaType::SChar ||
-            id==QMetaType::UChar;
-}
-
-bool isTypeNumeric(const QVariantList& L)
-{
-    foreach(const QVariant& v, L) {
-        if (!isTypeNumeric(v.type())) return false;
-    }
-    return true;
-}
+/*
+ * Dynamic Property Read/Write Conversion Rules
+ *
+ * QDaq        <->  HDF5
+ * bool             int
+ * number           float
+ * string           string
+ * stringlist       string 2D
+ * vector           array of float
+ *
+ */
 
 void h5helper_v1_1::writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object)
 {
@@ -96,36 +85,13 @@ void h5helper_v1_1::writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_
     foreach(const QByteArray& propName, m_object->dynamicPropertyNames())
     {
         QVariant v = m_object->property(propName.constData());
-        int id = v.type();
 
-        if (isTypeNumeric(id))
-        {
-            write(h5obj,propName.constData(),v.toDouble());
-        } else if (isTypeString(id))
-        {
-            write(h5obj,propName.constData(),v.toString());
-        }
-        else if (id==QMetaType::QVariantList) {
-            QVariantList vl = v.value<QVariantList>();
-            if (isTypeNumeric(vl)) {
-                int n = vl.length();
-                QDaqVector x(n);
-                for(int i=0; i<n; ++i) x[i] = vl.at(i).toDouble();
-                write(h5obj,propName.constData(),x);
-            } else
-                write(h5obj,propName.constData(),v.toStringList());
-        }
-        else if (id==QMetaType::QStringList)
-            write(h5obj,propName.constData(),v.toStringList());
-        else if (id==QMetaType::QByteArrayList)
-        {
-            QStringList L;
-            QByteArrayList balist = v.value<QByteArrayList>();
-            foreach(QByteArray ba, balist) L << QString(ba);
-            write(h5obj,propName.constData(),L);
-        }
-        else if (id==qMetaTypeId<QDaqVector>())
-            write(h5obj,propName.constData(),v.value<QDaqVector>());
+        if (QDaqTypes::isBool(v)) write(h5obj,propName.constData(),(int)v.toBool());
+        else if (QDaqTypes::isNumeric(v)) write(h5obj,propName.constData(),v.toDouble());
+        else if (QDaqTypes::isString(v)) write(h5obj,propName.constData(),v.toString());
+        else if (QDaqTypes::isStringList(v)) write(h5obj,propName.constData(),QDaqTypes::toStringList(v));
+        else if (QDaqTypes::isVector(v)) write(h5obj,propName.constData(),QDaqTypes::toVector(v));
+        else continue;
 
         try {
             DataSet ds = h5obj->openDataSet(propName.constData());
@@ -172,17 +138,15 @@ void h5helper_v1_1::readDynamicProperties(CommonFG* h5g, QDaqObject* m_object)
                 H5T_class_t type_class = ds.getTypeClass();
                 DataSpace dspace = ds.getSpace();
 
-                if (type_class==H5T_INTEGER) {
+                if (type_class==H5T_INTEGER) { // bool
                     int sz = dspace.getSimpleExtentNpoints();
                     if (sz>1) {
-                        QVector<int> val;
-                        val.fill(0,sz);
-                        ds.read(val.data(), ds.getDataType());
-                        m_object->setProperty(propName.constData(),QVariant::fromValue(val));
+                        qDebug() << "Invalid dynamic prop in HDF5"; // only scalar is supported
                     } else {
                         int val;
                         ds.read(&val, ds.getDataType());
-                        m_object->setProperty(propName.constData(),QVariant::fromValue(val));
+                        bool b = (bool)val;
+                        m_object->setProperty(propName.constData(),QVariant::fromValue(b));
                     }
                 } else if (type_class==H5T_FLOAT) {
                     int sz = dspace.getSimpleExtentNpoints();
