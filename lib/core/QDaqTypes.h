@@ -10,12 +10,29 @@
 
 class QScriptEngine;
 class QDaqObject;
+class QDaqVector;
 
-int registerQDaqTypes(QScriptEngine* eng);
+struct QDAQ_EXPORT QDaqTypes {
+    static int registerWithJS(QScriptEngine* eng);
 
-QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject* const  &obj, int ownership = 2);
-QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject* const &obj, int ownership = 2);
-void fromScriptValue(const QScriptValue &value, QDaqObject* &obj);
+    static bool isNumeric(const QVariant&);
+    static bool isString(const QVariant&);
+    static bool isBool(const QVariant&);
+
+    static bool isStringList(const QVariant&);
+    static bool isVector(const QVariant&);
+
+    static QStringList toStringList(const QVariant&);
+    static QDaqVector toVector(const QVariant&);
+
+    static bool isNumeric(const QVariantList&);
+    static bool isString(const QVariantList&);
+    static bool isBool(const QVariantList&);
+
+    static QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject* const  &obj, int ownership = 2);
+    static QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject* const &obj, int ownership = 2);
+    static void fromScriptValue(const QScriptValue &value, QDaqObject* &obj);
+};
 
 #include <QString>
 #include <QDateTime>
@@ -387,9 +404,11 @@ class QDAQ_EXPORT QDaqVector
     typedef buffer<double> buffer_t;
     QExplicitlySharedDataPointer<buffer_t> d_ptr;
 public:
-    /// Create a buffer with initial capacity cap.
-    explicit QDaqVector(int cap = 0) : d_ptr(new buffer_t(cap))
-    {}
+    /// Create a buffer with n elements, initially filled with 0.
+    explicit QDaqVector(int n = 0) : d_ptr(new buffer_t(n))
+    {
+        for(int i=0; i<n; i++) push(0.);
+    }
     QDaqVector(const QDaqVector& other) : d_ptr(other.d_ptr)
     {}
     QDaqVector& operator=(const QDaqVector& rhs)

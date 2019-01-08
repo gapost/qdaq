@@ -37,12 +37,12 @@ QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScrip
 
     if (context->isCalledAsConstructor())
     {
-        QScriptValue scriptObj = toScriptValue(engine, context->thisObject(), obj);
+        QScriptValue scriptObj = QDaqTypes::toScriptValue(engine, context->thisObject(), obj);
 
         return scriptObj;
     }
 
-    QScriptValue scriptObj = toScriptValue(engine, obj);
+    QScriptValue scriptObj = QDaqTypes::toScriptValue(engine, obj);
 
     scriptObj.setPrototype(context->callee().property(QString::fromLatin1("prototype")));
     return scriptObj;
@@ -70,14 +70,14 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
     QDaqObject* qdaq = QDaqObject::root();
 
-    QScriptValue rootObj = toScriptValue(engine_, qdaq, QScriptEngine::QtOwnership);
+    QScriptValue rootObj = QDaqTypes::toScriptValue(engine_, qdaq, QScriptEngine::QtOwnership);
 
     self.setProperty("qdaq", rootObj, QScriptValue::Undeletable | QScriptValue::ReadOnly);
 
 	engine_->setGlobalObject(self);
 
     // register QDaq types with the engine
-    registerQDaqTypes(engine_);
+    QDaqTypes::registerWithJS(engine_);
 
 	// register root classes
     QList<const QMetaObject*> rtClasses = QDaqObject::root()->registeredClasses();
