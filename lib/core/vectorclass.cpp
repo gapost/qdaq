@@ -12,7 +12,7 @@ Q_DECLARE_METATYPE(VectorClass*)
 class VectorClassPropertyIterator : public QScriptClassPropertyIterator
 {
 public:
-    VectorClassPropertyIterator(const QScriptValue &object);
+    VectorClassPropertyIterator(const QScriptValue &object, const QList<QScriptString>& lst);
     ~VectorClassPropertyIterator();
 
     bool hasNext() const;
@@ -28,8 +28,10 @@ public:
     uint id() const;
 
 private:
+    QList<QScriptString> m_names;
     int m_index;
     int m_last;
+    int m_offset;
 };
 
 //! [0]
@@ -65,6 +67,7 @@ QScriptClass::QueryFlags VectorClass::queryProperty(const QScriptValue &object,
                                                        QueryFlags flags, uint *id)
 {
     QDaqVector *ba = qscriptvalue_cast<QDaqVector*>(object.data());
+    QString myname(name);
     if (!ba)
         return 0;
     if (name == length ||
@@ -77,6 +80,7 @@ QScriptClass::QueryFlags VectorClass::queryProperty(const QScriptValue &object,
         if (!isArrayIndex)
             return 0;
         *id = pos;
+        //if ((pos<0) || (pos >= ba->size())) return 0;
         if ((flags & HandlesReadAccess) && (pos >= ba->size()))
             flags &= ~HandlesReadAccess;
         return flags;
@@ -123,10 +127,8 @@ void VectorClass::setProperty(QScriptValue &object,
         vec->setCapacity(value.toInt32());
     } else {
         qint32 pos = id;
-        if (pos < 0)
+        if (pos < 0 || pos >= vec->size())
             return;
-        if (vec->size() <= pos)
-            resize(*vec, pos + 1);
         (*vec)[pos] = value.toNumber();
     }
 }
@@ -134,7 +136,7 @@ void VectorClass::setProperty(QScriptValue &object,
 
 //! [6]
 QScriptValue::PropertyFlags VectorClass::propertyFlags(
-    const QScriptValue &/*object*/, const QScriptString &name, uint /*id*/)
+    const QScriptValue &/*object*/, const QScriptString &/*name*/, uint /*id*/)
 {
 //    if (name == length  ||
 //            name == circular ||
@@ -149,7 +151,9 @@ QScriptValue::PropertyFlags VectorClass::propertyFlags(
 //! [7]
 QScriptClassPropertyIterator *VectorClass::newIterator(const QScriptValue &object)
 {
-    return new VectorClassPropertyIterator(object);
+    QList<QScriptString> L;
+    L << length << capacity << circular;
+    return new VectorClassPropertyIterator(object, L);
 }
 //! [7]
 
@@ -171,7 +175,7 @@ QScriptValue VectorClass::constructor()
 //! [10]
 QScriptValue VectorClass::newInstance(int size)
 {
-    engine()->reportAdditionalMemoryCost(size);
+    engine()->reportAdditionalMemoryCost(size*sizeof(double));
     return newInstance(QDaqVector(size));
 }
 //! [10]
@@ -190,20 +194,23 @@ QScriptValue VectorClass::construct(QScriptContext *ctx, QScriptEngine *)
     VectorClass *cls = qscriptvalue_cast<VectorClass*>(ctx->callee().data());
     if (!cls)
         return QScriptValue();
-    QScriptValue arg = ctx->argument(0);
-    if (arg.instanceOf(ctx->callee()))
-        return cls->newInstance(qscriptvalue_cast<QDaqVector>(arg));
-    else if (arg.isArray()) {
-        quint32 len = arg.property("length").toUInt32();
-        QDaqVector vec((int)len);
-        for (quint32 i = 0; i < len; ++i)
-            vec << arg.property(i).toNumber();
-        return cls->newInstance(vec);
-    }
-    else if (arg.isNumber()) {
-        int size = arg.toInt32();
-        return cls->newInstance(size);
-    }
+    if (ctx->argumentCount()) {
+        QScriptValue arg = ctx->argument(0);
+        if (arg.instanceOf(ctx->callee()))
+            return cls->newInstance(qscriptvalue_cast<QDaqVector>(arg));
+        else if (arg.isArray()) {
+            quint32 len = arg.property("length").toUInt32();
+            QDaqVector vec;
+            vec.setCapacity(len);
+            for (quint32 i = 0; i < len; ++i)
+                vec << arg.property(i).toNumber();
+            return cls->newInstance(vec);
+        }
+        else if (arg.isNumber()) {
+            int size = arg.toInt32();
+            return cls->newInstance(size);
+        }
+    } else return cls->newInstance();
     return QScriptValue();
 }
 //! [2]
@@ -234,9 +241,9 @@ void VectorClass::resize(QDaqVector &ba, int newSize)
 
 
 
-VectorClassPropertyIterator::VectorClassPropertyIterator(const QScriptValue &object)
-    : QScriptClassPropertyIterator(object)
-{
+VectorClassPropertyIterator::VectorClassPropertyIterator(const QScriptValue &object, const QList<QScriptString> &lst)
+    : QScriptClassPropertyIterator(object), m_names(lst), m_offset(lst.size())
+{   
     toFront();
 }
 
@@ -248,7 +255,7 @@ VectorClassPropertyIterator::~VectorClassPropertyIterator()
 bool VectorClassPropertyIterator::hasNext() const
 {
     QDaqVector *ba = qscriptvalue_cast<QDaqVector*>(object().data());
-    return m_index < ba->size();
+    return m_index < ba->size() + m_offset;
 }
 
 void VectorClassPropertyIterator::next()
@@ -277,17 +284,19 @@ void VectorClassPropertyIterator::toFront()
 void VectorClassPropertyIterator::toBack()
 {
     QDaqVector *ba = qscriptvalue_cast<QDaqVector*>(object().data());
-    m_index = ba->size();
+    m_index = ba->size()+m_offset;
     m_last = -1;
 }
 
 QScriptString VectorClassPropertyIterator::name() const
 {
-    return object().engine()->toStringHandle(QString::number(m_last));
+    if (m_last<m_offset && m_last>=0) return m_names.at(m_last);
+    else
+        return object().engine()->toStringHandle(QString::number(m_last-m_offset));
 }
 
 uint VectorClassPropertyIterator::id() const
 {
-    return m_last;
+    return m_last-m_offset;
 }
 //! [8]

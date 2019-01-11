@@ -14,7 +14,9 @@ VectorPrototype::~VectorPrototype()
 
 QDaqVector *VectorPrototype::thisVector() const
 {
-    return qscriptvalue_cast<QDaqVector*>(thisObject().data());
+    QDaqVector * V = qscriptvalue_cast<QDaqVector*>(thisObject().data());
+    Q_ASSERT(V);
+    return V;
 }
 
 bool VectorPrototype::equals(const QDaqVector &other)
@@ -29,6 +31,11 @@ QString VectorPrototype::toString() const
 
 void VectorPrototype::push(const QScriptValue &val)
 {
+    QDaqVector* V = thisVector();
+    if (V->isCircular() && V->capacity()==0) {
+        context()->throwError(QScriptContext::RangeError,"Pushing to a null capacity circular vector.");
+        return;
+    }
     if (val.isNumber())
         thisVector()->push(val.toNumber());
     else if (val.isArray()) {
@@ -45,6 +52,16 @@ void VectorPrototype::push(const QScriptValue &val)
         QDaqVector * rhs = qscriptvalue_cast<QDaqVector*>(val.data());
         if (rhs) vec->push(*rhs);
     }
+}
+
+void VectorPrototype::pop()
+{
+    thisVector()->pop();
+}
+
+void VectorPrototype::resize(int n)
+{
+    thisVector()->resize(n);
 }
 
 QScriptValue VectorPrototype::toArray() const
@@ -77,18 +94,6 @@ double VectorPrototype::std() const
 {
     return thisVector()->std();
 }
-
-//QDaqVector VectorPrototype::mid(int pos, int len) const
-//{
-//    return thisVector()->mid(pos, len);
-//}
-
-//QScriptValue VectorPrototype::remove(int pos, int len)
-//{
-//    thisVector()->remove(pos, len);
-//    return thisObject();
-//}
-
 
 QScriptValue VectorPrototype::valueOf() const
 {
