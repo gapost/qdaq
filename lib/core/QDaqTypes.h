@@ -3,8 +3,8 @@
 
 #include "QDaqGlobal.h"
 
-#include <QVector>
-#include <QExplicitlySharedDataPointer>
+#include "math_util.h"
+
 #include <QMetaType>
 #include <QScriptValue>
 
@@ -93,285 +93,6 @@ public:
     }
 };
 
-// helper buffer class template
-template<class T>
-class buffer : public QSharedData
-{
-public:
-    typedef QVector<T> container_t;
-
-private:
-    typedef buffer<T> _Self;
-
-    /// memory buffer
-    container_t mem;
-    /// vector size
-    int sz;
-    /// vector capacity
-    int cp;
-    /// true for a circular buffer
-    bool circular_;
-    /// pointer to next position for circular vectors
-    int tail;
-    /// min & max values
-    T x1, x2;
-    /// flag set if min & max need recalc
-    bool recalcBounds;
-
-
-    // make the buffer continous in memory
-    void normalize_()
-    {
-        if (circular_ && sz && sz==cp && tail)
-        {
-            int m = sz-tail;
-            T* head = mem.data();
-            T* temp = head + sz;
-            if (tail<=sz/2)
-            {
-                memcpy(temp,head,tail*sizeof(T));
-                memmove(head,head+tail,m*sizeof(T));
-                memcpy(head + m,temp,tail*sizeof(T));
-            }
-            else
-            {
-                memcpy(temp,head+tail,m*sizeof(T));
-                memmove(head+m,head,tail*sizeof(T));
-                memcpy(head,temp,m*sizeof(T));
-            }
-            tail = 0;
-        }
-    }
-    // index takes care of circular buffers
-    int idx_(int i) const
-    {
-        return (circular_ && sz==cp) ? ((tail+i) % sz) : i;
-    }
-    // store a value
-    void set_(int i, const T& v)
-    {
-        mem[i] = v;
-    }
-    // calculated min/max
-    void calcBounds_()
-    {
-        int n(size());
-        if (n>0)
-        {
-            x1 = x2 = get(0);
-            for(int i=1; i<n; ++i)
-            {
-                double v = get(i);
-                if (v<x1) x1 = v;
-                if (v>x2) x2 = v;
-            }
-        }
-        else x1 = x2 = 0.;
-        recalcBounds = false;
-    }
-
-public:
-    explicit buffer(int acap = 0) : mem((int)acap),
-        sz(0), cp(acap), circular_(false), tail(0),
-        x1(0), x2(0), recalcBounds(true)
-    {
-    }
-    buffer(const _Self& rhs) : mem(rhs.mem),
-        sz(rhs.sz), cp(rhs.cp), circular_(rhs.circular_), tail(rhs.tail),
-        x1(rhs.x1), x2(rhs.x2), recalcBounds(rhs.recalcBounds)
-    {
-    }
-    ~buffer(void)
-    {
-    }
-
-    _Self& operator=(const _Self& rhs)
-    {
-        mem = rhs.mem;
-        sz = rhs.sz;
-        cp = rhs.cp;
-        circular_ = rhs.circular_;
-        tail = rhs.tail;
-        x1 = rhs.x1;
-        x2 = rhs.x2;
-        recalcBounds = rhs.recalcBounds;
-        return (*this);
-    }
-
-    bool operator == (const _Self& rhs) const
-    {
-        if (sz != rhs.sz) return false;
-
-        if (mem.constData() == rhs.mem.constData()) return true;
-
-        for(int i=0; i<size(); i++)
-            if ((*this)[i]!=rhs[i]) return false;
-
-        return true;
-    }
-    bool operator != (const _Self& rhs) const
-    {
-        return !((*this)==rhs);
-    }
-
-    int size() const { return (int)sz; }
-
-    bool isCircular() const { return circular_; }
-    void setCircular(bool on)
-    {
-        if (on==circular_) return;
-
-        normalize_();
-
-        if (on)
-            mem.resize(cp + cp/2); // extra 0.5 size needed to swap mem during normalize_()
-        else
-            mem.resize(cp);
-
-        circular_ = on;
-    }
-
-    int capacity() const { return (int)cp; }
-
-    void setCapacity(int c)
-    {
-        if (c==cp) return;
-
-        normalize_();
-
-        if (circular_) {
-            mem.resize(c + c/2);
-            if (c>cp)
-            {
-                if (sz==cp) tail = sz;
-            }
-            else // (c<cp)
-            {
-                if (sz>c)
-                {
-                    sz = c; tail = 0;
-                    recalcBounds = true;
-                }
-            }
-        } else {
-            mem.resize(c);
-            if (sz>c) sz = c;
-            recalcBounds = true;
-        }
-        cp = c;
-    }
-    void clear()
-    {
-        sz = 0;
-        tail = 0;
-        recalcBounds = true;
-    }
-
-
-    T& operator[](int i)
-    {
-        return mem[idx_(i)];
-    }
-    const T& operator[](int i) const
-    {
-        return get(i);
-    }
-    const T& get(int i) const
-    {
-        return mem[idx_(i)];
-    }
-    void push(const T& v)
-    {
-        if (circular_) {
-            set_(tail++,v);
-            if (sz<cp) sz++;
-            if (sz==cp) tail %= sz;
-        } else {
-            if (sz==cp) mem.resize(++cp);
-            set_(sz++,v);
-        }
-        recalcBounds = true;
-    }
-    void push(const T* v, int n)
-    {
-        if (n<1) return;
-
-        if (circular_) {
-            if (n>=cp) {
-                memcpy(mem.data(),v+n-cp,cp*sizeof(T));
-                tail = 0;
-                sz = cp;
-            }
-            else if (n<=cp-tail) {
-                memcpy(mem.data()+tail,v,n*sizeof(T));
-                tail += n;
-                if (sz<cp) sz += n;
-                if (sz==cp) tail %= cp;
-            } else {
-                int m = cp-tail;
-                memcpy(mem.data()+tail,v,m*sizeof(T));
-                v += m; n -= m;
-                memcpy(mem.data(),v,n*sizeof(T));
-                tail = n;
-                sz = cp;
-            }
-        } else {
-            if (sz+n>cp) { cp = sz+n; mem.resize(cp); }
-            memcpy(mem.data()+sz,v,n*sizeof(T));
-            sz += n;
-        }
-        recalcBounds = true;
-    }
-
-    const T* constData() const
-    {
-        const_cast< _Self * >( this )->normalize_();
-        return mem.constData();
-    }
-    T* data()
-    {
-        normalize_();
-        return mem.data();
-    }
-    container_t vector() const
-    {
-        const_cast< _Self * >( this )->normalize_();
-        return mem.mid(0,sz);
-    }
-    double vmin() const
-    {
-        if (recalcBounds)
-            const_cast< _Self * >( this )->calcBounds_();
-        return x1;
-    }
-    double vmax() const
-    {
-        if (recalcBounds)
-            const_cast< _Self * >( this )->calcBounds_();
-        return x2;
-    }
-    double mean() const
-    {
-        double s(0.0);
-        int n(size());
-        for(int i=0; i<n; ++i) s += get(i);
-        return s/n;
-    }
-    double std() const
-    {
-        double s1(0.0), s2(0.0);
-        int n(size());
-        for(int i=0; i<n; ++i) {
-            double v = get(i);
-            s1 += v; s2 += v*v;
-        }
-        s1 /= n;
-        s2 /= n;
-        s1 = s2 - s1*s1;
-        if (s1<=0.0) return 0.0;
-        else return sqrt(s1);
-    }
-};
 
 /**
  * @brief A buffer for storing double numbers.
@@ -401,7 +122,7 @@ public:
  */
 class QDAQ_EXPORT QDaqVector
 {
-    typedef buffer<double> buffer_t;
+    typedef math::buffer<double> buffer_t;
     QExplicitlySharedDataPointer<buffer_t> d_ptr;
 public:
     /// Create a buffer with n elements, initially filled with 0.
@@ -416,8 +137,17 @@ public:
         d_ptr = rhs.d_ptr;
         return (*this);
     }
+    QDaqVector clone() const
+    {
+        QDaqVector V(*this);
+        V.d_ptr.detach();
+        return V;
+    }
     /// Return the number of elememts stored in the buffer.
     int size() const { return d_ptr->size(); }
+    /// set the size
+    void setSize(int n) { d_ptr->setSize(n); }
+    void resize(int n) { d_ptr->setSize(n); }
     /// Return true if Circular
     bool isCircular() const { return d_ptr->isCircular(); }
     /// Set circular on or off
@@ -435,11 +165,14 @@ public:
     /// Return the i-th element
     double& operator[](int i) { return (*d_ptr)[i]; }
     /// Append a value to the buffer.
+    /// Pushing to a circular vector of 0 capacity 0 leads to an error.
     void push(double v) { d_ptr->push(v); }
     /// Append n values stored in memory location v to the buffer
     void push(const double* v, int n) { d_ptr->push(v, n); }
     /// Append another vector
     void push(const QDaqVector& v) { d_ptr->push(v.constData(), v.size()); }
+    /// Remove the last point
+    void pop() { d_ptr->pop(); }
     /// Append a value to the buffer
     QDaqVector& operator<<(const double& v) { d_ptr->push(v); return (*this); }
     /// Append another vector
