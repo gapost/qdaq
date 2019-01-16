@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 
-Q_DECLARE_METATYPE(QDaqVector*)
+
 Q_DECLARE_METATYPE(VectorClass*)
 
 class VectorClassPropertyIterator : public QScriptClassPropertyIterator
@@ -224,9 +224,20 @@ QScriptValue VectorClass::toScriptValue(QScriptEngine *eng, const QDaqVector &ba
     return cls->newInstance(ba);
 }
 
-void VectorClass::fromScriptValue(const QScriptValue &obj, QDaqVector &ba)
+void VectorClass::fromScriptValue(const QScriptValue &obj, QDaqVector &v)
 {
-    ba = qvariant_cast<QDaqVector>(obj.data().toVariant());
+    QVariant var = obj.data().toVariant();
+    if (var.userType()==qMetaTypeId<QDaqVector>()) {
+        v = qvariant_cast<QDaqVector>(var);
+        return;
+    }
+
+    if (obj.isArray()) {
+        quint32 len = obj.property("length").toUInt32();
+        v.setCapacity(len);
+        for (quint32 i = 0; i < len; ++i)
+            v << obj.property(i).toNumber();
+    }
 }
 
 //! [9]
