@@ -214,36 +214,4 @@ public slots:
 	double std() const { return dv_; }
 };
 
-
-
-/* A channel for filtering another channel's data.
-
-
-  Performs filtering operations on data from the specified inputChannel.
-
-  If the filter channel is the child of another data channel, then automatically
-  it takes input from its parent (unless another inputChannel is specified).
-
-*/
-class QDAQ_EXPORT QDaqFilterChannel : public QDaqChannel
-{
-    Q_OBJECT
-
-
-    /** The input channel to filter.
-      */
-    Q_PROPERTY(QDaqObject* inputChannel READ inputChannel WRITE setInputChannel)
-
-protected:
-    QPointer<QDaqChannel> inputChannel_;
-
-    virtual bool run();
-
-public:
-    QDaqFilterChannel(const QString& name);
-
-    void setInputChannel(QDaqObject* obj);
-    QDaqObject* inputChannel();
-
-};
 #endif // QDAQDATACHANNEL_H

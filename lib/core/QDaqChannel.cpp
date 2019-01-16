@@ -340,30 +340,3 @@ void QDaqChannel::setParserExpression(const QString& s)
 }
 
 
-//////////////////// QDaqFilterChannel /////////////////////////////
-QDaqFilterChannel::QDaqFilterChannel(const QString& name) : QDaqChannel(name)
-{
-}
-void QDaqFilterChannel::setInputChannel(QDaqObject* obj)
-{
-    QDaqChannel* ch = qobject_cast<QDaqChannel*>(obj);
-    if (ch)
-    {
-        QMutexLocker L(&comm_lock);
-        inputChannel_ = ch;
-        emit propertiesChanged();
-    }
-}
-QDaqObject* QDaqFilterChannel::inputChannel()
-{
-    if (inputChannel_) return inputChannel_;
-    else if (qobject_cast<QDaqChannel*>(parent())) return (QDaqObject*)parent();
-    else return 0;
-}
-bool QDaqFilterChannel::run()
-{
-    QDaqChannel* ch = (QDaqChannel*)inputChannel();
-    if (ch && ch->dataReady()) push(ch->value());
-    else push(0);
-    return QDaqChannel::run();
-}
