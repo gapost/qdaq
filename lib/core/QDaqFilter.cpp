@@ -26,13 +26,18 @@ QDaqObjectList QDaqFilter::outputChannels() const
 void QDaqFilter::setInputChannels(QDaqObjectList lst)
 {
     if (throwIfArmed()) return;
+
     // check if we have valid QDaqChannels
     for(int i=0; i<lst.size(); i++)
     {
+        if (!lst.at(i)) {
+            throwScriptError(QString("Null pointer in QDaqChannel list."));
+            return;
+        }
         QDaqChannel* ch = qobject_cast<QDaqChannel*>(lst.at(i));
         if (!ch)
         {
-            throwScriptError(QString("%1 is not a channel.").arg(lst.at(i)->objectName()));
+            throwScriptError(QString("%1 is not a QDaqChannel.").arg(lst.at(i)->objectName()));
             return;
         }
     }
@@ -49,10 +54,14 @@ void QDaqFilter::setOutputChannels(QDaqObjectList lst)
     // check if we have valid QDaqChannels
     for(int i=0; i<lst.size(); i++)
     {
+        if (!lst.at(i)) {
+            throwScriptError(QString("Null pointer in QDaqChannel list."));
+            return;
+        }
         QDaqChannel* ch = qobject_cast<QDaqChannel*>(lst.at(i));
         if (!ch)
         {
-            throwScriptError(QString("%1 is not a channel.").arg(lst.at(i)->objectName()));
+            throwScriptError(QString("%1 is not a QDaqChannel.").arg(lst.at(i)->objectName()));
             return;
         }
     }
