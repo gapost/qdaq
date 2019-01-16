@@ -57,7 +57,6 @@ void QDaqInterpolator::setType(InterpolationType t)
     if (!throwIfArmed() && type_ != t && (int)t!=-1)
     {
         type_ = t;
-        filterinit();
         emit propertiesChanged();
     }
 }
@@ -87,8 +86,8 @@ void QDaqInterpolator::setTable(const QDaqVector& x, const QDaqVector& y)
     }
 
     // copy the data
-    xa.setCapacity(n);
-    ya.setCapacity(n);
+    xa.setSize(n);
+    ya.setSize(n);
     if (d0>0.0)
     {
         double *px = xa.data();
@@ -159,8 +158,8 @@ void QDaqInterpolator::fromTextFile(const QString& fname)
 
 
     // copy the data
-    xa.setCapacity(n);
-    ya.setCapacity(n);
+    xa.setSize(n);
+    ya.setSize(n);
     if (d>0.0)
     {
         double *px = xa.data();
