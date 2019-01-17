@@ -163,7 +163,7 @@ QStringList QDaqConsole::introspection(const QString& lookup)
 
                 // avoid array indices
                 bool isIdx;
-                it.name().toUInt(&isIdx);
+                it.scriptName().toArrayIndex(&isIdx);
                 if (isIdx) continue;
 
                 // avoid "hidden" properties starting with "__"

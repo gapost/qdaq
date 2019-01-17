@@ -18,6 +18,12 @@ public:
         minor_ = 1;
     }
 
+    virtual void write(CommonFG* h5obj, const char* name, const QDaqObject* obj);
+    virtual bool read(CommonFG* h5obj, const char* name, QDaqObject* &obj, QString &path);
+
+    virtual void connectDeferedPointers();
+
+
     virtual Group createGroup(CommonFG* loc, const char* name);
 
     virtual QByteArrayList getGroupNames(CommonFG* h5obj, bool isRoot = false);

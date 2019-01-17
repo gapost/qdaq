@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 
-
+Q_DECLARE_METATYPE(QDaqVector*)
 Q_DECLARE_METATYPE(VectorClass*)
 
 class VectorClassPropertyIterator : public QScriptClassPropertyIterator

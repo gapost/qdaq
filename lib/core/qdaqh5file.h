@@ -29,8 +29,9 @@ private:
     h5helper* helper_;
     QString lastError_;
     QStringList warnings_;
+    const QDaqObject* top_;
 
-    void getHelper(Version v);
+    void newHelper(Version v);
     void writeRecursive(CommonFG* h5g, const QDaqObject* obj);
     void readRecursive(CommonFG* h5g, QDaqObject* &parent_obj);
 
@@ -55,6 +56,8 @@ public:
     QString lastError() const { return lastError_; }
     const QStringList& warnings() const { return warnings_; }
 
+    const QDaqObject* getTopObject() const { return top_; }
+
 };
 
 class h5helper
@@ -66,6 +69,17 @@ protected:
 
     virtual void writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object) = 0;
     virtual void readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object) = 0;
+
+    struct deferedPtrData {
+        QDaqObject* obj;
+        const char* propName;
+        QString path;
+        deferedPtrData(QDaqObject* o = 0, const char* n = 0, const QString& p = QString()) :
+            obj(o), propName(n), path(p)
+        {}
+    };
+
+    QList<deferedPtrData> deferedPtrs;
 
 public:
     h5helper(QDaqH5File::Version v, int mj, int mn, QDaqH5File* f) :
@@ -84,15 +98,19 @@ public:
     virtual void write(CommonFG* h5obj, const char* name, const QString& S) = 0;
     virtual void write(CommonFG* h5obj, const char* name, const QStringList& S) = 0;
     virtual void write(CommonFG* h5obj, const char* name, const QDaqVector& value) = 0;
+    virtual void write(CommonFG* h5obj, const char* name, const QDaqObject* obj) = 0;
 
     virtual bool read(CommonFG* h5obj, const char* name, int& value) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, double& value) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QString& str) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QStringList& S) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QDaqVector& value) = 0;
+    virtual bool read(CommonFG* h5obj, const char* name, QDaqObject* &obj, QString& path) = 0;
 
     virtual void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject) = 0;
     virtual void readProperties(CommonFG* h5obj, QDaqObject* obj) = 0;
+
+    virtual void connectDeferedPointers() = 0;
 
     virtual Group createGroup(CommonFG* loc, const char* name) = 0;
 
@@ -104,6 +122,8 @@ public:
     QString groupName(CommonFG* h5obj);
 
     void pushWarning(const QString& w) { file_->warnings_.push_back(w); }
+
+    void deferObjPtrRead(QDaqObject* obj, const char* name, const QString& path);
 };
 
 #endif // QDAQH5FILE_H

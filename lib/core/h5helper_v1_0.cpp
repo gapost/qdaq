@@ -229,6 +229,8 @@ void h5helper_v1_0::writeProperties(CommonFG* h5obj, const QDaqObject* m_object,
                 else if (objtype==QVariant::Double) write(h5obj,metaProperty.name(),value.toDouble());
                 else if (objtype==qMetaTypeId<QDaqVector>())
                     write(h5obj,metaProperty.name(),value.value<QDaqVector>());
+                else if (objtype==qMetaTypeId<QDaqObject*>())
+                    write(h5obj,metaProperty.name(),value.value<QDaqObject*>());
             }
         }
     }
@@ -273,7 +275,7 @@ void h5helper_v1_0::readProperties(CommonFG *h5obj, QDaqObject* obj)
                 }
             }
             else {
-                int objtype = metaProperty.type();
+                int objtype = metaProperty.userType();
                 if (objtype==QVariant::Bool || objtype==QVariant::Char ||
                     objtype==QVariant::Int || objtype==QVariant::UInt)
                 {
@@ -304,6 +306,14 @@ void h5helper_v1_0::readProperties(CommonFG *h5obj, QDaqObject* obj)
                     QDaqVector v;
                     if (read(h5obj,metaProperty.name(),v))
                         metaProperty.write(obj,QVariant::fromValue(v));
+                }
+                else if (objtype==qMetaTypeId<QDaqObject*>())
+                {
+                    QDaqObject* v;
+                    QString path;
+                    if (read(h5obj,metaProperty.name(),v,path))
+                        metaProperty.write(obj,QVariant::fromValue(v));
+                    else if (!path.isEmpty()) deferObjPtrRead(obj,metaProperty.name(),path);
                 }
             }
         }

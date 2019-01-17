@@ -1,6 +1,8 @@
 #include "bytearrayprototype.h"
 #include <QtScript/QScriptEngine>
 
+#include "QDaqTypes.h"
+
 Q_DECLARE_METATYPE(QByteArray*)
 
 ByteArrayPrototype::ByteArrayPrototype(QObject *parent)

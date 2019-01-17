@@ -6,6 +6,98 @@
 
 #define DYNAMIC_PROPERTY_TAG "DYNAMIC_PROPERTY"
 
+void h5helper_v1_1::write(CommonFG* h5obj, const char* name, const QDaqObject* obj)
+{
+    if (!obj) {
+        h5helper_v1_0::write(h5obj,name,QString("0"));
+        return;
+    }
+
+    QString path(obj->objectName());
+    const QDaqObject* top = file_->getTopObject();
+    const QDaqObject* p = obj;
+    const QDaqObject* r = (QDaqObject*)QDaqObject::root();
+    while(p && p!=top && p!=r) {
+        p = obj->parent();
+        if (p) {
+            path.push_front('.');
+            path.push_front(p->objectName());
+        }
+    }
+    if (p==top) h5helper_v1_0::write(h5obj,name,path);
+    else {
+        h5helper_v1_0::write(h5obj,name,QString("0"));
+        pushWarning(QString("QDaqObject* property named: %1 of %2 could not be saved. Pointed object is outside of file scope.").arg(name).arg(path));
+    }
+}
+
+bool h5helper_v1_1::read(CommonFG* h5obj, const char* name, QDaqObject* &obj, QString& path)
+{
+    if (!h5helper_v1_0::read(h5obj,name,path)) return false;
+    if (path.isEmpty() || path=="0") {
+        path.clear();
+        obj = 0;
+        return true; // a 0 means null pointer thus it is a legitimate value
+    }
+
+    QStringList splitPath = path.split(QChar('.'));
+
+    QString objName = splitPath.front(); splitPath.pop_front();
+    QDaqObject* p = const_cast<QDaqObject*>(file_->getTopObject());
+    if (objName != p->objectName()) {
+        pushWarning(QString("Error reading QDaqObject* property named %1 from file: Top object different from file's").arg(name));
+        path.clear();
+        return false;
+    }
+
+    do
+    {
+        objName = splitPath.front();
+        splitPath.pop_front();
+        p = p->findChild(objName);
+    }
+    while (!splitPath.isEmpty() && p);
+
+    if (p) {
+        obj = p;
+        return true;
+    }
+
+    // if object was not found, defer until all objects have been loaded
+
+    //pushWarning(QString("Error reading QDaqObject* property named %1 from file: Unknown Error").arg(name));
+    return false;
+}
+
+void h5helper_v1_1::connectDeferedPointers()
+{
+    foreach(const deferedPtrData& d, deferedPtrs) {
+
+        if (d.path.isEmpty() || d.path=="*") continue;
+
+        QStringList splitPath = d.path.split(QChar('.'));
+
+        QString objName = splitPath.front(); splitPath.pop_front();
+        QDaqObject* p = const_cast<QDaqObject*>(file_->getTopObject());
+        if (objName != p->objectName()) {
+            pushWarning(QString("Error reading QDaqObject* property named %1 from file: Path not found %2.").arg(d.propName).arg(d.path));
+            continue;
+        }
+
+        do
+        {
+            objName = splitPath.front();
+            splitPath.pop_front();
+            p = p->findChild(objName);
+        }
+        while (!splitPath.isEmpty() && p);
+
+        if (p) d.obj->setProperty(d.propName,QVariant::fromValue(p));
+        else pushWarning(QString("Error reading QDaqObject* property named %1 from file: Unknown error.").arg(d.propName));
+    }
+}
+
+
 Group h5helper_v1_1::createGroup(CommonFG* loc, const char* name)
 {
     hid_t group_creation_plist;
@@ -86,11 +178,11 @@ void h5helper_v1_1::writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_
     {
         QVariant v = m_object->property(propName.constData());
 
-        if (QDaqTypes::isBool(v)) write(h5obj,propName.constData(),(int)v.toBool());
-        else if (QDaqTypes::isNumeric(v)) write(h5obj,propName.constData(),v.toDouble());
-        else if (QDaqTypes::isString(v)) write(h5obj,propName.constData(),v.toString());
-        else if (QDaqTypes::isStringList(v)) write(h5obj,propName.constData(),QDaqTypes::toStringList(v));
-        else if (QDaqTypes::isVector(v)) write(h5obj,propName.constData(),QDaqTypes::toVector(v));
+        if (QDaqTypes::isBool(v)) h5helper_v1_0::write(h5obj,propName.constData(),(int)v.toBool());
+        else if (QDaqTypes::isNumeric(v)) h5helper_v1_0::write(h5obj,propName.constData(),v.toDouble());
+        else if (QDaqTypes::isString(v)) h5helper_v1_0::write(h5obj,propName.constData(),v.toString());
+        else if (QDaqTypes::isStringList(v)) h5helper_v1_0::write(h5obj,propName.constData(),QDaqTypes::toStringList(v));
+        else if (QDaqTypes::isVector(v)) h5helper_v1_0::write(h5obj,propName.constData(),QDaqTypes::toVector(v));
         else continue;
 
         try {

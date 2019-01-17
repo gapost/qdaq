@@ -205,6 +205,8 @@ public:
 };
 
 Q_DECLARE_METATYPE(QDaqVector)
+//Q_DECLARE_METATYPE(QDaqVector*)
+//Q_DECLARE_METATYPE(QByteArray*)
 
 #endif
 

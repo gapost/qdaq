@@ -41,7 +41,7 @@ bool QDaqH5File::h5write(const QDaqObject* obj, const QString& filename)
         file = new H5File( filename.toLatin1(), H5F_ACC_TRUNC );
 
         // get a last version helper
-        getHelper(V_LAST);
+        newHelper(V_LAST);
         warnings_.clear();
 
         helper()->write(file, "Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate));
@@ -49,6 +49,7 @@ bool QDaqH5File::h5write(const QDaqObject* obj, const QString& filename)
         helper()->write(file, "FileVersionMajor", QString::number(helper()->major()));
         helper()->write(file, "FileVersionMinor", QString::number(helper()->minor()));
 
+        top_ = obj;
         writeRecursive(file,obj);
 
     }  // end of try block
@@ -155,7 +156,7 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
          */
         file = new H5File( filename.toLatin1(), H5F_ACC_RDONLY );
 
-        getHelper(V_LAST);
+        newHelper(V_LAST);
         warnings_.clear();
 
         QString fileType, vMajor, vMinor;
@@ -185,7 +186,7 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
             return 0;
         }
 
-        getHelper(fileVersion);
+        newHelper(fileVersion);
         readRecursive(file,obj);
 
     }  // end of try block
@@ -282,7 +283,8 @@ void QDaqH5File::writeRecursive(CommonFG* h5g, const QDaqObject* obj)
 
 void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
 {
-    QByteArrayList groups = helper()->getGroupNames(h5g, parent_obj==0);
+    bool isRoot = parent_obj==0;
+    QByteArrayList groups = helper()->getGroupNames(h5g, isRoot);
 
     foreach(QByteArray groupName, groups) {
         Group g = h5g->openGroup(groupName);
@@ -293,24 +295,24 @@ void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
             QDaqObject* obj  = QDaqObject::root()->createObject(groupName,className);
             if (obj)
             {
-                obj->setObjectName(groupName);
-                obj->readh5(&g,this);
-                readRecursive(&g, obj);
                 if (parent_obj) parent_obj->appendChild(obj);
                 else {
                     parent_obj = obj;
-                    return;
+                    top_ = obj;
                 }
+
+                obj->readh5(&g,this);
+                readRecursive(&g, obj);
             }
             else delete obj;
         }
     }
+
+    if (isRoot) helper()->connectDeferedPointers();
 }
 
-void QDaqH5File::getHelper(Version v)
+void QDaqH5File::newHelper(Version v)
 {
-    if (helper_ && helper_->version()==v) return;
-
     if (helper_) {
         delete helper_;
         helper_ = 0;
@@ -344,4 +346,10 @@ QString h5helper::groupName(CommonFG* h5obj)
         H5Iget_name(h5obj->getLocId(),ba.data(),sz+1);
         return QString(ba);
     } else return QString();
+}
+
+void h5helper::deferObjPtrRead(QDaqObject *obj, const char *name, const QString &path)
+{
+    deferedPtrData d(obj,name,path);
+    deferedPtrs << d;
 }
