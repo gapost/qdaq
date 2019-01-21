@@ -91,10 +91,18 @@ QScriptValue toScriptValue(QScriptEngine *eng, const QDaqObjectList& L)
 
 void fromScriptValue(const QScriptValue &value, QDaqObjectList& L)
 {
-    quint32 len = value.property("length").toUInt32();
-    for (quint32 i = 0; i < len; ++i) {
-        QScriptValue item = value.property(i);
-        L.push_back(qscriptvalue_cast<QDaqObject*>(item));
+    if (value.isArray()) {
+        quint32 len = value.property("length").toUInt32();
+        for (quint32 i = 0; i < len; ++i) {
+            QScriptValue item = value.property(i);
+            L.push_back(qscriptvalue_cast<QDaqObject*>(item));
+        }
+        return;
+    }
+
+    if (value.isQObject()) {
+        QDaqObject* obj = qobject_cast<QDaqObject*>(value.toQObject());
+        if (obj) L.push_back(obj);
     }
 }
 
