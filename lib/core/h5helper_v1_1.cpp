@@ -31,69 +31,91 @@ void h5helper_v1_1::write(CommonFG* h5obj, const char* name, const QDaqObject* o
     }
 }
 
-bool h5helper_v1_1::read(CommonFG* h5obj, const char* name, QDaqObject* &obj, QString& path)
+void h5helper_v1_1::write(CommonFG *h5obj, const char *name, const QDaqObjectList &objList)
 {
-    if (!h5helper_v1_0::read(h5obj,name,path)) return false;
-    if (path.isEmpty() || path=="0") {
-        path.clear();
-        obj = 0;
-        return true; // a 0 means null pointer thus it is a legitimate value
+    if (objList.isEmpty()) {
+        h5helper_v1_0::write(h5obj,name,QString("0"));
+        return;
     }
 
-    QStringList splitPath = path.split(QChar('.'));
+    const QDaqObject* top = file_->getTopObject();
+    const QDaqObject* r = (QDaqObject*)QDaqObject::root();
+    QStringList pathList;
 
-    QString objName = splitPath.front(); splitPath.pop_front();
-    QDaqObject* p = const_cast<QDaqObject*>(file_->getTopObject());
-    if (objName != p->objectName()) {
-        pushWarning(QString("Error reading QDaqObject* property named %1 from file: Top object different from file's").arg(name));
-        path.clear();
-        return false;
-    }
-
-    do
+    foreach(const QDaqObject* p, objList)
     {
-        objName = splitPath.front();
-        splitPath.pop_front();
-        p = p->findChild(objName);
+        QString path(p->objectName());
+        while(p && p!=top && p!=r) {
+            p = p->parent();
+            if (p) {
+                path.push_front('.');
+                path.push_front(p->objectName());
+            }
+        }
+        if (p==top) pathList << path;
+        else {
+            pathList << QString("0");
+            pushWarning(QString("A ptr in QDaqObjectList property named: %1 of %2 could not be saved. Pointed object is outside of file scope.").arg(name).arg(path));
+        }
     }
-    while (!splitPath.isEmpty() && p);
-
-    if (p) {
-        obj = p;
-        return true;
-    }
-
-    // if object was not found, defer until all objects have been loaded
-
-    //pushWarning(QString("Error reading QDaqObject* property named %1 from file: Unknown Error").arg(name));
-    return false;
+    h5helper_v1_0::write(h5obj,name,pathList);
 }
 
 void h5helper_v1_1::connectDeferedPointers()
 {
     foreach(const deferedPtrData& d, deferedPtrs) {
 
-        if (d.path.isEmpty() || d.path=="*") continue;
+        QDaqObjectList objList;
 
-        QStringList splitPath = d.path.split(QChar('.'));
+        foreach(const QString& path, d.pathList) {
 
-        QString objName = splitPath.front(); splitPath.pop_front();
-        QDaqObject* p = const_cast<QDaqObject*>(file_->getTopObject());
-        if (objName != p->objectName()) {
-            pushWarning(QString("Error reading QDaqObject* property named %1 from file: Path not found %2.").arg(d.propName).arg(d.path));
-            continue;
+            if (path.isEmpty() || path=="0") {
+                objList << (QDaqObject*)0;
+                continue;
+            }
+
+            QStringList splitPath = path.split(QChar('.'));
+
+            QString objName = splitPath.front(); splitPath.pop_front();
+            QDaqObject* p = const_cast<QDaqObject*>(file_->getTopObject());
+            if (objName != p->objectName()) {
+                pushWarning(QString("Error reading %1.%2 from file: Path %3 not found.")
+                            .arg(d.obj->objectName())
+                            .arg(d.propName)
+                            .arg(path));
+                objList << (QDaqObject*)0;
+                continue;
+            }
+
+            do
+            {
+                objName = splitPath.front();
+                splitPath.pop_front();
+                p = p->findChild(objName);
+            }
+            while (!splitPath.isEmpty() && p);
+
+            if (p) objList << p;
+            else {
+                pushWarning(QString("Error reading %1.%2 from file: Unknown error.")
+                             .arg(d.obj->objectName())
+                             .arg(d.propName));
+                objList << (QDaqObject*)0;
+            }
+
         }
 
-        do
-        {
-            objName = splitPath.front();
-            splitPath.pop_front();
-            p = p->findChild(objName);
+        if (d.isList) {
+            bool noNulls = true;
+            foreach(const QDaqObject* p, objList) {
+                if (!p) { noNulls = false; break; }
+            }
+            if (noNulls) d.obj->setProperty(d.propName,QVariant::fromValue(objList));
+        } else {
+            QDaqObject* p = 0;
+            if (!objList.isEmpty()) p = objList.at(0);
+            d.obj->setProperty(d.propName,QVariant::fromValue(p));
         }
-        while (!splitPath.isEmpty() && p);
-
-        if (p) d.obj->setProperty(d.propName,QVariant::fromValue(p));
-        else pushWarning(QString("Error reading QDaqObject* property named %1 from file: Unknown error.").arg(d.propName));
     }
 }
 

@@ -231,6 +231,8 @@ void h5helper_v1_0::writeProperties(CommonFG* h5obj, const QDaqObject* m_object,
                     write(h5obj,metaProperty.name(),value.value<QDaqVector>());
                 else if (objtype==qMetaTypeId<QDaqObject*>())
                     write(h5obj,metaProperty.name(),value.value<QDaqObject*>());
+                else if (objtype==qMetaTypeId<QDaqObjectList>())
+                    write(h5obj,metaProperty.name(),value.value<QDaqObjectList>());
             }
         }
     }
@@ -309,11 +311,15 @@ void h5helper_v1_0::readProperties(CommonFG *h5obj, QDaqObject* obj)
                 }
                 else if (objtype==qMetaTypeId<QDaqObject*>())
                 {
-                    QDaqObject* v;
                     QString path;
-                    if (read(h5obj,metaProperty.name(),v,path))
-                        metaProperty.write(obj,QVariant::fromValue(v));
-                    else if (!path.isEmpty()) deferObjPtrRead(obj,metaProperty.name(),path);
+                    if (read(h5obj,metaProperty.name(),path))
+                        deferObjPtrRead(obj,metaProperty.name(),path);
+                }
+                else if (objtype==qMetaTypeId<QDaqObjectList>())
+                {
+                    QStringList pathList;
+                    if (read(h5obj,metaProperty.name(),pathList))
+                        deferObjPtrRead(obj,metaProperty.name(),pathList);
                 }
             }
         }

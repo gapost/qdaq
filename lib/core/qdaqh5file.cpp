@@ -353,3 +353,9 @@ void h5helper::deferObjPtrRead(QDaqObject *obj, const char *name, const QString 
     deferedPtrData d(obj,name,path);
     deferedPtrs << d;
 }
+
+void h5helper::deferObjPtrRead(QDaqObject *obj, const char *name, const QStringList &paths)
+{
+    deferedPtrData d(obj,name,paths);
+    deferedPtrs << d;
+}

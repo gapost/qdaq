@@ -2,10 +2,9 @@
 #define QDAQH5FILE_H
 
 class h5helper;
-class QDaqObject;
-class QString;
 
 #include "QDaqTypes.h"
+#include "QDaqObject.h"
 
 #include <hdf5.h>
 #include <H5Cpp.h>
@@ -73,9 +72,15 @@ protected:
     struct deferedPtrData {
         QDaqObject* obj;
         const char* propName;
-        QString path;
+        QStringList pathList;
+        bool isList;
         deferedPtrData(QDaqObject* o = 0, const char* n = 0, const QString& p = QString()) :
-            obj(o), propName(n), path(p)
+            obj(o), propName(n), isList(false)
+        {
+            if (!p.isEmpty()) pathList << p;
+        }
+        deferedPtrData(QDaqObject* o, const char* n, const QStringList& p) :
+            obj(o), propName(n), pathList(p), isList(true)
         {}
     };
 
@@ -99,13 +104,13 @@ public:
     virtual void write(CommonFG* h5obj, const char* name, const QStringList& S) = 0;
     virtual void write(CommonFG* h5obj, const char* name, const QDaqVector& value) = 0;
     virtual void write(CommonFG* h5obj, const char* name, const QDaqObject* obj) = 0;
+    virtual void write(CommonFG* , const char* , const QDaqObjectList & ) = 0;
 
     virtual bool read(CommonFG* h5obj, const char* name, int& value) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, double& value) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QString& str) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QStringList& S) = 0;
     virtual bool read(CommonFG* h5obj, const char* name, QDaqVector& value) = 0;
-    virtual bool read(CommonFG* h5obj, const char* name, QDaqObject* &obj, QString& path) = 0;
 
     virtual void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject) = 0;
     virtual void readProperties(CommonFG* h5obj, QDaqObject* obj) = 0;
@@ -124,6 +129,7 @@ public:
     void pushWarning(const QString& w) { file_->warnings_.push_back(w); }
 
     void deferObjPtrRead(QDaqObject* obj, const char* name, const QString& path);
+    void deferObjPtrRead(QDaqObject* obj, const char* name, const QStringList& pathList);
 };
 
 #endif // QDAQH5FILE_H
