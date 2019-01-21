@@ -1,15 +1,12 @@
-print("Creating child objects");
-var x = new QDaqObject("test1");
-qdaq.appendChild(x);
-x = new QDaqObject("test2");
-qdaq.insertBefore(x,qdaq.test1);
-x = new QDaqJob("test3");
-qdaq.test2.appendChild(x);
-x = qdaq.test2.clone();
-qdaq.test1.appendChild(x);
-print("Tree = \n" + qdaq.objectTree());
+var dev = qdaq.appendChild(new QDaqDevice('dev'));
+var tcp = qdaq.appendChild(new QDaqTcpip('tcp'));
 
+dev.interface = tcp;
 
 print("Saving qdaq to h5");
 h5write(qdaq,"qdaq.h5");
+
+print("Reading back file");
+var t = h5read("qdaq.h5");
+qdaq.appendChild(t);
 
