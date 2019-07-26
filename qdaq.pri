@@ -25,8 +25,9 @@ unix {
     LIBS += -lqwt-qt5
 
     ######### QtSolutions ###############
-    INCLUDEPATH += /usr/include/qt5/QtSolutions
-    LIBS += -lQtSolutions_PropertyBrowser
+    # INCLUDEPATH += /usr/include/qt5/QtSolutions
+    # LIBS += -lQt5Solutions_PropertyBrowser
+    CONFIG += qtpropertybrowser
 }
 
 ############## 3rd Party Libs for win32 ###############

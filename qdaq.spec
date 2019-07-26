@@ -15,10 +15,9 @@ Requires: muParser
 Requires: qwt-qt5
 Requires: libmodbus
 
-# from maxiotis:ir2
-Requires: libgpib0 
+Requires: linux-gpib
 Requires: comedilib
-Requires: libQtSolutions_PropertyBrowser1
+Requires: qtpropertybrowser-qt5
 
 BuildRequires: qt5-qtbase-devel
 BuildRequires: qt5-qtscript-devel
@@ -30,10 +29,10 @@ BuildRequires: muParser-devel
 BuildRequires: qwt-qt5-devel
 BuildRequires: libmodbus-devel
 
-# from maxiotis:ir2
-BuildRequires: gpib-devel
+
+BuildRequires: linux-gpib-devel
 BuildRequires: comedilib-devel
-BuildRequires: libQtSolutions_PropertyBrowser1-devel
+BuildRequires: qtpropertybrowser-qt5-devel
 
 %description
 A Qt based framework for data aquisition applications.
