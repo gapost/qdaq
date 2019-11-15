@@ -18,7 +18,7 @@ void h5helper_v1_1::write(CommonFG* h5obj, const char* name, const QDaqObject* o
     const QDaqObject* p = obj;
     const QDaqObject* r = (QDaqObject*)QDaqObject::root();
     while(p && p!=top && p!=r) {
-        p = obj->parent();
+        p = p->parent();
         if (p) {
             path.push_front('.');
             path.push_front(p->objectName());
