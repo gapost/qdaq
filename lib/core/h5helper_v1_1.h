@@ -10,6 +10,8 @@ protected:
     virtual void writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object);
     virtual void readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object);
 
+    QStringList lockedPropertyList_;
+
 public:
     h5helper_v1_1(QDaqH5File* f) : h5helper_v1_0(f)
     {
@@ -20,6 +22,9 @@ public:
 
     virtual void write(CommonFG* h5obj, const char* name, const QDaqObject* obj);
     virtual void write(CommonFG* h5obj, const char* name, const QDaqObjectList & objList);
+
+    virtual void lockedPropertyList(QStringList S = QStringList())
+    { lockedPropertyList_ = S; }
 
     virtual void connectDeferedPointers();
 

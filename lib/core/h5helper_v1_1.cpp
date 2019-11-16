@@ -198,6 +198,8 @@ void h5helper_v1_1::writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_
 
     foreach(const QByteArray& propName, m_object->dynamicPropertyNames())
     {
+        if (lockedPropertyList_.contains(propName)) continue;
+
         QVariant v = m_object->property(propName.constData());
 
         if (QDaqTypes::isBool(v)) h5helper_v1_0::write(h5obj,propName.constData(),(int)v.toBool());

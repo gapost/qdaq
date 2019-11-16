@@ -41,6 +41,8 @@ public:
     virtual void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject);
     virtual void readProperties(CommonFG* h5obj, QDaqObject* obj);
 
+    virtual void lockedPropertyList(QStringList S = QStringList()) { Q_UNUSED(S); }
+
     virtual void connectDeferedPointers() {}
 
     virtual Group createGroup(CommonFG* loc, const char* name);

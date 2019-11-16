@@ -21,7 +21,13 @@ void QDaqObject::readh5(Group *g, QDaqH5File *f)
 
 void QDaqDataBuffer::writeh5(H5::Group* h5g, QDaqH5File *f) const
 {
+
+    f->helper()->lockedPropertyList(columnNames_);
+
     QDaqObject::writeh5(h5g,f);
+
+    f->helper()->lockedPropertyList();
+
 
     if (!(columns() && size())) return;
 
@@ -32,6 +38,7 @@ void QDaqDataBuffer::writeh5(H5::Group* h5g, QDaqH5File *f) const
         QString col_name = columnNames().at(j);
         DataSet ds = h5g->createDataSet(col_name.toLatin1().constData(),
                                         PredType::NATIVE_DOUBLE, space);
+
         ds.write(data_matrix[j].constData(),PredType::NATIVE_DOUBLE,space);
     }
 }

@@ -26,7 +26,8 @@ DISTFILES += \
     scripts/test3706.js \
     scripts/data.json \
     scripts/testConsolewidget.js \
-    scripts/testVector.js
+    scripts/testVector.js \
+    scripts/testH5DataBuffer.js
 
 FORMS += \
     ui/cryoTemperatureControl.ui \
