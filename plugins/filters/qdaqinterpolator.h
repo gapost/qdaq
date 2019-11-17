@@ -14,6 +14,8 @@ class FILTERSSHARED_EXPORT QDaqInterpolator :
     Q_OBJECT
 
     Q_PROPERTY(InterpolationType type READ type WRITE setType)
+    Q_PROPERTY(QDaqVector x READ x)
+    Q_PROPERTY(QDaqVector y READ y)
 
 
 public:
@@ -41,6 +43,9 @@ public:
 
     InterpolationType type() const { return type_; }
     void setType(InterpolationType t);
+
+    QDaqVector x() const;
+    QDaqVector y() const;
 
 protected:
     virtual bool filterinit();

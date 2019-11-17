@@ -61,6 +61,16 @@ void QDaqInterpolator::setType(InterpolationType t)
     }
 }
 
+QDaqVector QDaqInterpolator::x() const
+{
+    return xa.clone();
+}
+
+QDaqVector QDaqInterpolator::y() const
+{
+    return ya.clone();
+}
+
 void QDaqInterpolator::setTable(const QDaqVector& x, const QDaqVector& y)
 {
     if (throwIfArmed()) return;
