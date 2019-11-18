@@ -226,15 +226,7 @@ QDaqLoop* QDaqJob::loop() const
 }
 QDaqScriptEngine* QDaqJob::loopEngine() const
 {
-    QDaqLoop* p = loop();
-    QDaqScriptEngine* e = 0;
-    while (p)
-    {
-        e = p->loopEngine();
-        if (e) break;
-        p = p->parentLoop();
-    }
-    return e;
+    return topLoop()->loop_eng_;
 }
 //////////////////// QDaqLoop //////////////////////////////////////////
 QDaqLoop::QDaqLoop(const QString& name) :
@@ -400,10 +392,7 @@ void QDaqLoop::createLoopEngine()
 
     loop_eng_ = new QDaqScriptEngine(this);
 }
-QDaqScriptEngine* QDaqLoop::loopEngine() const
-{
-    return loop_eng_;
-}
+
 QDaqLoop* QDaqLoop::parentLoop() const
 {
     QDaqObject* p = parent();

@@ -389,8 +389,6 @@ public:
     /// Return the parent loop of this loop
     QDaqLoop* parentLoop() const;
 
-    virtual QDaqScriptEngine* loopEngine() const;
-
 signals:
     /// This is emitted if the loop aborts due to an error.
     void abort();
