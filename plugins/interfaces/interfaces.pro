@@ -22,21 +22,7 @@ unix {
     LIBS += -lmodbus
     INCLUDEPATH += /usr/include/modbus
 }
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../3rdparty/libmodbus-3.1.4/lib/ -llibmodbus
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../3rdparty/libmodbus-3.1.4/lib/ -llibmodbusd
-
-win32 {
-INCLUDEPATH += $$PWD/../../../3rdparty/libmodbus-3.1.4/src
-DEPENDPATH += $$PWD/../../../3rdparty/libmodbus-3.1.4/src
-CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../3rdparty/libmodbus-3.1.4/lib/ -llibmodbusd
-} else {
-    LIBS += -L$$PWD/../../../3rdparty/libmodbus-3.1.4/lib/ -llibmodbus
-}
-LIBS += ws2_32.lib
-}
-
+win32: LIBS += -lwsock32 -lws2_32
 TARGET = $$qtLibraryTarget(qdaqinterfaces)
 TEMPLATE = lib
 
@@ -67,3 +53,8 @@ unix {
 DISTFILES += \
     qdaqinterfaces.json
 
+
+win32: LIBS += -L$$PWD/../../../3rdparty/libmodbus-3.1.4/lib/ -llmodbus
+
+INCLUDEPATH += $$PWD/../../../3rdparty/libmodbus-3.1.4/src
+DEPENDPATH += $$PWD/../../../3rdparty/libmodbus-3.1.4/src

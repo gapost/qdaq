@@ -19,10 +19,10 @@ else:unix: LIBS += -L$$OUT_PWD/../../lib/ -lQDaq
 ######### gsl ###############
 unix:LIBS += -lgsl
 win32 {
-    GSL_PATH = $$PWD/../../../3rdparty/gsl-1.16-msvc2015_32
+    GSL_PATH = $$PWD/../../../3rdparty/gsl-1.16
     INCLUDEPATH += $$GSL_PATH/include
-    LIBS += -L$$GSL_PATH/lib/gsl
-    LIBS += gsl.lib gslcblas.lib
+    LIBS += -L$$GSL_PATH/lib/
+    LIBS += -lgsl -lgslcblas
 }
 
 
