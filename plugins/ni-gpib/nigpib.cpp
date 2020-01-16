@@ -1,7 +1,7 @@
 #include "nigpib.h"
 
 #include <windows.h>
-#include <decl-32.h>
+#include <Decl-32.h>
 
 PluginFactory::PluginFactory() : QObject()
 {
@@ -246,11 +246,11 @@ void QDaqNiGpib::setTimeout_(uint ms)
     }
 }
 
-QDaqIntVector QDaqNiGpib::findListeners()
+QDaqVector QDaqNiGpib::findListeners()
 {
     QMutexLocker L(&comm_lock);
 
-    QDaqIntVector Listeners;
+    QDaqVector Listeners;
     Addr4882_t addrlist[31], results_[30];
 
     for(int i=0; i<30; i++) addrlist[i] = i+1;

@@ -68,7 +68,7 @@ public slots:
      *
      * @return A vector of GPIB addresses.
      */
-    QDaqIntVector findListeners();
+    QDaqVector findListeners();
 
 private:
     // error reporting
