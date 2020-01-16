@@ -43,32 +43,29 @@ function createObjects() {
 
     var dTc0 =  new QDaqChannel("dTc0");
 
-    var corr_c = new QDaqFilter("corr_c");
-    corr_c.loadPlugin("lincorr-v0.1");
+    var corr_c = new QDaqLinearCorrelator("corr_c");
     corr_c.inputChannels = [t,Tc];
     corr_c.outputChannels = [dTc0,dTcdt];
-    corr_c.lincorr.size = 50;
+    corr_c.size = 50;
 
     // create sys
-    var sys = new QDaqFilter("sys");
-    sys.loadPlugin("fopdt-v0.1");
+    var sys = new QDaqFOPDT("sys");
     sys.inputChannels = [uc];
     sys.outputChannels = [Tc];
 
 
     // create PID Temperature controllers
-    var tcc = new QDaqFilter("tcc");
-    tcc.loadPlugin("pid-v0.1");
+    var tcc = new QDaqPid("tcc");
     tcc.inputChannels = [Tc];
     tcc.outputChannels = [uc];
-    tcc.pid.gain=1
-    tcc.pid.Ti=0
-    tcc.pid.Td=0
-    tcc.pid.b=1
-    tcc.pid.Tr=0
-    tcc.pid.Nd=5
-    tcc.pid.samplingPeriod = 1;
-    tcc.pid.maxPower = 10;
+    tcc.gain=1
+    tcc.Ti=0
+    tcc.Td=0
+    tcc.b=1
+    tcc.Tr=0
+    tcc.Nd=5
+    tcc.samplingPeriod = 1;
+    tcc.maxPower = 10;
 
 
     // build the object hierarchy under the root object "qdaq"
@@ -100,7 +97,7 @@ function createObjects() {
 
 function setTc(v) {
     var tcc = qdaq.findChild('tcc');
-    tcc.pid.setPoint = v;
+    tcc.setPoint = v;
     var btn = ui.mainUi.findChild("setTc");
     btn.value = v;
 }

@@ -1,5 +1,11 @@
 var dev = qdaq.appendChild(new QDaqDevice('dev'));
-var tcp = qdaq.appendChild(new QDaqTcpip('tcp'));
+var tcp = dev.appendChild(new QDaqTcpip('tcp'));
+var loop1 = qdaq.appendChild(new QDaqLoop('loop1'));
+var loop2 = qdaq.appendChild(new QDaqLoop('loop1'));
+
+dev.setQDaqProperty('x',true);
+tcp.setQDaqProperty('y',1);
+tcp.setQDaqProperty('z',[1,2,3]);
 
 dev.interface = tcp;
 
