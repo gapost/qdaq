@@ -33,3 +33,6 @@ DEPENDPATH += $$PWD/../lib $$PWD/../lib/core $$PWD/../lib/gui $$PWD/../lib/daq
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../bin-release/ -llibQDaq
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../bin-debug/ -llibQDaq
 else:unix: LIBS += -L$$OUT_PWD/../lib/ -lQDaq
+
+win32:CONFIG(release, debug|release): DESTDIR = $$PWD/../../bin-release/designer
+else:win32:CONFIG(debug, debug|release): DESTDIR = $$PWD/../../bin-debug/designer

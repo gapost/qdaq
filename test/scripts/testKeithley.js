@@ -129,8 +129,8 @@ clearAll();
 
 var count = 3;
 
-var gpib = qdaq.appendChild(new QDaqGpib("gpib"));
-gpib.loadPlugin('libqdaqlinuxgpibplugin.so');
+var gpib = qdaq.appendChild(new QDaqNiGpib("gpib"));
+//gpib.loadPlugin('libqdaqlinuxgpibplugin.so');
 
 // Keithley 2182 NVM
 var k2182 = qdaq.appendChild(new QDaqDevice("k2182"));
