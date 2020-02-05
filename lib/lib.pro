@@ -79,6 +79,7 @@ HEADERS  += \
     core/QDaqRoot.h \
     core/QDaqTypes.h \
     core/QDaqJob.h \
+    core/QDaqVector.h \
     core/math_util.h \
     gui/QConsoleWidget.h \
     gui/QDaqConsole.h \
