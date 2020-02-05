@@ -1,6 +1,6 @@
 #include "h5helper_v1_0.h"
 
-#include "QDaqTypes.h"
+#include "QDaqVector.h"
 #include "QDaqObject.h"
 
 #include <QMetaProperty>

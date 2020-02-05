@@ -1,7 +1,7 @@
 #ifndef QDAQDATABUFFER_H
 #define QDAQDATABUFFER_H
 
-#include "QDaqTypes.h"
+#include "QDaqVector.h"
 #include "QDaqJob.h"
 
 #include <QPointer>

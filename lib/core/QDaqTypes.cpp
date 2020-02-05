@@ -1,4 +1,4 @@
-#include "QDaqTypes.h"
+#include "QDaqVector.h"
 #include "QDaqObject.h"
 
 #include <QScriptEngine>

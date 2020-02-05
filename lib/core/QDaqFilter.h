@@ -2,7 +2,7 @@
 #define QDAQFILTER_H
 
 #include "QDaqJob.h"
-#include "QDaqTypes.h"
+#include "QDaqVector.h"
 
 #include <QPointer>
 

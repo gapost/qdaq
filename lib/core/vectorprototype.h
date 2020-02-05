@@ -1,7 +1,7 @@
 #ifndef VECTORPROTOTYPE_H
 #define VECTORPROTOTYPE_H
 
-#include "QDaqTypes.h"
+#include "QDaqVector.h"
 #include <QtCore/QObject>
 #include <QtScript/QScriptable>
 #include <QtScript/QScriptValue>

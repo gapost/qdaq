@@ -6,7 +6,7 @@
 #include "qdaqplugin.h"
 
 #include "QDaqInterface.h"
-#include "QDaqTypes.h"
+#include "QDaqVector.h"
 #include <QtPlugin>
 
 class LINUXGPIBSHARED_EXPORT PluginFactory :

@@ -4,7 +4,7 @@
 #include "filters_global.h"
 
 #include "QDaqFilter.h"
-#include "QDaqTypes.h"
+#include "QDaqVector.h"
 
 #include <gsl/gsl_interp.h>
 
