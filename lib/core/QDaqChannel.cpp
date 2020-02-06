@@ -98,7 +98,7 @@ void QDaqChannel::setAveraging(AveragingType t)
 	{
 		QString msg(
 			"Invalid averaging specification. Availiable options: "
-			"None, Running, Delta, ForgettingFactor"
+            "None, Running, Delta, ForgettingFactor, Median"
 			);
 		throwScriptError(msg);
 		return;
