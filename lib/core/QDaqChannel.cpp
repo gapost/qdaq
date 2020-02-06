@@ -21,6 +21,7 @@ QDaqChannel::QDaqChannel(const QString& name) :
     setForgettingFactor(0.99);
     depth_ = 1;
     buff_.alloc(1);
+    sorted_buffer.resize(1);
 }
 
 QDaqChannel::~QDaqChannel(void)
@@ -120,7 +121,8 @@ void QDaqChannel::setDepth(uint d)
             QMutexLocker L(&comm_lock);
 			depth_ = d;
 			buff_.alloc(d);
-			ffw_ = 1. / (1. - pow(ff_,(int)d));
+            sorted_buffer.resize(d);
+            ffw_ = 1. / (1. - pow(ff_,(int)d));
 		}
 		emit propertiesChanged();
 	}
@@ -146,11 +148,9 @@ bool QDaqChannel::average()
     v_ = dv_ = 0;
 
 	double wt;
-
     int sw;
 //    double sort_buff_[m];
 //    double temp;
-    std::vector<double> sorted_buffer;
     switch(type_)
 	{
 	case Running:

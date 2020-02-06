@@ -5,6 +5,7 @@
 #include "QDaqTypes.h"
 
 #include "math_util.h"
+#include <vector>
 
 namespace mu
 {
@@ -136,6 +137,10 @@ protected:
 
 	// channel buffer
     math::circular_buffer<double> buff_;
+
+    //buffer used for median
+    std::vector<double> sorted_buffer;
+
 
 	virtual bool arm_();
 
