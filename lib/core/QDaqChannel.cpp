@@ -1,6 +1,8 @@
 #include "QDaqChannel.h"
 #include <QChar>
 #include <muParser.h>
+#include <vector>
+#include <algorithm>
 
 QDaqChannel::QDaqChannel(const QString& name) :
     QDaqJob(name),
@@ -146,9 +148,10 @@ bool QDaqChannel::average()
 	double wt;
 
     int sw;
-    double sort_buff_[m];
-    double temp;
-	switch(type_)
+//    double sort_buff_[m];
+//    double temp;
+    std::vector<double> sorted_buffer;
+    switch(type_)
 	{
 	case Running:
 		for(int i=0; i<m; ++i)
@@ -163,25 +166,28 @@ bool QDaqChannel::average()
     case Median:
         for(int i=0; i<m; ++i)
         {
-            sort_buff_[m] = buff_[m];
+//            sort_buff_[i] = buff_[i];
+            sorted_buffer[i] = buff_[i];
         }
         for(int i=0;i<m;i++)
             {
             double y = buff_[i];
             dv_ += y*y;
-                for(int j=i+1;j<m;j++)
-                {
-                    if(sort_buff_[i]>sort_buff_[j])
-                    {
-                        temp  =sort_buff_[i];
-                        sort_buff_[i]=sort_buff_[j];
-                        sort_buff_[j]=temp;
-                    }
-                }
+//                for(int j=i+1;j<m;j++)
+//                {
+//                    if(sort_buff_[i]>sort_buff_[j])
+//                    {
+//                        temp  =sort_buff_[i];
+//                        sort_buff_[i]=sort_buff_[j];
+//                        sort_buff_[j]=temp;
+//                    }
+//                }
             }
-//        std::sort(sort_buff_[0],sort_buff_[m]); //needs #include <algorithm>
-        if (m % 2 != 0) { v_ = sort_buff_[m/2];}
-        v_ = (sort_buff_[(m-1)/2] + sort_buff_[m/2])/2.0;
+        std::sort(sorted_buffer.begin(),sorted_buffer.end()); //needs #include <algorithm>
+//        if (m % 2 != 0) { v_ = sort_buff_[m/2];}
+        if (m % 2 != 0) { v_ = sorted_buffer[m/2];}
+//      v_ = (sort_buff_[(m-1)/2] + sort_buff_[m/2])/2.0;
+        v_ = (sorted_buffer[(m-1)/2] + sorted_buffer[m/2])/2.0;
         dv_ /= m;
         break;
     case Delta:
