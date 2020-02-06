@@ -104,8 +104,9 @@ public:
 		None, /**< No averaging. */
 		Running, /**< Running (box) averaging. */
 		Delta, /**< Running average for signals of alternating sign. */
-		ForgettingFactor /**< Running average with forgetting (exponential weighting). */
-	};
+        ForgettingFactor, /**< Running average with forgetting (exponential weighting). */
+        Median /**< Running median filter. */
+    };
     Q_ENUM(AveragingType)
 
 	/** Type of format for textual representation of channel data.
