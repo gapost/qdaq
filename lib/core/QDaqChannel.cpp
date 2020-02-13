@@ -1,7 +1,7 @@
 #include "QDaqChannel.h"
 #include <QChar>
 #include <muParser.h>
-#include <vector>
+
 #include <algorithm>
 
 QDaqChannel::QDaqChannel(const QString& name) :
@@ -169,8 +169,9 @@ bool QDaqChannel::average()
             dv_ += y*y;
         }
         std::sort(sorted_buffer.begin(),sorted_buffer.end()); //needs #include <algorithm>
-        if (m%2) { v_ = sorted_buffer[m/2];}
-        v_ = (sorted_buffer[(m-1)/2] + sorted_buffer[m/2])/2.0;
+        int m2 = m/2;
+        if (m % 2) { v_ = sorted_buffer[m2];}
+        else v_ = (sorted_buffer[m2-1] + sorted_buffer[m2])/2.0;
         dv_ /= m;
         break;
     case Delta:
