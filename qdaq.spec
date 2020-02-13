@@ -1,9 +1,9 @@
 Summary: Qt based data aquisition
 Name: qdaq
-Version: 0.2.0
+Version: v0.2.4.3.68ac77a
 Release: 1%{?dist}
 License: MIT
-Source0: %{name}.tar.gz
+Source0: %{name}-%{version}.tar.gz
 
 Requires: qt5-qtbase
 Requires: qt5-qtbase-gui
@@ -38,10 +38,8 @@ BuildRequires: qtpropertybrowser-qt5-devel
 A Qt based framework for data aquisition applications.
 
 %prep
-#%setup -q -b 1
-%setup -q -n %{name}
-#cd lib
-#tar -zxvf %{SOURCE1}
+%setup -q 
+
 
 %build
 mkdir %{_target_platform}
@@ -68,6 +66,12 @@ rm -rf %{buildroot}
 /usr/%{_lib}/*
 
 %changelog
+* Fri Nov 15 2019 George
+- ver 0.2.4
+- fix bug in h5helper_v1_1
+* Fri Jul 26 2019 George
+- ver 0.2.3
+- copr gapost/ir2
 * Fri Feb 23 2018 George
 - ver 0.2.0
 - 1st release of v0.2

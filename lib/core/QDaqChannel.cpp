@@ -148,7 +148,7 @@ bool QDaqChannel::average()
     v_ = dv_ = 0;
 
 	double wt;
-    int sw;
+    int sw, m2;
     switch(type_)
 	{
 	case Running:
@@ -169,7 +169,7 @@ bool QDaqChannel::average()
             dv_ += y*y;
         }
         std::sort(sorted_buffer.begin(),sorted_buffer.end()); //needs #include <algorithm>
-        int m2 = m/2;
+        m2 = m/2;
         if (m % 2) { v_ = sorted_buffer[m2];}
         else v_ = (sorted_buffer[m2-1] + sorted_buffer[m2])/2.0;
         dv_ /= m;
