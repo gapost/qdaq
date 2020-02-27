@@ -126,6 +126,9 @@ private slots:
 public slots:
     /// Clear all data.
     void clear();
+    void addChannels(QDaqObjectList chlist);
+    void removeChannels(QDaqObjectList chlist);
+
     /**
      * @brief Append a new row of values.
      * @param v Vector of data values. v.size() must be equal to size().

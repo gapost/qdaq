@@ -59,6 +59,98 @@ void QDaqDataBuffer::setupBackBuffer()
 
 }
 
+void QDaqDataBuffer::removeChannels(QDaqObjectList chlist)
+{
+    // check the channel list, to see if the channel already exists?
+//    foreach(QDaqObject* obj, chlist)
+//    {
+//        if (obj->objectName()) {
+//...
+//            throwScriptError("Channel not in current channel list");
+//            return;
+//        }
+//    }
+
+     QMutexLocker L(&comm_lock);
+    int k;
+    foreach(QDaqObject* obj, chlist)
+    {
+        QString chanName = obj->objectName();
+        k = columnNames_.indexOf(chanName);
+        qInfo ("k = %d",k);
+        channel_objects.removeOne(obj);
+        setProperty(chanName.toLatin1(),QVariant());
+        columnNames_.removeAt(k);
+        data_matrix.removeAt(k);
+        channel_ptrs.removeAt(k);
+    }
+
+    emit propertiesChanged();
+
+}
+
+
+void QDaqDataBuffer::addChannels(QDaqObjectList chlist)
+{
+    // check the new channel list
+    foreach(QDaqObject* obj, chlist)
+    {
+        QDaqChannel* ch = qobject_cast<QDaqChannel*>(obj);
+        if (!ch) {
+            throwScriptError("Invalid channel object in channel list");
+            return;
+        }
+    }
+
+// add exhaustive checks: names', properties' clashes, If empty previous chlist, create it
+// ...
+
+     QMutexLocker L(&comm_lock);
+
+     // append channel objects
+    channel_objects.append(chlist);
+
+    uint cap_ = capacity();
+    //create the extra data matrix needed
+    matrix_t data_matrix_new;
+    //it has a size (number of columns) equal to the "new" chlist
+    data_matrix_new = matrix_t(chlist.size());
+    // create the capacity && type for the new chlist
+    for(int i=0; i<data_matrix_new.size(); i++)
+    {
+        data_matrix_new[i].setCapacity(cap_);
+        data_matrix_new[i].setCircular(circular_);
+        if(data_matrix.size()){
+            //fill the rows with zeros, up to the row size of the *original* data_matrix
+            for(int k=0; k<data_matrix[0].size(); k++){
+                data_matrix_new[i].push(0);
+            }
+        }
+    }
+    //join the two data matrices
+    data_matrix.append(data_matrix_new);
+    //from now on, work like nothing happened
+
+    setupBackBuffer();
+
+    //append channel pointers vector and column names list
+    foreach(QDaqObject* obj, chlist)
+    {
+        channel_ptrs.push_back((QDaqChannel*)obj);
+        columnNames_.push_back(obj->objectName());
+    }
+
+    for(int i=0; i<data_matrix.size(); ++i) {
+        QString str = columnNames_.at(i);
+        QVariant v = QVariant::fromValue(data_matrix[i]);
+        setProperty(str.toLatin1(),v);
+    }
+
+    emit propertiesChanged();
+
+}
+
+
 void QDaqDataBuffer::setChannels(QDaqObjectList chlist)
 {
 	// check the channel list

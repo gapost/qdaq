@@ -107,6 +107,9 @@ public slots:
     void addItems(QComboBox* cb, const QStringList& lst);
     void addItems(QListWidget* cb, const QStringList& lst);
 
+//    void deleteTab(uint currentIndex,QString& uiname);
+    void deleteTab(int currentIndex);
+    int insertTab(int index, QWidget * page, const QString & label);
     // set debugging on (enable Qt script debugger)
     void debug(bool on);
 

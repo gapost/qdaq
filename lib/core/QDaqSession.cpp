@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QListWidget>
 #include <QThread>
+#include <QTabWidget>
 
 QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject* metaObject)
 {
@@ -394,6 +395,8 @@ QDaqObject* QDaqSession::h5read(const QString &fname)
     if (!o) engine_->currentContext()->throwError(QString("Error reading file: %1.").arg(f.lastError()));
     return o;
 }
+
+
 QWidget* QDaqSession::loadUi(const QString &fname)
 {
     QFile file(fname);
@@ -525,6 +528,37 @@ void QDaqSession::addItems(QListWidget* cb, const QStringList& lst)
 {
     cb->addItems(lst);
 }
+
+int QDaqSession::insertTab(int index, QWidget * page, const QString & label)
+{
+    QTabWidget* tabWidg = nullptr;
+    QWidget* CopyPage = nullptr;
+    QString pagename = page->objectName();
+    QWidgetList wl = QDaqObject::root()->daqWindows();
+      foreach (QObject* ui, wl) {
+          tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
+          CopyPage = ui->findChild<QWidget*>(pagename);
+    }
+
+    tabWidg->insertTab(index, CopyPage, label);
+    return index;
+}
+//void QDaqSession::deleteTab(uint currentIndex, QString& uiname)
+void QDaqSession::deleteTab(int currentIndex)
+{
+    QTabWidget* tabWidg = nullptr;
+    QWidgetList wl = QDaqObject::root()->daqWindows();
+      foreach (QObject* ui, wl) {
+//        QString wname = ui->objectName();
+//        print("current QObject is "+ wname);
+//        daqWin = ui->findChild<QDaqWindow*>("mainForm");
+          tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
+//                tabWidg = ui->findChild<QTabWidget*>("tabWidget");
+    }
+    tabWidg->removeTab(currentIndex);
+
+}
+
 
 QString QDaqSession::info(QScriptValue v)
 {
