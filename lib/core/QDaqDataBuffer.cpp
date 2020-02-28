@@ -61,28 +61,39 @@ void QDaqDataBuffer::setupBackBuffer()
 
 void QDaqDataBuffer::removeChannels(QDaqObjectList chlist)
 {
-    // check the channel list, to see if the channel already exists?
-//    foreach(QDaqObject* obj, chlist)
-//    {
-//        if (obj->objectName()) {
-//...
-//            throwScriptError("Channel not in current channel list");
-//            return;
-//        }
-//    }
 
-     QMutexLocker L(&comm_lock);
+    QMutexLocker L(&comm_lock);
     int k;
     foreach(QDaqObject* obj, chlist)
     {
+        //check that we remove channel objects indeed
+        QDaqChannel* ch = qobject_cast<QDaqChannel*>(obj);
+        if (!ch) {
+            throwScriptError("Invalid channel object in channel list");
+            return;
+        }
+        //Find the *object name* of the channel destined for deletion
         QString chanName = obj->objectName();
+        //Where is it on the columns of the data table
         k = columnNames_.indexOf(chanName);
-        qInfo ("k = %d",k);
-        channel_objects.removeOne(obj);
-        setProperty(chanName.toLatin1(),QVariant());
-        columnNames_.removeAt(k);
-        data_matrix.removeAt(k);
-        channel_ptrs.removeAt(k);
+//        qInfo ("k = %d",k);
+        //k=-1 means does not exist in the current channel list
+        if (k>=0){
+            //remove the channel *object*
+            channel_objects.removeOne(obj);
+            //set its properties to "empty"
+            setProperty(chanName.toLatin1(),QVariant());
+            //remove it from column list
+            columnNames_.removeAt(k);
+            //remove the data column - !!! reminder to save here (or at function entrance?)?
+            data_matrix.removeAt(k);
+            //remove the channel *pointer*, however smart it is
+            channel_ptrs.removeAt(k);
+        }
+        else{
+            throwScriptError("Channel not in current channel list");
+            return;
+        }
     }
 
     emit propertiesChanged();
