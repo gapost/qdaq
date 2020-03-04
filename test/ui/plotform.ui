@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>plotForm</class>
+ <widget class="QWidget" name="plotForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -109,11 +109,13 @@
    <class>QwtPlot</class>
    <extends>QFrame</extends>
    <header>qwt_plot.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QDaqPlotWidget</class>
    <extends>QwtPlot</extends>
    <header>QDaqPotWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

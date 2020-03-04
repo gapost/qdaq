@@ -5,9 +5,11 @@
 #include <QCloseEvent>
 #include <QCoreApplication>
 #include <QSet>
+#include <QRegularExpression>
 
 #include <qwt_plot_curve.h>
 #include <qwt_series_data.h>
+#include <qwt_symbol.h>
 #include <qwt_scale_draw.h>
 #include <qwt_plot_grid.h>
 #include <qwt_scale_engine.h>
@@ -27,7 +29,19 @@ public:
     {
     }
 protected:
-    virtual QwtText trackerTextF	(	const QPointF & 	pos	 ) 	 const
+    virtual QwtText trackerTextF	(	const QPointF & 	pos	 ) const
+    {
+    //Since the "paintAttributes", [text+background colour] act on QwtTexts
+    //break up the creation of trackerTextF: one function to create the text
+    //(as a QString), and another to set attributes and return the object.
+    QString S = createLabelText(pos);
+    QwtText trackerText;
+    trackerText.setBackgroundBrush(Qt::lightGray);
+    trackerText.setText(S);
+    trackerText.setColor(Qt::black);
+    return trackerText;
+    }
+    QString createLabelText (const QPointF & pos) const
     {
         QwtText lx = plot()->axisScaleDraw(QwtPlot::xBottom)->label(pos.x());
         QwtText ly = plot()->axisScaleDraw(QwtPlot::yLeft)->label(pos.y());
@@ -355,7 +369,13 @@ void QDaqPlotWidget::setYlim(const QPointF &v)
     setAxisScale(QwtPlot::yLeft,v.x(),v.y()) ;
 }
 
-void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QColor &clr)
+/*
+      linestyle , "{-}|--|:|-.|none"
+      marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
+
+ */
+
+void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QString &attr, const QColor &clr)
 {
     static const Qt::GlobalColor eight_colors[8] =
     {
@@ -369,10 +389,172 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QColor
         Qt::darkRed
     };
 
+    //MATLAB-Octave-style linestyles for reference
+    //static const QString linestyles[5] =
+    //{"-","--",":","-.","none"};
+
+    //Respective Qwt names for QwtPlotCurve::setPen Style: (a Qt::PenStyle object)
+    static const Qt::PenStyle penstyles[4] =
+    {Qt::SolidLine,Qt::DashLine,Qt::DotLine,Qt::DashDotLine};
+
+    //MATLAB-Octave-style markerstyles for reference (not all)
+    //static const QString markerstyles[12] =
+    //{"+","o","*",".","x","s","d","^","v",">","<","h"};
+
+    //Respective Qwt names for QwtSymbol::Style
+    static const QwtSymbol::Style dotstyles[12] =
+    {QwtSymbol::Cross,QwtSymbol::Ellipse,QwtSymbol::Star1,QwtSymbol::NoSymbol,QwtSymbol::XCross,
+     QwtSymbol::Rect,QwtSymbol::Diamond,QwtSymbol::UTriangle,QwtSymbol::DTriangle,QwtSymbol::RTriangle,
+     QwtSymbol::LTriangle,QwtSymbol::Hexagon};
+
     QwtPlotCurve* curve = new QwtPlotCurve;
     curve->setData(new QDaqPlotData(x,y));
 
+    QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
 
+    QString lines, markers;
+//    QString pattern("^(?<line>(-|--|:|-\.|none))(?<marker>(\+|o|\*|\.|x|s|d|\^|v|>|<|h))$");
+// For some reason, Qt regular expression machinery does not recognize \+,\*,\. and \^
+// as legal RegExpr tokens, and gives invalid QRegularExpression for the above pattern.
+// As a result, the syntax will not be exactly like MATLAB, with "cr", "st", "no" and "tr"
+// instead of the problematic ones.
+
+    QString pattern("(?<line>(-|--|:|-\.|none))(?<marker>(cr|o|st|no|x|s|d|tr|v|>|<|h))");
+    //use the pattern as a regular expression
+    QRegularExpression re(pattern);
+    //try to match the plot attributes passed by the user to the reg expr
+    QRegularExpressionMatch match = re.match(attr,0);
+
+    QwtSymbol * symbol = new QwtSymbol;
+    //set a discernible but not very intrusive size for markers
+    symbol->setSize(4,4);
+    //make the marker same color as plot
+    symbol->setColor(plotclr);
+
+    //if we find a match in user input and pattern
+    if (match.hasMatch()) {
+    //separate the two fields of match
+        lines = match.captured("line");
+        markers = match.captured("marker");
+//        qInfo ("has match = %d" , match.hasMatch());
+//        qInfo ("attr = " + attr.toLatin1());
+//        qInfo ("line = " + lines.toLatin1());
+//        qInfo ("marker = " + markers.toLatin1());
+    }
+    else
+    {
+        //needs error message, instructions for proper usage !!!!
+    }
+
+
+    //Ok, now select linestyle
+    if (lines == "none")
+    {
+        //if user desires no line, at least plot markers, instead of nothing!
+        curve->setStyle(QwtPlotCurve::Dots);
+    }
+    else if (lines == "-")
+    {
+        curve->setStyle(QwtPlotCurve::Lines);
+        curve->setPen(plotclr, 0.0, penstyles[0]);
+    }
+    else if (lines == "--")
+    {
+        curve->setStyle(QwtPlotCurve::Lines);
+        curve->setPen(plotclr, 0.0, penstyles[1]);
+    }
+    else if (lines == ":")
+    {
+        curve->setStyle(QwtPlotCurve::Lines);
+        curve->setPen(plotclr, 0.0, penstyles[2]);
+    }
+    else if (lines == "-.")
+    {
+        curve->setStyle(QwtPlotCurve::Lines);
+        curve->setPen(plotclr, 0.0, penstyles[3]);
+    }
+    else
+    {
+        curve->setStyle(QwtPlotCurve::Lines);
+        curve->setPen(plotclr, 0.0, penstyles[0]);
+    }
+
+//Now on for the marker style...
+    if (markers == "no")
+    {
+        //if user desires no marker, indulge them: plot only a line
+        curve->setStyle(QwtPlotCurve::Lines);
+        curve->setSymbol(NULL);
+    }
+    else if (markers == "cr")
+    {
+        symbol->setStyle(dotstyles[0]);
+    }
+    else if (markers == "o")
+    {
+        symbol->setStyle(dotstyles[1]);
+    }
+    else if (markers == "st")
+    {
+        symbol->setStyle(dotstyles[2]);
+    }
+    else if (markers == "x")
+    {
+        symbol->setStyle(dotstyles[4]);
+    }
+    else if (markers == "s")
+    {
+        symbol->setStyle(dotstyles[5]);
+    }
+    else if (markers == "d")
+    {
+        symbol->setStyle(dotstyles[6]);
+    }
+    else if (markers == "tr")
+    {
+        symbol->setStyle(dotstyles[7]);
+    }
+    else if (markers == "v")
+    {
+        symbol->setStyle(dotstyles[8]);
+    }
+    else if (markers == ">")
+    {
+        symbol->setStyle(dotstyles[9]);
+    }
+    else if (markers == "<")
+    {
+        symbol->setStyle(dotstyles[10]);
+    }
+    else if (markers == "h")
+    {
+        symbol->setStyle(dotstyles[11]);
+    }
+    else{
+        symbol->setStyle(dotstyles[3]);
+    }
+    curve->setSymbol(symbol);
+
+    curve->attach(this);
+
+    replot();
+}
+
+void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QColor &clr)
+{
+    static const Qt::GlobalColor eight_colors[8] =
+    {
+        Qt::blue,
+        Qt::red,
+        Qt::darkGreen,
+        Qt::magenta,
+        Qt::darkBlue,
+        Qt::darkMagenta,
+        Qt::darkCyan,
+        Qt::darkRed
+    };
+    QwtPlotCurve* curve = new QwtPlotCurve;
+    curve->setData(new QDaqPlotData(x,y));
     QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
 
     curve->setPen(plotclr);
