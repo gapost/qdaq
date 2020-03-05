@@ -81,7 +81,7 @@ plot1 = w.findChild("plot1");
 plot1.timeScaleX = 1;
 loop2.updateWidgets.connect(plot1.replot);
 //Data.updateWidgets.connect(plot1.replot);
-plot1.plot(Data.t,Data.X1);
+plot1.plot(Data.t,Data.X1,":s");
 
 function onPlotCh1(on) {
     var plot1 = ui.mainForm.findChild('plot1');

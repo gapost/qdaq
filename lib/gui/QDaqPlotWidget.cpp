@@ -391,7 +391,7 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
 
     //MATLAB-Octave-style linestyles for reference
     //static const QString linestyles[5] =
-    //{"-","--",":","-.","none"};
+    //{"-","--",":",".-","none"};
 
     //Respective Qwt names for QwtPlotCurve::setPen Style: (a Qt::PenStyle object)
     static const Qt::PenStyle penstyles[4] =
@@ -413,13 +413,8 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
     QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
 
     QString lines, markers;
-//    QString pattern("^(?<line>(-|--|:|-\.|none))(?<marker>(\+|o|\*|\.|x|s|d|\^|v|>|<|h))$");
-// For some reason, Qt regular expression machinery does not recognize \+,\*,\. and \^
-// as legal RegExpr tokens, and gives invalid QRegularExpression for the above pattern.
-// As a result, the syntax will not be exactly like MATLAB, with "cr", "st", "no" and "tr"
-// instead of the problematic ones.
 
-    QString pattern("(?<line>(-|--|:|-\.|none))(?<marker>(cr|o|st|no|x|s|d|tr|v|>|<|h))");
+    QString pattern("(?<line>(-|--|:|.-|none))(?<marker>(\\+|o|\\*|\\.|x|s|d|\\^|v|>|<|h))");
     //use the pattern as a regular expression
     QRegularExpression re(pattern);
     //try to match the plot attributes passed by the user to the reg expr
@@ -431,19 +426,18 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
     //make the marker same color as plot
     symbol->setColor(plotclr);
 
-    //if we find a match in user input and pattern
+    //if we find a match in user input and pattern, separate the two fields of match
     if (match.hasMatch()) {
-    //separate the two fields of match
         lines = match.captured("line");
         markers = match.captured("marker");
-//        qInfo ("has match = %d" , match.hasMatch());
-//        qInfo ("attr = " + attr.toLatin1());
-//        qInfo ("line = " + lines.toLatin1());
-//        qInfo ("marker = " + markers.toLatin1());
     }
     else
     {
-        //needs error message, instructions for proper usage !!!!
+        //error message, instructions for proper usage, select default plot !!!!
+        qInfo ("Please give linestyle/markerstyle attributes, following MATLAB style");
+        qInfo ("I will now select some default: cont. lines, no marker");
+        curve->setStyle(QwtPlotCurve::Lines);
+        curve->setSymbol(NULL);
     }
 
 
@@ -468,7 +462,7 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
         curve->setStyle(QwtPlotCurve::Lines);
         curve->setPen(plotclr, 0.0, penstyles[2]);
     }
-    else if (lines == "-.")
+    else if (lines == ".-")
     {
         curve->setStyle(QwtPlotCurve::Lines);
         curve->setPen(plotclr, 0.0, penstyles[3]);
@@ -480,13 +474,13 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
     }
 
 //Now on for the marker style...
-    if (markers == "no")
+    if (markers == ".")
     {
         //if user desires no marker, indulge them: plot only a line
         curve->setStyle(QwtPlotCurve::Lines);
         curve->setSymbol(NULL);
     }
-    else if (markers == "cr")
+    else if (markers == "+")
     {
         symbol->setStyle(dotstyles[0]);
     }
@@ -494,7 +488,7 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
     {
         symbol->setStyle(dotstyles[1]);
     }
-    else if (markers == "st")
+    else if (markers == "*")
     {
         symbol->setStyle(dotstyles[2]);
     }
@@ -510,7 +504,7 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
     {
         symbol->setStyle(dotstyles[6]);
     }
-    else if (markers == "tr")
+    else if (markers == "^")
     {
         symbol->setStyle(dotstyles[7]);
     }
