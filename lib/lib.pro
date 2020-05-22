@@ -124,9 +124,6 @@ DISTFILES += \
     qdaq.pri \
     .gitignore \
     ../TODO \
-    ../qdaq.dox \
-    qdaq_modules.dox \
-    qdaq_script_api.dox \
     ../makeArchive.sh \
     ../makeGitversion.sh
 

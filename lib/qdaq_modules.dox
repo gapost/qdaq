@@ -12,3 +12,9 @@
  *  @defgroup Daq QDaq DAQ classes
  *  Classes that can be used for data aqcuisition tasks.
  */
+
+/**
+ *  @defgroup ScriptAPI QDaq scripting API
+ *  A Javascript API for QDaq based on QtScript.
+ */
+

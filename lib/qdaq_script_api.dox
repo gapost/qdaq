@@ -1,6 +1,6 @@
 /**
- *  @defgroup ScriptAPI QDaq QtScript API
- *  A Javascript API for QDaq based on QtScript.
+ * @addtogroup ScriptAPI
+ *
 
 QDaq offers a Javascript interface via the
 QtScript module.

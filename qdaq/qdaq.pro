@@ -39,7 +39,6 @@ unix {
 }
 
 DISTFILES += \
-    qdaq.dox \
     qdaq_ide_screenshot.png
 
 
