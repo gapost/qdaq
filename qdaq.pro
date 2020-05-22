@@ -18,9 +18,9 @@
 #
 # Builds the QtDesigner plugins for some of the widgets in QDaq lib.
 #
-# 4. doc
+# 4. docs
 #
-# Dummy project, contains the doxygen config file
+# Dummy project, contains the doxygen config file and documentation
 #
 # 5. test
 #
@@ -40,7 +40,7 @@ SUBDIRS += \
     lib \
     designer \
     qdaq \
-    doc \
+    docs \
     test \
     plugins
 
