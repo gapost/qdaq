@@ -1,0 +1,5 @@
+<map id="QDaqInterface" name="QDaqInterface">
+<area shape="rect" id="node1" title="Base class of objects representing digital communications interfaces." alt="" coords="5,95,112,121"/>
+<area shape="rect" id="node2" href="$class_q_daq_object.html" title="Base class of all QDaq objects." alt="" coords="87,5,182,32"/>
+<area shape="rect" id="node3" href="$class_q_daq_root.html" title="QDaq root object class." alt="" coords="137,95,221,121"/>
+</map>

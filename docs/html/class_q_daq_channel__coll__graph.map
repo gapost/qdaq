@@ -1,0 +1,8 @@
+<map id="QDaqChannel" name="QDaqChannel">
+<area shape="rect" id="node1" title="A class that represent a stream of numerical data, a signal." alt="" coords="235,199,339,225"/>
+<area shape="rect" id="node2" href="$class_q_daq_job.html" title="Base class for objects that perform a specific task reqursively." alt="" coords="5,102,83,129"/>
+<area shape="rect" id="node3" href="$class_q_daq_object.html" title="Base class of all QDaq objects." alt="" coords="58,5,153,32"/>
+<area shape="rect" id="node4" href="$class_q_daq_root.html" title="QDaq root object class." alt="" coords="107,102,191,129"/>
+<area shape="rect" id="node5" href="$classmath_1_1circular__buffer.html" title=" " alt="" coords="216,95,357,136"/>
+<area shape="rect" id="node6" href="$class_q_daq_vector.html" title="A buffer for storing double numbers." alt="" coords="382,102,477,129"/>
+</map>

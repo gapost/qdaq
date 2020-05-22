@@ -1,0 +1,5 @@
+<map id="QDaqJob" name="QDaqJob">
+<area shape="rect" id="node1" title="Base class for objects that perform a specific task reqursively." alt="" coords="5,95,83,121"/>
+<area shape="rect" id="node2" href="$class_q_daq_object.html" title="Base class of all QDaq objects." alt="" coords="58,5,153,32"/>
+<area shape="rect" id="node3" href="$class_q_daq_root.html" title="QDaq root object class." alt="" coords="107,95,191,121"/>
+</map>

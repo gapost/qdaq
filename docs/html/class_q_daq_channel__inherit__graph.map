@@ -1,0 +1,5 @@
+<map id="QDaqChannel" name="QDaqChannel">
+<area shape="rect" id="node1" title="A class that represent a stream of numerical data, a signal." alt="" coords="5,155,109,181"/>
+<area shape="rect" id="node2" href="$class_q_daq_job.html" title="Base class for objects that perform a specific task reqursively." alt="" coords="19,80,96,107"/>
+<area shape="rect" id="node3" href="$class_q_daq_object.html" title="Base class of all QDaq objects." alt="" coords="10,5,105,32"/>
+</map>
