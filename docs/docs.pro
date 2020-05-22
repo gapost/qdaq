@@ -9,4 +9,5 @@ DISTFILES += \
     ../qdaq.dox \
     ../qdaq/qdaq.dox \
     Doxyfile \
-    html/index.html
+    html/index.html \
+    index.html
