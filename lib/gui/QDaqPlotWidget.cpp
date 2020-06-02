@@ -434,8 +434,8 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
     else
     {
         //error message, instructions for proper usage, select default plot !!!!
-        qInfo ("Please give linestyle/markerstyle attributes, following MATLAB style");
-        qInfo ("I will now select some default: cont. lines, no marker");
+//        qInfo ("Please give linestyle/markerstyle attributes, following MATLAB style");
+//        qInfo ("I will now select some default: cont. lines, no marker");
         curve->setStyle(QwtPlotCurve::Lines);
         curve->setSymbol(NULL);
     }
