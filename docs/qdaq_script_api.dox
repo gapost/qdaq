@@ -240,31 +240,36 @@ ch.format = "FixedPoint";
 @section Ref A synopsis of QDaq objects
 
 QDaqObject
+
 Directly derived from Qt’s QObject
 
 QDaqRoot
+
 The easier way to visualize the hierarchy of objects of the running qdaq session is to use the
 Object Browser window of the QDaq IDE. There, all the objects are represented in tree form. The
 base qdaq object is a QDaqRoot object.
 
 QDaqSession
+
 The basic instance of an interaction with all other existing objects and ui’s that do all
 the work in data taking. It is designed to function in JS, by providing an “interface” or
 “translation service” to C++/Qt’s objects to JS much more nimble and low-weight, pointer-based
 objects. Any qdaq console is a QDaqSession object.
 
 QDaqJob
+
 “Anything that actively *does* something” (instead of just existing) in QDaq.
 
 QDaqChannel
+
 The basic object for interaction with instruments and data taking, keeping and interacting
 with measurements.
 
 QDaqInterface
+
 QDaqInterface provides a common way to communicate with (hardware) instruments.
 The actual communication interface of the instruments connected to the control computer may vary
 (examples include GPIB, TCP/IP  and Modbus protocols).
-
 A QDaqInterface has a number of communication "ports", which have different
 meaning depending on the specific interface implementation.
 On memory/register based interfaces like MODBUS, a port represents the
@@ -274,17 +279,18 @@ instrument. On interfaces that support only
 one-to-one communication with an instrument (RS232, TCP/IP) the port feature is not used.
 
 QDaqDevice
+
 A QDaqDevice is the software representation of a hardware device connected to the control
 computer.
 In order for the computer to interact with a device, the device and its interface have to
 be created as software objects, and the device has to be assigned to an interface. Then,
 both the interface and the device have to be opened.
-
 At that point, the user can communicate with the device (send commands or get measurements),
 according to each devices specific communication protocols (e.g. SCPI commands or even whole
 scripts), using just the read() and write() functions.
 
 QDaqFilter
+
 A QDaqFilter is the software implementation of a mathematical process
 (usually quite complicated), that has to be applied online to the values of one or more
 QDaqChannels.
@@ -297,6 +303,7 @@ At present, QDaqFilters can be:
 
 
 QDaqDataBuffer
+
 The basic object of data keeping, where the actual values measured are kept in memory,
 relatively organized, before being saved to disk.
 
@@ -353,7 +360,6 @@ can be set for each channel, and is the (data) channel’s “depth” propertie
 
 In order for a data channel to be created and deleted successfully, care must be taken to
 also ‘populate’ or ‘depopulate’ its properties also.
-
 
 
 @section Ref Further reading
