@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>qdaq: D:/test/qdaq/lib/core/h5helper_v1_1.cpp Source File</title>
+<title>QDaq: D:/test/qdaq/lib/core/h5helper_v1_1.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,7 +25,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">qdaq
+   <div id="projectname">QDaq
    &#160;<span id="projectnumber">0.2.6</span>
    </div>
    <div id="projectbrief">Qt-based Data Aqcuisition</div>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('h5helper__v1__1_8cpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_a2d5e495f4b604d04f57d90095a59dd6.html">core</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">h5helper_v1_1.cpp</div>  </div>
@@ -104,7 +120,7 @@ $(function() {
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    }</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classh5helper__v1__1.html#a91fc9dae8e684171b4080c9c2861a170">   34</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classh5helper__v1__1.html#a14b07b8032eb6111dab2b0e46a3fc85f">h5helper_v1_1::write</a>(CommonFG *h5obj, <span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keyword">const</span> <a class="code" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> &amp;objList)</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classh5helper__v1__1.html#a91fc9dae8e684171b4080c9c2861a170">   34</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classh5helper__v1__1.html#a14b07b8032eb6111dab2b0e46a3fc85f">h5helper_v1_1::write</a>(CommonFG *h5obj, <span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keyword">const</span> <a class="code" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> &amp;objList)</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">if</span> (objList.isEmpty()) {</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <a class="code" href="classh5helper__v1__0.html#ad64a99c0e01dbecc2681581bea2f0641">h5helper_v1_0::write</a>(h5obj,name,QString(<span class="stringliteral">&quot;0&quot;</span>));</div>
@@ -138,7 +154,7 @@ $(function() {
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;{</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">foreach</span>(<span class="keyword">const</span> <a class="code" href="structh5helper_1_1defered_ptr_data.html">deferedPtrData</a>&amp; d, <a class="code" href="classh5helper.html#afa32fab195672767e5460370139dedfd">deferedPtrs</a>) {</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <a class="code" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> objList;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <a class="code" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> objList;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">foreach</span>(<span class="keyword">const</span> QString&amp; path, d.<a class="code" href="structh5helper_1_1defered_ptr_data.html#ab7e155489f92c3098dc36eaac7605ca2">pathList</a>) {</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
@@ -380,6 +396,7 @@ $(function() {
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <div class="ttc" id="aclass_q_daq_vector_html_ac9f332f1b0320bbc52122dd68b737a6f"><div class="ttname"><a href="class_q_daq_vector.html#ac9f332f1b0320bbc52122dd68b737a6f">QDaqVector::setCapacity</a></div><div class="ttdeci">void setCapacity(int c)</div><div class="ttdoc">Set the capacity.</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_vector_8h_source.html#l00075">QDaqVector.h:75</a></div></div>
 <div class="ttc" id="aclassh5helper__v1__0_html_ad64a99c0e01dbecc2681581bea2f0641"><div class="ttname"><a href="classh5helper__v1__0.html#ad64a99c0e01dbecc2681581bea2f0641">h5helper_v1_0::write</a></div><div class="ttdeci">virtual void write(CommonFG *h5obj, const char *name, const int &amp;v)</div><div class="ttdef"><b>Definition:</b> <a href="h5helper__v1__0_8cpp_source.html#l00173">h5helper_v1_0.cpp:173</a></div></div>
 <div class="ttc" id="aclass_q_daq_vector_html_afdb23013a1a6532a0e92c808785d88cc"><div class="ttname"><a href="class_q_daq_vector.html#afdb23013a1a6532a0e92c808785d88cc">QDaqVector::data</a></div><div class="ttdeci">double * data()</div><div class="ttdoc">Return a pointer to the data.</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_vector_8h_source.html#l00100">QDaqVector.h:100</a></div></div>
@@ -399,6 +416,7 @@ $(function() {
 <div class="ttc" id="astructh5helper_1_1defered_ptr_data_html_a263857277eb10556959b2d87c6506a31"><div class="ttname"><a href="structh5helper_1_1defered_ptr_data.html#a263857277eb10556959b2d87c6506a31">h5helper::deferedPtrData::obj</a></div><div class="ttdeci">QDaqObject * obj</div><div class="ttdef"><b>Definition:</b> <a href="qdaqh5file_8h_source.html#l00073">qdaqh5file.h:73</a></div></div>
 <div class="ttc" id="astructh5helper_1_1defered_ptr_data_html_a2fd97f9f24193b4799ab92009e890fe8"><div class="ttname"><a href="structh5helper_1_1defered_ptr_data.html#a2fd97f9f24193b4799ab92009e890fe8">h5helper::deferedPtrData::isList</a></div><div class="ttdeci">bool isList</div><div class="ttdef"><b>Definition:</b> <a href="qdaqh5file_8h_source.html#l00076">qdaqh5file.h:76</a></div></div>
 <div class="ttc" id="astruct_q_daq_types_html_adb4454a1f41174d7b4389d722156de1a"><div class="ttname"><a href="struct_q_daq_types.html#adb4454a1f41174d7b4389d722156de1a">QDaqTypes::isStringList</a></div><div class="ttdeci">static bool isStringList(const QVariant &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00144">QDaqTypes.cpp:144</a></div></div>
+<div class="ttc" id="agroup___core_html_ga59e5467b4815357c31076a2643ec2cbc"><div class="ttname"><a href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a></div><div class="ttdeci">QList&lt; QDaqObject * &gt; QDaqObjectList</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_8h_source.html#l00030">QDaqObject.h:23</a></div></div>
 <div class="ttc" id="astruct_q_daq_types_html_a212de8c1f141c91b5916bc72cdedb687"><div class="ttname"><a href="struct_q_daq_types.html#a212de8c1f141c91b5916bc72cdedb687">QDaqTypes::isNumeric</a></div><div class="ttdeci">static bool isNumeric(const QVariant &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00127">QDaqTypes.cpp:127</a></div></div>
 <div class="ttc" id="astruct_q_daq_types_html_ad0592b8e687bc8aaefa5d7d5fe8d86c5"><div class="ttname"><a href="struct_q_daq_types.html#ad0592b8e687bc8aaefa5d7d5fe8d86c5">QDaqTypes::toStringList</a></div><div class="ttdeci">static QStringList toStringList(const QVariant &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00176">QDaqTypes.cpp:176</a></div></div>
 <div class="ttc" id="ah5helper__v1__1_8h_html"><div class="ttname"><a href="h5helper__v1__1_8h.html">h5helper_v1_1.h</a></div></div>
@@ -411,16 +429,18 @@ $(function() {
 <div class="ttc" id="astructh5helper_1_1defered_ptr_data_html_ab7e155489f92c3098dc36eaac7605ca2"><div class="ttname"><a href="structh5helper_1_1defered_ptr_data.html#ab7e155489f92c3098dc36eaac7605ca2">h5helper::deferedPtrData::pathList</a></div><div class="ttdeci">QStringList pathList</div><div class="ttdef"><b>Definition:</b> <a href="qdaqh5file_8h_source.html#l00075">qdaqh5file.h:75</a></div></div>
 <div class="ttc" id="aclassh5helper__v1__1_html_a14b07b8032eb6111dab2b0e46a3fc85f"><div class="ttname"><a href="classh5helper__v1__1.html#a14b07b8032eb6111dab2b0e46a3fc85f">h5helper_v1_1::write</a></div><div class="ttdeci">virtual void write(CommonFG *h5obj, const char *name, const QDaqObject *obj)</div><div class="ttdef"><b>Definition:</b> <a href="h5helper__v1__1_8cpp_source.html#l00009">h5helper_v1_1.cpp:9</a></div></div>
 <div class="ttc" id="aclassh5helper__v1__1_html_ab9a0e5026b14e827e68d85751671583d"><div class="ttname"><a href="classh5helper__v1__1.html#ab9a0e5026b14e827e68d85751671583d">h5helper_v1_1::getGroupNames</a></div><div class="ttdeci">virtual QByteArrayList getGroupNames(CommonFG *h5obj, bool isRoot=false)</div><div class="ttdef"><b>Definition:</b> <a href="h5helper__v1__1_8cpp_source.html#l00147">h5helper_v1_1.cpp:147</a></div></div>
-<div class="ttc" id="a_q_daq_object_8h_html_a59e5467b4815357c31076a2643ec2cbc"><div class="ttname"><a href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a></div><div class="ttdeci">QList&lt; QDaqObject * &gt; QDaqObjectList</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_8h_source.html#l00030">QDaqObject.h:23</a></div></div>
 <div class="ttc" id="aclass_q_daq_vector_html"><div class="ttname"><a href="class_q_daq_vector.html">QDaqVector</a></div><div class="ttdoc">A buffer for storing double numbers.</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_vector_8h_source.html#l00040">QDaqVector.h:41</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_html_a2cfad0ddd44601bc7feb37c7e27f97dc"><div class="ttname"><a href="class_q_daq_object.html#a2cfad0ddd44601bc7feb37c7e27f97dc">QDaqObject::parent</a></div><div class="ttdeci">QDaqObject * parent() const</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_8h_source.html#l00256">QDaqObject.h:256</a></div></div>
 <div class="ttc" id="aclassh5helper_html_a8c7febe61402da2364093d23eb48c2f9"><div class="ttname"><a href="classh5helper.html#a8c7febe61402da2364093d23eb48c2f9">h5helper::file_</a></div><div class="ttdeci">QDaqH5File * file_</div><div class="ttdef"><b>Definition:</b> <a href="qdaqh5file_8h_source.html#l00067">qdaqh5file.h:67</a></div></div>
 <div class="ttc" id="aclassh5helper__v1__1_html_a27153f6902c32576f16e5d6c45b8b057"><div class="ttname"><a href="classh5helper__v1__1.html#a27153f6902c32576f16e5d6c45b8b057">h5helper_v1_1::lockedPropertyList_</a></div><div class="ttdeci">QStringList lockedPropertyList_</div><div class="ttdef"><b>Definition:</b> <a href="h5helper__v1__1_8h_source.html#l00013">h5helper_v1_1.h:13</a></div></div>
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.18
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_a2d5e495f4b604d04f57d90095a59dd6.html">core</a></li><li class="navelem"><a class="el" href="h5helper__v1__1_8cpp.html">h5helper_v1_1.cpp</a></li>
+    <li class="footer">Generated by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
+  </ul>
+</div>
 </body>
 </html>

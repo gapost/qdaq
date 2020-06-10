@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>qdaq: QDaqInterface Class Reference</title>
+<title>QDaq: QDaqInterface Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,7 +25,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">qdaq
+   <div id="projectname">QDaq
    &#160;<span id="projectnumber">0.2.6</span>
    </div>
    <div id="projectbrief">Qt-based Data Aqcuisition</div>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('class_q_daq_interface.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,7 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-slots">Public Slots</a> &#124;
@@ -71,7 +91,7 @@ $(function() {
 <a href="#properties">Properties</a> &#124;
 <a href="class_q_daq_interface-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">QDaqInterface Class Reference</div>  </div>
+<div class="title">QDaqInterface Class Reference<div class="ingroups"><a class="el" href="group___daq.html">QDaq DAQ classes</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -85,7 +105,13 @@ Inheritance diagram for QDaqInterface:</div>
  <div class="center">
   <img src="class_q_daq_interface.png" usemap="#QDaqInterface_map" alt=""/>
   <map id="QDaqInterface_map" name="QDaqInterface_map">
-<area href="class_q_daq_object.html" alt="QDaqObject" shape="rect" coords="52,56,146,80"/>
+<area href="class_q_daq_object.html" alt="QDaqObject" shape="rect" coords="180,56,290,80"/>
+<area href="class_q_daq_linux_gpib.html" title="A class for accesing a GPIB interface." alt="QDaqLinuxGpib" shape="rect" coords="0,168,110,192"/>
+<area href="class_q_daq_ni_gpib.html" alt="QDaqNiGpib" shape="rect" coords="120,168,230,192"/>
+<area href="class_q_daq_serial.html" title="A class for accesing a serial bus." alt="QDaqSerial" shape="rect" coords="240,168,350,192"/>
+<area href="class_q_daq_tcpip.html" title="A class for accesing a TCP/IP interface." alt="QDaqTcpip" shape="rect" coords="360,168,470,192"/>
+<area href="class_q_daq_modbus_rtu.html" title="A class for accesing a MODBUS/RTU connection." alt="QDaqModbusRtu" shape="rect" coords="240,224,350,248"/>
+<area href="class_q_daq_modbus_tcp.html" title="A class for accesing a MODBUS/TCP connection." alt="QDaqModbusTcp" shape="rect" coords="360,224,470,248"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -119,7 +145,7 @@ Public Slots</h2></td></tr>
 <tr class="separator:a5fc96fd253d494cf91e9e066d0602e91 inherit pub_slots_class_q_daq_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cfad0ddd44601bc7feb37c7e27f97dc inherit pub_slots_class_q_daq_object"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_q_daq_object.html">QDaqObject</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#a2cfad0ddd44601bc7feb37c7e27f97dc">parent</a> () const</td></tr>
 <tr class="separator:a2cfad0ddd44601bc7feb37c7e27f97dc inherit pub_slots_class_q_daq_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d46894e19aac067f9d9b2c4455734d8 inherit pub_slots_class_q_daq_object"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#a3d46894e19aac067f9d9b2c4455734d8">children</a> () const</td></tr>
+<tr class="memitem:a3d46894e19aac067f9d9b2c4455734d8 inherit pub_slots_class_q_daq_object"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#a3d46894e19aac067f9d9b2c4455734d8">children</a> () const</td></tr>
 <tr class="memdesc:a3d46894e19aac067f9d9b2c4455734d8 inherit pub_slots_class_q_daq_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a list of children of this object.  <a href="class_q_daq_object.html#a3d46894e19aac067f9d9b2c4455734d8">More...</a><br /></td></tr>
 <tr class="separator:a3d46894e19aac067f9d9b2c4455734d8 inherit pub_slots_class_q_daq_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd4c5fedb56d7d4d380632ca9ee046e5 inherit pub_slots_class_q_daq_object"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#abd4c5fedb56d7d4d380632ca9ee046e5">hasChildren</a> () const</td></tr>
@@ -248,7 +274,7 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a6c539284886068ce14b991b503b2b11c"><td class="memItemLeft" align="right" valign="top">QVector&lt; <a class="el" href="class_q_daq_device.html">QDaqDevice</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_interface.html#a6c539284886068ce14b991b503b2b11c">ports_</a></td></tr>
 <tr class="separator:a6c539284886068ce14b991b503b2b11c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_q_daq_object"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_q_daq_object')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_q_daq_object.html">QDaqObject</a></td></tr>
-<tr class="memitem:aa370445b6157352b181768c01c29ae3b inherit pro_attribs_class_q_daq_object"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#aa370445b6157352b181768c01c29ae3b">children_</a></td></tr>
+<tr class="memitem:aa370445b6157352b181768c01c29ae3b inherit pro_attribs_class_q_daq_object"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#aa370445b6157352b181768c01c29ae3b">children_</a></td></tr>
 <tr class="separator:aa370445b6157352b181768c01c29ae3b inherit pro_attribs_class_q_daq_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
@@ -436,6 +462,8 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implementation of interface clear. </p>
 
+<p>Reimplemented in <a class="el" href="class_q_daq_serial.html#a26fbad4977c594d58e825bb93761e59b">QDaqSerial</a>, <a class="el" href="class_q_daq_linux_gpib.html#ac76aa08c8e79b06cf88c1bc53d269039">QDaqLinuxGpib</a>, and <a class="el" href="class_q_daq_ni_gpib.html#ad5fd1dbdb169212039a46c10359267a4">QDaqNiGpib</a>.</p>
+
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8h_source.html#l00140">140</a> of file <a class="el" href="_q_daq_interface_8h_source.html">QDaqInterface.h</a>.</p>
 
 </div>
@@ -465,6 +493,8 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Clear the communication channel with port i (interface specific). </p>
+
+<p>Reimplemented in <a class="el" href="class_q_daq_linux_gpib.html#aa6706f61d67d283ba6c22d3ef903c11d">QDaqLinuxGpib</a>, and <a class="el" href="class_q_daq_ni_gpib.html#a3eec502da88ee7a123f864f308c7a202">QDaqNiGpib</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8h_source.html#l00084">84</a> of file <a class="el" href="_q_daq_interface_8h_source.html">QDaqInterface.h</a>.</p>
 
@@ -524,6 +554,8 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implementation of interface close. </p>
 
+<p>Reimplemented in <a class="el" href="class_q_daq_modbus_tcp.html#ad8ff53b3f8b25e5ec92dfceb74f3400f">QDaqModbusTcp</a>, <a class="el" href="class_q_daq_tcpip.html#af901e41f0bed3f286c16428212ecc281">QDaqTcpip</a>, <a class="el" href="class_q_daq_serial.html#a32d7cf226a3ce3092d17fb90e9281bcf">QDaqSerial</a>, and <a class="el" href="class_q_daq_modbus_rtu.html#a3b1d268c54aa24fecbff67356252401c">QDaqModbusRtu</a>.</p>
+
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8cpp_source.html#l00076">76</a> of file <a class="el" href="_q_daq_interface_8cpp_source.html">QDaqInterface.cpp</a>.</p>
 
 </div>
@@ -553,6 +585,8 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Closes port i. </p>
+
+<p>Reimplemented in <a class="el" href="class_q_daq_linux_gpib.html#ae094d996784e54da6b9be5365553c9a5">QDaqLinuxGpib</a>, and <a class="el" href="class_q_daq_ni_gpib.html#abfb2f5c2724198d0b1a8e8da054b6fe4">QDaqNiGpib</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8cpp_source.html#l00052">52</a> of file <a class="el" href="_q_daq_interface_8cpp_source.html">QDaqInterface.cpp</a>.</p>
 
@@ -642,6 +676,8 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Returns true is i is a valid port number. </p>
 
+<p>Reimplemented in <a class="el" href="class_q_daq_tcpip.html#af1b29dc4a51358efc80118dbe07ff036">QDaqTcpip</a>, <a class="el" href="class_q_daq_linux_gpib.html#a12d7e780de4fcc6b919693a85299ba62">QDaqLinuxGpib</a>, and <a class="el" href="class_q_daq_ni_gpib.html#a4147b71bf6473db44ce2d064365d30bc">QDaqNiGpib</a>.</p>
+
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8h_source.html#l00128">128</a> of file <a class="el" href="_q_daq_interface_8h_source.html">QDaqInterface.h</a>.</p>
 
 </div>
@@ -700,6 +736,8 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implementation of interface open. </p>
 
+<p>Reimplemented in <a class="el" href="class_q_daq_modbus_tcp.html#a8a89401032ed41db72222977f6ac2663">QDaqModbusTcp</a>, <a class="el" href="class_q_daq_tcpip.html#a4345f770cff76bcbba8c2643dafdc57f">QDaqTcpip</a>, <a class="el" href="class_q_daq_serial.html#af0e10ef60591e57db77e85b1a009ff1c">QDaqSerial</a>, <a class="el" href="class_q_daq_linux_gpib.html#a877ccad825493988ca4d9e08fa8b265e">QDaqLinuxGpib</a>, <a class="el" href="class_q_daq_ni_gpib.html#a265c45c959845ec842da1c7eed8711ba">QDaqNiGpib</a>, and <a class="el" href="class_q_daq_modbus_rtu.html#a81f61f5940e654235a2d4884b1496e52">QDaqModbusRtu</a>.</p>
+
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8h_source.html#l00136">136</a> of file <a class="el" href="_q_daq_interface_8h_source.html">QDaqInterface.h</a>.</p>
 
 </div>
@@ -740,6 +778,8 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Open communication port no. i for <a class="el" href="class_q_daq_device.html" title="A class representing a DAQ device.">QDaqDevice</a> d. </p>
 <p>Returns true if the port was succesfully opened. </p>
+
+<p>Reimplemented in <a class="el" href="class_q_daq_linux_gpib.html#a89112ac79fadf74ceb4b9092e743041c">QDaqLinuxGpib</a>, and <a class="el" href="class_q_daq_ni_gpib.html#afed1530b744f134ecac51cc7cfaa8b0f">QDaqNiGpib</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8cpp_source.html#l00044">44</a> of file <a class="el" href="_q_daq_interface_8cpp_source.html">QDaqInterface.cpp</a>.</p>
 
@@ -806,6 +846,8 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes read. </dd></dl>
 
+<p>Reimplemented in <a class="el" href="class_q_daq_modbus_tcp.html#ae926cabbd83f81c223451141f66ab354">QDaqModbusTcp</a>, <a class="el" href="class_q_daq_tcpip.html#a41d300ab185c7f81b1f35c229c991f38">QDaqTcpip</a>, <a class="el" href="class_q_daq_serial.html#a3c5fb97b95ae12e1b0ecc5f837ece7b9">QDaqSerial</a>, <a class="el" href="class_q_daq_linux_gpib.html#aad2d4e1184d767244faf07430fd57cf3">QDaqLinuxGpib</a>, <a class="el" href="class_q_daq_ni_gpib.html#a3ca30b477bc886bbee35e6e6380cf621">QDaqNiGpib</a>, and <a class="el" href="class_q_daq_modbus_rtu.html#a5986fa0b1cf6658cb6bbf201e26192ed">QDaqModbusRtu</a>.</p>
+
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8cpp_source.html#l00058">58</a> of file <a class="el" href="_q_daq_interface_8cpp_source.html">QDaqInterface.cpp</a>.</p>
 
 </div>
@@ -835,6 +877,8 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns a status byte for a port (interface specific). </p>
+
+<p>Reimplemented in <a class="el" href="class_q_daq_linux_gpib.html#a7398b73299dc5530b95d25a86a040f77">QDaqLinuxGpib</a>, and <a class="el" href="class_q_daq_ni_gpib.html#ab6c4d2f2795473dca6956ec7de4187fb">QDaqNiGpib</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8h_source.html#l00130">130</a> of file <a class="el" href="_q_daq_interface_8h_source.html">QDaqInterface.h</a>.</p>
 
@@ -905,6 +949,8 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implementation of setting the timeout. </p>
+
+<p>Reimplemented in <a class="el" href="class_q_daq_linux_gpib.html#a6d5ed5bcdd3f215a6fba8798c6ac0775">QDaqLinuxGpib</a>, and <a class="el" href="class_q_daq_ni_gpib.html#a6c232eb1cd8de5fe2a88a789f9bb5cac">QDaqNiGpib</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8h_source.html#l00142">142</a> of file <a class="el" href="_q_daq_interface_8h_source.html">QDaqInterface.h</a>.</p>
 
@@ -992,6 +1038,8 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Trigger a device connected to port (interface specific). </p>
 
+<p>Reimplemented in <a class="el" href="class_q_daq_linux_gpib.html#aca022b61ba208841c54375136ab8b243">QDaqLinuxGpib</a>, and <a class="el" href="class_q_daq_ni_gpib.html#ad01c1bd95d4408559778aef0afa08611">QDaqNiGpib</a>.</p>
+
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8h_source.html#l00132">132</a> of file <a class="el" href="_q_daq_interface_8h_source.html">QDaqInterface.h</a>.</p>
 
 </div>
@@ -1056,6 +1104,8 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written. </dd></dl>
+
+<p>Reimplemented in <a class="el" href="class_q_daq_modbus_tcp.html#a3031b2acdea131374cd0fef5a573ee38">QDaqModbusTcp</a>, <a class="el" href="class_q_daq_tcpip.html#aa7b22b23275264d2372fa01a2997d22d">QDaqTcpip</a>, <a class="el" href="class_q_daq_serial.html#a82da8757cc194227beef531f552b7c7d">QDaqSerial</a>, <a class="el" href="class_q_daq_linux_gpib.html#a81c20b5cafdd7839c886e22db7094f9a">QDaqLinuxGpib</a>, <a class="el" href="class_q_daq_ni_gpib.html#a84c79e11e9e3b1528a2e2c5fd97b204a">QDaqNiGpib</a>, and <a class="el" href="class_q_daq_modbus_rtu.html#a6a568b627a79489bf5cb0f1077f51330">QDaqModbusRtu</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="_q_daq_interface_8cpp_source.html#l00067">67</a> of file <a class="el" href="_q_daq_interface_8cpp_source.html">QDaqInterface.cpp</a>.</p>
 
@@ -1243,11 +1293,15 @@ Additional Inherited Members</h2></td></tr>
 <li>D:/test/qdaq/lib/daq/<a class="el" href="_q_daq_interface_8cpp_source.html">QDaqInterface.cpp</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.18
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="class_q_daq_interface.html">QDaqInterface</a></li>
+    <li class="footer">Generated by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
+  </ul>
+</div>
 </body>
 </html>

@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>qdaq: Class Members</title>
+<title>QDaq: Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,7 +25,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">qdaq
+   <div id="projectname">QDaq
    &#160;<span id="projectnumber">0.2.6</span>
    </div>
    <div id="projectbrief">Qt-based Data Aqcuisition</div>
@@ -48,6 +52,22 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('functions_o.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -124,12 +144,14 @@ $(function() {
 <li>offset_
 : <a class="el" href="class_q_daq_channel.html#aed431994137b60437bd3b16ca6cf5237">QDaqChannel</a>
 </li>
+<li>on()
+: <a class="el" href="class_k_led.html#a0a4a6589bf59312552edabdeef61f2aa">KLed</a>
+</li>
 <li>On
 : <a class="el" href="class_k_led.html#a14ea238119f6332b71c1ac4ec9ac0d0ca6d00e86716c2d0bc30d59d3698b4deea">KLed</a>
 </li>
 <li>on()
-: <a class="el" href="class_k_led.html#a0a4a6589bf59312552edabdeef61f2aa">KLed</a>
-, <a class="el" href="class_q_daq_device.html#a6c23ad1696d0b2c13ed316f093d7a856">QDaqDevice</a>
+: <a class="el" href="class_q_daq_device.html#a6c23ad1696d0b2c13ed316f093d7a856">QDaqDevice</a>
 </li>
 <li>onError()
 : <a class="el" href="class_q_daq_error_log.html#a3337be7a646cea0bdbefec08437f159d">QDaqErrorLog</a>
@@ -152,9 +174,17 @@ $(function() {
 </li>
 <li>open_()
 : <a class="el" href="class_q_daq_interface.html#a608f956ab9ba20af92eaf405ae01a984">QDaqInterface</a>
+, <a class="el" href="class_q_daq_linux_gpib.html#a877ccad825493988ca4d9e08fa8b265e">QDaqLinuxGpib</a>
+, <a class="el" href="class_q_daq_modbus_rtu.html#a81f61f5940e654235a2d4884b1496e52">QDaqModbusRtu</a>
+, <a class="el" href="class_q_daq_modbus_tcp.html#a8a89401032ed41db72222977f6ac2663">QDaqModbusTcp</a>
+, <a class="el" href="class_q_daq_ni_gpib.html#a265c45c959845ec842da1c7eed8711ba">QDaqNiGpib</a>
+, <a class="el" href="class_q_daq_serial.html#af0e10ef60591e57db77e85b1a009ff1c">QDaqSerial</a>
+, <a class="el" href="class_q_daq_tcpip.html#a4345f770cff76bcbba8c2643dafdc57f">QDaqTcpip</a>
 </li>
 <li>open_port()
 : <a class="el" href="class_q_daq_interface.html#a625e5595190967fa44977e5651ceba08">QDaqInterface</a>
+, <a class="el" href="class_q_daq_linux_gpib.html#a89112ac79fadf74ceb4b9092e743041c">QDaqLinuxGpib</a>
+, <a class="el" href="class_q_daq_ni_gpib.html#afed1530b744f134ecac51cc7cfaa8b0f">QDaqNiGpib</a>
 </li>
 <li>Operator
 : <a class="el" href="class_j_s_edit.html#a5a465193a1344e5be9b04f5ff7883213a7cf7fcdce0c49ff9995b8d8a02a3b127">JSEdit</a>
@@ -170,7 +200,9 @@ $(function() {
 , <a class="el" href="class_q_daq_vector.html#aaffcb3ec33dc93bf2bdc0893395e0f4d">QDaqVector</a>
 </li>
 <li>operator()()
-: <a class="el" href="classmath_1_1running__average.html#aa399c3e6f87071fd726975eaacae3fb7">math::running_average&lt; T, N &gt;</a>
+: <a class="el" href="classautotuner.html#afb0814e70fea1c9af663827b0f61d872">autotuner&lt; T &gt;</a>
+, <a class="el" href="classisa__pid.html#a396ab1ee9e1bc0ab069c5ef0142b3b69">isa_pid&lt; T &gt;</a>
+, <a class="el" href="classmath_1_1running__average.html#aa399c3e6f87071fd726975eaacae3fb7">math::running_average&lt; T, N &gt;</a>
 , <a class="el" href="class_q_daq_loop.html#ab44bfab03e66ff9c27a23b911ed4f841">QDaqLoop</a>
 </li>
 <li>operator&lt;&lt;()
@@ -190,11 +222,11 @@ $(function() {
 </li>
 <li>operator[]()
 : <a class="el" href="classmath_1_1buffer.html#a97efb08ea98d4f765985cf053d299249">math::buffer&lt; T &gt;</a>
-, <a class="el" href="classmath_1_1circular__buffer.html#a757eef873e8a369e71861080e01c33f3">math::circular_buffer&lt; T &gt;</a>
+, <a class="el" href="classmath_1_1circular__buffer.html#a3301727fb54939832e6ba1d3f760f36a">math::circular_buffer&lt; T &gt;</a>
 , <a class="el" href="class_q_daq_vector.html#a81747efdd896d0c60cf142cec1b0c7e5">QDaqVector</a>
 </li>
-<li>outputChannels()
-: <a class="el" href="class_q_daq_device.html#ab5c4d70467abf467c98370bb620fde70">QDaqDevice</a>
+<li>outputChannels
+: <a class="el" href="class_q_daq_device.html#a533a81ad3e61c97ce9abb26329f517e3">QDaqDevice</a>
 , <a class="el" href="class_q_daq_filter.html#ade59e9af6b73e980900990746cd21187">QDaqFilter</a>
 </li>
 <li>outputChannels_
@@ -202,11 +234,14 @@ $(function() {
 </li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.18
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
+  </ul>
+</div>
 </body>
 </html>

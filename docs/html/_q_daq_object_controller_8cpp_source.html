@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>qdaq: D:/test/qdaq/lib/gui/QDaqObjectController.cpp Source File</title>
+<title>QDaq: D:/test/qdaq/lib/gui/QDaqObjectController.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,7 +25,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">qdaq
+   <div id="projectname">QDaq
    &#160;<span id="projectnumber">0.2.6</span>
    </div>
    <div id="projectbrief">Qt-based Data Aqcuisition</div>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('_q_daq_object_controller_8cpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_2ca7cf0b0fc689be2e6324cf99ab0347.html">gui</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">QDaqObjectController.cpp</div>  </div>
@@ -188,7 +204,7 @@ $(function() {
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">return</span> QString();</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    }</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == qMetaTypeId&lt;QDaqObjectList&gt;()) {</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <a class="code" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> lst = v.value&lt;<a class="code" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&gt;();</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <a class="code" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> lst = v.value&lt;<a class="code" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&gt;();</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        QString str(<span class="charliteral">&#39;[&#39;</span>);</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0; i&lt;lst.size(); i++) {</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <a class="code" href="class_q_daq_object.html">QDaqObject</a>* obj = lst.at(i);</div>
@@ -758,6 +774,7 @@ $(function() {
 <div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160; </div>
 <div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <div class="ttc" id="aclass_q_daq_object_controller_private_html_ae3d84a15737df009e52578bc06ef7604"><div class="ttname"><a href="class_q_daq_object_controller_private.html#ae3d84a15737df009e52578bc06ef7604">QDaqObjectControllerPrivate::m_propertyToExpanded</a></div><div class="ttdeci">QMap&lt; QtProperty *, bool &gt; m_propertyToExpanded</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00241">QDaqObjectController.cpp:241</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_controller_html"><div class="ttname"><a href="class_q_daq_object_controller.html">QDaqObjectController</a></div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8h_source.html#l00057">QDaqObjectController.h:58</a></div></div>
 <div class="ttc" id="a_q_daq_object_controller_8cpp_html_a7b41cfb76e306a9023cd2cc326aa954b"><div class="ttname"><a href="_q_daq_object_controller_8cpp.html#a7b41cfb76e306a9023cd2cc326aa954b">isQDaqType</a></div><div class="ttdeci">bool isQDaqType(int type)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00062">QDaqObjectController.cpp:62</a></div></div>
@@ -780,6 +797,7 @@ $(function() {
 <div class="ttc" id="a_q_daq_object_controller_8cpp_html_ae46af7421914e27e52c0f2edf7466e0f"><div class="ttname"><a href="_q_daq_object_controller_8cpp.html#ae46af7421914e27e52c0f2edf7466e0f">qdaqTypeToString</a></div><div class="ttdeci">QString qdaqTypeToString(const QVariant &amp;v)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00103">QDaqObjectController.cpp:103</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_controller_html_ab3a80dfc4e104021dd8579503b1f05bf"><div class="ttname"><a href="class_q_daq_object_controller.html#ab3a80dfc4e104021dd8579503b1f05bf">QDaqObjectController::~QDaqObjectController</a></div><div class="ttdeci">~QDaqObjectController()</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00640">QDaqObjectController.cpp:640</a></div></div>
 <div class="ttc" id="avariantmanager_8h_html"><div class="ttname"><a href="variantmanager_8h.html">variantmanager.h</a></div></div>
+<div class="ttc" id="agroup___core_html_ga59e5467b4815357c31076a2643ec2cbc"><div class="ttname"><a href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a></div><div class="ttdeci">QList&lt; QDaqObject * &gt; QDaqObjectList</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_8h_source.html#l00030">QDaqObject.h:23</a></div></div>
 <div class="ttc" id="aclass_variant_manager_html_a7d4847d82aebf21eca39a7ea6f18b3b8"><div class="ttname"><a href="class_variant_manager.html#a7d4847d82aebf21eca39a7ea6f18b3b8">VariantManager::isPropertyTypeSupported</a></div><div class="ttdeci">virtual bool isPropertyTypeSupported(int propertyType) const</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00178">QDaqObjectController.cpp:178</a></div></div>
 <div class="ttc" id="aclass_variant_manager_html_a1cd966df290269e58b05319d1f2aa8d8"><div class="ttname"><a href="class_variant_manager.html#a1cd966df290269e58b05319d1f2aa8d8">VariantManager::valueText</a></div><div class="ttdeci">QString valueText(const QtProperty *property) const</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00185">QDaqObjectController.cpp:185</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_controller_html_a8d7772200c57429387ccb01ffc4533ce"><div class="ttname"><a href="class_q_daq_object_controller.html#a8d7772200c57429387ccb01ffc4533ce">QDaqObjectController::setObject</a></div><div class="ttdeci">void setObject(QDaqObject *object)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00645">QDaqObjectController.cpp:645</a></div></div>
@@ -800,7 +818,6 @@ $(function() {
 <div class="ttc" id="aclass_q_daq_object_controller_private_html_a50436a4a2afb1911f365f251dfa9b757"><div class="ttname"><a href="class_q_daq_object_controller_private.html#a50436a4a2afb1911f365f251dfa9b757">QDaqObjectControllerPrivate::m_readOnlyManager</a></div><div class="ttdeci">VariantManager * m_readOnlyManager</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00250">QDaqObjectController.cpp:250</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_controller_private_html_ac87639a96447bf4c211a0ae23f157a26"><div class="ttname"><a href="class_q_daq_object_controller_private.html#ac87639a96447bf4c211a0ae23f157a26">QDaqObjectControllerPrivate::isSubValue</a></div><div class="ttdeci">bool isSubValue(int value, int subValue) const</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00284">QDaqObjectController.cpp:284</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_controller_private_html_ad0df0e21f504de5f4895abc623881bbf"><div class="ttname"><a href="class_q_daq_object_controller_private.html#ad0df0e21f504de5f4895abc623881bbf">QDaqObjectControllerPrivate::updateClassProperties</a></div><div class="ttdeci">void updateClassProperties(const QMetaObject *metaObject, bool recursive)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00354">QDaqObjectController.cpp:354</a></div></div>
-<div class="ttc" id="a_q_daq_object_8h_html_a59e5467b4815357c31076a2643ec2cbc"><div class="ttname"><a href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a></div><div class="ttdeci">QList&lt; QDaqObject * &gt; QDaqObjectList</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_8h_source.html#l00030">QDaqObject.h:23</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_controller_private_html"><div class="ttname"><a href="class_q_daq_object_controller_private.html">QDaqObjectControllerPrivate</a></div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00212">QDaqObjectController.cpp:213</a></div></div>
 <div class="ttc" id="aclass_variant_manager_html"><div class="ttname"><a href="class_variant_manager.html">VariantManager</a></div><div class="ttdef"><b>Definition:</b> <a href="variantmanager_8h_source.html#l00006">variantmanager.h:7</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_controller_private_html_abed693ee9f774a2eaabfeae8e6298b64"><div class="ttname"><a href="class_q_daq_object_controller_private.html#abed693ee9f774a2eaabfeae8e6298b64">QDaqObjectControllerPrivate::m_propertyToClass</a></div><div class="ttdeci">QMap&lt; QtProperty *, const QMetaObject * &gt; m_propertyToClass</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00237">QDaqObjectController.cpp:237</a></div></div>
@@ -812,10 +829,13 @@ $(function() {
 <div class="ttc" id="aclass_variant_manager_html_a740cd10de38b69f281963341b85ce5e6"><div class="ttname"><a href="class_variant_manager.html#a740cd10de38b69f281963341b85ce5e6">VariantManager::VariantManager</a></div><div class="ttdeci">VariantManager(QObject *parent=0)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00156">QDaqObjectController.cpp:156</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_controller_private_html_a421042e947190f31a841b2e44d402357"><div class="ttname"><a href="class_q_daq_object_controller_private.html#a421042e947190f31a841b2e44d402357">QDaqObjectControllerPrivate::m_propertyToIndex</a></div><div class="ttdeci">QMap&lt; QtProperty *, int &gt; m_propertyToIndex</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_controller_8cpp_source.html#l00238">QDaqObjectController.cpp:238</a></div></div>
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.18
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_2ca7cf0b0fc689be2e6324cf99ab0347.html">gui</a></li><li class="navelem"><a class="el" href="_q_daq_object_controller_8cpp.html">QDaqObjectController.cpp</a></li>
+    <li class="footer">Generated by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
+  </ul>
+</div>
 </body>
 </html>

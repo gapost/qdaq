@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>qdaq: QDaqObject Class Reference</title>
+<title>QDaq: QDaqObject Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,7 +25,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">qdaq
+   <div id="projectname">QDaq
    &#160;<span id="projectnumber">0.2.6</span>
    </div>
    <div id="projectbrief">Qt-based Data Aqcuisition</div>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('class_q_daq_object.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,7 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-slots">Public Slots</a> &#124;
@@ -76,7 +96,7 @@ $(function() {
 <a href="#friends">Friends</a> &#124;
 <a href="class_q_daq_object-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">QDaqObject Class Reference</div>  </div>
+<div class="title">QDaqObject Class Reference<div class="ingroups"><a class="el" href="group___core.html">QDaq Core classes</a> &#124; <a class="el" href="group___script_a_p_i.html">QDaq scripting API</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -90,11 +110,15 @@ Inheritance diagram for QDaqObject:</div>
 <area href="class_q_daq_interface.html" title="Base class of objects representing digital communications interfaces." alt="QDaqInterface" shape="rect" coords="0,112,105,136"/>
 <area href="class_q_daq_job.html" alt="QDaqJob" shape="rect" coords="230,112,335,136"/>
 <area href="class_q_daq_root.html" alt="QDaqRoot" shape="rect" coords="345,112,450,136"/>
-<area href="class_q_daq_channel.html" title="A class that represent a stream of numerical data, a signal." alt="QDaqChannel" shape="rect" coords="0,168,105,192"/>
-<area href="class_q_daq_data_buffer.html" title="A class that provides storage of channel or other data." alt="QDaqDataBuffer" shape="rect" coords="115,168,220,192"/>
-<area href="class_q_daq_device.html" title="A class representing a DAQ device." alt="QDaqDevice" shape="rect" coords="230,168,335,192"/>
-<area href="class_q_daq_filter.html" alt="QDaqFilter" shape="rect" coords="345,168,450,192"/>
-<area href="class_q_daq_loop.html" title="A class encapsulating a software loop." alt="QDaqLoop" shape="rect" coords="460,168,565,192"/>
+<area href="class_q_daq_linux_gpib.html" title="A class for accesing a GPIB interface." alt="QDaqLinuxGpib" shape="rect" coords="115,168,220,192"/>
+<area href="class_q_daq_ni_gpib.html" alt="QDaqNiGpib" shape="rect" coords="115,224,220,248"/>
+<area href="class_q_daq_serial.html" title="A class for accesing a serial bus." alt="QDaqSerial" shape="rect" coords="115,280,220,304"/>
+<area href="class_q_daq_tcpip.html" title="A class for accesing a TCP/IP interface." alt="QDaqTcpip" shape="rect" coords="115,336,220,360"/>
+<area href="class_q_daq_channel.html" title="A class that represent a stream of numerical data, a signal." alt="QDaqChannel" shape="rect" coords="345,168,450,192"/>
+<area href="class_q_daq_data_buffer.html" title="A class that provides storage of channel or other data." alt="QDaqDataBuffer" shape="rect" coords="345,224,450,248"/>
+<area href="class_q_daq_device.html" title="A class representing a DAQ device." alt="QDaqDevice" shape="rect" coords="345,280,450,304"/>
+<area href="class_q_daq_filter.html" alt="QDaqFilter" shape="rect" coords="345,336,450,360"/>
+<area href="class_q_daq_loop.html" title="A class encapsulating a software loop." alt="QDaqLoop" shape="rect" coords="345,392,450,416"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -122,7 +146,7 @@ Public Slots</h2></td></tr>
 </div></td></tr>
 <tr class="memitem:a2cfad0ddd44601bc7feb37c7e27f97dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_q_daq_object.html">QDaqObject</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#a2cfad0ddd44601bc7feb37c7e27f97dc">parent</a> () const</td></tr>
 <tr class="separator:a2cfad0ddd44601bc7feb37c7e27f97dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d46894e19aac067f9d9b2c4455734d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#a3d46894e19aac067f9d9b2c4455734d8">children</a> () const</td></tr>
+<tr class="memitem:a3d46894e19aac067f9d9b2c4455734d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#a3d46894e19aac067f9d9b2c4455734d8">children</a> () const</td></tr>
 <tr class="memdesc:a3d46894e19aac067f9d9b2c4455734d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a list of children of this object.  <a href="class_q_daq_object.html#a3d46894e19aac067f9d9b2c4455734d8">More...</a><br /></td></tr>
 <tr class="separator:a3d46894e19aac067f9d9b2c4455734d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd4c5fedb56d7d4d380632ca9ee046e5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#abd4c5fedb56d7d4d380632ca9ee046e5">hasChildren</a> () const</td></tr>
@@ -213,7 +237,7 @@ Static Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:aa370445b6157352b181768c01c29ae3b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#aa370445b6157352b181768c01c29ae3b">children_</a></td></tr>
+<tr class="memitem:aa370445b6157352b181768c01c29ae3b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_q_daq_object.html#aa370445b6157352b181768c01c29ae3b">children_</a></td></tr>
 <tr class="separator:aa370445b6157352b181768c01c29ae3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
@@ -431,7 +455,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> QDaqObject::children </td>
+          <td class="memname"><a class="el" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> QDaqObject::children </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1328,7 +1352,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> QDaqObject::children_</td>
+          <td class="memname"><a class="el" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a> QDaqObject::children_</td>
         </tr>
       </table>
   </td>
@@ -1391,11 +1415,15 @@ Friends</h2></td></tr>
 <li>D:/test/qdaq/lib/core/<a class="el" href="_q_daq_root_8cpp_source.html">QDaqRoot.cpp</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.18
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="class_q_daq_object.html">QDaqObject</a></li>
+    <li class="footer">Generated by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
+  </ul>
+</div>
 </body>
 </html>

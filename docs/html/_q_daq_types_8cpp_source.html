@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>qdaq: D:/test/qdaq/lib/core/QDaqTypes.cpp Source File</title>
+<title>QDaq: D:/test/qdaq/lib/core/QDaqTypes.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,7 +25,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">qdaq
+   <div id="projectname">QDaq
    &#160;<span id="projectnumber">0.2.6</span>
    </div>
    <div id="projectbrief">Qt-based Data Aqcuisition</div>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('_q_daq_types_8cpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_a2d5e495f4b604d04f57d90095a59dd6.html">core</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">QDaqTypes.cpp</div>  </div>
@@ -151,7 +167,7 @@ $(function() {
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    obj = qobject_cast&lt;QDaqObject*&gt;(value.toQObject());</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="_q_daq_types_8cpp.html#a9b486a2de875240e879bdaeb26461cd7">   81</a></span>&#160;QScriptValue <a class="code" href="_q_daq_types_8cpp.html#af0e33c3f3fc13117a8da3fca02e86b98">toScriptValue</a>(QScriptEngine *eng, <span class="keyword">const</span> <a class="code" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&amp; L)</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="_q_daq_types_8cpp.html#a9b486a2de875240e879bdaeb26461cd7">   81</a></span>&#160;QScriptValue <a class="code" href="_q_daq_types_8cpp.html#af0e33c3f3fc13117a8da3fca02e86b98">toScriptValue</a>(QScriptEngine *eng, <span class="keyword">const</span> <a class="code" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&amp; L)</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;{</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    QScriptValue V = eng-&gt;newArray();</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    QDaqObjectList::const_iterator begin = L.begin();</div>
@@ -162,7 +178,7 @@ $(function() {
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">return</span> V;</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="_q_daq_types_8cpp.html#a58708b32cc7dd4fe57fe015fc8059d6a">   92</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_q_daq_types_8cpp.html#a9088541f23ad4dc8542dab910c4f102c">fromScriptValue</a>(<span class="keyword">const</span> QScriptValue &amp;value, <a class="code" href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&amp; L)</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="_q_daq_types_8cpp.html#a58708b32cc7dd4fe57fe015fc8059d6a">   92</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_q_daq_types_8cpp.html#a9088541f23ad4dc8542dab910c4f102c">fromScriptValue</a>(<span class="keyword">const</span> QScriptValue &amp;value, <a class="code" href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a>&amp; L)</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;{</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordflow">if</span> (value.isArray()) {</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        quint32 len = value.property(<span class="stringliteral">&quot;length&quot;</span>).toUInt32();</div>
@@ -312,6 +328,7 @@ $(function() {
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <div class="ttc" id="aclass_byte_array_class_html_ac1ae48a9baa49a68b588a49b32365a0f"><div class="ttname"><a href="class_byte_array_class.html#ac1ae48a9baa49a68b588a49b32365a0f">ByteArrayClass::constructor</a></div><div class="ttdeci">QScriptValue constructor()</div><div class="ttdef"><b>Definition:</b> <a href="bytearrayclass_8cpp_source.html#l00152">bytearrayclass.cpp:152</a></div></div>
 <div class="ttc" id="aclass_vector_class_html_ada47b4fd66022b459553fa907acb55b2"><div class="ttname"><a href="class_vector_class.html#ada47b4fd66022b459553fa907acb55b2">VectorClass::constructor</a></div><div class="ttdeci">QScriptValue constructor()</div><div class="ttdef"><b>Definition:</b> <a href="vectorclass_8cpp_source.html#l00170">vectorclass.cpp:170</a></div></div>
 <div class="ttc" id="astruct_q_daq_types_html_a046aad1b2d46ccbde88a9e4b3d6d7ba7"><div class="ttname"><a href="struct_q_daq_types.html#a046aad1b2d46ccbde88a9e4b3d6d7ba7">QDaqTypes::isVector</a></div><div class="ttdeci">static bool isVector(const QVariant &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00152">QDaqTypes.cpp:152</a></div></div>
@@ -323,6 +340,7 @@ $(function() {
 <div class="ttc" id="astruct_q_daq_types_html_aab22b4b8410cc4b443c013d309225b60"><div class="ttname"><a href="struct_q_daq_types.html#aab22b4b8410cc4b443c013d309225b60">QDaqTypes::isString</a></div><div class="ttdeci">static bool isString(const QVariant &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00136">QDaqTypes.cpp:136</a></div></div>
 <div class="ttc" id="a_q_daq_types_8cpp_html_a9088541f23ad4dc8542dab910c4f102c"><div class="ttname"><a href="_q_daq_types_8cpp.html#a9088541f23ad4dc8542dab910c4f102c">fromScriptValue</a></div><div class="ttdeci">void fromScriptValue(const QScriptValue &amp;obj, QColor &amp;clr)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00018">QDaqTypes.cpp:18</a></div></div>
 <div class="ttc" id="astruct_q_daq_types_html_adb4454a1f41174d7b4389d722156de1a"><div class="ttname"><a href="struct_q_daq_types.html#adb4454a1f41174d7b4389d722156de1a">QDaqTypes::isStringList</a></div><div class="ttdeci">static bool isStringList(const QVariant &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00144">QDaqTypes.cpp:144</a></div></div>
+<div class="ttc" id="agroup___core_html_ga59e5467b4815357c31076a2643ec2cbc"><div class="ttname"><a href="group___core.html#ga59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a></div><div class="ttdeci">QList&lt; QDaqObject * &gt; QDaqObjectList</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_8h_source.html#l00030">QDaqObject.h:23</a></div></div>
 <div class="ttc" id="astruct_q_daq_types_html_afc465c376ceaaa8f456a28204b4676c9"><div class="ttname"><a href="struct_q_daq_types.html#afc465c376ceaaa8f456a28204b4676c9">QDaqTypes::fromScriptValue</a></div><div class="ttdeci">static void fromScriptValue(const QScriptValue &amp;value, QDaqObject *&amp;obj)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00076">QDaqTypes.cpp:76</a></div></div>
 <div class="ttc" id="a_q_daq_types_8cpp_html_a7a76a61d4e4080fac3140db6805cca02"><div class="ttname"><a href="_q_daq_types_8cpp.html#a7a76a61d4e4080fac3140db6805cca02">fromScriptValueQDaqObjectStar</a></div><div class="ttdeci">void fromScriptValueQDaqObjectStar(const QScriptValue &amp;value, QDaqObjectStar &amp;obj)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00117">QDaqTypes.cpp:117</a></div></div>
 <div class="ttc" id="astruct_q_daq_types_html_a212de8c1f141c91b5916bc72cdedb687"><div class="ttname"><a href="struct_q_daq_types.html#a212de8c1f141c91b5916bc72cdedb687">QDaqTypes::isNumeric</a></div><div class="ttdeci">static bool isNumeric(const QVariant &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00127">QDaqTypes.cpp:127</a></div></div>
@@ -334,17 +352,19 @@ $(function() {
 <div class="ttc" id="a_q_daq_types_8cpp_html_af0e33c3f3fc13117a8da3fca02e86b98"><div class="ttname"><a href="_q_daq_types_8cpp.html#af0e33c3f3fc13117a8da3fca02e86b98">toScriptValue</a></div><div class="ttdeci">QScriptValue toScriptValue(QScriptEngine *engine, const QColor &amp;clr)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00012">QDaqTypes.cpp:12</a></div></div>
 <div class="ttc" id="a_q_daq_vector_8h_html"><div class="ttname"><a href="_q_daq_vector_8h.html">QDaqVector.h</a></div></div>
 <div class="ttc" id="aclass_byte_array_class_html"><div class="ttname"><a href="class_byte_array_class.html">ByteArrayClass</a></div><div class="ttdef"><b>Definition:</b> <a href="bytearrayclass_8h_source.html#l00015">bytearrayclass.h:16</a></div></div>
-<div class="ttc" id="a_q_daq_object_8h_html_a59e5467b4815357c31076a2643ec2cbc"><div class="ttname"><a href="_q_daq_object_8h.html#a59e5467b4815357c31076a2643ec2cbc">QDaqObjectList</a></div><div class="ttdeci">QList&lt; QDaqObject * &gt; QDaqObjectList</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_object_8h_source.html#l00030">QDaqObject.h:23</a></div></div>
 <div class="ttc" id="a_q_daq_types_8cpp_html_a380169dcab66e35705f9645b026dfc10"><div class="ttname"><a href="_q_daq_types_8cpp.html#a380169dcab66e35705f9645b026dfc10">fromScriptValueContainer</a></div><div class="ttdeci">void fromScriptValueContainer(const QScriptValue &amp;value, Container &amp;cont)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00052">QDaqTypes.cpp:52</a></div></div>
 <div class="ttc" id="aclass_q_daq_vector_html"><div class="ttname"><a href="class_q_daq_vector.html">QDaqVector</a></div><div class="ttdoc">A buffer for storing double numbers.</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_vector_8h_source.html#l00040">QDaqVector.h:41</a></div></div>
 <div class="ttc" id="a_q_daq_types_8cpp_html_a69f808359d9234c21406fc2f3ad09a9f"><div class="ttname"><a href="_q_daq_types_8cpp.html#a69f808359d9234c21406fc2f3ad09a9f">QDaqObjectStar</a></div><div class="ttdeci">QDaqObject * QDaqObjectStar</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00109">QDaqTypes.cpp:109</a></div></div>
 <div class="ttc" id="astruct_q_daq_types_html_a6cf9c575576cfd346fa1d38534aede77"><div class="ttname"><a href="struct_q_daq_types.html#a6cf9c575576cfd346fa1d38534aede77">QDaqTypes::toScriptValue</a></div><div class="ttdeci">static QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject *const &amp;obj, int ownership=2)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_types_8cpp_source.html#l00062">QDaqTypes.cpp:62</a></div></div>
 <div class="ttc" id="avectorclass_8h_html"><div class="ttname"><a href="vectorclass_8h.html">vectorclass.h</a></div></div>
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.18
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_a2d5e495f4b604d04f57d90095a59dd6.html">core</a></li><li class="navelem"><a class="el" href="_q_daq_types_8cpp.html">QDaqTypes.cpp</a></li>
+    <li class="footer">Generated by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
+  </ul>
+</div>
 </body>
 </html>

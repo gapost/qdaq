@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>qdaq: Class Members - Properties</title>
+<title>QDaq: Class Members - Properties</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,7 +25,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">qdaq
+   <div id="projectname">QDaq
    &#160;<span id="projectnumber">0.2.6</span>
    </div>
    <div id="projectbrief">Qt-based Data Aqcuisition</div>
@@ -48,6 +52,22 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('functions_prop.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -76,11 +96,17 @@ $(function() {
 <li>armed
 : <a class="el" href="class_q_daq_job.html#a34e09d865dca29970968bc84b8187787">QDaqJob</a>
 </li>
+<li>autoMode
+: <a class="el" href="class_q_daq_pid.html#a47ca1be987d821febc9aa0058f2dc989">QDaqPid</a>
+</li>
 <li>autoScaleX
 : <a class="el" href="class_q_daq_plot_widget.html#ac8e3201b18f2dbe798a52ebc4d24c9dc">QDaqPlotWidget</a>
 </li>
 <li>autoScaleY
 : <a class="el" href="class_q_daq_plot_widget.html#a7abea8cb4b151c1774ed4b7614199b74">QDaqPlotWidget</a>
+</li>
+<li>autoTune
+: <a class="el" href="class_q_daq_pid.html#aa037ea6fea68eb5d215082176f2f353f">QDaqPid</a>
 </li>
 <li>averaging
 : <a class="el" href="class_q_daq_channel.html#a4da3b37a8b5f73f621b05a5271e8572a">QDaqChannel</a>
@@ -91,6 +117,12 @@ $(function() {
 <h3><a id="index_b"></a>- b -</h3><ul>
 <li>backBufferDepth
 : <a class="el" href="class_q_daq_data_buffer.html#a22a8489acef651cef9605b0b666d6454">QDaqDataBuffer</a>
+</li>
+<li>baud
+: <a class="el" href="class_q_daq_serial.html#aebac721e75a2eec4afacbad1fbea9b53">QDaqSerial</a>
+</li>
+<li>beta
+: <a class="el" href="class_q_daq_pid.html#a09c5e5ce7d20f7dd39525766d750c0a8">QDaqPid</a>
 </li>
 <li>bracketsMatchingEnabled
 : <a class="el" href="class_j_s_edit.html#a0092eb93228a3d44df101f741a667686">JSEdit</a>
@@ -127,6 +159,9 @@ $(function() {
 
 
 <h3><a id="index_d"></a>- d -</h3><ul>
+<li>databits
+: <a class="el" href="class_q_daq_serial.html#a56b243cbe222441817a094a7c951b6ac">QDaqSerial</a>
+</li>
 <li>dataReady
 : <a class="el" href="class_q_daq_channel.html#a7880f980acd8206669346997b5e3a420">QDaqChannel</a>
 </li>
@@ -166,8 +201,21 @@ $(function() {
 
 
 <h3><a id="index_g"></a>- g -</h3><ul>
+<li>gain
+: <a class="el" href="class_q_daq_pid.html#a013d7157e2428b7356aeb7b5d0418267">QDaqPid</a>
+</li>
 <li>grid
 : <a class="el" href="class_q_daq_plot_widget.html#afd5ed736eb967bf10aa2d493668e8a1d">QDaqPlotWidget</a>
+</li>
+</ul>
+
+
+<h3><a id="index_h"></a>- h -</h3><ul>
+<li>handshake
+: <a class="el" href="class_q_daq_serial.html#a493b08d868c8b5558d22dcee9d16de8d">QDaqSerial</a>
+</li>
+<li>host
+: <a class="el" href="class_q_daq_tcpip.html#aedb1e251b0bbbcd1ea961e51522170a0">QDaqTcpip</a>
 </li>
 </ul>
 
@@ -189,7 +237,20 @@ $(function() {
 </ul>
 
 
+<h3><a id="index_k"></a>- k -</h3><ul>
+<li>Kc
+: <a class="el" href="class_q_daq_pid.html#abafbce485c54cc3bed11de5f141083aa">QDaqPid</a>
+</li>
+<li>kp
+: <a class="el" href="class_q_daq_f_o_p_d_t.html#a5f877cb49dcf6f6dec486bbd9eb86bd8">QDaqFOPDT</a>
+</li>
+</ul>
+
+
 <h3><a id="index_l"></a>- l -</h3><ul>
+<li>length
+: <a class="el" href="class_q_daq_linear_correlator.html#aa785e601d00022f29a6691e5ee435e63">QDaqLinearCorrelator</a>
+</li>
 <li>limit
 : <a class="el" href="class_q_daq_loop.html#aa32b5505c54c9064f62b3c4b9525a24c">QDaqLoop</a>
 </li>
@@ -209,6 +270,9 @@ $(function() {
 
 
 <h3><a id="index_m"></a>- m -</h3><ul>
+<li>maxPower
+: <a class="el" href="class_q_daq_pid.html#a9dcacb16e39240f35c371531d01f2b37">QDaqPid</a>
+</li>
 <li>memsize
 : <a class="el" href="class_q_daq_channel.html#a49134c77d30aa894362a694c5b7ec5ac">QDaqChannel</a>
 </li>
@@ -219,6 +283,9 @@ $(function() {
 
 
 <h3><a id="index_n"></a>- n -</h3><ul>
+<li>Nd
+: <a class="el" href="class_q_daq_pid.html#a17892d016acadf0fbe5e4cb081b786cb">QDaqPid</a>
+</li>
 <li>nInputChannels
 : <a class="el" href="class_q_daq_filter.html#a00cf3d0f209274b1f98d855d52dc6ca5">QDaqFilter</a>
 </li>
@@ -243,11 +310,23 @@ $(function() {
 
 
 <h3><a id="index_p"></a>- p -</h3><ul>
+<li>parity
+: <a class="el" href="class_q_daq_serial.html#a3f17f3eb51ef69ba69b68262c37b3f8c">QDaqSerial</a>
+</li>
 <li>parserExpression
 : <a class="el" href="class_q_daq_channel.html#a58a5d563f0a42f7f3cfa7dc9ef4a0a82">QDaqChannel</a>
 </li>
 <li>period
 : <a class="el" href="class_q_daq_loop.html#a7b58d4c487257b13d85fd7a12494e839">QDaqLoop</a>
+</li>
+<li>port
+: <a class="el" href="class_q_daq_tcpip.html#aca4b601136dcd60b5a95a407a4d0c3bb">QDaqTcpip</a>
+</li>
+<li>portName
+: <a class="el" href="class_q_daq_serial.html#a957633620afa44457610f23d0a7343e5">QDaqSerial</a>
+</li>
+<li>power
+: <a class="el" href="class_q_daq_pid.html#a0ec502d9cb731554450d297fdabaa94e">QDaqPid</a>
 </li>
 <li>preload
 : <a class="el" href="class_q_daq_loop.html#a1a1fcc5eb5702da522395b321daebcb3">QDaqLoop</a>
@@ -259,6 +338,18 @@ $(function() {
 <li>range
 : <a class="el" href="class_q_daq_channel.html#a7417f491757ca1bcc389dc58041eb8fa">QDaqChannel</a>
 </li>
+<li>relayIterations
+: <a class="el" href="class_q_daq_pid.html#a9f8d951f00818a87fe772bbb7290863c">QDaqPid</a>
+</li>
+<li>relayOffset
+: <a class="el" href="class_q_daq_pid.html#af715e16e1894a2eb571084dd4b721658">QDaqPid</a>
+</li>
+<li>relayStep
+: <a class="el" href="class_q_daq_pid.html#aa2f1172a61e540631632a46143bf73e0">QDaqPid</a>
+</li>
+<li>relayThreshold
+: <a class="el" href="class_q_daq_pid.html#ad79a3c3fbcf40674e01e52f76728d107">QDaqPid</a>
+</li>
 <li>rootDir
 : <a class="el" href="class_q_daq_root.html#a4ca1e31f82fddc36ba2768b971cd1230">QDaqRoot</a>
 </li>
@@ -269,18 +360,40 @@ $(function() {
 
 
 <h3><a id="index_s"></a>- s -</h3><ul>
+<li>samplingPeriod
+: <a class="el" href="class_q_daq_pid.html#a652e45416498889093e1e300b50bd880">QDaqPid</a>
+</li>
+<li>setPoint
+: <a class="el" href="class_q_daq_pid.html#ae98e3e0497a46c6b2f12417957d3b8a5">QDaqPid</a>
+</li>
 <li>signalName
 : <a class="el" href="class_q_daq_channel.html#aa189dcef27689d41a54cbe7a06864645">QDaqChannel</a>
 </li>
 <li>size
 : <a class="el" href="class_q_daq_data_buffer.html#abb613126bd213671adacaa053290a6a4">QDaqDataBuffer</a>
+, <a class="el" href="class_q_daq_linear_correlator.html#a32b21d3aea1ddad349f69288534615ff">QDaqLinearCorrelator</a>
+</li>
+<li>stopbits
+: <a class="el" href="class_q_daq_serial.html#a1f5b087e6c94896b23a36a0e9e126483">QDaqSerial</a>
 </li>
 </ul>
 
 
 <h3><a id="index_t"></a>- t -</h3><ul>
+<li>Tc
+: <a class="el" href="class_q_daq_pid.html#a3e947a49a585d4fd434f89bd6265841f">QDaqPid</a>
+</li>
+<li>td
+: <a class="el" href="class_q_daq_f_o_p_d_t.html#a8dda33b3e24f5ada1af8b6f27fb824eb">QDaqFOPDT</a>
+</li>
+<li>Td
+: <a class="el" href="class_q_daq_pid.html#a52cca2e58b3d668a86b53dceca6e0437">QDaqPid</a>
+</li>
 <li>textWrapEnabled
 : <a class="el" href="class_j_s_edit.html#afb27dea3fe4766b77f9f4f2e1c489e56">JSEdit</a>
+</li>
+<li>Ti
+: <a class="el" href="class_q_daq_pid.html#ad8b68f7f32a2cb2fc7da1dee207f086d">QDaqPid</a>
 </li>
 <li>timeout
 : <a class="el" href="class_q_daq_interface.html#a35482806ea1239784a03661d939bc1d0">QDaqInterface</a>
@@ -294,8 +407,15 @@ $(function() {
 <li>title
 : <a class="el" href="class_q_daq_plot_widget.html#a23ee53ad0783e012023ce5de6d41685e">QDaqPlotWidget</a>
 </li>
+<li>tp
+: <a class="el" href="class_q_daq_f_o_p_d_t.html#a0b7ffb914bb331f078c3d2fd83834c3b">QDaqFOPDT</a>
+</li>
+<li>Tr
+: <a class="el" href="class_q_daq_pid.html#a795211fb6912223ece82284fd53d6ab4">QDaqPid</a>
+</li>
 <li>type
 : <a class="el" href="class_q_daq_channel.html#a26bd23e314e1751c5cdf1fc192a63b07">QDaqChannel</a>
+, <a class="el" href="class_q_daq_interpolator.html#a5f89d9794e8600443af5482714b258f7">QDaqInterpolator</a>
 </li>
 </ul>
 
@@ -308,6 +428,9 @@ $(function() {
 
 
 <h3><a id="index_x"></a>- x -</h3><ul>
+<li>x
+: <a class="el" href="class_q_daq_interpolator.html#a29bf0adc94f6491a62ae5428549a5d1e">QDaqInterpolator</a>
+</li>
 <li>xlabel
 : <a class="el" href="class_q_daq_plot_widget.html#a15e89953eefc3f6f2edb0c6e11ef8e16">QDaqPlotWidget</a>
 </li>
@@ -318,6 +441,9 @@ $(function() {
 
 
 <h3><a id="index_y"></a>- y -</h3><ul>
+<li>y
+: <a class="el" href="class_q_daq_interpolator.html#a6c3f333fed593022c7b746de356b17c7">QDaqInterpolator</a>
+</li>
 <li>ylabel
 : <a class="el" href="class_q_daq_plot_widget.html#a56678975ac657b0a5dd0b469e573a7f7">QDaqPlotWidget</a>
 </li>
@@ -326,11 +452,14 @@ $(function() {
 </li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.18
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
+  </ul>
+</div>
 </body>
 </html>
