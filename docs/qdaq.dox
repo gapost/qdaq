@@ -1,67 +1,21 @@
-/*! \page qdaq_app qdaq
+/*! \mainpage 
+ *
+ * \section intro Introduction
+ *
+ * QDaq is a Qt-based set of tools for performing data aqcuisition (Daq) tasks.
+ * It comprises of the following components:
+ *
+ *  - A <a href="hierarchy.html">hierarchy</a> of C++ objects for various Daq-related tasks. The classes are divided into
+ the \ref Core "Core", Gui and \ref Daq "Daq" modules
+ *  - A set of Qt widgets suitable for Daq applications
+ *  - A scripting interface (\ref ScriptAPI) based on javascript and QtScript
+ *  - The \ref qdaq_app application which offers a complete environment
+ *    for developing and executing QDaq scripts
+ *
+ *
+ * \section download Download
+ *
+ * The code can be found on Github: <a href="https://github.com/gapost/qdaq">https://github.com/gapost/qdaq</a>
+ */
 
-\tableofcontents
 
-\ref qdaq_app is an application that can be used for both developing and running QDaq scripts.
-
-It provides basically a script interpreter that evaluates the scripts.
-Evaluation can be done interactively on a console window or in the background.
-
-QDaq scripts can create windows (see the functions loadWidget and loadTopLevelWidget)
-and thus a complete windowed application can be made solely with script code.
-Then \ref qdaq_app can used to run the script application.
-
-A very helpfull tool for developing QDaq script applications is the \ref qdaqide.
-Typically script development will be done with the IDE, so that the developer can
-browse all objects and their properties and test commands and procedures. Once the
-application script is finalized, it may be passed to  \ref qdaq_app at the command line
-and the application starts like a normal windowed application.
-
-
-  \section running Running qdaq
-
-  You can run qdaq either from the command line or by clicking the application icon.
-
-  Giving the option --help at the command line displays the following
-
-\code
-$ qdaq --help
-Usage: qdaq [options] script
-
-Options:
-  -c, --console  Start a script console window.
-  -d, --debug    Start in script-debugging mode.
-  -h, --help     Displays this help.
-  -v, --version  Displays version information.
-
-Arguments:
-  script         A .js script to run at startup.
-\endcode
-
-If the program is invoked without any options the \ref qdaqide is started.
-
-If it is invoked with a script file as argument, then the script file is parsed and executed.
-If the script creates application windows, then qdaq proceeds as a normal window application
-until the user closes the window.
-
-All application windows created by QDaq have a special menu which can be invoked by
-pressing Ctrl-F8. From the menu one can either open the \ref qdaqide or just a script console.
-This may be used for debugging an application or running some script command. All qdaq
-objects are accesible from the IDE or console.
-
-\section qdaqide QDaq IDE
-
-QDaq includes a simple IDE (Integrated Development Environment).
-
-\image html qdaq_ide_screenshot.png "QDaq IDE window"
-
-The IDE provides the following features:
-  - Script console for interactive command control of QDaq objects,
-    with syntax highlighting (TODO) and object introspection
-  - Script editor with syntax highlighting
-  - QDaq object/property browser which allows on-line editing of object properties
-  - QDaq window browser (TODO)
-  - QDaqChannel viewer - display of all channels (TODO)
-  - Error queue browser
-
-*/
