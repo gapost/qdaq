@@ -237,6 +237,124 @@ var ch = new QDaqChannel("ch1");
 ch.format = "FixedPoint";
 @endcode
 
+@section Ref A synopsis of QDaq objects
+
+QDaqObject
+Directly derived from Qt’s QObject
+
+QDaqRoot
+The easier way to visualize the hierarchy of objects of the running qdaq session is to use the
+Object Browser window of the QDaq IDE. There, all the objects are represented in tree form. The
+base qdaq object is a QDaqRoot object.
+
+QDaqSession
+The basic instance of an interaction with all other existing objects and ui’s that do all
+the work in data taking. It is designed to function in JS, by providing an “interface” or
+“translation service” to C++/Qt’s objects to JS much more nimble and low-weight, pointer-based
+objects. Any qdaq console is a QDaqSession object.
+
+QDaqJob
+“Anything that actively *does* something” (instead of just existing) in QDaq.
+
+QDaqChannel
+The basic object for interaction with instruments and data taking, keeping and interacting
+with measurements.
+
+QDaqInterface
+QDaqInterface provides a common way to communicate with (hardware) instruments.
+The actual communication interface of the instruments connected to the control computer may vary
+(examples include GPIB, TCP/IP  and Modbus protocols).
+
+A QDaqInterface has a number of communication "ports", which have different
+meaning depending on the specific interface implementation.
+On memory/register based interfaces like MODBUS, a port represents the
+register number to be read/written. On interfaces that support connection
+with multiple instruments (GPIB, RS485), the port is essentially the address of each
+instrument. On interfaces that support only
+one-to-one communication with an instrument (RS232, TCP/IP) the port feature is not used.
+
+QDaqDevice
+A QDaqDevice is the software representation of a hardware device connected to the control
+computer.
+In order for the computer to interact with a device, the device and its interface have to
+be created as software objects, and the device has to be assigned to an interface. Then,
+both the interface and the device have to be opened.
+
+At that point, the user can communicate with the device (send commands or get measurements),
+according to each devices specific communication protocols (e.g. SCPI commands or even whole
+scripts), using just the read() and write() functions.
+
+QDaqFilter
+A QDaqFilter is the software implementation of a mathematical process
+(usually quite complicated), that has to be applied online to the values of one or more
+QDaqChannels.
+
+At present, QDaqFilters can be:
+  * FOPDT  (First-Order-Plus-Dead-Time control)
+  * Interpolator (As the name shows, finds values between measured or available ones)
+  * Linear Correlator (Finds correlation -linear fitter- between values presented)
+  * PID (Proportional-Integral-Differential control)
+
+
+QDaqDataBuffer
+The basic object of data keeping, where the actual values measured are kept in memory,
+relatively organized, before being saved to disk.
+
+Thought the object can function in two alternative ways, either by attaching to QDaqChannels
+and reading their content, or by getting values pushed independently by the user,
+in practice only the first way of data logging is used.
+
+The data logging involves 4 different objects, 2 QLists:
+  * channel_objects is a QDaqObjectList, i.e. a QList<QDaqObject>
+
+  * columnNames_ is a QStringList, i.e. a QList<QString>
+-This stores the names of the columns in the sense of C++/Qt object names (which may
+be different from the user interface channel names!). This is done in order to have a
+human-friendly way to access the two following objects.
+
+And 2 QVectors:
+  * data_matrix is a QVector of QDaqVector objects QVector<QDaqVector>
+-QDaqVector is a special QDaq class holding QExplicitlySharedDataPointer objects to other
+special QDaq objects (essentially lists of double numbers), see below.
+data_matrix is where the data are actually read into, and kept. It can be thought of as a
+2-D matrix, where each column represents a channel (QDaqChannel), and each row a measurement
+point (presumably done at every iteration of a loop containing the QDaqDataBuffer, and
+presumably sync’d with the measurements of the channels. (See below about the concept of a
+depth of a data channel).
+
+* channel_ptrs
+This is a QVector holding QPointers to QDaqChannels, i.e. a QVector<QPointer<QDaqChannel>>.
+This gives an extra handle to interact with the constituents
+
+These four objects have to change in unison in order for the data recording to be well
+behaved, and therefore all 4 of them have to be in principle interacted with when interacting
+with data.
+
+Qt has tried to provide all methods available to QList also to QVector objects, and vice-versa,
+hence all four objects can be treated almost in the same way
+
+It is also implicitly true that the order of objects (QDaqChannels, names, pointers,
+data columns) is the same across all 4 objects, to facilitate access, although the objects
+are not absolutely ordered in any sense.
+
+
+A data recording loop that runs without input (e.g. a loop containing a QDaqDataBuffer that
+is not running concurrently with any data-producing, i.e. QDaqChannel-containing loop, is
+filled with zeros. This behaviour may need to change, in order to separate “real” zero values
+from accidental no input.
+
+Depth
+
+If the thread of data creation in a channel is too busy to communicate available data to the
+thread of data recording (e.g. during very fast loops), data are pushed in a provisional
+“buffer”. This process changes the value of special indexes (semaphores), that alert the data
+recording thread that data is available. The number of positions of this provisional buffer
+can be set for each channel, and is the (data) channel’s “depth” properties
+
+In order for a data channel to be created and deleted successfully, care must be taken to
+also ‘populate’ or ‘depopulate’ its properties also.
+
+
 
 @section Ref Further reading
 
