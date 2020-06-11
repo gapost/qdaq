@@ -301,7 +301,7 @@ At present, QDaqFilters can be:
 - Interpolator (As the name shows, finds values between measured or available ones)
 - Linear Correlator (Finds correlation -linear fitter- between values presented)
 - PID (Proportional-Integral-Differential control)
-
+These of course are not all "filters" in the common use of the term.
 
 - QDaqDataBuffer
 
