@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -51,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('bytearrayprototype_8h_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -82,6 +61,11 @@ $(document).ready(function(){initNavTree('bytearrayprototype_8h_source.html','')
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_a2d5e495f4b604d04f57d90095a59dd6.html">core</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">bytearrayprototype.h</div>  </div>
@@ -153,7 +137,6 @@ $(document).ready(function(){initNavTree('bytearrayprototype_8h_source.html','')
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <div class="ttc" id="aclass_byte_array_prototype_html_a3ad3c83592f95ba3e62daedbe38f239a"><div class="ttname"><a href="class_byte_array_prototype.html#a3ad3c83592f95ba3e62daedbe38f239a">ByteArrayPrototype::equals</a></div><div class="ttdeci">bool equals(const QByteArray &amp;other)</div><div class="ttdoc">Returns true if this ByteArray is equal to other.</div><div class="ttdef"><b>Definition:</b> <a href="bytearrayprototype_8cpp_source.html#l00027">bytearrayprototype.cpp:27</a></div></div>
 <div class="ttc" id="aclass_byte_array_prototype_html_a04de895a7bd0cae0b84304bac88fd916"><div class="ttname"><a href="class_byte_array_prototype.html#a04de895a7bd0cae0b84304bac88fd916">ByteArrayPrototype::readInt16LE</a></div><div class="ttdeci">int readInt16LE(int offset=0) const</div><div class="ttdef"><b>Definition:</b> <a href="bytearrayprototype_8cpp_source.html#l00201">bytearrayprototype.cpp:201</a></div></div>
 <div class="ttc" id="aclass_byte_array_prototype_html_abdae30a9cd7d166b22e2df0477a4dccc"><div class="ttname"><a href="class_byte_array_prototype.html#abdae30a9cd7d166b22e2df0477a4dccc">ByteArrayPrototype::writeInt8</a></div><div class="ttdeci">void writeInt8(int v, int offset=0)</div><div class="ttdef"><b>Definition:</b> <a href="bytearrayprototype_8cpp_source.html#l00248">bytearrayprototype.cpp:248</a></div></div>
@@ -193,13 +176,10 @@ $(document).ready(function(){initNavTree('bytearrayprototype_8h_source.html','')
 <div class="ttc" id="aclass_byte_array_prototype_html_a5cb4b02f5cb89c138fae2f7e200ab81c"><div class="ttname"><a href="class_byte_array_prototype.html#a5cb4b02f5cb89c138fae2f7e200ab81c">ByteArrayPrototype::writeFloatBE</a></div><div class="ttdeci">void writeFloatBE(float v, int offset=0)</div><div class="ttdef"><b>Definition:</b> <a href="bytearrayprototype_8cpp_source.html#l00148">bytearrayprototype.cpp:148</a></div></div>
 <div class="ttc" id="aclass_byte_array_prototype_html_a2016d95768dcfeb6b2d8a1da90f325d8"><div class="ttname"><a href="class_byte_array_prototype.html#a2016d95768dcfeb6b2d8a1da90f325d8">ByteArrayPrototype::writeInt32LE</a></div><div class="ttdeci">void writeInt32LE(int v, int offset=0)</div><div class="ttdef"><b>Definition:</b> <a href="bytearrayprototype_8cpp_source.html#l00169">bytearrayprototype.cpp:169</a></div></div>
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_a2d5e495f4b604d04f57d90095a59dd6.html">core</a></li><li class="navelem"><a class="el" href="bytearrayprototype_8h.html">bytearrayprototype.h</a></li>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.18
+</small></address>
 </body>
 </html>

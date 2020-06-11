@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -51,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('vectorprototype_8cpp_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -82,6 +61,11 @@ $(document).ready(function(){initNavTree('vectorprototype_8cpp_source.html','');
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_a2d5e495f4b604d04f57d90095a59dd6.html">core</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">vectorprototype.cpp</div>  </div>
@@ -201,7 +185,6 @@ $(document).ready(function(){initNavTree('vectorprototype_8cpp_source.html','');
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <div class="ttc" id="aclass_vector_prototype_html_a2d8cd7a7bf0b36f30180afc356242f12"><div class="ttname"><a href="class_vector_prototype.html#a2d8cd7a7bf0b36f30180afc356242f12">VectorPrototype::max</a></div><div class="ttdeci">double max() const</div><div class="ttdef"><b>Definition:</b> <a href="vectorprototype_8cpp_source.html#l00085">vectorprototype.cpp:85</a></div></div>
 <div class="ttc" id="aclass_q_daq_vector_html_a67bf39f61f3add3fa62dd8670fd21031"><div class="ttname"><a href="class_q_daq_vector.html#a67bf39f61f3add3fa62dd8670fd21031">QDaqVector::capacity</a></div><div class="ttdeci">int capacity() const</div><div class="ttdoc">Return the currently allocated memory capacity (in number of elements).</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_vector_8h_source.html#l00073">QDaqVector.h:73</a></div></div>
 <div class="ttc" id="aclass_vector_prototype_html_a49fd6965d48757f0213a2839f3dade3f"><div class="ttname"><a href="class_vector_prototype.html#a49fd6965d48757f0213a2839f3dade3f">VectorPrototype::equals</a></div><div class="ttdeci">bool equals(const QDaqVector &amp;other)</div><div class="ttdoc">Returns true if this Vector is equal to other.</div><div class="ttdef"><b>Definition:</b> <a href="vectorprototype_8cpp_source.html#l00022">vectorprototype.cpp:22</a></div></div>
@@ -231,13 +214,10 @@ $(document).ready(function(){initNavTree('vectorprototype_8cpp_source.html','');
 <div class="ttc" id="aclass_q_daq_vector_html_a47aecc2f2c3905a092ad7b2423f3d361"><div class="ttname"><a href="class_q_daq_vector.html#a47aecc2f2c3905a092ad7b2423f3d361">QDaqVector::mean</a></div><div class="ttdeci">double mean() const</div><div class="ttdoc">Mean value in the buffer.</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_vector_8h_source.html#l00106">QDaqVector.h:106</a></div></div>
 <div class="ttc" id="aclass_vector_prototype_html_a8d3f5fd2cc587c4209507cb0188a38c3"><div class="ttname"><a href="class_vector_prototype.html#a8d3f5fd2cc587c4209507cb0188a38c3">VectorPrototype::resize</a></div><div class="ttdeci">void resize(int n)</div><div class="ttdoc">Resize to n elements keeping the first n.</div><div class="ttdef"><b>Definition:</b> <a href="vectorprototype_8cpp_source.html#l00062">vectorprototype.cpp:62</a></div></div>
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_a2d5e495f4b604d04f57d90095a59dd6.html">core</a></li><li class="navelem"><a class="el" href="vectorprototype_8cpp.html">vectorprototype.cpp</a></li>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.18
+</small></address>
 </body>
 </html>

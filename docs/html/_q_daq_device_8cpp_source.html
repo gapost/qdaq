@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -51,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('_q_daq_device_8cpp_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -82,6 +61,11 @@ $(document).ready(function(){initNavTree('_q_daq_device_8cpp_source.html',''); i
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_e67e156f82725c4cee930256cb18b4c8.html">daq</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">QDaqDevice.cpp</div>  </div>
@@ -355,7 +339,6 @@ $(document).ready(function(){initNavTree('_q_daq_device_8cpp_source.html',''); i
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <a class="code" href="class_q_daq_device.html#a8120679b60d07db4d80869db5a4c2c55">ifc_</a>-&gt;trigger(<a class="code" href="class_q_daq_device.html#a98466bd5cf6e340a94dd58a0cbd2c88a">addr_</a>);</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <div class="ttc" id="aclass_q_daq_device_html_a5e1d9d6a98fc3db917ea6968fb6f5914"><div class="ttname"><a href="class_q_daq_device.html#a5e1d9d6a98fc3db917ea6968fb6f5914">QDaqDevice::writeBytes</a></div><div class="ttdeci">int writeBytes(const QByteArray &amp;msg)</div><div class="ttdoc">Write a byte array to the device. Return number of bytes written.</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_device_8cpp_source.html#l00174">QDaqDevice.cpp:174</a></div></div>
 <div class="ttc" id="aclass_q_daq_object_html_a9f7bca76048cd5f6fe6b1078da3e3b33"><div class="ttname"><a href="class_q_daq_object.html#a9f7bca76048cd5f6fe6b1078da3e3b33">QDaqObject::propertiesChanged</a></div><div class="ttdeci">void propertiesChanged()</div><div class="ttdoc">Fired when object properties have changed.</div></div>
 <div class="ttc" id="aclass_q_daq_device_html_a017bd4ad269fdf5d728a913a4f2b93f5"><div class="ttname"><a href="class_q_daq_device.html#a017bd4ad269fdf5d728a913a4f2b93f5">QDaqDevice::trigger</a></div><div class="ttdeci">void trigger()</div><div class="ttdoc">Trigger the device (Must be supported by the interface, e.g. GPIB)</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_device_8cpp_source.html#l00263">QDaqDevice.cpp:263</a></div></div>
@@ -401,13 +384,10 @@ $(document).ready(function(){initNavTree('_q_daq_device_8cpp_source.html',''); i
 <div class="ttc" id="aclass_q_daq_device_html_a6c23ad1696d0b2c13ed316f093d7a856"><div class="ttname"><a href="class_q_daq_device.html#a6c23ad1696d0b2c13ed316f093d7a856">QDaqDevice::on</a></div><div class="ttdeci">bool on()</div><div class="ttdoc">Try to bring the device online and return true if succesfull.</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_device_8cpp_source.html#l00032">QDaqDevice.cpp:32</a></div></div>
 <div class="ttc" id="aclass_q_daq_device_html_a85104e6fbae6f9d77afc7777d171943c"><div class="ttname"><a href="class_q_daq_device.html#a85104e6fbae6f9d77afc7777d171943c">QDaqDevice::detach</a></div><div class="ttdeci">virtual void detach()</div><div class="ttdef"><b>Definition:</b> <a href="_q_daq_device_8cpp_source.html#l00016">QDaqDevice.cpp:16</a></div></div>
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_e67e156f82725c4cee930256cb18b4c8.html">daq</a></li><li class="navelem"><a class="el" href="_q_daq_device_8cpp.html">QDaqDevice.cpp</a></li>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.18
+</small></address>
 </body>
 </html>

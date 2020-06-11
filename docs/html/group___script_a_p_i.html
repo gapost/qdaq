@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -52,22 +48,6 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('group___script_a_p_i.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -242,34 +222,72 @@ QDaq Javascript tricks</h1>
 <div class="fragment"><div class="line">// Create a QDaq channel and set the number format to fixed point</div>
 <div class="line">var ch = new QDaqChannel(&quot;ch1&quot;);</div>
 <div class="line">ch.format = &quot;FixedPoint&quot;;</div>
-</div><!-- fragment --><h1><a class="anchor" id="Ref"></a>
+</div><!-- fragment --><h1><a class="anchor" id="Synopsis"></a>
 A synopsis of QDaq objects</h1>
-<p><a class="el" href="class_q_daq_object.html">QDaqObject</a> Directly derived from Qt’s QObject</p>
-<p><a class="el" href="class_q_daq_root.html">QDaqRoot</a> The easier way to visualize the hierarchy of objects of the running qdaq session is to use the Object Browser window of the <a class="el" href="namespace_q_daq.html">QDaq</a> IDE. There, all the objects are represented in tree form. The base qdaq object is a <a class="el" href="class_q_daq_root.html">QDaqRoot</a> object.</p>
-<p><a class="el" href="class_q_daq_session.html">QDaqSession</a> The basic instance of an interaction with all other existing objects and ui’s that do all the work in data taking. It is designed to function in JS, by providing an “interface” or “translation service” to C++/Qt’s objects to JS much more nimble and low-weight, pointer-based objects. Any qdaq console is a <a class="el" href="class_q_daq_session.html">QDaqSession</a> object.</p>
-<p><a class="el" href="class_q_daq_job.html">QDaqJob</a> “Anything that actively <em>does</em> something” (instead of just existing) in <a class="el" href="namespace_q_daq.html">QDaq</a>.</p>
-<p><a class="el" href="class_q_daq_channel.html" title="A class that represent a stream of numerical data, a signal.">QDaqChannel</a> The basic object for interaction with instruments and data taking, keeping and interacting with measurements.</p>
-<p><a class="el" href="class_q_daq_interface.html" title="Base class of objects representing digital communications interfaces.">QDaqInterface</a> <a class="el" href="class_q_daq_interface.html" title="Base class of objects representing digital communications interfaces.">QDaqInterface</a> provides a common way to communicate with (hardware) instruments. The actual communication interface of the instruments connected to the control computer may vary (examples include GPIB, TCP/IP and Modbus protocols).</p>
+<ul>
+<li><a class="el" href="class_q_daq_object.html">QDaqObject</a></li>
+</ul>
+<p>Directly derived from Qt’s QObject</p>
+<ul>
+<li><a class="el" href="class_q_daq_root.html">QDaqRoot</a></li>
+</ul>
+<p>The easier way to visualize the hierarchy of objects of the running qdaq session is to use the Object Browser window of the <a class="el" href="namespace_q_daq.html">QDaq</a> IDE. There, all the objects are represented in tree form. The base qdaq object is a <a class="el" href="class_q_daq_root.html">QDaqRoot</a> object.</p>
+<ul>
+<li><a class="el" href="class_q_daq_session.html">QDaqSession</a></li>
+</ul>
+<p>The basic instance of an interaction with all other existing objects and ui’s that do all the work in data taking. It is designed to function in JS, by providing an “interface” or “translation service” to C++/Qt’s objects to JS much more nimble and low-weight, pointer-based objects. Any qdaq console is a <a class="el" href="class_q_daq_session.html">QDaqSession</a> object.</p>
+<ul>
+<li><a class="el" href="class_q_daq_job.html">QDaqJob</a></li>
+</ul>
+<p>“Anything that actively <em>does</em> something” (instead of just existing) in <a class="el" href="namespace_q_daq.html">QDaq</a>.</p>
+<ul>
+<li><a class="el" href="class_q_daq_channel.html" title="A class that represent a stream of numerical data, a signal.">QDaqChannel</a></li>
+</ul>
+<p>The basic object for interaction with instruments and data taking, keeping and interacting with measurements.</p>
+<ul>
+<li><a class="el" href="class_q_daq_interface.html" title="Base class of objects representing digital communications interfaces.">QDaqInterface</a></li>
+</ul>
+<p><a class="el" href="class_q_daq_interface.html" title="Base class of objects representing digital communications interfaces.">QDaqInterface</a> provides a common way to communicate with (hardware) instruments. The actual communication interface of the instruments connected to the control computer may vary (examples include GPIB, TCP/IP and Modbus protocols).</p>
 <p>A <a class="el" href="class_q_daq_interface.html" title="Base class of objects representing digital communications interfaces.">QDaqInterface</a> has a number of communication "ports", which have different meaning depending on the specific interface implementation. On memory/register based interfaces like MODBUS, a port represents the register number to be read/written. On interfaces that support connection with multiple instruments (GPIB, RS485), the port is essentially the address of each instrument. On interfaces that support only one-to-one communication with an instrument (RS232, TCP/IP) the port feature is not used.</p>
-<p><a class="el" href="class_q_daq_device.html" title="A class representing a DAQ device.">QDaqDevice</a> A <a class="el" href="class_q_daq_device.html" title="A class representing a DAQ device.">QDaqDevice</a> is the software representation of a hardware device connected to the control computer. In order for the computer to interact with a device, the device and its interface have to be created as software objects, and the device has to be assigned to an interface. Then, both the interface and the device have to be opened.</p>
-<p>At that point, the user can communicate with the device (send commands or get measurements), according to each devices specific communication protocols (e.g. SCPI commands or even whole scripts), using just the read() and write() functions.</p>
-<p><a class="el" href="class_q_daq_filter.html">QDaqFilter</a> A <a class="el" href="class_q_daq_filter.html">QDaqFilter</a> is the software implementation of a mathematical process (usually quite complicated), that has to be applied online to the values of one or more QDaqChannels.</p>
-<p>At present, QDaqFilters can be: FOPDT (First-Order-Plus-Dead-Time control) Interpolator (As the name shows, finds values between measured or available ones) Linear Correlator (Finds correlation -linear fitter- between values presented) PID (Proportional-Integral-Differential control)</p>
-<p><a class="el" href="class_q_daq_data_buffer.html" title="A class that provides storage of channel or other data.">QDaqDataBuffer</a> The basic object of data keeping, where the actual values measured are kept in memory, relatively organized, before being saved to disk.</p>
+<ul>
+<li><a class="el" href="class_q_daq_device.html" title="A class representing a DAQ device.">QDaqDevice</a></li>
+</ul>
+<p>A <a class="el" href="class_q_daq_device.html" title="A class representing a DAQ device.">QDaqDevice</a> is the software representation of a hardware device connected to the control computer.</p>
+<p>In order for the computer to interact with a device, the device and its interface have to be created as software objects, and the device has to be assigned to an interface. Then, both the interface and the device have to be opened. At that point, the user can communicate with the device (send commands or get measurements), according to each devices specific communication protocols (e.g. SCPI commands or even whole scripts), using just the read() and write() functions.</p>
+<ul>
+<li><a class="el" href="class_q_daq_filter.html">QDaqFilter</a></li>
+</ul>
+<p>A <a class="el" href="class_q_daq_filter.html">QDaqFilter</a> is the software implementation of a mathematical process (usually quite complicated), that has to be applied online to the values of one or more QDaqChannels.</p>
+<p>At present, QDaqFilters can be:</p><ul>
+<li>FOPDT (First-Order-Plus-Dead-Time control)</li>
+<li>Interpolator (As the name shows, finds values between measured or available ones)</li>
+<li>Linear Correlator (Finds correlation -linear fitter- between values presented)</li>
+<li>PID (Proportional-Integral-Differential control)</li>
+<li><a class="el" href="class_q_daq_data_buffer.html" title="A class that provides storage of channel or other data.">QDaqDataBuffer</a></li>
+</ul>
+<p>The basic object of data keeping, where the actual values measured are kept in memory, relatively organized, before being saved to disk.</p>
 <p>Thought the object can function in two alternative ways, either by attaching to QDaqChannels and reading their content, or by getting values pushed independently by the user, in practice only the first way of data logging is used.</p>
-<p>The data logging involves 4 different objects, 2 QLists: channel_objects is a QDaqObjectList, i.e. a QList&lt;QDaqObject&gt;</p>
-<p>columnNames_ is a QStringList, i.e. a QList&lt;QString&gt; -This stores the names of the columns in the sense of C++/Qt object names (which may be different from the user interface channel names!). This is done in order to have a human-friendly way to access the two following objects.</p>
-<p>And 2 QVectors: data_matrix is a QVector of <a class="el" href="class_q_daq_vector.html" title="A buffer for storing double numbers.">QDaqVector</a> objects QVector&lt;QDaqVector&gt; -<a class="el" href="class_q_daq_vector.html" title="A buffer for storing double numbers.">QDaqVector</a> is a special <a class="el" href="namespace_q_daq.html">QDaq</a> class holding QExplicitlySharedDataPointer objects to other special <a class="el" href="namespace_q_daq.html">QDaq</a> objects (essentially lists of double numbers), see below. data_matrix is where the data are actually read into, and kept. It can be thought of as a 2-D matrix, where each column represents a channel (<a class="el" href="class_q_daq_channel.html" title="A class that represent a stream of numerical data, a signal.">QDaqChannel</a>), and each row a measurement point (presumably done at every iteration of a loop containing the <a class="el" href="class_q_daq_data_buffer.html" title="A class that provides storage of channel or other data.">QDaqDataBuffer</a>, and presumably sync’d with the measurements of the channels. (See below about the concept of a depth of a data channel).</p>
-<p>channel_ptrs This is a QVector holding QPointers to QDaqChannels, i.e. a QVector&lt;QPointer&lt;QDaqChannel&gt;&gt;. This gives an extra handle to interact with the constituents</p>
+<p>The data logging involves 4 different objects, 2 QLists:</p><ul>
+<li>channel_objects is a QDaqObjectList, i.e. a QList&lt;QDaqObject&gt;</li>
+<li>columnNames_ is a QStringList, i.e. a QList&lt;QString&gt;</li>
+</ul>
+<p>This stores the names of the columns in the sense of C++/Qt object names (which may be different from the user interface channel names!). This is done in order to have a human-friendly way to access the two following objects.</p>
+<p>And 2 QVectors:</p><ul>
+<li>data_matrix is a QVector of <a class="el" href="class_q_daq_vector.html" title="A buffer for storing double numbers.">QDaqVector</a> objects QVector&lt;QDaqVector&gt;</li>
+</ul>
+<p><a class="el" href="class_q_daq_vector.html" title="A buffer for storing double numbers.">QDaqVector</a> is a special <a class="el" href="namespace_q_daq.html">QDaq</a> class holding QExplicitlySharedDataPointer objects to other special <a class="el" href="namespace_q_daq.html">QDaq</a> objects (essentially lists of double numbers), see below. data_matrix is where the data are actually read into, and kept. It can be thought of as a 2-D matrix, where each column represents a channel (<a class="el" href="class_q_daq_channel.html" title="A class that represent a stream of numerical data, a signal.">QDaqChannel</a>), and each row a measurement point (presumably done at every iteration of a loop containing the <a class="el" href="class_q_daq_data_buffer.html" title="A class that provides storage of channel or other data.">QDaqDataBuffer</a>, and presumably sync’d with the measurements of the channels. (See below about the concept of a depth of a data channel).</p>
+<ul>
+<li>channel_ptrs This is a QVector holding QPointers to QDaqChannels, i.e. a QVector&lt;QPointer&lt;QDaqChannel&gt;&gt;. This gives an extra handle to interact with the constituents</li>
+</ul>
 <p>These four objects have to change in unison in order for the data recording to be well behaved, and therefore all 4 of them have to be in principle interacted with when interacting with data.</p>
 <p>Qt has tried to provide all methods available to QList also to QVector objects, and vice-versa, hence all four objects can be treated almost in the same way</p>
 <p>It is also implicitly true that the order of objects (QDaqChannels, names, pointers, data columns) is the same across all 4 objects, to facilitate access, although the objects are not absolutely ordered in any sense.</p>
 <p>A data recording loop that runs without input (e.g. a loop containing a <a class="el" href="class_q_daq_data_buffer.html" title="A class that provides storage of channel or other data.">QDaqDataBuffer</a> that is not running concurrently with any data-producing, i.e. QDaqChannel-containing loop, is filled with zeros. This behaviour may need to change, in order to separate “real” zero values from accidental no input.</p>
-<p>Depth</p>
+<p><em>Depth</em></p>
 <p>If the thread of data creation in a channel is too busy to communicate available data to the thread of data recording (e.g. during very fast loops), data are pushed in a provisional “buffer”. This process changes the value of special indexes (semaphores), that alert the data recording thread that data is available. The number of positions of this provisional buffer can be set for each channel, and is the (data) channel’s “depth” properties</p>
 <p>In order for a data channel to be created and deleted successfully, care must be taken to also ‘populate’ or ‘depopulate’ its properties also.</p>
 <h1><a class="anchor" id="Ref"></a>
-A synopsis of QDaq objects</h1>
+Further reading</h1>
 <p>For <a class="el" href="namespace_q_daq.html">QDaq</a> objects and their Javascript API refer to the documentation of the <a href="#nested-classes">classes listed above</a> and other <a class="el" href="namespace_q_daq.html">QDaq</a> classes. All properties, signals and slots are available in Javascript and essentially constitute the <a class="el" href="namespace_q_daq.html">QDaq</a> Scripting API.</p>
 <p>Resources for Javascript and QtScript:</p><ul>
 <li>An excellent book for Javascript is "JavaScript: the definitive guide" by D. Flanagan.</li>
@@ -279,14 +297,11 @@ A synopsis of QDaq objects</h1>
 <li>The QtScript Javascript engine implements the ECMA-262 language standard which is described <a href="https://doc.qt.io/qt-5/ecmascript.html">here.</a> </li>
 </ul>
 </div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.18
+</small></address>
 </body>
 </html>
