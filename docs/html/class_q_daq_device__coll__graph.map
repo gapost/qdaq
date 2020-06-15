@@ -1,6 +1,5 @@
 <map id="QDaqDevice" name="QDaqDevice">
-<area shape="rect" id="node1" title="A class representing a DAQ device." alt="" coords="5,171,103,197"/>
-<area shape="rect" id="node2" href="$class_q_daq_job.html" title="Base class for objects that perform a specific task reqursively." alt="" coords="15,95,93,121"/>
-<area shape="rect" id="node3" href="$class_q_daq_object.html" title="Base class of all QDaq objects." alt="" coords="68,5,163,32"/>
-<area shape="rect" id="node4" href="$class_q_daq_root.html" title="QDaq root object class." alt="" coords="117,95,201,121"/>
+<area shape="rect" id="node2" href="$class_q_daq_job.html" title="Base class for objects that perform a specific task reqursively. " alt="" coords="15,96,92,123"/>
+<area shape="rect" id="node3" href="$class_q_daq_object.html" title="Base class of all QDaq objects. " alt="" coords="67,5,161,32"/>
+<area shape="rect" id="node4" href="$class_q_daq_root.html" title="QDaq root object class. " alt="" coords="117,96,200,123"/>
 </map>

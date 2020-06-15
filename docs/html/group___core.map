@@ -1,5 +1,4 @@
 <map id="QDaq Core classes" name="QDaq Core classes">
-<area shape="rect" id="node1" title="Classes that define the core functionality of QDaq objects." alt="" coords="5,57,143,83"/>
-<area shape="rect" id="node2" href="$group___types.html" title="QDaq type definitions." alt="" coords="309,5,401,31"/>
-<area shape="rect" id="node3" href="$group___script_a_p_i.html" title="A Javascript API for QDaq based on QtScript." alt="" coords="288,109,423,135"/>
+<area shape="rect" id="node3" href="$group___script_a_p_i.html" title="A Javascript API for QDaq based on QtScript. " alt="" coords="291,56,426,83"/>
+<area shape="rect" id="node2" href="$group___types.html" title="QDaq type definitions. " alt="" coords="313,107,405,133"/>
 </map>

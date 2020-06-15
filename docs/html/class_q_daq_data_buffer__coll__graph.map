@@ -1,6 +1,5 @@
 <map id="QDaqDataBuffer" name="QDaqDataBuffer">
-<area shape="rect" id="node1" title="A class that provides storage of channel or other data." alt="" coords="5,171,124,197"/>
-<area shape="rect" id="node2" href="$class_q_daq_job.html" title="Base class for objects that perform a specific task reqursively." alt="" coords="26,95,103,121"/>
-<area shape="rect" id="node3" href="$class_q_daq_object.html" title="Base class of all QDaq objects." alt="" coords="79,5,173,32"/>
-<area shape="rect" id="node4" href="$class_q_daq_root.html" title="QDaq root object class." alt="" coords="128,95,212,121"/>
+<area shape="rect" id="node2" href="$class_q_daq_job.html" title="Base class for objects that perform a specific task reqursively. " alt="" coords="25,96,103,123"/>
+<area shape="rect" id="node3" href="$class_q_daq_object.html" title="Base class of all QDaq objects. " alt="" coords="78,5,172,32"/>
+<area shape="rect" id="node4" href="$class_q_daq_root.html" title="QDaq root object class. " alt="" coords="127,96,211,123"/>
 </map>
