@@ -38,7 +38,7 @@ unix {
     INSTALLS += target
 }
 
-DISTFILES += \
-    qdaq_ide_screenshot.png
+RESOURCES += \
+    qdaq.qrc
 
 
