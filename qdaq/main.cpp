@@ -132,7 +132,8 @@ int main(int argc, char *argv[])
         console->stdOut("QDaq - Qt-based Data Aqcuisition");
         console->stdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
 
-        s->evaluate(QString("print('Executing startup script %1')").arg(startupScript));
+//        s->evaluate(QString("print('Executing startup script %1')").arg(startupScript));
+        s->evaluate(QString("log('Executing startup script %1')").arg(startupScript));
         s->evaluate(QString("exec('%1')").arg(startupScript));
 
 

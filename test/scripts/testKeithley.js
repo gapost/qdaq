@@ -46,7 +46,7 @@ function init6220(k6220,Is,deltapts) {
 
     var str = "sour:list:curr " + lst[0];
     for (var i=1; i<deltapts; i++) str += "," + lst[i];
-    print(str)
+    log(str)
     k6220.write(str);
     str = "sour:list:del 0.001";i
     for (var i=1; i<deltapts; i++) str += ",0.001";
@@ -81,15 +81,15 @@ function run() {
     var j = (count-1) % 4;
     count++;
     var msg = 'channel.open(\"' + channels[j] + '\")\nchannel.close(\"' + channels[i] + '\")\n';
-    //print(msg)
+    //log(msg)
     k3706.write(msg);
     k3706.write('print(channel.getclose("Slot2"))\n')
-    print(k3706.read())
+    log(k3706.read())
     k2182.write('*wai;trac:data?')
     var buff = k2182.readBytes();
-    print("Rec buffer size " + buff.length)
+    log("Rec buffer size " + buff.length)
     deltaCalc(buff);
-    print("Channel " + channels[j] + ", " + sample[j] +" = " + k2182.R)
+    log("Channel " + channels[j] + ", " + sample[j] +" = " + k2182.R)
     //k2182.write("trac:cle");
     k2182.write("trac:feed:cont next; :init");
     //k2182.write("init");
@@ -164,7 +164,7 @@ if (!ret) throw("LAN communication error!");
 //k3706.write('digio.trigger[1].pulsewidth=0.1\n')
 k3706.write('channel.open("allslots")');
 
-//print('3s wait...')
+//log('3s wait...')
 //wait(3000);
 
 var channels = [1,3,5,7];
@@ -189,11 +189,11 @@ k2182.R = 0;
 k2182.Vr = 0;
 k2182.Vth = 0;
 
-print('Config 2182...')
+log('Config 2182...')
 init2182(k2182,rangeIdx,nplc,deltapts);
 
 
-print('Config 6220...')
+log('Config 6220...')
 init6220(k6220,Is,deltapts);
 
 
@@ -202,28 +202,28 @@ init6220(k6220,Is,deltapts);
 
 
 
-print('Init 2182...')
+log('Init 2182...')
 // init k2182
 // goes to trigger wait
 k2182.write("init");
-//print('3s wait...')
+//log('3s wait...')
 //wait(3000);
 
 // close 1st channel on the 3706
 // ....
 
-print('Init 6220...')
+log('Init 6220...')
 // init 6220
 // starts the sweep
 k6220.write('sour:swe:arm');
 k6220.write('init');
 
-print('3s wait...')
+log('3s wait...')
 //wait(3000);
 
 k2182.write('trig:sign');
 
 //k6220.write("arm:sign");
-//print('SOT Trigger...')
+//log('SOT Trigger...')
 //k3706.write('digio.trigger[1].assert()\n');
 

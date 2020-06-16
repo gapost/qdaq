@@ -9,10 +9,10 @@ tcp.setQDaqProperty('z',[1,2,3]);
 
 dev.interface = tcp;
 
-print("Saving qdaq to h5");
+log("Saving qdaq to h5");
 h5write(qdaq,"qdaq.h5");
 
-print("Reading back file");
+log("Reading back file");
 var t = h5read("qdaq.h5");
 qdaq.appendChild(t);
 

@@ -278,7 +278,8 @@ void QDaqSession::exec(const QString &fname)
     }
     else engine_->currentContext()->throwError(QScriptContext::ReferenceError,"File not found.");
 }
-void QDaqSession::print(const QString& str)
+//void QDaqSession::print(const QString& str)
+void QDaqSession::log(const QString& str)
 {
     stdOut(str);
     if (!str.endsWith('\n')) stdOut(QString('\n'));
@@ -455,6 +456,12 @@ void QDaqSession::onUiChanged()
             uiObj.setProperty(wname,wObj);
         }
     }
+
+    //add ide object to list of objects available to session
+    QObject *idemw = (QObject*)QDaqObject::root()->createIdeWindow();
+    QScriptValue ideObj = engine_->newQObject(idemw);
+    QString idemv = "ideHandle";
+    uiObj.setProperty(idemv,ideObj);
 
 }
 QString QDaqSession::pluginPaths()

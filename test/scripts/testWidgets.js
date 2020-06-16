@@ -1,4 +1,4 @@
-print("Creating Widgets");
+log("Creating Widgets");
 
 var w = loadTopLevelUi('ui/tabwidget.ui','mainForm');
 
@@ -22,7 +22,7 @@ from = w.findChild('plotWdgt');
 
 w.replaceWidget(from,to);
 
-print("Creating Loop");
+log("Creating Loop");
 
 var loop = new QDaqLoop("loop");
 
@@ -61,7 +61,7 @@ loop2.appendChild(t);
 
 loop.appendChild(loop2);
 
-print("Tree = \n" + qdaq.objectTree());
+log("Tree = \n" + qdaq.objectTree());
 
 bind(qdaq.loop.t,  w.findChild('t'));
 bind(qdaq.loop.loop2.t,  w.findChild('t2'));

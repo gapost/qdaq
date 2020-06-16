@@ -1,4 +1,4 @@
-print("Creating Loop");
+log("Creating Loop");
 
 // create a loop
 var loop = new QDaqLoop("loop");
@@ -50,7 +50,7 @@ qdaq.appendChild(loop);
 
 loop.createLoopEngine();
 
-print("Tree = \n" + qdaq.objectTree());
+log("Tree = \n" + qdaq.objectTree());
 
 var w = loadTopLevelUi('ui/testTimerForm.ui','mainForm');
 bind(qdaq.loop.t,w.findChild('t'));
@@ -77,10 +77,10 @@ startButton.toggled.connect(startPressed2);
 
 w.show()
 
-print("Saving qdaq to h5");
+log("Saving qdaq to h5");
 h5write(qdaq,"qdaq.h5");
 
-print("Reading back file");
+log("Reading back file");
 var t = h5read("qdaq.h5");
 t.objectName = 'cloned_qdaq'
 qdaq.appendChild(t);

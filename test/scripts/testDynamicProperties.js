@@ -1,19 +1,19 @@
-print('qdaq object dynamic props:')
+log('qdaq object dynamic props:')
 qdaq.A=1;
 qdaq.setQDaqProperty('B',2.3);
-print(qdaq.listProperties());
-print('')
+log(qdaq.listProperties());
+log('')
 
-print('new object dynamic props:')
+log('new object dynamic props:')
 var x = new QDaqChannel("x");
 x.setQDaqProperty('A',1);
-print(x.listProperties());
-print('')
+log(x.listProperties());
+log('')
 
-print('append object and list dynamic props:')
+log('append object and list dynamic props:')
 qdaq.appendChild(x);
 qdaq.x.setQDaqProperty('B',2);
-print(qdaq.x.listProperties());
+log(qdaq.x.listProperties());
 
 var t = qdaq.appendChild(new QDaqJob('test'));
 
