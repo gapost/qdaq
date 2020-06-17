@@ -15,6 +15,7 @@ SOURCES +=
 HEADERS +=
 
 DISTFILES += \
+    scripts/clearAll.js \
     scripts/testGPIB.js \
     scripts/testQDaqObject.js \
     scripts/testTimerLoop.js \
