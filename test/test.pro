@@ -39,6 +39,7 @@ FORMS += \
     ui/plotform.ui \
     ui/testTimerForm.ui \
     ui/testPID.ui \
-    ui/testconsolewidget.ui
+    ui/testconsolewidget.ui \
+    ui/testCombo.ui
 
 
