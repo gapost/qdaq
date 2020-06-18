@@ -11,4 +11,5 @@ DISTFILES += \
     qdaq_modules.dox \
     qdaq_script_api.dox \
     qdaq_app.dox \
-    images/qdaq_ide_screenshot.png
+    images/qdaq_ide_screenshot.png \
+    readme.md
