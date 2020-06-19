@@ -568,6 +568,7 @@ int QDaqSession::insertTab(int index,  QString uiname, const QString & label)
 int QDaqSession::insertTab(int index, QWidget * page, const QString & label, QTabWidget * tabWidget)
 {
           tabWidget->insertTab(index, page, label);
+          return index;
 }
 
 void QDaqSession::deleteTab(int currentIndex)
@@ -578,27 +579,30 @@ void QDaqSession::deleteTab(int currentIndex)
           tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
     }
     tabWidg->removeTab(currentIndex);
-
 }
+
 //void QDaqSession::deleteTab(uint currentIndex, QString& uiname)
 void QDaqSession::deleteTab(int index,  QTabWidget * tabWidget)
 {
           tabWidget->removeTab(index);
 }
 
-void QDaqSession::insertWidget(QGroupBox * group, QLayout * layout, QWidget * widget, const QString & name)
+void QDaqSession::insertWidget(QWidget * parent, QWidget * child)
 {
-//    QWidget* CopyWidget = nullptr;
-//    QString WidgType = "type";
-//    WidgType = widget->metaObject()->className();
-//    QLineEdit * R2;
-//    R2 = new QLineEdit(tr(""),group);
-//        qInfo ("Widg type = %s", WidgType);
+    QLayout * layout = parent->layout();
 
-//    layout->addWidget(CopyWidget);
+    if (!layout){
+        engine_->currentContext()->throwError("Cannot add a widget to a parent with no layout");
+    }
+    else {
+        layout->addWidget(child);
+    }
 }
-void QDaqSession::deleteWidget(QWidget * widget, const QString & name)
+void QDaqSession::deleteWidget(QWidget * parent, QWidget * child)
 {
+    QLayout * layout = parent->layout();
+
+        layout->removeWidget(child);
 
 }
 

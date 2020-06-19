@@ -117,8 +117,8 @@ public slots:
     int insertTab(int index, QWidget * page, const QString & label);
     int insertTab(int index, QString uiname, const QString & label);
     int insertTab(int index, QWidget * page, const QString & label, QTabWidget * tabWidget);
-    void insertWidget(QGroupBox * group, QLayout * layout, QWidget * widget, const QString & name);
-    void deleteWidget(QWidget * widget, const QString & name);
+    void insertWidget(QWidget * parent, QWidget * child);
+    void deleteWidget(QWidget * parent, QWidget * child);
     void deleteTab(int index,  QTabWidget * tabWidget);
 
     // set debugging on (enable Qt script debugger)
