@@ -12,6 +12,10 @@
 #include <QSet>
 #include <QElapsedTimer>
 
+#include <QLayout>
+#include <QGroupBox>
+#include <QTabWidget>
+
 class QScriptEngine;
 class QScriptEngineDebugger;
 class QScriptContext;
@@ -81,7 +85,8 @@ public slots:
     QString version();
     void quit();
     void exec(const QString& fname);
-    void print(const QString& str);
+//    void print(const QString& str);
+    void log(const QString& str);
     void wait(uint ms);
     void textSave(const QString& str, const QString& fname);
     QString textLoad(const QString& fname);
@@ -110,6 +115,12 @@ public slots:
 //    void deleteTab(uint currentIndex,QString& uiname);
     void deleteTab(int currentIndex);
     int insertTab(int index, QWidget * page, const QString & label);
+    int insertTab(int index, QString uiname, const QString & label);
+    int insertTab(int index, QWidget * page, const QString & label, QTabWidget * tabWidget);
+    void insertWidget(QGroupBox * group, QLayout * layout, QWidget * widget, const QString & name);
+    void deleteWidget(QWidget * widget, const QString & name);
+    void deleteTab(int index,  QTabWidget * tabWidget);
+
     // set debugging on (enable Qt script debugger)
     void debug(bool on);
 

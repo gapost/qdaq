@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     QDaqSession* s = qdaq.rootSession();
     if (debug) s->evaluate("debug(1)");
 
-    if (startupScript.isEmpty()) {
+    if (startupScript.isEmpty() && !console) {
         QDaqIDE* mainWin = qdaq.createIdeWindow();
         mainWin->show();
     }
@@ -132,9 +132,11 @@ int main(int argc, char *argv[])
         console->stdOut("QDaq - Qt-based Data Aqcuisition");
         console->stdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
 
-        s->evaluate(QString("print('Executing startup script %1')").arg(startupScript));
+        if (!startupScript.isEmpty()) {
+//            s->evaluate(QString("print('Executing startup script %1')").arg(startupScript));
+            s->evaluate(QString("log('Executing startup script %1')").arg(startupScript));
         s->evaluate(QString("exec('%1')").arg(startupScript));
-
+        }
 
         if (s->getEngine()->hasUncaughtException())
         {
@@ -142,7 +144,7 @@ int main(int argc, char *argv[])
             // Do nothing, user interacts with console
         }
         else {
-            delete console;
+            if (!console) delete console;
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
         }
     }

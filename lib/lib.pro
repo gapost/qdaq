@@ -95,7 +95,6 @@ HEADERS  += \
     gui/QDaqWindow.h \
     daq/QDaqInterface.h \
     daq/QDaqDevice.h \
-    QDaqBuffer \
     gui/QDaqPlotWidget.h \
     gui/variantmanager.h \
     gui/QDaqLed.h \

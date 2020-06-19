@@ -13,9 +13,9 @@ var z = new Vector([1,2,3]);
 
 // print their contents by calling toArray()
 // which then calls toString()
-print('x = ' + x.toArray())
-print('y = ' + y.toArray())
-print('z = ' + z.toArray())
+log('x = ' + x.toArray())
+log('y = ' + y.toArray())
+log('z = ' + z.toArray())
 
 // making x circular and pushing data
 x.circular = true;
@@ -23,7 +23,7 @@ x.capacity = 5;
 x.push(y)
 x.push(0.1)
 x.push(z)
-print('x = ' + x.toArray())
+log('x = ' + x.toArray())
 
 // this throws an error in JS
 x.capacity = 0;

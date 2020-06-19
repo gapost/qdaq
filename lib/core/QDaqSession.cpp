@@ -278,7 +278,8 @@ void QDaqSession::exec(const QString &fname)
     }
     else engine_->currentContext()->throwError(QScriptContext::ReferenceError,"File not found.");
 }
-void QDaqSession::print(const QString& str)
+//void QDaqSession::print(const QString& str)
+void QDaqSession::log(const QString& str)
 {
     stdOut(str);
     if (!str.endsWith('\n')) stdOut(QString('\n'));
@@ -456,6 +457,11 @@ void QDaqSession::onUiChanged()
         }
     }
 
+    //add ide object to list of objects available to session
+    QObject *idemw = (QObject*)QDaqObject::root()->createIdeWindow();
+    QScriptValue ideObj = engine_->newQObject(idemw);
+    QString idemv = "ideHandle";
+    uiObj.setProperty(idemv,ideObj);
 }
 QString QDaqSession::pluginPaths()
 {
@@ -529,36 +535,72 @@ void QDaqSession::addItems(QListWidget* cb, const QStringList& lst)
     cb->addItems(lst);
 }
 
+
 int QDaqSession::insertTab(int index, QWidget * page, const QString & label)
 {
     QTabWidget* tabWidg = nullptr;
-    QWidget* CopyPage = nullptr;
-    QString pagename = page->objectName();
+//    QWidget* CopyPage = nullptr;
+//    QString pagename = page->objectName();
     QWidgetList wl = QDaqObject::root()->daqWindows();
       foreach (QObject* ui, wl) {
           tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
-          CopyPage = ui->findChild<QWidget*>(pagename);
-    }
+          // first test version was copying an existing widget in the tab widget
+          //          CopyPage = ui->findChild<QWidget*>(pagename);
+      }
 
-    tabWidg->insertTab(index, CopyPage, label);
+      tabWidg->insertTab(index, page, label);
     return index;
 }
-//void QDaqSession::deleteTab(uint currentIndex, QString& uiname)
+int QDaqSession::insertTab(int index,  QString uiname, const QString & label)
+{
+    QTabWidget* tabWidg = nullptr;
+    QWidget* CopyPage = nullptr;
+    CopyPage = loadUi(uiname);
+    QWidgetList wl = QDaqObject::root()->daqWindows();
+      foreach (QObject* ui, wl) {
+          tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
+      }
+      tabWidg->insertTab(index, CopyPage, label);
+      return index;
+
+}
+
+int QDaqSession::insertTab(int index, QWidget * page, const QString & label, QTabWidget * tabWidget)
+{
+          tabWidget->insertTab(index, page, label);
+}
+
 void QDaqSession::deleteTab(int currentIndex)
 {
     QTabWidget* tabWidg = nullptr;
     QWidgetList wl = QDaqObject::root()->daqWindows();
       foreach (QObject* ui, wl) {
-//        QString wname = ui->objectName();
-//        print("current QObject is "+ wname);
-//        daqWin = ui->findChild<QDaqWindow*>("mainForm");
           tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
-//                tabWidg = ui->findChild<QTabWidget*>("tabWidget");
     }
     tabWidg->removeTab(currentIndex);
 
 }
+//void QDaqSession::deleteTab(uint currentIndex, QString& uiname)
+void QDaqSession::deleteTab(int index,  QTabWidget * tabWidget)
+{
+          tabWidget->removeTab(index);
+}
 
+void QDaqSession::insertWidget(QGroupBox * group, QLayout * layout, QWidget * widget, const QString & name)
+{
+//    QWidget* CopyWidget = nullptr;
+//    QString WidgType = "type";
+//    WidgType = widget->metaObject()->className();
+//    QLineEdit * R2;
+//    R2 = new QLineEdit(tr(""),group);
+//        qInfo ("Widg type = %s", WidgType);
+
+//    layout->addWidget(CopyWidget);
+}
+void QDaqSession::deleteWidget(QWidget * widget, const QString & name)
+{
+
+}
 
 QString QDaqSession::info(QScriptValue v)
 {

@@ -15,8 +15,10 @@ SOURCES +=
 HEADERS +=
 
 DISTFILES += \
+    scripts/testBurstRead.js \
     scripts/testGPIB.js \
     scripts/testQDaqObject.js \
+    scripts/testTabs.js \
     scripts/testTimerLoop.js \
     scripts/testH5.js \
     scripts/testWidgets.js \
@@ -28,9 +30,12 @@ DISTFILES += \
     scripts/data.json \
     scripts/testConsolewidget.js \
     scripts/testVector.js \
-    scripts/testH5DataBuffer.js
+    scripts/testH5DataBuffer.js \
+    scripts/testresmeasChan.js
 
 FORMS += \
+    ui/burstform.ui \
+    ui/buttonform.ui \
     ui/cryoTemperatureControl.ui \
     ui/deltaControl.ui \
     ui/testform.ui \
@@ -38,6 +43,7 @@ FORMS += \
     ui/plotform.ui \
     ui/testTimerForm.ui \
     ui/testPID.ui \
-    ui/testconsolewidget.ui
+    ui/testconsolewidget.ui \
+    ui/testtab.ui
 
 
