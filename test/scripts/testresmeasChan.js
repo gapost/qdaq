@@ -3,37 +3,67 @@ log("Creating Widgets");
 var w = loadTopLevelUi('ui/resmeas.ui','resmeasCtrl');
 
 function ChanAdd() {
+
     var Box = w.findChild("groupBox");
     var Box2 = w.findChild("groupBox_3");
     var tabWidg = Box2.findChild("tabWidget1");
-    var R = loadUi('ui/lonechannel.ui');
-    var newtab = loadUi('ui/lonetab.ui')
 
-    var number = w.findChild('sCindex').value;
+
     var session = qdaq.session0;
-    session.insertWidget(Box,R);
-    session.insertTab(1,newtab,"Sample 2",tabWidg);
-    //for (i =0-->number){
-    //      R+i = QLineEdit
-    //      R+i label  = QLabel
-    //      Layout.addWidget(R+i)
-    //      Layout.addWidget(R+i label)
-    //      addTab
-    //          TabLayout.addWidget
-    //}
+
+    // Find out number of samples/channels from ui
+    var nSamples = 0;
+    while (Boolean(w.findChild('R'+(nSamples+1)))) {
+        nSamples++;
+    }
+        var R = loadUi('ui/lonechannel.ui');
+        var labelWi = R.findChild("label1")
+        var chanWi = R.findChild("R1");
+        var chname = "R" + (nSamples+1);
+        var lblname = "label" + (nSamples+1);
+        var lbltext = "Ch" + (nSamples+1);
+
+        session.rename(chanWi,chname);
+        session.rename(labelWi,lblname);
+        labelWi.setText(lbltext);
+
+        session.insertWidget(Box,R);
+
+        var newtab = loadUi('ui/lonetab.ui')
+        var HwChanWi = newtab.findChild("HwChan1");
+        var CurSourWi = newtab.findChild("CurSour1");
+        var cbPlotWi = newtab.findChild("cbPlt1");
+        var CurSourname = "CurSour" + (nSamples+1);
+        var HwChname = "HwChan" + (nSamples+1);
+        var cbPlname = "cbPlt" + (nSamples+1);
+        var tabtext = "Sample " + (nSamples+1);
+
+        session.rename(HwChanWi,HwChname);
+        session.rename(CurSourWi,CurSourname);
+        session.rename(cbPlotWi,cbPlname);
+        session.insertTab(nSamples,newtab,tabtext,tabWidg);
 }
 
 function ChanRem() {
     var Box = w.findChild("groupBox");
     var Box2 = w.findChild("groupBox_3");
-    var R = w.findChild("R1");
+
+    // Find out number of samples/channels from ui
+    var nSamples = 0;
+    while (Boolean(w.findChild('R'+(nSamples+1)))) {
+        nSamples++;
+    }
+    log("nSamples= "+nSamples);
+    var Rname = "R"+nSamples;
+    log("Rname= "+Rname);
+// TODO : delete tries to delete based on overall GroupBox layout; but this widget has its
+// own, in order to appear nice...
+    var Rrem = w.findChild(Rname);
     var tabWidg = Box2.findChild("tabWidget1");
-    var index = w.findChild('sCindex').value;
-    log("In Channel Rem "+index);
 
     var session = qdaq.session0;
-    session.deleteWidget(Box,R);
-    session.deleteTab(1,tabWidg);
+    session.deleteWidget(Box,Rrem);
+    session.deleteTab(nSamples-1,tabWidg);
 
 }
 

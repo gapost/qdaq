@@ -34,13 +34,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="sCindex">
-        <property name="maximum">
-         <number>20</number>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="btChanRem">
         <property name="text">
          <string>Remove Channel</string>

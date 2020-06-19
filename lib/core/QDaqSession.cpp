@@ -601,9 +601,14 @@ void QDaqSession::insertWidget(QWidget * parent, QWidget * child)
 void QDaqSession::deleteWidget(QWidget * parent, QWidget * child)
 {
     QLayout * layout = parent->layout();
-
+//if there are more layers of layout between the parent and the child, this will not work!
         layout->removeWidget(child);
 
+}
+
+void QDaqSession::rename(QWidget * widget, QString newname)
+{
+    widget->setObjectName(newname);
 }
 
 QString QDaqSession::info(QScriptValue v)

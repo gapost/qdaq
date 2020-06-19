@@ -12,9 +12,8 @@
 #include <QSet>
 #include <QElapsedTimer>
 
-#include <QLayout>
-#include <QGroupBox>
 #include <QTabWidget>
+#include <QLayout>
 
 class QScriptEngine;
 class QScriptEngineDebugger;
@@ -120,6 +119,7 @@ public slots:
     void insertWidget(QWidget * parent, QWidget * child);
     void deleteWidget(QWidget * parent, QWidget * child);
     void deleteTab(int index,  QTabWidget * tabWidget);
+    void rename(QWidget * widget, QString newname);
 
     // set debugging on (enable Qt script debugger)
     void debug(bool on);
