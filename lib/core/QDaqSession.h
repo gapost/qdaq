@@ -85,7 +85,7 @@ public slots:
     QString version();
     void quit();
     void exec(const QString& fname);
-//    void print(const QString& str);
+//    void print(const QString& str); // there is a native qt print() that causes errors
     void log(const QString& str);
     void wait(uint ms);
     void textSave(const QString& str, const QString& fname);

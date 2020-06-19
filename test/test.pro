@@ -16,6 +16,7 @@ HEADERS +=
 
 DISTFILES += \
     scripts/testBurstRead.js \
+    scripts/clearAll.js \
     scripts/testGPIB.js \
     scripts/testQDaqObject.js \
     scripts/testTabs.js \
@@ -45,5 +46,6 @@ FORMS += \
     ui/testPID.ui \
     ui/testconsolewidget.ui \
     ui/testtab.ui
+    ui/testCombo.ui
 
 

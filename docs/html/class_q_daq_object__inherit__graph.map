@@ -1,0 +1,9 @@
+<map id="QDaqObject" name="QDaqObject">
+<area shape="rect" id="node2" href="$class_q_daq_interface.html" title="Base class of objects representing digital communications interfaces. " alt="" coords="89,80,196,107"/>
+<area shape="rect" id="node3" href="$class_q_daq_job.html" title="Base class for objects that perform a specific task reqursively. " alt="" coords="220,80,297,107"/>
+<area shape="rect" id="node8" href="$class_q_daq_root.html" title="QDaq root object class. " alt="" coords="322,80,405,107"/>
+<area shape="rect" id="node4" href="$class_q_daq_channel.html" title="A class that represent a stream of numerical data, a signal. " alt="" coords="5,155,109,181"/>
+<area shape="rect" id="node5" href="$class_q_daq_data_buffer.html" title="A class that provides storage of channel or other data. " alt="" coords="134,155,252,181"/>
+<area shape="rect" id="node6" href="$class_q_daq_device.html" title="A class representing a DAQ device. " alt="" coords="277,155,373,181"/>
+<area shape="rect" id="node7" href="$class_q_daq_loop.html" title="A class encapsulating a software loop. " alt="" coords="398,155,481,181"/>
+</map>

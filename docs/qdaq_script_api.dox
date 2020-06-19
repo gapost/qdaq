@@ -1,0 +1,385 @@
+/**
+ * @addtogroup ScriptAPI
+ *
+
+QDaq offers a Javascript interface via the
+QtScript module.
+
+One can use this scripting interface either to allow some
+user-defined behavior at some point inside a larger C++ application or alternatively to build
+the complete application in the scripting language.
+
+It is possible to create QDaq objects from Javascript. These objects will
+continue to exist after the scripting session ends, as long as they become
+part of the QDaq object tree. Thus, complete
+aqcuisition loops can be created and executed in javascript in the same
+way as in C++.
+
+Creation of GUI components and interaction between them and
+the QDaq objects can also be done using Javascript.
+
+The scripting interface is based on the Qt meta-object system.
+When a QDaq object is exposed to the scripting environment,
+the signals and slots the QDaqObject-based class are available as methods
+of the javascript object. These methods can be called from javascript with the
+same arguments as in C++.
+
+Similarly, the Qt properties of the C++ class
+become properties of the javascript object and can be read or changed from
+Javascript.
+
+QDaq objects has been designed so that the API they offer to Javascript (i.e., their
+signals, slots and properties) are sufficient to work with the objects for most purposes.
+Only a few special functions or QDaq extensions are acomplished only in C++.
+
+The QDaq class documentation serves also as documentation of the scripting API
+as far as the signals, slots and properties of each class are concerned.
+
+@section Started Getting started with QDaq scripting
+
+The easiest way to get started with QDaq scripting is to start the
+\ref qdaq_app application, open a scripting console and start
+executing Javascript commands interactively.
+
+The QDaq root object (QDaqObject::root()) is already defined in Javascript as the global property "qdaq".
+
+If you type "qdaq" at the prompt and press enter the system reponds by showing that this is
+an object of class QDaqRoot with name "qdaq". Similarly if you check the "this" object
+the system reponds that it is an object of class QDaqSession:
+
+@verbatim
+>> qdaq
+QDaqRoot(name = "qdaq")
+>> this
+QDaqSession(name = "session0")
+>>
+@endverbatim
+
+You will notice that the console has object introspection, i.e., pressing the '.' after
+a valid Javascript expression the system lists all properties and method of a given object.
+
+@section Create Creating objects in scripts
+
+All the classes <a href="#nested-classes">listed above </a> can be created in the scripting
+environment by the Javascript new operator with a single parameter, the object
+name
+
+@code{.js}
+var x = new QDaqObject("objname");
+@endcode
+
+A hierarchy of QDaq objects can be built by using the QDaqObject \ref domapi.
+Here is an example of script code that creates a loop with 2 channels:
+
+@code{.js}
+// create a loop
+var loop = new QDaqLoop("loop");
+// create a clock channel
+var t = new QDaqChannel("t");
+t.type = "Clock";
+// create a test random channel
+var ch1 =  new QDaqChannel("ch1");
+ch1.type = "Random";
+// create a 2nd channel
+var ch2 = new QDaqChannel("ch2");
+// create a script job
+// that will write to ch2 the square root of ch1
+var scr = new QDaqJob("scr");
+scr.code = "var v = qdaq.loop.ch1.value(); qdaq.loop.ch2.push(Math.sqrt(v));"
+// build the object hierarchy under the root object "qdaq"
+loop.appendChild(t);
+loop.appendChild(ch1);
+loop.appendChild(scr);
+loop.appendChild(ch2);
+qdaq.appendChild(loop);
+@endcode
+
+After the above script code has been executed a call to objectTree()
+would return the following:
+@verbatim
+>> qdaq.objectTree()
+qdaq
+|--loop
+|  |--t
+|  |--ch1
+|  |--scr
+|  |--ch2
+@endverbatim
+
+@section Hierarchy Traversing the object hierarchy
+
+The are many ways to traverse the QDaq object hierarchy from Javascript.
+
+All objects are descendants of the root object "qdaq". The child objects of
+an object are Javascript properties of that object. Thus, in the above example
+we can obtain the object "ch2" like this
+
+@code{.js}
+var my_ch2 = qdaq.loop.ch2;
+@endcode
+
+Alternatively, if we do not know the path to the object, we can use the built-in
+QtScript functions findChild and findChildren which try to find an object
+based on its name. All QDaq object must have a name! Thus, to obtain "ch2" with this
+method we would do
+
+@code{.js}
+var my_ch2 = qdaq.findChild("ch2");
+@endcode
+
+If there are more than one descendant objects with the same name, findChild() will
+return the 1st that it will find (closer relatives are discovered first).
+The function findChildren will return an array of all
+objects with the same name.
+
+@section Threads Interactive vs in-loop Javascript
+
+There two different kinds of Javascript environments in QDaq.
+
+The 1st one runs in the main application thread and can execute either interactively
+on a console or in the background running some script. This kind of environment
+has typically access to all application objects: the QDaq object hierarchy, the UI widgets,
+the special functions for system interaction (filesystem, command execution) etc
+
+QDaq has one standard such Javascript environment that is never deleted and it is called
+"root script session". It can be accesed by the function QDaqRoot::rootSession().
+If we need to define Jacascript functions that must exist throught the lifetime of
+the application, then we have to define them in the root session. A typical example of such a
+function is when we want to define UI logic in Javascript, e.g. a button press calls
+a Javascript funtion that performs the required action.
+
+A second kind of Javascript environment exists only within a QDaqLoop and it serves the purpose of
+running code of the loop's QDaqJob objects. This environment runs in the separate loop thread
+and has only access to the QDaq objects via the qdaq global object.
+
+If we have QDaqJob objects that need to run Javascript code during execution of their parent loop,
+then we must create a scripting engine at the top-level loop by calling QDaqLoop::createLoopEngine().
+
+@section UI Creating user interface (UI) components
+
+In Javascript UI components can be loaded from *.ui files that have been created by
+QtDesigner or QtCreator.
+
+There are 2 functions to accomplish this: QDaqSession::loadUi() and QDaqSession::loadTopLevelUi().
+
+Both take a *.ui file name as input and generate a QWidget according to the specifications
+in the file. The simple loadUi() function generates a bare QWidget whereas loadTopLevelUi() generates
+a top level QDaq window. Using these two functions, a complete UI can be built. This is shown in the
+following code example.
+
+The main application window is a tab widget with 2 tabs. We create it in QtDesigner and
+give each of the tabs a representative name. The form we create in QtDesigner should
+be a plain QWidget or a QTabWidget. Do not use a QMainWindow or other top-level widget
+types.
+
+We additionally create in
+QtDesigner two widgets that contain all the components (buttons, display fields, etc) that we need in each tab.
+
+The following QDaq script code creates the widgets and combines them to
+form the final application window.
+
+@code{.js}
+// create top level application window - a tab widget
+var w = loadTopLevelUi('tabwidget.ui','mainForm');
+// create the widget for the 1st tab
+var to = loadUi('tab1.ui');
+// find the current 1st tab widget in the main window
+var from = w.findChild('tab1');
+// replace it with the one loaded from the file
+w.replaceWidget(from,to);
+// repeat for the second tab
+to = loadUi('tab2.ui');
+from = w.findChild('tab2');
+w.replaceWidget(from,to);
+@endcode
+
+To be able to locate the various UI components we have to give them a name
+in QtDesigner. Then, when a form is loaded in Javascript, use findChild()
+or findChildren() to get the UI widgets.
+
+@section FullApp Creating a full app in Javascript
+
+To create a full QDaq application in Javascript the following steps are needed:
+- Create the user interface forms with QtDesigner or QtCreator
+- Write a script that loads the UI files and defines the UI logic
+- Implement the main application DAQ tasks by means of QDaq objects
+- Start your QDaq loops
+
+The application can be executed with the \ref qdaq_app application.
+
+A recomended folder organization is to have a
+root folder with the application name, a subfolder named "scripts" for
+the script files and a subfolder named "ui" for the *.ui files.
+Then \ref qdaq_app is run from the root folder
+@code{.sh}
+>qdaq scripts/main.js
+@endcode
+assuming that "main.js" is the application script.
+
+QDaq will create a "log" subfolder to store its log files.
+
+@section Extensions QDaq Javascript tricks
+
+QDaq defines some special Javascript objects.
+
+The ByteArrayPrototype class defines essentially a new Javascript object
+class named "ByteArray" that allows low-level manipulation of arrays of bytes.
+This is usefull for DAQ work, when we need byte-wise memory access
+which is not possible by default in Javascript.
+
+C++ Enumeration types that are properties of QDaq objects are manipulated
+from Javascript by strings with the enumeration name that appears in C++ code.
+E.g., to set the QDaqChannel::format property we pass a string
+
+@code{.js}
+// Create a QDaq channel and set the number format to fixed point
+var ch = new QDaqChannel("ch1");
+ch.format = "FixedPoint";
+@endcode
+
+@section Synopsis A synopsis of QDaq objects
+
+- QDaqObject
+
+Directly derived from Qt’s QObject
+
+- QDaqRoot
+
+The easier way to visualize the hierarchy of objects of the running qdaq session is to use the
+Object Browser window of the QDaq IDE. There, all the objects are represented in tree form. The
+base qdaq object is a QDaqRoot object.
+
+- QDaqSession
+
+The basic instance of an interaction with all other existing objects and ui’s that do all
+the work in data taking. It is designed to function in JS, by providing an “interface” or
+“translation service” to C++/Qt’s objects to JS much more nimble and low-weight, pointer-based
+objects. Any qdaq console is a QDaqSession object.
+
+- QDaqJob
+
+“Anything that actively *does* something” (instead of just existing) in QDaq.
+
+- QDaqChannel
+
+The basic object for interaction with instruments and data taking, keeping and interacting
+with measurements.
+
+- QDaqInterface
+
+QDaqInterface provides a common way to communicate with (hardware) instruments.
+The actual communication interface of the instruments connected to the control computer may vary
+(examples include GPIB, TCP/IP  and Modbus protocols).
+
+A QDaqInterface has a number of communication "ports", which have different
+meaning depending on the specific interface implementation.
+On memory/register based interfaces like MODBUS, a port represents the
+register number to be read/written. On interfaces that support connection
+with multiple instruments (GPIB, RS485), the port is essentially the address of each
+instrument. On interfaces that support only
+one-to-one communication with an instrument (RS232, TCP/IP) the port feature is not used.
+
+- QDaqDevice
+
+A QDaqDevice is the software representation of a hardware device connected to the control
+computer.
+
+In order for the computer to interact with a device, the device and its interface have to
+be created as software objects, and the device has to be assigned to an interface. Then,
+both the interface and the device have to be opened. At that point, the user can communicate with the device (send commands or get measurements),
+according to each devices specific communication protocols (e.g. SCPI commands or even whole
+scripts), using just the read() and write() functions.
+
+- QDaqFilter
+
+A QDaqFilter is the software implementation of a mathematical process
+(usually quite complicated), that has to be applied online to the values of one or more
+QDaqChannels.
+
+At present, QDaqFilters can be:
+- FOPDT  (First-Order-Plus-Dead-Time control)
+- Interpolator (As the name shows, finds values between measured or available ones)
+- Linear Correlator (Finds correlation -linear fitter- between values presented)
+- PID (Proportional-Integral-Differential control)
+
+These of course are not all "filters" in the common use of the term.
+
+- QDaqDataBuffer
+
+The basic object of data keeping, where the actual values measured are kept in memory,
+relatively organized, before being saved to disk.
+
+Thought the object can function in two alternative ways, either by attaching to QDaqChannels
+and reading their content, or by getting values pushed independently by the user,
+in practice only the first way of data logging is used.
+
+The data logging involves 4 different objects, 2 QLists:
+- channel_objects is a QDaqObjectList, i.e. a QList<QDaqObject>
+
+- columnNames_ is a QStringList, i.e. a QList<QString>
+
+This stores the names of the columns in the sense of C++/Qt object names (which may
+be different from the user interface channel names!). This is done in order to have a
+human-friendly way to access the two following objects.
+
+And 2 QVectors:
+- data_matrix is a QVector of QDaqVector objects QVector<QDaqVector>
+
+QDaqVector is a special QDaq class holding QExplicitlySharedDataPointer objects to other
+special QDaq objects (essentially lists of double numbers), see below.
+data_matrix is where the data are actually read into, and kept. It can be thought of as a
+2-D matrix, where each column represents a channel (QDaqChannel), and each row a measurement
+point (presumably done at every iteration of a loop containing the QDaqDataBuffer, and
+presumably sync’d with the measurements of the channels. (See below about the concept of a
+depth of a data channel).
+
+- channel_ptrs
+This is a QVector holding QPointers to QDaqChannels, i.e. a QVector<QPointer<QDaqChannel>>.
+This gives an extra handle to interact with the constituents
+
+These four objects have to change in unison in order for the data recording to be well
+behaved, and therefore all 4 of them have to be in principle interacted with when interacting
+with data.
+
+Qt has tried to provide all methods available to QList also to QVector objects, and vice-versa,
+hence all four objects can be treated almost in the same way
+
+It is also implicitly true that the order of objects (QDaqChannels, names, pointers,
+data columns) is the same across all 4 objects, to facilitate access, although the objects
+are not absolutely ordered in any sense.
+
+A data recording loop that runs without input (e.g. a loop containing a QDaqDataBuffer that
+is not running concurrently with any data-producing, i.e. QDaqChannel-containing loop, is
+filled with zeros. This behaviour may need to change, in order to separate “real” zero values
+from accidental no input.
+
+_Depth_
+
+If the thread of data creation in a channel is too busy to communicate available data to the
+thread of data recording (e.g. during very fast loops), data are pushed in a provisional
+“buffer”. This process changes the value of special indexes (semaphores), that alert the data
+recording thread that data is available. The number of positions of this provisional buffer
+can be set for each channel, and is the (data) channel’s “depth” properties
+
+In order for a data channel to be created and deleted successfully, care must be taken to
+also ‘populate’ or ‘depopulate’ its properties also.
+
+
+@section Ref Further reading
+
+For QDaq objects and their Javascript API refer to the documentation of
+the <a href="#nested-classes">classes listed above</a> and other QDaq
+classes. All properties, signals and slots are available in Javascript and
+essentially constitute the QDaq Scripting API.
+
+Resources for Javascript and QtScript:
+- An excellent book for Javascript is "JavaScript: the definitive guide" by D. Flanagan.
+- Mozilla offers many Javascript resources at <a href="https://developer.mozilla.org/en-US/docs/Web/javascript">developer.mozilla.org.</a>
+- Also the W3 organization has Javascript material here <a href="https://www.w3schools.com/js/DEFAULT.asp">www.w3schools.com.</a>
+- The QtScript module documentation from the official Qt web-site  <a href="https://doc.qt.io/qt-5/qtscript-index.html">doc.qt.io.</a>
+explains many implementation details on the C++/Javascript duality.
+- The QtScript Javascript engine implements the ECMA-262 language standard which is described
+<a href="https://doc.qt.io/qt-5/ecmascript.html">here.</a>
+
+
+ */

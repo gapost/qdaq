@@ -18,7 +18,7 @@ namespace mu
  * @ingroup Core
  * @ingroup ScriptAPI
  *
- * Real time data is handeled in QSaq through the QDaqChannel class.
+ * Real time data is handeled in QDaq through the QDaqChannel class.
  * E.g., an instrument provides measurement data through QDaqChannel objects.
  *
  * QDaqChannel provides tools for displaying, transforming, averaging the data
