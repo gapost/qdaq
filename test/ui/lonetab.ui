@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>581</width>
+    <height>272</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLabel" name="label4">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>99</y>
+     <width>87</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Current Source</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="HwChan1">
+   <property name="geometry">
+    <rect>
+     <x>164</x>
+     <y>70</y>
+     <width>387</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>0</number>
+   </property>
+   <property name="maximum">
+    <number>7000</number>
+   </property>
+   <property name="value">
+    <number>2001</number>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="CurSour1">
+   <property name="geometry">
+    <rect>
+     <x>164</x>
+     <y>99</y>
+     <width>387</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>K6220</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>B2901</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label3">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>70</y>
+     <width>68</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Hw Channel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label2">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>128</y>
+     <width>21</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Plot</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="cbPlt1">
+   <property name="geometry">
+    <rect>
+     <x>164</x>
+     <y>128</y>
+     <width>387</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

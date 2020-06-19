@@ -39,6 +39,10 @@ FORMS += \
     ui/buttonform.ui \
     ui/cryoTemperatureControl.ui \
     ui/deltaControl.ui \
+    ui/lonechannel.ui \
+    ui/lonetab.ui \
+    ui/resmeas.ui \
+    ui/testCombo.ui \
     ui/testform.ui \
     ui/tabwidget.ui \
     ui/plotform.ui \
