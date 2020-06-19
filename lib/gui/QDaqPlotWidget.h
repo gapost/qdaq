@@ -4,6 +4,7 @@
 #include "QDaqGlobal.h"
 
 #include <qwt_plot.h>
+#include <qwt_plot_curve.h>
 
 class QDaqVector;
 class QwtPlotCurve;
@@ -11,7 +12,7 @@ class QwtPlotGrid;
 class QwtPlotZoomer;
 class QwtPlotPanner;
 class QwtPlotPicker;
-
+Q_DECLARE_METATYPE( QwtPlotCurve * )
 class  QDAQ_EXPORT QDaqPlotWidget : public QwtPlot
 {
     Q_OBJECT
@@ -28,6 +29,9 @@ class  QDAQ_EXPORT QDaqPlotWidget : public QwtPlot
     Q_PROPERTY(bool grid READ grid WRITE setGrid)
     Q_PROPERTY(QPointF xlim READ xlim WRITE setXlim)
     Q_PROPERTY(QPointF ylim READ ylim WRITE setYlim)
+    Q_PROPERTY(QwtPlotCurve* plotcurve READ getCurve)
+//    Q_PROPERTY(QwtPlotItem* plotitem READ getItem WRITE setItem)
+    Q_PROPERTY(QwtPlotItem* plotitem READ getItem)
 
 
     bool timeScaleX_, timeScaleY_,
@@ -39,6 +43,9 @@ class  QDAQ_EXPORT QDaqPlotWidget : public QwtPlot
     QwtPlotZoomer* zoomer;
     QwtPlotPanner* panner;
     QwtPlotPicker* picker;
+
+    //    QwtPlotCurve* plotcurve_;
+    //    QwtPlotItemList plotitem_;
 
     void setTimeAxis(int axisid, bool on);
     void setLogAxis(int axisid, bool on);
@@ -61,6 +68,10 @@ public:
     QPointF xlim() const;
     QPointF ylim() const;
 
+    QwtPlotCurve * getCurve() const;
+    QwtPlotItem * getItem() const;
+//    QwtPlotCurve * getItem() const;
+
     //setters
     void setTitle(const QString& s);
     void setXLabel(const QString& s);
@@ -78,6 +89,8 @@ public:
     virtual QSize 	sizeHint () const;
     virtual QSize 	minimumSizeHint () const;
 
+    //    void setCurve(QwtPlotCurve* curve){ return;};
+//    void setItem(QwtPlotItem * item){ return;};
 public slots:
     void plot(const QDaqVector& x, const QDaqVector& y, const QString &attr, const QColor& clr = QColor());
     void plot(const QDaqVector& x, const QDaqVector& y, const QColor& clr = QColor());

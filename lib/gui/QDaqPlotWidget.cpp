@@ -7,7 +7,8 @@
 #include <QSet>
 #include <QRegularExpression>
 
-#include <qwt_plot_curve.h>
+//#include <qwt_plot_curve.h>
+#include <qwt_plot_dict.h>
 #include <qwt_series_data.h>
 #include <qwt_symbol.h>
 #include <qwt_scale_draw.h>
@@ -302,7 +303,40 @@ QPointF QDaqPlotWidget::ylim() const
                        axisScaleDiv(QwtPlot::yLeft).upperBound());
 }
 
+QwtPlotCurve * QDaqPlotWidget::getCurve() const
+{
+    QwtPlotCurve * curve;
+    QwtPlotItemList  plotItemList = this->itemList();
+    foreach (QwtPlotItem * plotItem, plotItemList)
+    {
+         int rtt = plotItem->rtti();
+        qInfo ("rtti value = %d", rtt);
+        if (rtt == 5){
+        curve = (QwtPlotCurve*)plotItem;
+        }
+    }
+    return curve;
 
+
+};
+
+//QwtPlotCurve * QDaqPlotWidget::getItem() const
+QwtPlotItem * QDaqPlotWidget::getItem() const
+{
+    QwtPlotItemList  plotItemList = this->itemList();
+    foreach (QwtPlotItem * plotItem, plotItemList)
+    {
+         int rtt = plotItem->rtti();
+//        QString T(rtt);
+        qInfo ("rtti value = %d", rtt);
+        if (rtt == 5){
+//            ind = plotItemList.indexOf();
+//            QwtPlotCurve * curve = <QwtPlotCurve>plotItem;
+        }
+    }
+    return plotItemList[1];
+
+};
 
 //setters
 void QDaqPlotWidget::setTitle(const QString& s)
@@ -369,12 +403,6 @@ void QDaqPlotWidget::setYlim(const QPointF &v)
     setAxisScale(QwtPlot::yLeft,v.x(),v.y()) ;
 }
 
-/*
-      linestyle , "{-}|--|:|-.|none"
-      marker , "{none}|+|o|*|.|x|s|square|d|diamond|^|v|>|<|p|pentagram|h|hexagram"
-
- */
-
 void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QString &attr, const QColor &clr)
 {
     static const Qt::GlobalColor eight_colors[8] =
@@ -434,8 +462,8 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
     else
     {
         //error message, instructions for proper usage, select default plot !!!!
-        qInfo ("Please give linestyle/markerstyle attributes, following MATLAB style");
-        qInfo ("I will now select some default: cont. lines, no marker");
+        //qInfo ("Please give linestyle/markerstyle attributes, following MATLAB style");
+        //qInfo ("I will now select some default: cont. lines, no marker");
         curve->setStyle(QwtPlotCurve::Lines);
         curve->setSymbol(NULL);
     }
