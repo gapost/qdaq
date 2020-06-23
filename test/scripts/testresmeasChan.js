@@ -3,10 +3,10 @@ log("Creating Widgets");
 var w = loadTopLevelUi('ui/resmeas.ui','resmeasCtrl');
 
 function ChanAdd() {
-
+    //Box tries to find the groupBox where the channels and labels are held
     var Box = w.findChild("groupBox");
-    var Box2 = w.findChild("groupBox_3");
-    var tabWidg = Box2.findChild("tabWidget1");
+    //user has to know the name of the tabWidget to modify
+    var tabWidg = w.findChild("tabWidget1");
 
 
     var session = qdaq.session0;
@@ -16,6 +16,7 @@ function ChanAdd() {
     while (Boolean(w.findChild('R'+(nSamples+1)))) {
         nSamples++;
     }
+        //construct object names and text
         var R = loadUi('ui/lonechannel.ui');
         var labelWi = R.findChild("label1")
         var chanWi = R.findChild("R1");
@@ -26,8 +27,6 @@ function ChanAdd() {
         session.rename(chanWi,chname);
         session.rename(labelWi,lblname);
         labelWi.setText(lbltext);
-
-        session.insertWidget(Box,R);
 
         var newtab = loadUi('ui/lonetab.ui')
         var HwChanWi = newtab.findChild("HwChan1");
@@ -41,28 +40,31 @@ function ChanAdd() {
         session.rename(HwChanWi,HwChname);
         session.rename(CurSourWi,CurSourname);
         session.rename(cbPlotWi,cbPlname);
+
+        //put things in place
+        session.insertWidget(Box,R);
         session.insertTab(nSamples,newtab,tabtext,tabWidg);
 }
 
 function ChanRem() {
-    var Box = w.findChild("groupBox");
-    var Box2 = w.findChild("groupBox_3");
-
+//TODO: still leaves the remnants of deleted widgets' layouts...
     // Find out number of samples/channels from ui
     var nSamples = 0;
     while (Boolean(w.findChild('R'+(nSamples+1)))) {
         nSamples++;
     }
-    log("nSamples= "+nSamples);
+
+    //construct names of objects to be deleted (last ones)
     var Rname = "R"+nSamples;
-    log("Rname= "+Rname);
-// TODO : delete tries to delete based on overall GroupBox layout; but this widget has its
-// own, in order to appear nice...
+    var lblname = "label"+nSamples;
+
     var Rrem = w.findChild(Rname);
-    var tabWidg = Box2.findChild("tabWidget1");
+    var lblrem = w.findChild(lblname);
+    var tabWidg = w.findChild("tabWidget1");
 
     var session = qdaq.session0;
-    session.deleteWidget(Box,Rrem);
+    session.deleteWidget(w,Rrem);
+    session.deleteWidget(w,lblrem);
     session.deleteTab(nSamples-1,tabWidg);
 
 }

@@ -581,7 +581,6 @@ void QDaqSession::deleteTab(int currentIndex)
     tabWidg->removeTab(currentIndex);
 }
 
-//void QDaqSession::deleteTab(uint currentIndex, QString& uiname)
 void QDaqSession::deleteTab(int index,  QTabWidget * tabWidget)
 {
           tabWidget->removeTab(index);
@@ -601,9 +600,9 @@ void QDaqSession::insertWidget(QWidget * parent, QWidget * child)
 void QDaqSession::deleteWidget(QWidget * parent, QWidget * child)
 {
     QLayout * layout = parent->layout();
-//if there are more layers of layout between the parent and the child, this will not work!
-        layout->removeWidget(child);
-
+    layout->removeWidget(child);
+    child->deleteLater();
+//    parent->resize(parent->sizeHint());
 }
 
 void QDaqSession::rename(QWidget * widget, QString newname)
