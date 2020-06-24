@@ -177,6 +177,8 @@ public:
 
     double x(size_t i) const { return vx[i]; }
     double y(size_t i) const { return vy[i]; }
+    QDaqVector& returnVx() {return vx;}
+    QDaqVector& returnVy() {return vy;}
 
     virtual QRectF boundingRect() const
     {
@@ -320,9 +322,11 @@ QwtPlotCurve * QDaqPlotWidget::getCurve() const
 
 };
 
-//QwtPlotCurve * QDaqPlotWidget::getItem() const
-QwtPlotItem * QDaqPlotWidget::getItem() const
+QwtPlotCurve * QDaqPlotWidget::getItem() const
+//QwtPlotItem * QDaqPlotWidget::getItem() const
 {
+    int ind;
+    QwtPlotCurve * curve = new QwtPlotCurve;
     QwtPlotItemList  plotItemList = this->itemList();
     foreach (QwtPlotItem * plotItem, plotItemList)
     {
@@ -330,13 +334,42 @@ QwtPlotItem * QDaqPlotWidget::getItem() const
 //        QString T(rtt);
         qInfo ("rtti value = %d", rtt);
         if (rtt == 5){
-//            ind = plotItemList.indexOf();
-//            QwtPlotCurve * curve = <QwtPlotCurve>plotItem;
+            ind = plotItemList.indexOf(plotItem);
+            curve = (QwtPlotCurve *)plotItem;
         }
     }
-    return plotItemList[1];
+//    return plotItemList[ind];
+    return curve;
 
 };
+
+void QDaqPlotWidget::changeStyle(const QString &attr, const QColor &clr)
+{
+    static const Qt::GlobalColor eight_colors[8] =
+    {
+        Qt::blue,
+        Qt::red,
+        Qt::darkGreen,
+        Qt::magenta,
+        Qt::darkBlue,
+        Qt::darkMagenta,
+        Qt::darkCyan,
+        Qt::darkRed
+    };
+    QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
+    QwtPlotCurve* curve = this->getItem();
+//    QwtSeriesData& myData = (QwtSeriesData&)curve->data();
+//    QwtArrayData& myData = dynamic_cast<QwtArrayData&>(curve->data());
+//    QDaqVector x,y;
+//    QDaqPlotData  copydata;
+//    QDaqPlotData * copydata; = new QDaqPlotData();
+//    copydata->copy();
+//    x = copydata->returnVx();
+//    y = copydata->returnVy();
+//    this->plot(x,y,attr,plotclr);
+
+}
+
 
 //setters
 void QDaqPlotWidget::setTitle(const QString& s)
