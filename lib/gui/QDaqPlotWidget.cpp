@@ -345,6 +345,7 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
 
 void QDaqPlotWidget::changeStyle(const QString &attr, const QColor &clr)
 {
+//for the moment it just changes colors!
     static const Qt::GlobalColor eight_colors[8] =
     {
         Qt::blue,
@@ -356,17 +357,22 @@ void QDaqPlotWidget::changeStyle(const QString &attr, const QColor &clr)
         Qt::darkCyan,
         Qt::darkRed
     };
+
     QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
     QwtPlotCurve* curve = this->getItem();
-//    QwtSeriesData& myData = (QwtSeriesData&)curve->data();
+//    QwtSeriesData<QPointF>* myData = (QwtSeriesData<QPointF>*)curve->data();
+    QDaqPlotData* myData = (QDaqPlotData*)curve->data();
 //    QwtArrayData& myData = dynamic_cast<QwtArrayData&>(curve->data());
-//    QDaqVector x,y;
+//    QwtSeriesData< QPointF >& myData = dynamic_cast<QwtSeriesData&>(curve->data());
+    QDaqVector x,y;
 //    QDaqPlotData  copydata;
-//    QDaqPlotData * copydata; = new QDaqPlotData();
+//    QDaqPlotData * copydata; = new QDaqPlotData(myData);
 //    copydata->copy();
-//    x = copydata->returnVx();
-//    y = copydata->returnVy();
-//    this->plot(x,y,attr,plotclr);
+//    x = myData->x();
+//    y = myData->y();
+    x = myData->returnVx();
+    y = myData->returnVy();
+    this->plot(x,y,attr,plotclr);
 
 }
 
