@@ -1,4 +1,11 @@
-log("Creating Widgets");
+// This test script showcases the use of AddTab/RemoveTab methods, their abilities and limitations.
+// In general, when creaqting a tab, you are responsible also for:
+// -Not creating conflicts (widgets with the same names as existing ones)
+// -Making the new tab functional ("bind"ing, "connect"ing, creating channels etc.).
+// The opposite has to happen when deleting a tab.
+
+log("Creating Widget");
+
 
 var w = loadTopLevelUi('ui/testtab.ui','mainForm');
 to = loadUi('ui/buttonform.ui');
@@ -75,6 +82,7 @@ function disconnect(type){
         startButton = 0;
         startButton.toggled.disconnect(startPressed);
 
+        //do we need an 'unbind' method?
 /*        bind(qdaq.loop.t,  w.findChild('t'));
         bind(qdaq.loop.loop2.t,  w.findChild('t2'));
         bind(qdaq.loop.X1, w.findChild('X1'));
@@ -115,8 +123,6 @@ function TabAdd() {
     log("Here goes something " + index + " -- " + name + " -- " + label);
     var session = qdaq.session0;
     log("loaded: " + name);
-//    var mainf = w.findChild("plotForm");
-//    session.insertTab(index,mainf,'cpPlot');
     session.insertTab(index,name,label);
 }
 

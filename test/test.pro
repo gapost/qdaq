@@ -15,7 +15,6 @@ SOURCES +=
 HEADERS +=
 
 DISTFILES += \
-    scripts/testBurstRead.js \
     scripts/clearAll.js \
     scripts/testGPIB.js \
     scripts/testQDaqObject.js \

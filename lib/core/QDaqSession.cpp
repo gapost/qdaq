@@ -599,16 +599,34 @@ void QDaqSession::insertWidget(QWidget * parent, QWidget * child)
 }
 void QDaqSession::deleteWidget(QWidget * parent, QWidget * child)
 {
+    // This method also deletes the child widget's layout and resizes the parent
+    // If need be, these options can be broken down (there is already the
+    // implementation of 'deleteItem' for layout below).
     QLayout * layout = parent->layout();
+    QLayout * childlayout = child->layout();
     layout->removeWidget(child);
+    layout->removeItem(childlayout);
     child->deleteLater();
-//    parent->resize(parent->sizeHint());
+    delete child->layout();
+    parent->resize(parent->sizeHint());
 }
+
+//void QDaqSession::deleteItem(QWidget * parent, QLayout * childlayout)
+//{
+//    QLayout * layout = parent->layout();
+//    layout->removeItem(childlayout);
+//    childlayout->deleteLater();
+//}
 
 void QDaqSession::rename(QWidget * widget, QString newname)
 {
     widget->setObjectName(newname);
 }
+
+//void QDaqSession::rename(QLayout * layout, QString newname)
+//{
+//    layout->setObjectName(newname);
+//}
 
 QString QDaqSession::info(QScriptValue v)
 {

@@ -117,7 +117,9 @@ public slots:
     int insertTab(int index, QWidget * page, const QString & label, QTabWidget * tabWidget);
     void insertWidget(QWidget * parent, QWidget * child);
     void deleteWidget(QWidget * parent, QWidget * child);
+//    void deleteItem(QWidget * parent, QLayout * childlayout);
     void deleteTab(int index,  QTabWidget * tabWidget);
+//    void rename(QLayout * layout, QString newname);
     void rename(QWidget * widget, QString newname);
 
     // set debugging on (enable Qt script debugger)

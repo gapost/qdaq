@@ -81,6 +81,9 @@
       </property>
       <item>
        <layout class="QHBoxLayout" name="parentLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
         <item>
          <widget class="QLabel" name="label1">
           <property name="text">
