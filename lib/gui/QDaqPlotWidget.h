@@ -44,8 +44,8 @@ class  QDAQ_EXPORT QDaqPlotWidget : public QwtPlot
     QwtPlotPanner* panner;
     QwtPlotPicker* picker;
 
-    //    QwtPlotCurve* plotcurve_;
-    //    QwtPlotItemList plotitem_;
+        QwtPlotCurve* plotcurve_;
+        QwtPlotItemList plotitem_;
 
     void setTimeAxis(int axisid, bool on);
     void setLogAxis(int axisid, bool on);
@@ -69,8 +69,8 @@ public:
     QPointF ylim() const;
 
     QwtPlotCurve * getCurve() const;
-    QwtPlotItem * getItem() const;
-//    QwtPlotCurve * getItem() const;
+//    QwtPlotItem * getItem() const;
+    QwtPlotCurve * getItem() const;
 
     //setters
     void setTitle(const QString& s);
@@ -89,11 +89,12 @@ public:
     virtual QSize 	sizeHint () const;
     virtual QSize 	minimumSizeHint () const;
 
-    //    void setCurve(QwtPlotCurve* curve){ return;};
-//    void setItem(QwtPlotItem * item){ return;};
+    void setCurve(QwtPlotCurve* curve){ return;};
+    void setItem(QwtPlotItem * item){ return;};
 public slots:
     void plot(const QDaqVector& x, const QDaqVector& y, const QString &attr, const QColor& clr = QColor());
     void plot(const QDaqVector& x, const QDaqVector& y, const QColor& clr = QColor());
+    void changeStyle(const QString &attr, const QColor &clr = QColor());
     void clear();
 
 
