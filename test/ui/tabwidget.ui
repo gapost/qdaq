@@ -17,7 +17,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>5</number>
+   <number>3</number>
   </property>
   <property name="usesScrollButtons">
    <bool>false</bool>
@@ -62,26 +62,6 @@
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QWidget" name="cryoCtrl" native="true"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="tab_4">
-   <attribute name="title">
-    <string>Buttons</string>
-   </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_5">
-    <item>
-     <widget class="QWidget" name="buttCtrl" native="true"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="tab_5">
-   <attribute name="title">
-    <string>ResMeasChan</string>
-   </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_6">
-    <item>
-     <widget class="QWidget" name="resmeasCtrl" native="true"/>
     </item>
    </layout>
   </widget>
