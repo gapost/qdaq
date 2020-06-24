@@ -18,43 +18,39 @@ function ChanAdd() {
     while (Boolean(w.findChild('R'+(nSamples+1)))) {
         nSamples++;
     }
-        //construct object names and text
-        var R = loadUi('ui/lonechannel.ui');
-        var labelWi = R.findChild("label1")
-        var chanWi = R.findChild("R1");
 
-
-        var chname = "R" + (nSamples+1);
-        var lblname = "label" + (nSamples+1);
+    //construct object names and text
+    var R = loadUi('ui/lonechannel.ui');
+    var labelWi = R.findChild("label1")
+    var chanWi = R.findChild("R1");
+    var chname = "R" + (nSamples+1);
+    var lblname = "label" + (nSamples+1);
+    var lbltext = "Ch" + (nSamples+1);
     // The user also sets the widget name for the inserted widget
     //(so that it can be deleted later)
-        var extrname = "whatever" + (nSamples+1);
+    var extrname = "whatever" + (nSamples+1);
 
-        var lbltext = "Ch" + (nSamples+1);
+    session.rename(chanWi,chname);
+    session.rename(R,extrname);
+    session.rename(labelWi,lblname);
+    labelWi.setText(lbltext);
 
-        session.rename(chanWi,chname);
+    var newtab = loadUi('ui/lonetab.ui')
+    var HwChanWi = newtab.findChild("HwChan1");
+    var CurSourWi = newtab.findChild("CurSour1");
+    var cbPlotWi = newtab.findChild("cbPlt1");
+    var CurSourname = "CurSour" + (nSamples+1);
+    var HwChname = "HwChan" + (nSamples+1);
+    var cbPlname = "cbPlt" + (nSamples+1);
+    var tabtext = "Sample " + (nSamples+1);
 
-        session.rename(R,extrname);
+    session.rename(HwChanWi,HwChname);
+    session.rename(CurSourWi,CurSourname);
+    session.rename(cbPlotWi,cbPlname);
 
-        session.rename(labelWi,lblname);
-        labelWi.setText(lbltext);
-
-        var newtab = loadUi('ui/lonetab.ui')
-        var HwChanWi = newtab.findChild("HwChan1");
-        var CurSourWi = newtab.findChild("CurSour1");
-        var cbPlotWi = newtab.findChild("cbPlt1");
-        var CurSourname = "CurSour" + (nSamples+1);
-        var HwChname = "HwChan" + (nSamples+1);
-        var cbPlname = "cbPlt" + (nSamples+1);
-        var tabtext = "Sample " + (nSamples+1);
-
-        session.rename(HwChanWi,HwChname);
-        session.rename(CurSourWi,CurSourname);
-        session.rename(cbPlotWi,cbPlname);
-
-        //put things in place
-        session.insertWidget(Box,R);
-        session.insertTab(nSamples,newtab,tabtext,tabWidg);
+    //put things in place
+    session.insertWidget(Box,R);
+    session.insertTab(nSamples,newtab,tabtext,tabWidg);
 }
 
 function ChanRem() {
@@ -64,7 +60,7 @@ function ChanRem() {
         nSamples++;
     }
 
-    //construct names of objects to be deleted (last in - first out)
+    //construct names of objects to be deleted (last in -> first out)
     var Rname = "R"+nSamples;
     var extraname = "whatever"+nSamples;
     var lblname = "label"+nSamples;
@@ -80,7 +76,6 @@ function ChanRem() {
     session.deleteWidget(w,lblrem);
     session.deleteWidget(w,extrrem);
     session.deleteTab(nSamples-1,tabWidg);
-
 }
 
 
