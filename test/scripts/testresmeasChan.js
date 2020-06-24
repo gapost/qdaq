@@ -10,7 +10,6 @@ function ChanAdd() {
     // -User has to know the name of the tabWidget they want to modify
     var tabWidg = w.findChild("tabWidget1");
 
-
     var session = qdaq.session0;
 
     // Find out number of samples already on ui
