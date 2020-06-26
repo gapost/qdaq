@@ -326,7 +326,7 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
 //QwtPlotItem * QDaqPlotWidget::getItem() const
 {
     int ind;
-    QwtPlotCurve * curve = new QwtPlotCurve;
+    QwtPlotCurve * recurves = new QwtPlotCurve;
     QwtPlotItemList  plotItemList = this->itemList();
     foreach (QwtPlotItem * plotItem, plotItemList)
     {
@@ -335,11 +335,11 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
 //        qInfo ("rtti value = %d", rtt);
         if (rtt == 5){
             ind = plotItemList.indexOf(plotItem);
-            curve = (QwtPlotCurve *)plotItem;
+            recurves = (QwtPlotCurve *)plotItem;
         }
     }
 //    return plotItemList[ind];
-    return curve;
+    return recurves;
 
 };
 
@@ -359,12 +359,14 @@ void QDaqPlotWidget::changeStyle(QString attr, const QColor &clr)
     };
 
 //    QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
-    QwtPlotCurve* curve = this->getItem();
+    QwtPlotCurve* recurve = this->getItem();
 //    QwtSeriesData<QPointF>* myData = (QwtSeriesData<QPointF>*)curve->data();
-    QDaqPlotData* myData = (QDaqPlotData*)curve->data();
+    QDaqPlotData* myData = (QDaqPlotData*)recurve->data();
 //    QwtArrayData& myData = dynamic_cast<QwtArrayData&>(curve->data());
 //    QwtSeriesData< QPointF >& myData = dynamic_cast<QwtSeriesData&>(curve->data());
     QDaqVector x,y;
+    this->detachItems( QwtPlotItem::Rtti_PlotCurve );
+    this->detachItems( QwtPlotItem::Rtti_PlotMarker );
 //    QDaqPlotData  copydata;
 //    QDaqPlotData * copydata; = new QDaqPlotData(myData);
 //    copydata->copy();
@@ -372,9 +374,9 @@ void QDaqPlotWidget::changeStyle(QString attr, const QColor &clr)
 //    y = myData->y();
     x = myData->returnVx();
     y = myData->returnVy();
-    qInfo ("attr = %s", qUtf8Printable(attr));
 //    qInfo ("attr = %s", qUtf8Printable(attr));
-    qInfo ("second value of y = %f", y[1]);
+//    qInfo ("attr = %s", qUtf8Printable(attr));
+//    qInfo ("second value of y = %f", y[1]);
 
     //    this->plot(x,y,attr,plotclr);
     this->plot(x,y,attr,clr);
