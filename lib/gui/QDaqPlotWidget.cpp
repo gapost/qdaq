@@ -312,7 +312,7 @@ QwtPlotCurve * QDaqPlotWidget::getCurve() const
     foreach (QwtPlotItem * plotItem, plotItemList)
     {
          int rtt = plotItem->rtti();
-        qInfo ("rtti value = %d", rtt);
+//        qInfo ("rtti value = %d", rtt);
         if (rtt == 5){
         curve = (QwtPlotCurve*)plotItem;
         }
@@ -348,9 +348,10 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
 //void QDaqPlotWidget::changeStyle(QString attr, const QColor &clr)
 void QDaqPlotWidget::changeStyle(QString attr)
 {
-    QwtPlotCurve* recurve = this->getItem();
-//    QwtSeriesData<QPointF>* myData = (QwtSeriesData<QPointF>*)curve->data();
+    QwtPlotCurve* recurve = this->getCurve();
+//    QwtPlotCurve* recurve = this->getItem();
     QDaqPlotData* myData = (QDaqPlotData*)recurve->data();
+//    QwtSeriesData<QPointF>* myData = (QwtSeriesData<QPointF>*)curve->data();
 //    QwtSeriesData< QPointF >& myData = dynamic_cast<QwtSeriesData&>(curve->data());
     QDaqVector x,y;
     QColor clr = recurve->pen().color();
