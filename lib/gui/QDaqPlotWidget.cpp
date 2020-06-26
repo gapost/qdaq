@@ -332,7 +332,7 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
     {
          int rtt = plotItem->rtti();
 //        QString T(rtt);
-        qInfo ("rtti value = %d", rtt);
+//        qInfo ("rtti value = %d", rtt);
         if (rtt == 5){
             ind = plotItemList.indexOf(plotItem);
             curve = (QwtPlotCurve *)plotItem;
@@ -343,7 +343,7 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
 
 };
 
-void QDaqPlotWidget::changeStyle(const QString &attr, const QColor &clr)
+void QDaqPlotWidget::changeStyle(QString attr, const QColor &clr)
 {
 //for the moment it just changes colors!
     static const Qt::GlobalColor eight_colors[8] =
@@ -358,7 +358,7 @@ void QDaqPlotWidget::changeStyle(const QString &attr, const QColor &clr)
         Qt::darkRed
     };
 
-    QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
+//    QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x07]);
     QwtPlotCurve* curve = this->getItem();
 //    QwtSeriesData<QPointF>* myData = (QwtSeriesData<QPointF>*)curve->data();
     QDaqPlotData* myData = (QDaqPlotData*)curve->data();
@@ -372,7 +372,12 @@ void QDaqPlotWidget::changeStyle(const QString &attr, const QColor &clr)
 //    y = myData->y();
     x = myData->returnVx();
     y = myData->returnVy();
-    this->plot(x,y,attr,plotclr);
+    qInfo ("attr = %s", qUtf8Printable(attr));
+//    qInfo ("attr = %s", qUtf8Printable(attr));
+    qInfo ("second value of y = %f", y[1]);
+
+    //    this->plot(x,y,attr,plotclr);
+    this->plot(x,y,attr,clr);
 
 }
 
@@ -506,6 +511,9 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
         curve->setStyle(QwtPlotCurve::Lines);
         curve->setSymbol(NULL);
     }
+    qInfo ("attr 2 = %s", qUtf8Printable(attr));
+    qInfo ("lines = %s", qUtf8Printable(lines));
+    qInfo ("markers = %s", qUtf8Printable(markers));
 
 
     //Ok, now select linestyle

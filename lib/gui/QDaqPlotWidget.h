@@ -94,7 +94,7 @@ public:
 public slots:
     void plot(const QDaqVector& x, const QDaqVector& y, const QString &attr, const QColor& clr = QColor());
     void plot(const QDaqVector& x, const QDaqVector& y, const QColor& clr = QColor());
-    void changeStyle(const QString &attr, const QColor &clr = QColor());
+    void changeStyle(QString attr, const QColor &clr = QColor());
     void clear();
 
 
