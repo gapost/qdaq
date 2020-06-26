@@ -331,16 +331,12 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
     foreach (QwtPlotItem * plotItem, plotItemList)
     {
          int rtt = plotItem->rtti();
-//        QString T(rtt);
-//        qInfo ("rtti value = %d", rtt);
-         // This better be replaced by the enumeration QwtPlotItem::Rtti_PlotCurve,
-         // that corresponds to value 5
-         if (rtt == 5){
+         if (rtt == QwtPlotItem::Rtti_PlotCurve){
+//             if (rtt == 5){
             ind = plotItemList.indexOf(plotItem);
             recurves = (QwtPlotCurve *)plotItem;
         }
     }
-//    return plotItemList[ind];
     return recurves;
 
 };
@@ -348,20 +344,26 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
 //void QDaqPlotWidget::changeStyle(QString attr, const QColor &clr)
 void QDaqPlotWidget::changeStyle(QString attr)
 {
+    //Get QwPlotCurve object
     QwtPlotCurve* recurve = this->getCurve();
 //    QwtPlotCurve* recurve = this->getItem();
+
+    //Get plot's data
     QDaqPlotData* myData = (QDaqPlotData*)recurve->data();
-//    QwtSeriesData<QPointF>* myData = (QwtSeriesData<QPointF>*)curve->data();
-//    QwtSeriesData< QPointF >& myData = dynamic_cast<QwtSeriesData&>(curve->data());
     QDaqVector x,y;
+
+    //find color to use
     QColor clr = recurve->pen().color();
 
     // remove previous curve & markers
     this->detachItems( QwtPlotItem::Rtti_PlotCurve );
     this->detachItems( QwtPlotItem::Rtti_PlotMarker );
+
+    //put data into new data holders
     x = myData->returnVx();
     y = myData->returnVy();
 
+    //replot
     this->plot(x,y,attr,clr);
 
 }
