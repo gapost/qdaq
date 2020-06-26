@@ -307,13 +307,13 @@ QPointF QDaqPlotWidget::ylim() const
 
 QwtPlotCurve * QDaqPlotWidget::getCurve() const
 {
-    QwtPlotCurve * curve;
+    QwtPlotCurve * curve = new QwtPlotCurve;
     QwtPlotItemList  plotItemList = this->itemList();
     foreach (QwtPlotItem * plotItem, plotItemList)
     {
          int rtt = plotItem->rtti();
-//        qInfo ("rtti value = %d", rtt);
-        if (rtt == 5){
+         if (rtt == QwtPlotItem::Rtti_PlotCurve){
+//        if (rtt == 5){
         curve = (QwtPlotCurve*)plotItem;
         }
     }
@@ -325,7 +325,7 @@ QwtPlotCurve * QDaqPlotWidget::getCurve() const
 QwtPlotCurve * QDaqPlotWidget::getItem() const
 //QwtPlotItem * QDaqPlotWidget::getItem() const
 {
-    int ind;
+//    int ind;
     QwtPlotCurve * recurves = new QwtPlotCurve;
     QwtPlotItemList  plotItemList = this->itemList();
     foreach (QwtPlotItem * plotItem, plotItemList)
@@ -333,7 +333,7 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
          int rtt = plotItem->rtti();
          if (rtt == QwtPlotItem::Rtti_PlotCurve){
 //             if (rtt == 5){
-            ind = plotItemList.indexOf(plotItem);
+//            ind = plotItemList.indexOf(plotItem);
             recurves = (QwtPlotCurve *)plotItem;
         }
     }
@@ -352,7 +352,7 @@ void QDaqPlotWidget::changeStyle(QString attr)
     QDaqPlotData* myData = (QDaqPlotData*)recurve->data();
     QDaqVector x,y;
 
-    //find color to use
+    //find color to use - it reverts to black, if linestyle was "none"
     QColor clr = recurve->pen().color();
 
     // remove previous curve & markers
