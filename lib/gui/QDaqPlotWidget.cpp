@@ -307,6 +307,8 @@ QPointF QDaqPlotWidget::ylim() const
 
 QwtPlotCurve * QDaqPlotWidget::getCurve() const
 {
+
+    int curves = 0;
     QwtPlotCurve * curve = new QwtPlotCurve;
     QwtPlotItemList  plotItemList = this->itemList();
     foreach (QwtPlotItem * plotItem, plotItemList)
@@ -315,12 +317,37 @@ QwtPlotCurve * QDaqPlotWidget::getCurve() const
          if (rtt == QwtPlotItem::Rtti_PlotCurve){
 //        if (rtt == 5){
         curve = (QwtPlotCurve*)plotItem;
+        curves++;
         }
     }
+    qInfo ("number of curves = %d", curves);
+
     return curve;
 
 
 };
+
+QwtPlotItemList  QDaqPlotWidget::getCurves() const
+{
+    int curves = 0;
+    QwtPlotCurve * curve = new QwtPlotCurve;
+    QwtPlotItemList  plotItemList = this->itemList();
+    QwtPlotItemList  plotItemList2;
+    foreach (QwtPlotItem * plotItem, plotItemList)
+    {
+         int rtt = plotItem->rtti();
+         if (rtt == QwtPlotItem::Rtti_PlotCurve){
+        curve = (QwtPlotCurve*)plotItem;
+        plotItemList2.append(curve);
+        curves++;
+        }
+    }
+//    qInfo ("number of curves = %d", curves);
+
+    return plotItemList2;
+
+};
+
 
 QwtPlotCurve * QDaqPlotWidget::getItem() const
 //QwtPlotItem * QDaqPlotWidget::getItem() const
@@ -338,36 +365,41 @@ QwtPlotCurve * QDaqPlotWidget::getItem() const
         }
     }
     return recurves;
-
+//    return plotItemList[ind];
 };
 
-//void QDaqPlotWidget::changeStyle(QString attr, const QColor &clr)
+
 void QDaqPlotWidget::changeStyle(QString attr)
 {
-    //Get QwPlotCurve object
-    QwtPlotCurve* recurve = this->getCurve();
-//    QwtPlotCurve* recurve = this->getItem();
+    //Get QwPlotCurve objects
+    QwtPlotItemList recurves = this->getCurves();
+    //object to hold one curve
+    QwtPlotCurve* recurve = new QwtPlotCurve;
+    //loop over curves
+    foreach (QwtPlotItem * plotItem, recurves)
+    {
+            recurve = (QwtPlotCurve *)plotItem;
+            //get curve's data
+            QDaqPlotData* myData = (QDaqPlotData*)recurve->data();
 
-    //Get plot's data
-    QDaqPlotData* myData = (QDaqPlotData*)recurve->data();
-    QDaqVector x,y;
+            //object to hold data from current curve
+            QDaqVector x,y;
 
-    //find color to use - it reverts to black, if linestyle was "none"
-    QColor clr = recurve->pen().color();
+            //select existing colour
+            QColor clr = recurve->pen().color();
 
-    // remove previous curve & markers
-    this->detachItems( QwtPlotItem::Rtti_PlotCurve );
-    this->detachItems( QwtPlotItem::Rtti_PlotMarker );
+            //remove previous curve & markers
+            //this is safer: delete only one (current) data series
+            recurve->detach();
 
-    //put data into new data holders
-    x = myData->returnVx();
-    y = myData->returnVy();
+            //recreate the QDaqVectors
+            x = myData->returnVx();
+            y = myData->returnVy();
 
-    //replot
-    this->plot(x,y,attr,clr);
-
+            //replot
+            this->plot(x,y,attr,clr);
+    }
 }
-
 
 //setters
 void QDaqPlotWidget::setTitle(const QString& s)
