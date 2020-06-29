@@ -320,12 +320,26 @@ QwtPlotCurve * QDaqPlotWidget::getCurve() const
         curves++;
         }
     }
-    qInfo ("number of curves = %d", curves);
+//    qInfo ("number of curves = %d", curves);
 
     return curve;
 
 
 };
+
+int QDaqPlotWidget::getNumberOfCurves() const
+{
+    int curves = 0;
+    QwtPlotItemList  plotItemList = this->itemList();
+    foreach (QwtPlotItem * plotItem, plotItemList)
+    {
+         int rtt = plotItem->rtti();
+         if (rtt == QwtPlotItem::Rtti_PlotCurve){
+        curves++;
+        }
+    }
+    return curves;
+}
 
 QwtPlotItemList  QDaqPlotWidget::getCurves() const
 {
@@ -346,7 +360,7 @@ QwtPlotItemList  QDaqPlotWidget::getCurves() const
 
     return plotItemList2;
 
-};
+}
 
 
 QwtPlotCurve * QDaqPlotWidget::getItem() const
@@ -385,8 +399,14 @@ void QDaqPlotWidget::changeStyle(QString attr)
             //object to hold data from current curve
             QDaqVector x,y;
 
-            //select existing colour
+            // select existing colour. If "none" linestyle (no line, only markers)
+            // had been selected in the previous call to changeStyle,
+            // the plot will revert to black:[ clr.name() = "#000000"]
             QColor clr = recurve->pen().color();
+
+            // small function reColor() is a kludge way to keep the original
+            // color scheme for multiple (TODO: more than 2!) plotCurves
+            if (clr.name()=="#000000") {clr = reColor();}
 
             //remove previous curve & markers
             //this is safer: delete only one (current) data series
@@ -628,6 +648,28 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
     replot();
 }
 
+QColor QDaqPlotWidget::reColor(const QColor &clr)
+{
+    static const Qt::GlobalColor eight_colors[8] =
+    {
+        Qt::blue,
+        Qt::red,
+        Qt::darkGreen,
+        Qt::magenta,
+        Qt::darkBlue,
+        Qt::darkMagenta,
+        Qt::darkCyan,
+        Qt::darkRed
+    };
+    // The number to be added to id_ should be equal to the number of plotCurves-1(?),
+    // in order to re-create the original color scheme (but id_ should also be zeroed!).
+    // I kept it at 1 since most plots in ir2app have at most 2 plotCurves.
+//    int curves  = this->getNumberOfCurves()-1;
+    QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & 0x01]);
+//    QColor plotclr = (clr.isValid()) ? clr : QColor(eight_colors[id_++ & curves]);
+
+    return plotclr;
+}
 void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QColor &clr)
 {
     static const Qt::GlobalColor eight_colors[8] =

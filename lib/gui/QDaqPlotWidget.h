@@ -72,6 +72,8 @@ public:
 //    QwtPlotItem * getItem() const;
     QwtPlotCurve * getItem() const;
     QwtPlotItemList  getCurves() const;
+    int getNumberOfCurves() const;
+
 
     //setters
     void setTitle(const QString& s);
@@ -96,8 +98,7 @@ public slots:
     void plot(const QDaqVector& x, const QDaqVector& y, const QString &attr, const QColor& clr = QColor());
     void plot(const QDaqVector& x, const QDaqVector& y, const QColor& clr = QColor());
     void changeStyle(QString attr);
-//    void changeStyle(QString attr, int index=0u);
-//    void changeStyle(QString attr, QString which="all");
+    QColor reColor(const QColor &clr = QColor());
     void clear();
 
 
