@@ -67,6 +67,6 @@ QString QDaqPlotWidgetPlugin::domXml() const
 
 QString QDaqPlotWidgetPlugin::includeFile() const
 {
-    return QLatin1String("QDaqPotWidget.h");
+    return QLatin1String("QDaqPlotWidget.h");
 }
 
