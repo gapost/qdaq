@@ -120,7 +120,8 @@ SOURCES += 3rdparty/kled/kled.cpp
 HEADERS += 3rdparty/kled/kled.h
 
 DISTFILES += \
-    qdaq.pri \
+    ../qdaq.prf \
+    ../qdaq.pri \
     .gitignore \
     ../TODO \
     ../makeArchive.sh \

@@ -1,0 +1,12 @@
+include(./qdaq.pri)
+
+INCLUDEPATH *= $$QMAKE_INCDIR_QT/QDaq
+
+DEPENDPATH  *= $$QMAKE_INCDIR_QT/QDaq
+
+LIBS *= -lQDaq
+
+QT *= core gui widgets script scripttools network uitools serialport testlib
+
+
+

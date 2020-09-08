@@ -21,8 +21,9 @@ unix {
     LIBS += -lcomedi
 
     ######### Qwt ###############
-    INCLUDEPATH += /usr/include/qt5/qwt
-    LIBS += -lqwt-qt5
+    #INCLUDEPATH += /usr/include/qt5/qwt
+    #LIBS += -lqwt-qt5
+    CONFIG += qwt
 
     ######### QtSolutions ###############
     # INCLUDEPATH += /usr/include/qt5/QtSolutions
