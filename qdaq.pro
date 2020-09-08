@@ -44,3 +44,8 @@ SUBDIRS += \
     test \
     plugins
 
+qdaqspec.files  = qdaq.pri qdaq.prf
+qdaqspec.path  = $$[QMAKE_MKSPECS]/features
+
+INSTALLS += qdaqspec
+

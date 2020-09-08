@@ -37,6 +37,13 @@ BuildRequires: qtpropertybrowser-qt5-devel
 %description
 A Qt based framework for data aquisition applications.
 
+%package devel
+Summary:  Development files for %{name}
+Requires: qwt-qt5-devel
+Requires: %{name}%{?_isa} = %{version}-%{release}
+%description devel
+%{summary}.
+
 %prep
 %setup -q 
 
@@ -55,17 +62,23 @@ make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 %clean
 rm -rf %{buildroot}
 
-%post
-
-%postun
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root)
 /usr/bin/qdaq
-/usr/include/*
-/usr/%{_lib}/*
+%{_qt5_libdir}/*.so.*
+
+%files devel
+%{_qt5_headerdir}/QDaq/
+%{_qt5_libdir}/*.so
+%{_qt5_libdir}/qt5/mkspecs/features/qdaq*
 
 %changelog
+* Fri Sep 4 2020 George
+- introduce devel package
+- introduce Qt-feature prf file
 * Fri Nov 15 2019 George
 - ver 0.2.4
 - fix bug in h5helper_v1_1

@@ -47,7 +47,9 @@ HEADERS += interfaces.h\
 
 unix {
     target.path = $$[QT_INSTALL_PLUGINS]/qdaq
-    INSTALLS += target
+    headers.files  = $${HEADERS}
+    headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
+    INSTALLS += headers target
 }
 
 DISTFILES += \
