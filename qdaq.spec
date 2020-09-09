@@ -1,6 +1,6 @@
 Summary: Qt based data aquisition
 Name: qdaq
-Version: v0.2.4.3.68ac77a
+Version: v0.2.7.3.cd771cc
 Release: 1%{?dist}
 License: MIT
 Source0: %{name}-%{version}.tar.gz
@@ -69,6 +69,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 /usr/bin/qdaq
 %{_qt5_libdir}/*.so.*
+%{_qt5_plugindir}/*
 
 %files devel
 %{_qt5_headerdir}/QDaq/

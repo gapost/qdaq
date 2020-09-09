@@ -1,8 +1,6 @@
 include(./qdaq.pri)
 
-INCLUDEPATH *= $$QMAKE_INCDIR_QT/QDaq
-
-DEPENDPATH  *= $$QMAKE_INCDIR_QT/QDaq
+INCLUDEPATH *= $$[QT_INSTALL_HEADERS]/QDaq
 
 LIBS *= -lQDaq
 
