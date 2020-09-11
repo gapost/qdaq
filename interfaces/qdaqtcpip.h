@@ -1,7 +1,7 @@
 #ifndef QDAQTCPIP_H
 #define QDAQTCPIP_H
 
-#include "interfaces_global.h"
+#include "QDaqGlobal.h"
 
 #include "QDaqInterface.h"
 
@@ -32,7 +32,7 @@ class tcp_socket;
  * device port.
  *
  */
-class INTERFACESSHARED_EXPORT QDaqTcpip : public QDaqInterface
+class QDAQ_EXPORT QDaqTcpip : public QDaqInterface
 {
     Q_OBJECT
 

@@ -16,7 +16,7 @@
  * Implementation of MODBUS in QDaq is based on libmodbus.
  *
  */
-class INTERFACESSHARED_EXPORT QDaqModbusRtu : public QDaqSerial
+class QDAQ_EXPORT QDaqModbusRtu : public QDaqSerial
 {
     Q_OBJECT
 
@@ -57,7 +57,7 @@ protected:
  * Implementation of MODBUS in QDaq is based on libmodbus.
  *
  */
-class INTERFACESSHARED_EXPORT QDaqModbusTcp : public QDaqTcpip
+class QDAQ_EXPORT QDaqModbusTcp : public QDaqTcpip
 {
     Q_OBJECT
 

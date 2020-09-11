@@ -6,10 +6,10 @@
 #include <QHash>
 #include <QMetaObject>
 #include <QStringList>
-#include <QWidgetList>
+
 
 class QDaqLogFile;
-class QDaqIDE;
+
 class QDaqSession;
 
 struct QDaqPluginManager
@@ -68,7 +68,6 @@ class QDAQ_EXPORT QDaqRoot : public QDaqObject
 protected:
     QString rootDir_, logDir_;
     QDaqLogFile* errorLog_;
-    QDaqIDE* ideWindow_;
     QDaqSession* rootSession_;
     QDaqErrorQueue error_queue_;
 
@@ -78,8 +77,6 @@ public:
 
     QString rootDir() const { return rootDir_; }
     QString logDir() const { return logDir_; }
-
-    QString xml();
 
     /** Create a QDaqObject with name name and class className.
      *
@@ -100,17 +97,6 @@ public:
      */
     void postError(const QDaqError& e) { emit error(e); }
 
-    void addDaqWindow(QWidget* w);
-    void removeDaqWindow(QWidget* w);
-
-    /// Return a list of QDaq top level windows.
-    QWidgetList daqWindows() const { return daqWindows_; }
-
-    /// Return a pointer to the QDaq IDE window.
-    QDaqIDE* ideWindow() { return ideWindow_; }
-
-    /// Create the QDaq IDE window and return a pointer to it.
-    QDaqIDE* createIdeWindow();
 
     /// Returns a pointer to the root script session.
     QDaqSession* rootSession() { return rootSession_; }
@@ -131,16 +117,12 @@ private slots:
 signals:
     // used internally by this class
     void error(const QDaqError& e);
-    /// Fired when a top level window is opened or closed
-    void daqWindowsChanged();
     /// Fired when object is attached
     void objectAttached(QDaqObject* obj);
     /// Fired when object is detached
     void objectDetached(QDaqObject* obj);
 
 private:
-
-    QWidgetList daqWindows_;
 
     typedef QHash<QString, const QMetaObject*> object_map_t;
 

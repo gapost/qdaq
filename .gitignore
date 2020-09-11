@@ -1,8 +1,4 @@
-*.pro.user
-
-lib/3rdparty/qt-solutions/*
-
-doc/html/*
+*.pro.user*
 
 test/log/*
 

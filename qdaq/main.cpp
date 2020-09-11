@@ -9,6 +9,7 @@
 
 #include "QDaqRoot.h"
 #include "QDaqSession.h"
+#include "QDaqUi.h"
 #include "QDaqIde.h"
 #include "QDaqConsole.h"
 
@@ -117,11 +118,12 @@ int main(int argc, char *argv[])
     }
 
     QDaqRoot qdaq;
+    QDaqUi ui;
     QDaqSession* s = qdaq.rootSession();
     if (debug) s->evaluate("debug(1)");
 
     if (startupScript.isEmpty() && !console) {
-        QDaqIDE* mainWin = qdaq.createIdeWindow();
+        QDaqIDE* mainWin = ui.createIdeWindow();
         mainWin->show();
     }
     else {

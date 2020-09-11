@@ -2,19 +2,6 @@
 
 #include <gpib/ib.h>
 
-PluginFactory::PluginFactory() : QObject()
-{
-}
-
-QList<const QMetaObject *> PluginFactory::pluginClasses() const
-{
-    QList<const QMetaObject *> lst;
-    lst << &QDaqLinuxGpib::staticMetaObject;
-    return lst;
-}
-
-/***********/
-
 QDaqLinuxGpib::QDaqLinuxGpib(const QString& name) :
 QDaqInterface(name)
 {

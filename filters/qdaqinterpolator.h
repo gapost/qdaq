@@ -1,14 +1,14 @@
 #ifndef QDAQINTERPOLATOR_H
 #define QDAQINTERPOLATOR_H
 
-#include "filters_global.h"
+#include "QDaqGlobal.h"
 
 #include "QDaqFilter.h"
 #include "QDaqVector.h"
 
 #include <gsl/gsl_interp.h>
 
-class FILTERSSHARED_EXPORT QDaqInterpolator :
+class QDAQ_EXPORT QDaqInterpolator :
         public QDaqFilter
 {
     Q_OBJECT

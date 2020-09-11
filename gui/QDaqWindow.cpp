@@ -1,5 +1,6 @@
 #include "QDaqWindow.h"
 #include "QDaqIde.h"
+#include "QDaqUi.h"
 
 #include <QMessageBox>
 #include <QCloseEvent>
@@ -32,7 +33,7 @@ QDaqWindow::QDaqWindow(QWidget *parent) : QWidget(parent), w_(0)
 
 QDaqWindow::~QDaqWindow()
 {
-    QDaqObject::root()->removeDaqWindow(this);
+    QDaqUi::instance()->removeDaqWindow(this);
 }
 
 void QDaqWindow::closeEvent ( QCloseEvent * e )
@@ -63,7 +64,7 @@ void QDaqWindow::keyPressEvent (QKeyEvent * e)
 
         if (k==Qt::Key_F8) // Ctrl-F8
         {
-            QDaqIDE* w = QDaqObject::root()->ideWindow();
+            QDaqIDE* w = QDaqUi::instance()->ideWindow();
 
             bool ide_enbl = !(w && w->isVisible());
             actIde->setEnabled(ide_enbl);
@@ -79,9 +80,9 @@ void QDaqWindow::keyPressEvent (QKeyEvent * e)
 
 void QDaqWindow::openIde()
 {
-    QDaqIDE* w = QDaqObject::root()->ideWindow();
+    QDaqIDE* w = QDaqUi::instance()->ideWindow();
     if (!w)  {
-        w = QDaqObject::root()->createIdeWindow();
+        w = QDaqUi::instance()->createIdeWindow();
     }
     w->show();
 }

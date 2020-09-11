@@ -12,8 +12,6 @@
 #include <QSet>
 #include <QElapsedTimer>
 
-#include <QTabWidget>
-#include <QLayout>
 
 class QScriptEngine;
 class QScriptEngineDebugger;
@@ -21,10 +19,8 @@ class QScriptContext;
 class QTimer;
 class QDaqLogFile;
 class QDaqObject;
-class QDaqChannel;
-//class QDaqBuffer;
-class QComboBox;
-class QListWidget;
+//class QDaqChannel;
+
 
 class QDAQ_EXPORT QDaqScriptEngine : public QObject
 {    
@@ -78,7 +74,6 @@ public:
     static int nextAvailableIndex();
 
 private slots:
-    void onUiChanged();
 
 public slots:
     QString version();
@@ -89,7 +84,6 @@ public slots:
     void wait(uint ms);
     void textSave(const QString& str, const QString& fname);
     QString textLoad(const QString& fname);
-    void beep();
 
     bool h5write(const QDaqObject* obj, const QString& fname);
     QDaqObject*  h5read(const QString& fname);
@@ -101,26 +95,7 @@ public slots:
     QStringList dir(const QString& filter);
     bool isDir(const QString& name);
 
-    // widgets
-    QWidget* loadUi(const QString& fname);
-    QWidget* loadTopLevelUi(const QString& fname, const QString &uiName);
-    QString pluginPaths();
-    QString availableWidgets();
-    void bind(QDaqChannel* ch, QWidget* w);
-    void bind(QDaqObject* obj, const QString& propertyName, QWidget* w, bool readOnly = false);
-    void addItems(QComboBox* cb, const QStringList& lst);
-    void addItems(QListWidget* cb, const QStringList& lst);
 
-    void deleteTab(int currentIndex);
-    int insertTab(int index, QWidget * page, const QString & label);
-    int insertTab(int index, QString uiname, const QString & label);
-    int insertTab(int index, QWidget * page, const QString & label, QTabWidget * tabWidget);
-    void insertWidget(QWidget * parent, QWidget * child);
-    void deleteWidget(QWidget * parent, QWidget * child);
-//    void deleteItem(QWidget * parent, QLayout * childlayout);
-    void deleteTab(int index,  QTabWidget * tabWidget);
-//    void rename(QLayout * layout, QString newname);
-    void rename(QWidget * widget, QString newname);
 
     // set debugging on (enable Qt script debugger)
     void debug(bool on);

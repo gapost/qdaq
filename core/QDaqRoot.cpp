@@ -4,7 +4,6 @@
 #include "QDaqChannel.h"
 #include "QDaqDataBuffer.h"
 #include "QDaqSession.h"
-#include "QDaqIde.h"
 #include "QDaqInterface.h"
 #include "QDaqDevice.h"
 #include "QDaqFilter.h"
@@ -19,7 +18,7 @@
 
 QDaqRoot* QDaqObject::root_;
 
-QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq"), ideWindow_(0)
+QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq")
 {
     root_ = this;
 
@@ -81,19 +80,6 @@ QDaqRoot::~QDaqRoot(void)
     }*/
 }
 
-QDaqIDE* QDaqRoot::createIdeWindow()
-{
-    if (!ideWindow_) {
-        ideWindow_ = new QDaqIDE;
-    }
-    return ideWindow_;
-}
-
-QString QDaqRoot::xml()
-{
-    QString ret;
-    return ret;
-}
 
 QDaqObject* QDaqRoot::createObject(const QString& name, const QString& className)
 {
@@ -141,21 +127,7 @@ void QDaqRoot::onError(const QDaqError &err)
                .arg(err.type).arg(err.descr);
 }
 
-void QDaqRoot::addDaqWindow(QWidget* w)
-{
-    if (!daqWindows_.contains(w)) {
-        daqWindows_.push_back(w);
-        emit daqWindowsChanged();
-    }
-}
 
-void QDaqRoot::removeDaqWindow(QWidget* w)
-{
-    if (daqWindows_.contains(w)) {
-        daqWindows_.removeOne(w);
-        emit daqWindowsChanged();
-    }
-}
 
 void QDaqPluginManager::loadFrom(const QString &path)
 {

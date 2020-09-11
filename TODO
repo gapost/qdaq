@@ -1,4 +1,13 @@
-  * load/save properties and file version, e.g. QDaqDataBuffer prop "type" changed. how to load from old file??
+  * script extensions
+    * core makes a lib with no widgets - only ref to widgets
+    * QDaqSession does not have widget-related functions
+    * all widgets got into "gui" module libQDaqGui.so
+    * there is a qdaq_gui plugin that defines the qscript interface and can be imported to a session
+    * this goes to qt5/plugins/script/libQDaq_script_gui.so with keys: ["qdaq", "qdaq_qui"] that depends on libQDaqGui.so
+    * availableExtensions("qdaq") would list all extensions
+    * similar for "interfaces", "filters", ...
+
+* load/save properties and file version, e.g. QDaqDataBuffer prop "type" changed. how to load from old file??
   * type marshalling in setQDaqProperty - handle special cases like ByteArray, Vector, etc...
   * History file to start with a .
   * Syntax checking in scripts and report to user

@@ -1,7 +1,7 @@
 #ifndef QDAQPID_H
 #define QDAQPID_H
 
-#include "filters_global.h"
+#include "QDaqGlobal.h"
 
 #include "QDaqFilter.h"
 #include <QtPlugin>
@@ -9,7 +9,7 @@
 #include "isa_pid.h"
 #include "relaytuner.h"
 
-class FILTERSSHARED_EXPORT QDaqPid :
+class QDAQ_EXPORT QDaqPid :
         public QDaqFilter
 {
     Q_OBJECT

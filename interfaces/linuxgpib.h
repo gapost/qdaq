@@ -1,27 +1,11 @@
 #ifndef LINUXGPIB_H
 #define LINUXGPIB_H
 
-#include "linux-gpib_global.h"
+#include "QDaqGlobal.h"
 
-#include "qdaqplugin.h"
 
 #include "QDaqInterface.h"
 #include "QDaqVector.h"
-#include <QtPlugin>
-
-class LINUXGPIBSHARED_EXPORT PluginFactory :
-        public QObject,
-        public QDaqPlugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID QDaqPluginIID FILE "qdaqlinuxgpib.json")
-    Q_INTERFACES(QDaqPlugin)
-
-public:
-    PluginFactory();
-
-    virtual QList<const QMetaObject *> pluginClasses() const;
-};
 
 /**
  * @brief A class for accesing a GPIB interface.
@@ -46,7 +30,7 @@ public:
  *
  */
 
-class LINUXGPIBSHARED_EXPORT QDaqLinuxGpib : public QDaqInterface
+class QDAQ_EXPORT QDaqLinuxGpib : public QDaqInterface
 {
     Q_OBJECT
 

@@ -6,17 +6,20 @@
 #
 ################################################################
 #
-# 1. lib
+# 1. core
 #
-# Builds the QDaq shared library (libQDaq.so or QDaq.dll). All source code is in lib folder.
+# Builds the QDaqCore shared library (libQDaqCore.so or QDaqCore.dll). 
 #
-# 2. qdaq
+# 2. gui
+#
+#
+# 3. qdaq
 #
 # Builds the qdaq application, which can be used to run qdaq-javascript scripts.
 #
 # 3. designer
 #
-# Builds the QtDesigner plugins for some of the widgets in QDaq lib.
+# Builds the QtDesigner plugins for some of the widgets in QDaqGui.
 #
 # 4. docs
 #
@@ -37,12 +40,16 @@ CONFIG += ordered
 
 
 SUBDIRS += \
-    lib \
-    designer \
+    core \
+    gui \
     qdaq \
+    designer \
+    filters \
+    interfaces \
     docs \
-    test \
-    plugins
+    test
+#    plugins \
+
 
 qdaqspec.files  = qdaq.pri qdaq.prf
 qdaqspec.path  = $$[QMAKE_MKSPECS]/features

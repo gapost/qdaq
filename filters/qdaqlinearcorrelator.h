@@ -1,12 +1,12 @@
 #ifndef QDAQLINEARCORRELATOR_H
 #define QDAQLINEARCORRELATOR_H
 
-#include "filters_global.h"
+#include "QDaqGlobal.h"
 
 #include "QDaqFilter.h"
 #include "QDaqTypes.h"
 
-class FILTERSSHARED_EXPORT QDaqLinearCorrelator :
+class QDAQ_EXPORT QDaqLinearCorrelator :
         public QDaqFilter
 {
     Q_OBJECT

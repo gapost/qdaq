@@ -1,12 +1,12 @@
 #ifndef QDAQFOPDT_H
 #define QDAQFOPDT_H
 
-#include "filters_global.h"
+#include "QDaqGlobal.h"
 
 #include "QDaqFilter.h"
 #include "QDaqVector.h"
 
-class FILTERSSHARED_EXPORT QDaqFOPDT :
+class QDAQ_EXPORT QDaqFOPDT :
         public QDaqFilter
 {
     Q_OBJECT

@@ -1,7 +1,7 @@
 #ifndef QDAQSERIAL_H
 #define QDAQSERIAL_H
 
-#include "interfaces_global.h"
+#include "QDaqGlobal.h"
 
 #include <QSerialPort>
 
@@ -23,7 +23,7 @@
  *
  *
  */
-class INTERFACESSHARED_EXPORT QDaqSerial : public QDaqInterface
+class QDAQ_EXPORT QDaqSerial : public QDaqInterface
 {
     Q_OBJECT
 

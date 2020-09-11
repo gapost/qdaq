@@ -5,11 +5,10 @@ unix {
     LIBS += -lrt -lpthread
 
     ########## ATLAS ################
-    centos6 { LIBS += -lcblas -latlas -lm }
-    else { LIBS += -lm }
+    LIBS += -lm
 
     ############## GSL ##############
-    LIBS += -lgsl
+    # LIBS += -lgsl
 
     ############## HDF5 ##############
     LIBS += -lhdf5 -lhdf5_cpp
@@ -18,17 +17,17 @@ unix {
     LIBS += -lmuparser
 
     ######### comedi #############
-    LIBS += -lcomedi
+    # LIBS += -lcomedi
 
     ######### Qwt ###############
     #INCLUDEPATH += /usr/include/qt5/qwt
     #LIBS += -lqwt-qt5
-    CONFIG += qwt
+    # CONFIG += qwt
 
     ######### QtSolutions ###############
     # INCLUDEPATH += /usr/include/qt5/QtSolutions
     # LIBS += -lQt5Solutions_PropertyBrowser
-    CONFIG += qtpropertybrowser
+    # CONFIG += qtpropertybrowser
 }
 
 ############## 3rd Party Libs for win32 ###############
