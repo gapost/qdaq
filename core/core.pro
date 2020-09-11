@@ -78,7 +78,6 @@ HEADERS  += \
     bytearrayprototype.h \
     QDaqFilter.h \
     qtimerthread.h \
-    qdaqplugin.h \
     h5helper_v1_0.h \
     qdaqh5file.h \
     h5helper_v1_1.h \
