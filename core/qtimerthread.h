@@ -15,7 +15,7 @@
  * is called periodically with period equal to the interval property (in ms).
  *
  * To use the class one has to subclass QTimerThread reimplement timer_func(). Note
- * that timer_func() is executed from the sepatrate timer thread thus and the user
+ * that timer_func() is executed from the sepatrate timer thread and the user
  * is responsible for synchronization issues.
  *
  * The accuracy of the timer depends on Qt's QTimer class. According to their docs

@@ -5,6 +5,9 @@
 
 #include <QDebug>
 
+#include <hdf5.h>
+#include <H5Cpp.h>
+
 
 
 #define CLASS_ATTR_NAME "Class"

@@ -1,6 +1,7 @@
 #include "QDaqObject.h"
 #include "QDaqRoot.h"
 #include "QDaqTypes.h"
+#include "core_script_interface.h"
 
 #include <QScriptContext>
 #include <QScriptEngine>
@@ -420,7 +421,7 @@ bool QDaqObject::setQDaqProperty(QString name, const QScriptValue &value)
     // check for QDaqObject
     if (!ok && value.isQObject()) {
         QDaqObject* obj(0);
-        QDaqTypes::fromScriptValue(value,obj);
+        fromScriptValue(value,obj);
         if (obj) {
             V = QVariant::fromValue(obj);
             ok = true;
@@ -436,7 +437,7 @@ bool QDaqObject::setQDaqProperty(QString name, const QScriptValue &value)
             QScriptValue p = value.property(i);
             if (!p.isQObject()) { isObjLst=false; break; }
             QDaqObject* obj(0);
-            QDaqTypes::fromScriptValue(p,obj);
+            fromScriptValue(p,obj);
             if (obj==0) { isObjLst=false; break; }
             else L << obj;
         }

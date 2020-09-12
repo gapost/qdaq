@@ -58,7 +58,8 @@ SOURCES += \
     qdaqh5file.cpp \
     h5helper_v1_1.cpp \
     vectorclass.cpp \
-    vectorprototype.cpp
+    vectorprototype.cpp \
+    core_script_interface.cpp
 
 HEADERS  += \
     QDaqSession.h \
@@ -82,7 +83,8 @@ HEADERS  += \
     qdaqh5file.h \
     h5helper_v1_1.h \
     vectorprototype.h \
-    vectorclass.h
+    vectorclass.h \
+    core_script_interface.h
 
 
 DISTFILES += \

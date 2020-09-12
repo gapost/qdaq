@@ -12,17 +12,17 @@ class QDaqLogFile;
 
 class QDaqSession;
 
-struct QDaqPluginManager
-{
-    typedef QHash<QString, const QMetaObject*> object_map_t;
+//struct QDaqPluginManager
+//{
+//    typedef QHash<QString, const QMetaObject*> object_map_t;
 
-    object_map_t object_map_;
+//    object_map_t object_map_;
 
-    QList<const QMetaObject *> pluginClasses() const;
+//    QList<const QMetaObject *> pluginClasses() const;
 
-    void loadPlugins();
-    void loadFrom(const QString& path);
-};
+//    void loadPlugins();
+//    void loadFrom(const QString& path);
+//};
 
 /** QDaq root object class.
  *
@@ -78,18 +78,6 @@ public:
     QString rootDir() const { return rootDir_; }
     QString logDir() const { return logDir_; }
 
-    /** Create a QDaqObject with name name and class className.
-     *
-     * Calls the constructor of className with name as the single argument.
-     *
-     * The class with name className must be previously be registered
-     * with registerClass.
-     *
-     * Typically used by QDaqScriptEngine to create QDaq objects in script code.
-     *
-     */
-    QDaqObject* createObject(const QString& name, const QString& className);
-
     /** Called to post an error at the QDaq error queue.
      *
      * This function is thread safe.
@@ -107,8 +95,6 @@ public:
 
 public slots:
 
-    /// Return the names of registered object classes.
-	QStringList classNames();
 
 private slots:
     // connected (queued connection) to signal error()
@@ -124,21 +110,14 @@ signals:
 
 private:
 
-    typedef QHash<QString, const QMetaObject*> object_map_t;
+    //typedef QHash<QString, const QMetaObject*> object_map_t;
 
-    object_map_t object_map_;
+    //object_map_t object_map_;
 
-    QDaqPluginManager pluginManager;
+    //QDaqPluginManager pluginManager;
 
 public:
-    /**
-     * @brief Register a QDaqObject-derived class type
-     * Registered classes can be created by createObject().
-     * @param metaObj meta-object of the class
-     */
-	void registerClass(const QMetaObject* metaObj);
-    /// Returns list of registered class metaObjects
-	QList<const QMetaObject *> registeredClasses() const;
+
 
 };
 

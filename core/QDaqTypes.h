@@ -7,13 +7,13 @@
 #include "math_util.h"
 
 #include <QMetaType>
-#include <QScriptValue>
+//#include <QScriptValue>
 
-class QScriptEngine;
+//class QScriptEngine;
 class QDaqObject;
 
 struct QDAQ_EXPORT QDaqTypes {
-    static int registerWithJS(QScriptEngine* eng);
+//    static int registerWithJS(QScriptEngine* eng);
 
     static bool isNumeric(const QVariant&);
     static bool isString(const QVariant&);
@@ -29,9 +29,9 @@ struct QDAQ_EXPORT QDaqTypes {
     static bool isString(const QVariantList&);
     static bool isBool(const QVariantList&);
 
-    static QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject* const  &obj, int ownership = 2);
-    static QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject* const &obj, int ownership = 2);
-    static void fromScriptValue(const QScriptValue &value, QDaqObject* &obj);
+//    static QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject* const  &obj, int ownership = 2);
+//    static QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject* const &obj, int ownership = 2);
+//    static void fromScriptValue(const QScriptValue &value, QDaqObject* &obj);
 };
 
 #include <QString>

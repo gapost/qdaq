@@ -6,10 +6,13 @@ class h5helper;
 #include "QDaqTypes.h"
 #include "QDaqObject.h"
 
-#include <hdf5.h>
-#include <H5Cpp.h>
-
 #include <string>
+
+namespace H5
+{
+class CommonFG;
+class Group;
+}
 
 using namespace H5;
 

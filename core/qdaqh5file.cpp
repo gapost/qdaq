@@ -1,9 +1,13 @@
 #include "qdaqh5file.h"
 
+#include <hdf5.h>
+#include <H5Cpp.h>
+
 #include "QDaqObject.h"
 #include "QDaqRoot.h"
 #include "QDaqDataBuffer.h"
 
+#include <QMetaType>
 #include <QDebug>
 
 #include "h5helper_v1_1.h"
@@ -291,20 +295,24 @@ void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
         QString className;
         if (helper()->read(&g,CLASS_ATTR_NAME,className))
         {
-            if (className=="QDaqRoot") className = "QDaqObject";
-            QDaqObject* obj  = QDaqObject::root()->createObject(groupName,className);
-            if (obj)
-            {
-                if (parent_obj) parent_obj->appendChild(obj);
-                else {
-                    parent_obj = obj;
-                    top_ = obj;
-                }
+            if (className=="QDaqRoot") className = "QDaqObject";          
+            int id = QMetaType::type(className.toLatin1());
+            if (id != 0) { // TODO: report to user if the type is not found
+                const QMetaObject * metaObj = QMetaType::metaObjectForType(id);
+                QDaqObject* obj = (QDaqObject*) metaObj->newInstance(Q_ARG(QString,groupName));
+                if (obj)
+                {
+                    if (parent_obj) parent_obj->appendChild(obj);
+                    else {
+                        parent_obj = obj;
+                        top_ = obj;
+                    }
 
-                obj->readh5(&g,this);
-                readRecursive(&g, obj);
+                    obj->readh5(&g,this);
+                    readRecursive(&g, obj);
+                }
+                else delete obj;
             }
-            else delete obj;
         }
     }
 

@@ -1,5 +1,8 @@
 #include "h5helper_v1_0.h"
 
+#include <hdf5.h>
+#include <H5Cpp.h>
+
 #include "QDaqVector.h"
 #include "QDaqObject.h"
 

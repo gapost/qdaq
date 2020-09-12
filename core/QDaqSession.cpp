@@ -4,6 +4,8 @@
 #include "QDaqLogFile.h"
 #include "qdaqh5file.h"
 
+#include "core_script_interface.h"
+
 #include <QScriptEngine>
 #include <QScriptEngineDebugger>
 #include <QFile>
@@ -17,33 +19,6 @@
 #include <QThread>
 #include <QMetaProperty>
 
-
-
-QScriptValue QDaqScriptEngine::scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject* metaObject)
-{
-	QString name;
-	if (context->argumentCount()==1 &&
-			context->argument(0).isString())
-		name = context->argument(0).toString();
-	if (name.isEmpty()) {
-		context->throwError(QScriptContext::SyntaxError,
-							"Give only a String by object creation");
-		return QScriptValue();
-	}
-    QDaqObject* obj = QDaqObject::root()->createObject(name,metaObject->className());
-
-    if (context->isCalledAsConstructor())
-    {
-        QScriptValue scriptObj = QDaqTypes::toScriptValue(engine, context->thisObject(), obj);
-
-        return scriptObj;
-    }
-
-    QScriptValue scriptObj = QDaqTypes::toScriptValue(engine, obj);
-
-    scriptObj.setPrototype(context->callee().property(QString::fromLatin1("prototype")));
-    return scriptObj;
-}
 
 #define PROC_EVENTS_INTERVAL 250
 
@@ -67,26 +42,14 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
     QDaqObject* qdaq = QDaqObject::root();
 
-    QScriptValue rootObj = QDaqTypes::toScriptValue(engine_, qdaq, QScriptEngine::QtOwnership);
+    QScriptValue rootObj = toScriptValue(engine_, qdaq, QScriptEngine::QtOwnership);
 
     self.setProperty("qdaq", rootObj, QScriptValue::Undeletable | QScriptValue::ReadOnly);
 
 	engine_->setGlobalObject(self);
 
-    // register QDaq types with the engine
-    QDaqTypes::registerWithJS(engine_);
-
-	// register root classes
-    QList<const QMetaObject*> rtClasses = QDaqObject::root()->registeredClasses();
-	foreach(const QMetaObject* metaObject, rtClasses)
-	{
-		QScriptEngine::FunctionWithArgSignature cptr =
-				reinterpret_cast<QScriptEngine::FunctionWithArgSignature>(scriptConstructor);
-		QScriptValue ctor = engine_->newFunction(cptr, (void *)metaObject);
-		QScriptValue scriptClass = engine_->newQMetaObject(metaObject, ctor);
-
-		engine_->globalObject().setProperty(metaObject->className(), scriptClass);
-	}
+    // init core scripting interface
+    core_script_interface_init(engine_);
 
 	engine_->collectGarbage();
 }
