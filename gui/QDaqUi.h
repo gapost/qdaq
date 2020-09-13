@@ -1,6 +1,8 @@
 #ifndef QDAQUI_H
 #define QDAQUI_H
 
+#include "QDaqGlobal.h"
+
 #include <QObject>
 #include <QWidgetList>
 #include <QScriptable>
@@ -15,7 +17,7 @@ class QDaqObject;
 class QScriptEngine;
 class QDaqSession;
 
-class QDaqUi : public QObject
+class QDAQ_EXPORT QDaqUi : public QObject
 {
     Q_OBJECT
 
@@ -55,7 +57,7 @@ private:
 
 Q_DECLARE_METATYPE(QDaqUi*)
 
-class QDaqUiProto : public QObject, public QScriptable
+class QDAQ_EXPORT QDaqUiProto : public QObject, public QScriptable
 {
     Q_OBJECT
 
