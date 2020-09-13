@@ -17,7 +17,8 @@ SOURCES +=  \
     qdaqfopdt.cpp \
     qdaqinterpolator.cpp \
     qdaqlinearcorrelator.cpp \
-    qdaqpid.cpp
+    qdaqpid.cpp \
+    qdaqfilters.cpp
 
 HEADERS += \
     qdaqfopdt.h \
@@ -26,7 +27,8 @@ HEADERS += \
     qdaqinterpolator.h \
     qdaqpid.h \
     relaytuner.h \
-    isa_pid.h
+    isa_pid.h \
+    qdaqfilters.h
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]

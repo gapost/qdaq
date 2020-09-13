@@ -17,13 +17,15 @@ SOURCES += \
     qdaqserial.cpp \
     qdaqmodbus.cpp \
     qdaqtcpip.cpp \
-    tcp_socket.cpp
+    tcp_socket.cpp \
+    qdaqinterfaces.cpp
 
 HEADERS +=\
     qdaqserial.h \
     qdaqmodbus.h \
     qdaqtcpip.h \
-    tcp_socket.h
+    tcp_socket.h \
+    qdaqinterfaces.h
 
 unix {
 SOURCES += linuxgpib.cpp
