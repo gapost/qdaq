@@ -76,5 +76,6 @@ private:
 
 };
 
+Q_DECLARE_METATYPE(QDaqLinuxGpib*)
 
 #endif // LINUXGPIB_H

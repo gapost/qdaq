@@ -81,4 +81,6 @@ protected:
     virtual void close_();
 };
 
+Q_DECLARE_METATYPE(QDaqTcpip*)
+
 #endif // QDAQTCPIP_H

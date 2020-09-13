@@ -83,4 +83,7 @@ protected:
     virtual void close_();
 };
 
+Q_DECLARE_METATYPE(QDaqModbusRtu*)
+Q_DECLARE_METATYPE(QDaqModbusTcp*)
+
 #endif // QDAQMODBUS_H

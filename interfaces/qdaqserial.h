@@ -78,4 +78,6 @@ protected:
     virtual void clear_();
 };
 
+Q_DECLARE_METATYPE(QDaqSerial*)
+
 #endif // QDAQSERIAL_H

@@ -76,4 +76,6 @@ private:
 
 };
 
+Q_DECLARE_METATYPE(QDaqNiGpib*)
+
 #endif // NIGPIB_H
