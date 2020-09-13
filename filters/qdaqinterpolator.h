@@ -56,4 +56,7 @@ public slots:
     void fromTextFile(const QString& fname);
 };
 
+
+Q_DECLARE_METATYPE(QDaqInterpolator*)
+
 #endif // QDAQINTERPOLATOR_H

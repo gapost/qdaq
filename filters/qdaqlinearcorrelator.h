@@ -45,4 +45,6 @@ public slots:
     void clear();
 };
 
+Q_DECLARE_METATYPE(QDaqLinearCorrelator*)
+
 #endif // QDAQLINEARCORRELATOR_H

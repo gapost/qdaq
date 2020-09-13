@@ -89,4 +89,6 @@ protected:
     virtual bool filterfunc(const double* vin, double* vout);
 };
 
+Q_DECLARE_METATYPE(QDaqPid*)
+
 #endif // QDAQPID_H

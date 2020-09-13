@@ -48,4 +48,6 @@ protected:
 
 };
 
+Q_DECLARE_METATYPE(QDaqFOPDT*)
+
 #endif // QDAQFOPDT_H
