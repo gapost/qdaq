@@ -13,6 +13,7 @@ class QWidget;
 class QTabWidget;
 class QDaqObject;
 class QScriptEngine;
+class QDaqSession;
 
 class QDaqUi : public QObject
 {
@@ -23,7 +24,7 @@ public:
 
     static QDaqUi* instance();
 
-    static void initScriptInterface(QScriptEngine* eng);
+    static void initScriptInterface(QDaqSession* s);
 
     void addDaqWindow(QWidget* w);
     void removeDaqWindow(QWidget* w);
@@ -43,6 +44,9 @@ protected:
 signals:
     /// Fired when a top level window is opened or closed
     void daqWindowsChanged();
+
+private slots:
+    void onNewSession(QDaqSession* s);
 
 private:
     static QDaqUi* ui_;

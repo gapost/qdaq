@@ -89,6 +89,9 @@ public:
     /// Returns a pointer to the root script session.
     QDaqSession* rootSession() { return rootSession_; }
 
+    /// Vreates a new script session.
+    QDaqSession* newSession();
+
     /// Returns a pointer to the QDaq error queue.
     const QDaqErrorQueue* errorQueue() const { return &error_queue_; }
 
@@ -107,6 +110,8 @@ signals:
     void objectAttached(QDaqObject* obj);
     /// Fired when object is detached
     void objectDetached(QDaqObject* obj);
+    /// Fired when a new session is created
+    void newSession(QDaqSession* s);
 
 private:
 

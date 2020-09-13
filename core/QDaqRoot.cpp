@@ -84,6 +84,13 @@ void QDaqRoot::onError(const QDaqError &err)
                .arg(err.type).arg(err.descr);
 }
 
+QDaqSession* QDaqRoot::newSession()
+{
+    QDaqSession* s = new QDaqSession(this);
+    emit newSession(s);
+    return s;
+}
+
 
 
 //void QDaqPluginManager::loadFrom(const QString &path)

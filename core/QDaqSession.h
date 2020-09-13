@@ -19,7 +19,6 @@ class QScriptContext;
 class QTimer;
 class QDaqLogFile;
 class QDaqObject;
-//class QDaqChannel;
 
 
 class QDAQ_EXPORT QDaqScriptEngine : public QObject
@@ -65,8 +64,14 @@ protected:
 
     QDaqLogFile* logFile_;
 
-public:
+private:
+
+    friend class QDaqRoot;
+
     QDaqSession(QObject* parent = 0);
+
+public:
+
     virtual ~QDaqSession(void);
     void evaluate(const QString& program);
     void abortEvaluation();

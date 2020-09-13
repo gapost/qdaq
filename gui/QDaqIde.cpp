@@ -268,7 +268,7 @@ QDaqScriptEditor *QDaqIDE::createScriptEditor()
 
 QDaqConsole *QDaqIDE::createQDaqConsole()
 {
-    QDaqSession* s = new QDaqSession;
+    QDaqSession* s = QDaqObject::root()->newSession();
     QDaqConsole *child = new QDaqConsole(s);
 
     mdiArea->addSubWindow(child);

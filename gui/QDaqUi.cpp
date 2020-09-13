@@ -17,6 +17,7 @@
 #include "QDaqDelegates.h"
 #include "QDaqWindow.h"
 #include "QDaqRoot.h"
+#include "QDaqSession.h"
 
 
 QDaqUi* QDaqUi::ui_;
@@ -25,6 +26,11 @@ QDaqUi::QDaqUi(QObject *parent) : QObject(parent), ideWindow_(0)
 {
     setObjectName("ui");
     ui_ = this;
+
+    initScriptInterface( QDaqObject::root()->rootSession() );
+
+    connect(QDaqObject::root(),SIGNAL(newSession(QDaqSession*)),
+            this,SLOT(onNewSession(QDaqSession*)));
 }
 
 QDaqUi *QDaqUi::instance()
@@ -57,19 +63,20 @@ void QDaqUi::removeDaqWindow(QWidget* w)
     }
 }
 
-void QDaqUi::initScriptInterface(QScriptEngine* eng)
+void QDaqUi::initScriptInterface(QDaqSession *s)
 {
-    QDaqUiProto* proto = new QDaqUiProto(eng);
-    eng->setDefaultPrototype(qMetaTypeId<QDaqUi*>(),
-                             eng->newQObject(proto,QScriptEngine::ScriptOwnership));
+    QScriptEngine* e = s->getEngine();
+    QDaqUiProto* proto = new QDaqUiProto(e);
+    e->setDefaultPrototype(qMetaTypeId<QDaqUi*>(),
+                           e->newQObject(proto,QScriptEngine::ScriptOwnership));
 
     QDaqUi* ui = instance();
 
-    QScriptValue uiObj = eng->newQObject(ui,
-                                         QScriptEngine::QtOwnership);
+    QScriptValue uiObj = e->newQObject(ui,
+                                       QScriptEngine::QtOwnership);
 
     foreach (QWidget* w, ui->daqWindows()) {
-        QScriptValue wObj = eng->newQObject(w);
+        QScriptValue wObj = e->newQObject(w);
         QString wname = w->objectName();
         if (!wname.isEmpty()) {
             uiObj.setProperty(wname,wObj);
@@ -78,16 +85,21 @@ void QDaqUi::initScriptInterface(QScriptEngine* eng)
 
     //add ide object to list of objects available to session
     if (ui->ideWindow()) {
-        QScriptValue ideObj = eng->newQObject(ui->ideWindow());
+        QScriptValue ideObj = e->newQObject(ui->ideWindow());
         uiObj.setProperty("ideHandle",ideObj);
     }
 
-    eng->globalObject().setProperty("ui",uiObj,
-                                    QScriptValue::Undeletable | QScriptValue::ReadOnly);
+    e->globalObject().setProperty("ui",uiObj,
+                                  QScriptValue::Undeletable | QScriptValue::ReadOnly);
 
     connect(ui,SIGNAL(daqWindowsChanged()),
             proto,SLOT(onUiChanged()));
 
+}
+
+void QDaqUi::onNewSession(QDaqSession *s)
+{
+    initScriptInterface(s);
 }
 
 /**************** Prototype ******************/

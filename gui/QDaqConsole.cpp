@@ -205,7 +205,7 @@ void QDaqConsoleTabWidget::addConsole()
     QDaqConsole *child;
     if (count()==0) {
         child = new QDaqConsole(QDaqObject::root()->rootSession());
-    } else child = new QDaqConsole(new QDaqSession);
+    } else child = new QDaqConsole(QDaqObject::root()->newSession());
     addTab(child, child->windowTitle());
     if (count()>1) setTabsClosable(true);
 }

@@ -120,6 +120,7 @@ int main(int argc, char *argv[])
     QDaqRoot qdaq;
     QDaqUi ui;
     QDaqSession* s = qdaq.rootSession();
+
     if (debug) s->evaluate("debug(1)");
 
     if (startupScript.isEmpty() && !console) {
@@ -145,7 +146,7 @@ int main(int argc, char *argv[])
             // Do nothing, user interacts with console
         }
         else {
-            if (!console) delete console;
+            if (console) delete console;
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
         }
     }
