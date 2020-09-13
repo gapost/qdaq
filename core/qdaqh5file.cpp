@@ -10,7 +10,11 @@
 #include <QMetaType>
 #include <QDebug>
 
+#include <stdexcept>
+
 #include "h5helper_v1_1.h"
+
+#include "QDaqJob.h"
 
 #define CLASS_ATTR_NAME "Class"
 
@@ -265,6 +269,12 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
         S += error.getCDetailMsg();
     }
 
+    catch( std::runtime_error error )
+    {
+        S = "HDF5 read error, ";
+        S += error.what();
+    }
+
     if (file) delete file;
 
     if (!S.isEmpty())
@@ -295,7 +305,8 @@ void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
         QString className;
         if (helper()->read(&g,CLASS_ATTR_NAME,className))
         {
-            if (className=="QDaqRoot") className = "QDaqObject";          
+            if (className=="QDaqRoot") className = "QDaqObject";
+            className += "*";
             int id = QMetaType::type(className.toLatin1());
             if (id != 0) { // TODO: report to user if the type is not found
                 const QMetaObject * metaObj = QMetaType::metaObjectForType(id);
@@ -312,6 +323,9 @@ void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
                     readRecursive(&g, obj);
                 }
                 else delete obj;
+            } else {
+                QString S = QString("Unknown class %1 for object %2").arg(className).arg(QString(groupName));
+                throw std::runtime_error(S.toLatin1().toStdString());
             }
         }
     }

@@ -231,12 +231,11 @@ protected:
 	bool throwIfArmed();
 
 public:
-    Q_INVOKABLE
     /**
      * @brief QDaqJob constructor.
      * @param name The QDaqObject name.
      */
-    explicit QDaqJob(const QString& name);
+    Q_INVOKABLE explicit QDaqJob(const QString& name);
     virtual ~QDaqJob(void);
 
     virtual void attach();
@@ -433,6 +432,9 @@ public slots:
      */
     void createLoopEngine();
 };
+
+Q_DECLARE_METATYPE(QDaqJob*)
+Q_DECLARE_METATYPE(QDaqLoop*)
 
 #endif
 

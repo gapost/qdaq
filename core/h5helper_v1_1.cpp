@@ -271,7 +271,7 @@ void h5helper_v1_1::readDynamicProperties(CommonFG* h5g, QDaqObject* m_object)
                     int sz = dspace.getSimpleExtentNpoints();
                     if (sz>1) {
                         QDaqVector val;
-                        val.setCapacity(sz);
+                        val.setSize(sz);
                         ds.read(val.data(), ds.getDataType());
                         m_object->setProperty(propName.constData(),QVariant::fromValue(val));
                     } else {

@@ -220,4 +220,6 @@ public slots:
 	double std() const { return dv_; }
 };
 
+Q_DECLARE_METATYPE(QDaqChannel*)
+
 #endif // QDAQDATACHANNEL_H

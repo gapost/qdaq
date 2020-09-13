@@ -1,9 +1,10 @@
 #include "QDaqRoot.h"
-
 #include "QDaqLogFile.h"
 #include "QDaqJob.h"
 #include "QDaqSession.h"
-
+#include "QDaqChannel.h"
+#include "QDaqDataBuffer.h"
+#include "QDaqDevice.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -18,6 +19,14 @@ QDaqRoot::QDaqRoot(void) : QDaqObject("qdaq")
     root_ = this;
 
     qRegisterMetaType<QDaqError>();
+
+    // These are needed for instantiating objects during serialization
+    qRegisterMetaType<QDaqObject*>();
+    qRegisterMetaType<QDaqJob*>();
+    qRegisterMetaType<QDaqLoop*>();
+    qRegisterMetaType<QDaqChannel*>();
+    qRegisterMetaType<QDaqDataBuffer*>();
+    qRegisterMetaType<QDaqDevice*>();
 
     // root dir = current dir when app starts
     QDir pwd = QDir::current();

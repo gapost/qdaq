@@ -218,6 +218,8 @@ public slots:
 
 };
 
+Q_DECLARE_METATYPE(QDaqDevice*)
+
 #endif
 
 

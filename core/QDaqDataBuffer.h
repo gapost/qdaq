@@ -139,6 +139,6 @@ public slots:
     QDaqVector get(int i) { return data_matrix[i]; }
 };
 
-
+Q_DECLARE_METATYPE(QDaqDataBuffer*)
 
 #endif // RTDATABUFFER_H
