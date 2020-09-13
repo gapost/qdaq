@@ -47,7 +47,8 @@ SUBDIRS += \
     filters \
     interfaces \
     docs \
-    test
+    test \
+    plugins
 #    plugins \
 
 
