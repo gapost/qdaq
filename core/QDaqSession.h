@@ -90,6 +90,9 @@ public slots:
     void textSave(const QString& str, const QString& fname);
     QString textLoad(const QString& fname);
 
+    void importExtension(const QString& name);
+    QStringList availableExtensions();
+
     bool h5write(const QDaqObject* obj, const QString& fname);
     QDaqObject*  h5read(const QString& fname);
 

@@ -133,7 +133,7 @@ QScriptValue scriptConstructor(QScriptContext *context, QScriptEngine *engine, c
             name = context->argument(0).toString();
         if (name.isEmpty())
             return context->throwError(QScriptContext::SyntaxError,
-                                "Give only a String by object creation");
+                                "QDaqObject constructor must have one string argument (the object name)");
 
         QDaqObject* obj = (QDaqObject*)(metaObject->newInstance(Q_ARG(QString,name)));
         if (!obj)

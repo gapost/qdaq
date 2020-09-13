@@ -19,6 +19,8 @@
 #include <QThread>
 #include <QMetaProperty>
 
+#include <QLibraryInfo>
+
 
 #define PROC_EVENTS_INTERVAL 250
 
@@ -258,6 +260,22 @@ QString QDaqSession::textLoad(const QString &fname)
     }
     else engine_->currentContext()->throwError("File could not be opened.");
     return str;
+}
+
+void QDaqSession::importExtension(const QString &name)
+{
+    QScriptValue ret = engine_->importExtension(name);
+    if (engine_->hasUncaughtException())
+        stdErr(ret.toString());
+}
+
+QStringList QDaqSession::availableExtensions()
+{
+//    QDir pluginsDir = QDir(QLibraryInfo::location(QLibraryInfo::PluginsPath));
+
+//    QStringList libraryPaths = qApp->libraryPaths();
+
+    return engine_->availableExtensions();
 }
 
 void QDaqSession::quit()
