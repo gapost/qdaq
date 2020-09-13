@@ -36,6 +36,7 @@ QDaqIDE* QDaqUi::createIdeWindow()
 {
     if (!ideWindow_) {
         ideWindow_ = new QDaqIDE;
+        emit daqWindowsChanged();
     }
     return ideWindow_;
 }
@@ -56,13 +57,47 @@ void QDaqUi::removeDaqWindow(QWidget* w)
     }
 }
 
-/*
- *
- * G U I functions
- *
- */
+void QDaqUi::initScriptInterface(QScriptEngine* eng)
+{
+    QDaqUiProto* proto = new QDaqUiProto(eng);
+    eng->setDefaultPrototype(qMetaTypeId<QDaqUi*>(),
+                             eng->newQObject(proto,QScriptEngine::ScriptOwnership));
 
-void QDaqUi::bind(QDaqChannel *ch, QWidget* w)
+    QDaqUi* ui = instance();
+
+    QScriptValue uiObj = eng->newQObject(ui,
+                                         QScriptEngine::QtOwnership);
+
+    foreach (QWidget* w, ui->daqWindows()) {
+        QScriptValue wObj = eng->newQObject(w);
+        QString wname = w->objectName();
+        if (!wname.isEmpty()) {
+            uiObj.setProperty(wname,wObj);
+        }
+    }
+
+    //add ide object to list of objects available to session
+    if (ui->ideWindow()) {
+        QScriptValue ideObj = eng->newQObject(ui->ideWindow());
+        uiObj.setProperty("ideHandle",ideObj);
+    }
+
+    eng->globalObject().setProperty("ui",uiObj,
+                                    QScriptValue::Undeletable | QScriptValue::ReadOnly);
+
+    connect(ui,SIGNAL(daqWindowsChanged()),
+            proto,SLOT(onUiChanged()));
+
+}
+
+/**************** Prototype ******************/
+
+QDaqUiProto::QDaqUiProto(QScriptEngine* p) : QObject(p)
+{
+
+}
+
+void QDaqUiProto::bind(QDaqChannel *ch, QWidget* w)
 {
     if (ch && w)
     {
@@ -72,7 +107,7 @@ void QDaqUi::bind(QDaqChannel *ch, QWidget* w)
     }
 }
 
-QWidget* QDaqUi::loadUi(const QString &fname)
+QWidget* QDaqUiProto::loadUi(const QString &fname)
 {
     QFile file(fname);
 
@@ -97,7 +132,7 @@ QWidget* QDaqUi::loadUi(const QString &fname)
 
     return w;
 }
-QWidget*  QDaqUi::loadTopLevelUi(const QString &fname, const QString &uiName)
+QWidget*  QDaqUiProto::loadTopLevelUi(const QString &fname, const QString &uiName)
 {
     QWidget* w = loadUi(fname);
     if (!w) return 0;
@@ -106,13 +141,18 @@ QWidget*  QDaqUi::loadTopLevelUi(const QString &fname, const QString &uiName)
     ui->setWidget(w);
     ui->setObjectName(uiName);
 
-    instance()->addDaqWindow(ui);
+    QDaqUi::instance()->addDaqWindow(ui);
     return ui;
 }
 
-void QDaqUi::onUiChanged()
+void QDaqUiProto::onUiChanged()
 {
-    QScriptValue uiObj = engine()->globalObject().property("ui");
+    QScriptEngine* e = qobject_cast<QScriptEngine*>(parent());
+
+    if (!e) return;
+
+    QScriptValue uiObj = e->globalObject().property("ui");
+    QDaqUi* ui = QDaqUi::instance();
 
     QScriptValueIterator it(uiObj);
     while (it.hasNext()) {
@@ -122,33 +162,32 @@ void QDaqUi::onUiChanged()
          it.setValue(QScriptValue());
      }
 
-//    QWidgetList wl = QDaqObject::root()->daqWindows();
-//    foreach (QWidget* w, wl) {
-//        QScriptValue wObj = engine_->newQObject(w);
-//        QString wname = w->objectName();
-//        if (!wname.isEmpty()) {
-//            uiObj.setProperty(wname,wObj);
-//        }
-//    }
+    foreach (QWidget* w, ui->daqWindows()) {
+        QScriptValue wObj = e->newQObject(w);
+        QString wname = w->objectName();
+        if (!wname.isEmpty()) {
+            uiObj.setProperty(wname,wObj);
+        }
+    }
 
-//    //add ide object to list of objects available to session
-//    QObject *idemw = (QObject*)QDaqObject::root()->createIdeWindow();
-//    QScriptValue ideObj = engine_->newQObject(idemw);
-//    QString idemv = "ideHandle";
-//    uiObj.setProperty(idemv,ideObj);
+    //add ide object to list of objects available to session
+    if (ui->ideWindow()) {
+        QScriptValue ideObj = e->newQObject(ui->ideWindow());
+        uiObj.setProperty("ideHandle",ideObj);
+    }
 }
-QString QDaqUi::pluginPaths()
+QString QDaqUiProto::pluginPaths()
 {
     QUiLoader l;
     return l.pluginPaths().join("\n");
 }
-QString QDaqUi::availableWidgets()
+QString QDaqUiProto::availableWidgets()
 {
     QUiLoader l;
     return l.availableWidgets().join("\n");
 }
 
-void QDaqUi::bind(QDaqObject *obj, const QString& propertyName, QWidget* w, bool readOnly)
+void QDaqUiProto::bind(QDaqObject *obj, const QString& propertyName, QWidget* w, bool readOnly)
 {
     if (!obj)
     {
@@ -191,68 +230,30 @@ void QDaqUi::bind(QDaqObject *obj, const QString& propertyName, QWidget* w, bool
 
 }
 
-void QDaqUi::addItems(QComboBox* cb, const QStringList& lst)
+void QDaqUiProto::addItems(QComboBox* cb, const QStringList& lst)
 {
     cb->addItems(lst);
 }
 
-void QDaqUi::addItems(QListWidget* cb, const QStringList& lst)
+void QDaqUiProto::addItems(QListWidget* cb, const QStringList& lst)
 {
     cb->addItems(lst);
 }
 
 
-int QDaqUi::insertTab(int index, QWidget * page, const QString & label)
-{
-    QTabWidget* tabWidg = nullptr;
-//    QWidget* CopyPage = nullptr;
-//    QString pagename = page->objectName();
-    QWidgetList wl = daqWindows();
-      foreach (QObject* ui, wl) {
-          tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
-          // first test version was copying an existing widget in the tab widget
-          //          CopyPage = ui->findChild<QWidget*>(pagename);
-      }
 
-      tabWidg->insertTab(index, page, label);
-    return index;
-}
-int QDaqUi::insertTab(int index,  QString uiname, const QString & label)
-{
-    QTabWidget* tabWidg = nullptr;
-    QWidget* CopyPage = nullptr;
-    CopyPage = loadUi(uiname);
-    QWidgetList wl = daqWindows();
-      foreach (QObject* ui, wl) {
-          tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
-      }
-      tabWidg->insertTab(index, CopyPage, label);
-      return index;
-
-}
-
-int QDaqUi::insertTab(int index, QWidget * page, const QString & label, QTabWidget * tabWidget)
+int QDaqUiProto::insertTab(QTabWidget * tabWidget, int index, QWidget * page, const QString & label)
 {
           tabWidget->insertTab(index, page, label);
           return index;
 }
 
-void QDaqUi::deleteTab(int currentIndex)
-{
-    QTabWidget* tabWidg = nullptr;
-    QWidgetList wl = daqWindows();
-      foreach (QObject* ui, wl) {
-          tabWidg = ui->findChild<QTabWidget*>("tabWidget", Qt::FindDirectChildrenOnly);
-    }
-    tabWidg->removeTab(currentIndex);
-}
-
-void QDaqUi::deleteTab(int index,  QTabWidget * tabWidget)
+void QDaqUiProto::deleteTab(QTabWidget * tabWidget, int index)
 {
           tabWidget->removeTab(index);
 }
 
-void QDaqUi::insertWidget(QWidget * parent, QWidget * child)
+void QDaqUiProto::insertWidget(QWidget * parent, QWidget * child)
 {
     QLayout * layout = parent->layout();
 
@@ -263,7 +264,7 @@ void QDaqUi::insertWidget(QWidget * parent, QWidget * child)
         layout->addWidget(child);
     }
 }
-void QDaqUi::deleteWidget(QWidget * parent, QWidget * child)
+void QDaqUiProto::deleteWidget(QWidget * parent, QWidget * child)
 {
     // This method also deletes the child widget's layout and resizes the parent
     // If need be, these options can be broken down (there is already the
@@ -277,20 +278,4 @@ void QDaqUi::deleteWidget(QWidget * parent, QWidget * child)
     parent->resize(parent->sizeHint());
 }
 
-//void QDaqSession::deleteItem(QWidget * parent, QLayout * childlayout)
-//{
-//    QLayout * layout = parent->layout();
-//    layout->removeItem(childlayout);
-//    childlayout->deleteLater();
-//}
-
-void QDaqUi::rename(QWidget * widget, QString newname)
-{
-    widget->setObjectName(newname);
-}
-
-//void QDaqSession::rename(QLayout * layout, QString newname)
-//{
-//    layout->setObjectName(newname);
-//}
 

@@ -69,7 +69,7 @@ HEADERS += 3rdparty/kled/kled.h
 
 
 RESOURCES += \
-    qdaq.qrc
+    qdaqgui.qrc
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]

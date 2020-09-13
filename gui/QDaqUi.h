@@ -12,14 +12,18 @@ class QListWidget;
 class QWidget;
 class QTabWidget;
 class QDaqObject;
+class QScriptEngine;
 
-class QDaqUi : public QObject, public QScriptable
+class QDaqUi : public QObject
 {
     Q_OBJECT
+
 public:
     explicit QDaqUi(QObject *parent = 0);
 
     static QDaqUi* instance();
+
+    static void initScriptInterface(QScriptEngine* eng);
 
     void addDaqWindow(QWidget* w);
     void removeDaqWindow(QWidget* w);
@@ -33,6 +37,29 @@ public:
     /// Create the QDaq IDE window and return a pointer to it.
     QDaqIDE* createIdeWindow();
 
+protected:
+    QDaqIDE* ideWindow_;
+
+signals:
+    /// Fired when a top level window is opened or closed
+    void daqWindowsChanged();
+
+private:
+    static QDaqUi* ui_;
+    QWidgetList daqWindows_;
+};
+
+Q_DECLARE_METATYPE(QDaqUi*)
+
+class QDaqUiProto : public QObject, public QScriptable
+{
+    Q_OBJECT
+
+public:
+    explicit QDaqUiProto(QScriptEngine *parent);
+
+public slots:
+
     // widget functions
     QWidget* loadUi(const QString& fname);
     QWidget* loadTopLevelUi(const QString& fname, const QString &uiName);
@@ -43,28 +70,14 @@ public:
     void addItems(QComboBox* cb, const QStringList& lst);
     void addItems(QListWidget* cb, const QStringList& lst);
 
-    void deleteTab(int currentIndex);
-    int insertTab(int index, QWidget * page, const QString & label);
-    int insertTab(int index, QString uiname, const QString & label);
-    int insertTab(int index, QWidget * page, const QString & label, QTabWidget * tabWidget);
+    int insertTab(QTabWidget * tabWidget, int index, QWidget * page, const QString & label);
+    void deleteTab(QTabWidget * tabWidget, int index);
+
     void insertWidget(QWidget * parent, QWidget * child);
     void deleteWidget(QWidget * parent, QWidget * child);
-    void deleteTab(int index,  QTabWidget * tabWidget);
-    void rename(QWidget * widget, QString newname);
 
-protected:
-    QDaqIDE* ideWindow_;
-
-signals:
-    /// Fired when a top level window is opened or closed
-    void daqWindowsChanged();
-
-public slots:
     void onUiChanged();
 
-private:
-    static QDaqUi* ui_;
-    QWidgetList daqWindows_;
 };
 
 #endif // QDAQUI_H
