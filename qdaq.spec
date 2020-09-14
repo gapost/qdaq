@@ -1,6 +1,6 @@
 Summary: Qt based data aquisition
 Name: qdaq
-Version: v0.2.7.3.cd771cc
+Version: v0.3.0
 Release: 1%{?dist}
 License: MIT
 Source0: %{name}-%{version}.tar.gz
@@ -14,9 +14,8 @@ Requires: gsl
 Requires: muParser
 Requires: qwt-qt5
 Requires: libmodbus
-
 Requires: linux-gpib
-Requires: comedilib
+# Requires: comedilib
 Requires: qtpropertybrowser-qt5
 
 BuildRequires: qt5-qtbase-devel
@@ -28,10 +27,8 @@ BuildRequires: gsl-devel
 BuildRequires: muParser-devel
 BuildRequires: qwt-qt5-devel
 BuildRequires: libmodbus-devel
-
-
 BuildRequires: linux-gpib-devel
-BuildRequires: comedilib-devel
+# BuildRequires: comedilib-devel
 BuildRequires: qtpropertybrowser-qt5-devel
 
 %description
@@ -46,7 +43,6 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %prep
 %setup -q 
-
 
 %build
 mkdir %{_target_platform}
@@ -74,9 +70,11 @@ rm -rf %{buildroot}
 %files devel
 %{_qt5_headerdir}/QDaq/
 %{_qt5_libdir}/*.so
-%{_qt5_libdir}/qt5/mkspecs/features/qdaq*
+%{_qt5_libdir}/qt5/mkspecs/features/*
 
 %changelog
+* Fri Sep 14 2020 George
+- new v0.3.0
 * Fri Sep 4 2020 George
 - introduce devel package
 - introduce Qt-feature prf file
