@@ -8,6 +8,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTabBar>
+#include <QToolBar>
 
 #include "QDaqConsole.h"
 
@@ -15,11 +16,11 @@
 
 #include "QDaqRoot.h"
 
-QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(parent), session(s)
+QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(parent), session_(s)
 {
 	setTabStopWidth ( 40 );
-    setObjectName(QString("console%1").arg(session->index()));
-    if (session->index()) setWindowTitle(QString("Console #%1").arg(session->index()));
+    setObjectName(QString("console%1").arg(session_->index()));
+    if (session_->index()) setWindowTitle(QString("Console #%1").arg(session_->index()));
     else setWindowTitle(QString("Console #0 - Root"));
 
 #if defined(Q_OS_MAC)
@@ -37,23 +38,23 @@ QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(paren
     setFont(textFont);
 #endif
 
-	connect(session,SIGNAL(stdOut(const QString&)),this,SLOT(stdOut(const QString&)));
-	connect(session,SIGNAL(stdErr(const QString&)),this,SLOT(stdErr(const QString&)));
-	connect(session,SIGNAL(endSession()),this,SLOT(endSession()),Qt::QueuedConnection);
+    connect(session_,SIGNAL(stdOut(const QString&)),this,SLOT(stdOut(const QString&)));
+    connect(session_,SIGNAL(stdErr(const QString&)),this,SLOT(stdErr(const QString&)));
+    connect(session_,SIGNAL(endSession()),this,SLOT(endSession()),Qt::QueuedConnection);
 }
 
 QDaqConsole::~QDaqConsole()
 {
-    if (session->index()) delete session;
+    if (session_->index()) delete session_;
 }
 
 void QDaqConsole::exec(const QString& code)
 {
-	session->evaluate(code);
+    session_->evaluate(code);
 }
 bool QDaqConsole::canEvaluate(const QString& code)
 {
-	return session->canEvaluate(code);
+    return session_->canEvaluate(code);
 }
 
 void QDaqConsole::endSession()
@@ -64,14 +65,14 @@ void QDaqConsole::endSession()
 
 void QDaqConsole::closeEvent ( QCloseEvent * e )
 {
-    if (session->index()==0) {
+    if (session_->index()==0) {
         e->accept();
         return;
     }
 
 	bool ok = true;
 
-	if (session->isEvaluating())
+    if (session_->isEvaluating())
 	{
 		QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, windowTitle(),
@@ -82,7 +83,7 @@ void QDaqConsole::closeEvent ( QCloseEvent * e )
 		ok = ret==QMessageBox::Close;
 		if (ok) 
 		{
-			session->abortEvaluation();
+            session_->abortEvaluation();
             e->accept();
             // QCoreApplication::postEvent(parentWidget(),new QCloseEvent());
 		}
@@ -110,7 +111,7 @@ void QDaqConsole::keyPressEvent (QKeyEvent * e)
         //if (k==Qt::Key_Cancel || k==Qt::Key_Pause) // did not work on Linux. GA 24/3/2015
         if (k==Qt::Key_Q) // Ctrl-Q aborts
         {
-			session->abortEvaluation();
+            session_->abortEvaluation();
 			e->accept();
 			return;
 		}
@@ -133,7 +134,7 @@ QStringList QDaqConsole::introspection(const QString& lookup)
 
     if (lookup.isEmpty()) return properties;
 
-    QScriptEngine* eng = session->getEngine();
+    QScriptEngine* eng = session_->getEngine();
     QScriptValue scriptObj = eng->evaluate(lookup);
 
     // if the engine cannot recognize the variable return
@@ -195,9 +196,17 @@ QStringList QDaqConsole::introspection(const QString& lookup)
 /*********************** QDaqConsoleTabWidget *********************/
 QDaqConsoleTabWidget::QDaqConsoleTabWidget(QWidget *parent) : QTabWidget(parent)
 {
-    setTabsClosable(false);
     tabBar()->setExpanding(false);
     connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(onTabClose(int)));
+
+    addConsole();
+
+    QToolBar* bar = new QToolBar;
+
+    abort_ = bar->addAction(QIcon(":/images/stop.png"),"Abort script",this,SLOT(abortScript()));
+    bar->addAction(QIcon(":/images/Terminal-128.png"),"Add console tab",this,SLOT(addConsole()));
+
+    setCornerWidget(bar,Qt::TopRightCorner);
 }
 
 void QDaqConsoleTabWidget::addConsole()
@@ -225,28 +234,10 @@ void QDaqConsoleTabWidget::onTabClose(int index)
     }
 }
 
-/*********************** QDaqConsoleTab *********************/
-QDaqConsoleTab::QDaqConsoleTab(QWidget *parent) : QWidget(parent)
+void QDaqConsoleTabWidget::abortScript()
 {
-    QIcon ico(":/images/Terminal-128.png");
-    QPushButton* bt = new QPushButton(ico,QString());
-    bt->setIconSize(QSize(24,24));
-    bt->setFlat(true);
-    bt->setToolTip("New Console");
-    tabWidget_ = new QDaqConsoleTabWidget();
-
-    QHBoxLayout* hl = new QHBoxLayout;
-    hl->addWidget(bt);
-    hl->addStretch();
-    QVBoxLayout* vl = new QVBoxLayout;
-    vl->addLayout(hl);
-    vl->addWidget(tabWidget_);
-    setLayout(vl);
-
-    connect(bt,SIGNAL(pressed()),tabWidget_,SLOT(addConsole()));
+    QDaqConsole * c = (QDaqConsole*)currentWidget();
+    c->session()->abortEvaluation();
 }
 
-void QDaqConsoleTab::addConsole()
-{
-    tabWidget_->addConsole();
-}
+

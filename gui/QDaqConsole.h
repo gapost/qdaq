@@ -12,11 +12,13 @@ class QDAQ_EXPORT QDaqConsole : public QConsoleWidget
 {
     Q_OBJECT
 
-    QDaqSession* session;
+    QDaqSession* session_;
 
 public:
     QDaqConsole(QDaqSession* s, QWidget* parent = 0);
     virtual ~QDaqConsole();
+
+    QDaqSession* session() { return session_; }
 
 public slots:
 
@@ -52,24 +54,12 @@ public slots:
 
 private slots:
     void onTabClose(int index);
+    void abortScript();
+
+private:
+    QAction* abort_;
 
 };
-
-class QDAQ_EXPORT QDaqConsoleTab : public QWidget
-{
-    Q_OBJECT
-
-    QDaqConsoleTabWidget* tabWidget_;
-
-public:
-    QDaqConsoleTab(QWidget* parent = 0);
-
-public slots:
-    void addConsole();
-
-};
-
-
 
 #endif
 

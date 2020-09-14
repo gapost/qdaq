@@ -27,12 +27,12 @@ bool QDaqConsoleTabPlugin::isInitialized() const
 
 QWidget *QDaqConsoleTabPlugin::createWidget(QWidget *parent)
 {
-    return new QDaqConsoleTab(parent);
+    return new QDaqConsoleTabWidget(parent);
 }
 
 QString QDaqConsoleTabPlugin::name() const
 {
-    return QLatin1String("QDaqConsoleTab");
+    return QLatin1String("QDaqConsoleTabWidget");
 }
 
 QString QDaqConsoleTabPlugin::group() const
@@ -62,7 +62,7 @@ bool QDaqConsoleTabPlugin::isContainer() const
 
 QString QDaqConsoleTabPlugin::domXml() const
 {
-    return QLatin1String("<widget class=\"QDaqConsoleTab\" name=\"qDaqConsoleTab\">\n</widget>\n");
+    return QLatin1String("<widget class=\"QDaqConsoleTabWidget\" name=\"qDaqConsoleTabWidget\">\n</widget>\n");
 }
 
 QString QDaqConsoleTabPlugin::includeFile() const
