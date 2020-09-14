@@ -59,7 +59,7 @@ function createObjects() {
     tcc.inputChannels = [Tc];
     tcc.outputChannels = [uc];
     tcc.gain=1
-    tcc.Ti=0
+    tcc.Ti=20
     tcc.Td=0
     tcc.b=1
     tcc.Tr=0
@@ -104,41 +104,42 @@ function setTc(v) {
 
 function createUi()
 {
-    var tcUi = loadTopLevelUi('ui/testPID.ui','c');
+    var tcUi = ui.loadTopLevelUi('ui/testPID.ui','mainUi');
+    tcUi.setWindowTitle('Testing PID control');
 
     var loop = qdaq.findChild('tempCtrlLoop');
-    var pid = loop.tcc.pid;
-    var fopdt = loop.sys.fopdt;
+    var pid = loop.tcc;
+    var fopdt = loop.sys;
 
     // 1st tab
-    bind(loop.Tc,tcUi.findChild("Tc"));
-    bind(loop.dTcdt,tcUi.findChild("dTcdt"));
+    ui.bind(loop.Tc,tcUi.findChild("Tc"));
+    ui.bind(loop.dTcdt,tcUi.findChild("dTcdt"));
     var btn = tcUi.findChild("setTc");
     btn['valueChanged(double)'].connect(setTc);
-    bind(pid,"autoMode",tcUi.findChild("autoModeTc"));
-    bind(loop.uc,tcUi.findChild("Wc"));
-    bind(pid,"power",tcUi.findChild("setWc"));
+    ui.bind(pid,"autoMode",tcUi.findChild("autoModeTc"));
+    ui.bind(loop.uc,tcUi.findChild("Wc"));
+    ui.bind(pid,"power",tcUi.findChild("setWc"));
 
 
     // 2nd tab
-    bind(pid,"gain",tcUi.findChild("gain"));
-    bind(pid,"Ti",tcUi.findChild("Ti"));
-    bind(pid,"Td",tcUi.findChild("Td"));
-    bind(pid,"Tr",tcUi.findChild("Tr"));
-    bind(pid,"beta",tcUi.findChild("beta"));
-    bind(pid,"maxPower",tcUi.findChild("maxPower"));
+    ui.bind(pid,"gain",tcUi.findChild("gain"));
+    ui.bind(pid,"Ti",tcUi.findChild("Ti"));
+    ui.bind(pid,"Td",tcUi.findChild("Td"));
+    ui.bind(pid,"Tr",tcUi.findChild("Tr"));
+    ui.bind(pid,"beta",tcUi.findChild("beta"));
+    ui.bind(pid,"maxPower",tcUi.findChild("maxPower"));
 
     // 3rd tab
-    bind(pid,"autoTune",tcUi.findChild("autoTune"));
-    bind(pid,"relayStep",tcUi.findChild("relayStep"));
-    bind(pid,"relayThreshold",tcUi.findChild("relayThreshold"));
-    bind(pid,"Kc",tcUi.findChild("tunerKc"),true);
-    bind(pid,"Tc",tcUi.findChild("tunerTc"),true);
+    ui.bind(pid,"autoTune",tcUi.findChild("autoTune"));
+    ui.bind(pid,"relayStep",tcUi.findChild("relayStep"));
+    ui.bind(pid,"relayThreshold",tcUi.findChild("relayThreshold"));
+    ui.bind(pid,"Kc",tcUi.findChild("tunerKc"),true);
+    ui.bind(pid,"Tc",tcUi.findChild("tunerTc"),true);
 
     // fopdt
-    bind(fopdt,"kp",tcUi.findChild("Kp"));
-    bind(fopdt,"tp",tcUi.findChild("Tp"));
-    bind(fopdt,"td",tcUi.findChild("foTd"));
+    ui.bind(fopdt,"kp",tcUi.findChild("Kp"));
+    ui.bind(fopdt,"tp",tcUi.findChild("Tp"));
+    ui.bind(fopdt,"td",tcUi.findChild("foTd"));
 
     var bt = tcUi.findChild("btClear");
     bt.clicked.connect(clearPressed);
@@ -174,7 +175,7 @@ function startPressed(on) {
 }
 
 
-
+importExtension("qdaq-filters")
 createObjects();
 createUi();
 
@@ -182,3 +183,5 @@ createUi();
 qdaq.mainLoop.tempCtrlLoop.arm();
 qdaq.mainLoop.dataLoop.arm();
 qdaq.mainLoop.arm();
+qdaq.mainLoop.tempCtrlLoop.tcc.autoMode = true
+setTc(1)
