@@ -609,7 +609,7 @@ void QConsoleWidget::consoleMessage(const QString & message, const QTextCharForm
 
 /////////////////// QConsoleWidget::QConsoleHistory /////////////////////
 
-#define HISTORY_FILE "_command_history.lst"
+#define HISTORY_FILE ".command_history.lst"
 
 QConsoleWidget::QConsoleHistory::QConsoleHistory(void) : pos_(0), active_(false), maxsize_(10000)
 {
