@@ -199,8 +199,6 @@ QDaqConsoleTabWidget::QDaqConsoleTabWidget(QWidget *parent) : QTabWidget(parent)
     tabBar()->setExpanding(false);
     connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(onTabClose(int)));
 
-    addConsole();
-
     QToolBar* bar = new QToolBar;
 
     abort_ = bar->addAction(QIcon(":/images/stop.png"),"Abort script",this,SLOT(abortScript()));
@@ -237,7 +235,7 @@ void QDaqConsoleTabWidget::onTabClose(int index)
 void QDaqConsoleTabWidget::abortScript()
 {
     QDaqConsole * c = (QDaqConsole*)currentWidget();
-    c->session()->abortEvaluation();
+    if (c) c->session()->abortEvaluation();
 }
 
 
