@@ -1,5 +1,5 @@
 
-var mainUi = loadTopLevelUi('ui/testconsolewidget.ui','mainUi');
+var mainUi = ui.loadTopLevelUi('ui/testconsolewidget.ui','mainUi');
 
 mainUi.findChild("consoleTab").addConsole();
 

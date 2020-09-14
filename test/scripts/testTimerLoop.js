@@ -58,12 +58,12 @@ function createLoop() {
 
 function createUi(uiname) {
 
-    var w = loadTopLevelUi(uiname,'mainForm');
-    bind(qdaq.loop.t,w.findChild('t'));
-    bind(qdaq.loop.loop2.t2,w.findChild('t2'));
-    bind(qdaq.findChild('ch1'),w.findChild('ch1'));
-    bind(qdaq.findChild('ch2'),w.findChild('ch2'));
-    bind(qdaq.findChild('ch3'),w.findChild('ch3'));
+    var w = ui.loadTopLevelUi(uiname,'mainForm');
+    ui.bind(qdaq.loop.t,w.findChild('t'));
+    ui.bind(qdaq.loop.loop2.t2,w.findChild('t2'));
+    ui.bind(qdaq.findChild('ch1'),w.findChild('ch1'));
+    ui.bind(qdaq.findChild('ch2'),w.findChild('ch2'));
+    ui.bind(qdaq.findChild('ch3'),w.findChild('ch3'));
 
     function startPressed(on) {
         if (on) qdaq.loop.arm();
@@ -91,8 +91,9 @@ function doit() {
     createUi(cb.currentText);
 }
 
+importExtension('qdaq-filters')
 createLoop();
-var w = loadTopLevelUi('ui/testCombo.ui','comboForm');
+var w = ui.loadTopLevelUi('ui/testCombo.ui','comboForm');
 var bt = w.findChild("pushButton");
 bt['clicked()'].connect(doit);
 w.show();
