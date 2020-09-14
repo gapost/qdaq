@@ -128,10 +128,11 @@ int main(int argc, char *argv[])
         mainWin->show();
     }
     else {
+        // Start a console to run the startup script
         QDaqConsole* console = new QDaqConsole(s);
         console->show();
 
-        console->stdOut("QDaq - Qt-based Data Aqcuisition");
+        console->stdOut("QDaq - Qt-based Data Aqcuisition\n");
         console->stdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
 
         if (!startupScript.isEmpty()) {
@@ -146,7 +147,9 @@ int main(int argc, char *argv[])
             // Do nothing, user interacts with console
         }
         else {
-            if (console) delete console;
+            // if user did not ask for a console, delete the console
+            if (!console) delete console;
+            // if no other windows, exit
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
         }
     }
