@@ -4,8 +4,6 @@
 #
 #-------------------------------------------------
 
-#QT       += core gui widgets script scripttools uitools testlib
-
 QT       += core script scripttools
 
 lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
@@ -106,17 +104,13 @@ unix {
 ############# linux 3rd party libs ##############
 
 unix {
-    ########## system libs ##########
-    LIBS += -lrt -lpthread
-
-    ########## ATLAS ################
-    LIBS += -lm
 
     ############## HDF5 ##############
     LIBS += -lhdf5 -lhdf5_cpp
 
     ############## muParser ##############
     LIBS += -lmuparser
+
 }
 
 ############## 3rd Party Libs for win32 ###############

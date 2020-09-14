@@ -1,0 +1,8 @@
+INCLUDEPATH *= $$[QT_INSTALL_HEADERS]/QDaq
+
+LIBS *= -lQDaqCore
+
+QT *= core script scripttools
+
+
+

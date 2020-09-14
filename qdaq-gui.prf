@@ -1,0 +1,10 @@
+INCLUDEPATH *= $$[QT_INSTALL_HEADERS]/QDaq
+
+LIBS *= -lQDaqGui
+
+QT *= core script scripttools gui widgets uitools
+
+CONFIG *= qwt
+
+
+

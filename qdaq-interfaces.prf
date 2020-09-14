@@ -1,0 +1,8 @@
+INCLUDEPATH *= $$[QT_INSTALL_HEADERS]/QDaq
+
+LIBS *= -lQDaqInterfaces
+
+QT *= core network script serialport
+
+
+
