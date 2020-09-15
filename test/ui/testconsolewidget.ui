@@ -15,14 +15,14 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QDaqConsoleTab" name="consoleTab"/>
+    <widget class="QDaqConsoleTabWidget" name="consoleTab"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QDaqConsoleTab</class>
-   <extends>QWidget</extends>
+   <class>QDaqConsoleTabWidget</class>
+   <extends>QTabWidget</extends>
    <header>QDaqConsole.h</header>
   </customwidget>
  </customwidgets>

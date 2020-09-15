@@ -45,6 +45,10 @@ class QDAQ_EXPORT QDaqConsoleTabWidget : public QTabWidget
 public:
     QDaqConsoleTabWidget(QWidget* parent = 0);
 
+    QDaqConsole* currentConsole();
+
+    virtual QSize sizeHint() const;
+
 protected:
     virtual void tabRemoved(int index);
 

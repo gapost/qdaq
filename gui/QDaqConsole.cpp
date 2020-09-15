@@ -205,6 +205,12 @@ QDaqConsoleTabWidget::QDaqConsoleTabWidget(QWidget *parent) : QTabWidget(parent)
     bar->addAction(QIcon(":/images/Terminal-128.png"),"Add console tab",this,SLOT(addConsole()));
 
     setCornerWidget(bar,Qt::TopRightCorner);
+
+}
+
+QSize QDaqConsoleTabWidget::sizeHint() const
+{
+    return QSize(600,400);
 }
 
 void QDaqConsoleTabWidget::addConsole()
@@ -230,6 +236,11 @@ void QDaqConsoleTabWidget::onTabClose(int index)
         removeTab(index);
         delete w;
     }
+}
+
+QDaqConsole* QDaqConsoleTabWidget::currentConsole()
+{
+    return (QDaqConsole*)currentWidget();
 }
 
 void QDaqConsoleTabWidget::abortScript()

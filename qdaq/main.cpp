@@ -129,11 +129,13 @@ int main(int argc, char *argv[])
     }
     else {
         // Start a console to run the startup script
-        QDaqConsole* console = new QDaqConsole(s);
-        console->show();
+        // QDaqConsole* daqConsole = new QDaqConsole(s);
+        QDaqConsoleTabWidget* daqConsole = new QDaqConsoleTabWidget;
+        daqConsole->addConsole();
+        daqConsole->show();
 
-        console->stdOut("QDaq - Qt-based Data Aqcuisition\n");
-        console->stdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
+        daqConsole->currentConsole()->stdOut("QDaq - Qt-based Data Aqcuisition\n");
+        daqConsole->currentConsole()->stdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
 
         if (!startupScript.isEmpty()) {
             s->evaluate(QString("log('Executing startup script %1')").arg(startupScript));
@@ -143,12 +145,12 @@ int main(int argc, char *argv[])
 
         if (s->getEngine()->hasUncaughtException())
         {
-            console->flush();
-            // Do nothing, user interacts with console
+            daqConsole->currentConsole()->flush();
+           // Do nothing, user interacts with console
         }
         else {
             // if user did not ask for a console, delete the console
-            if (!console) delete console;
+            if (!console) delete daqConsole;
             // if no other windows, exit
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
         }
