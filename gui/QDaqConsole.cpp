@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 #include <QTabBar>
 #include <QToolBar>
+#include <QDebug>
 
 #include "QDaqConsole.h"
 
@@ -201,8 +202,15 @@ QDaqConsoleTabWidget::QDaqConsoleTabWidget(QWidget *parent) : QTabWidget(parent)
 
     QToolBar* bar = new QToolBar;
 
-    abort_ = bar->addAction(QIcon(":/images/stop.png"),"Abort script",this,SLOT(abortScript()));
-    bar->addAction(QIcon(":/images/Terminal-128.png"),"Add console tab",this,SLOT(addConsole()));
+    abort_ = bar->addAction("Abort script",this,SLOT(abortScript()));
+    QIcon ico = QIcon::fromTheme("process-stop");
+    if (!ico.isNull())
+            abort_->setIcon(ico);
+
+    QAction* a = bar->addAction("Add console tab",this,SLOT(addConsole()));
+    ico = QIcon::fromTheme("utilities-terminal");
+    if (!ico.isNull())
+            a->setIcon(ico);
 
     setCornerWidget(bar,Qt::TopRightCorner);
 
@@ -247,6 +255,7 @@ void QDaqConsoleTabWidget::abortScript()
 {
     QDaqConsole * c = (QDaqConsole*)currentWidget();
     if (c) c->session()->abortEvaluation();
+    qDebug() << "Request abort to " << c->windowTitle();
 }
 
 
