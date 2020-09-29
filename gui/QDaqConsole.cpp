@@ -17,6 +17,8 @@
 
 #include "QDaqRoot.h"
 
+#include "qconsolewidget/examples/scriptconsole/qscriptcompleter.h"
+
 QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(parent), session_(s)
 {
 	setTabStopWidth ( 40 );
@@ -39,9 +41,26 @@ QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(paren
     setFont(textFont);
 #endif
 
-    connect(session_,SIGNAL(stdOut(const QString&)),this,SLOT(stdOut(const QString&)));
-    connect(session_,SIGNAL(stdErr(const QString&)),this,SLOT(stdErr(const QString&)));
+    connect(session_,SIGNAL(stdOut(const QString&)),this,SLOT(writeStdOut(const QString&)));
+    connect(session_,SIGNAL(stdErr(const QString&)),this,SLOT(writeStdErr(const QString&)));
     connect(session_,SIGNAL(endSession()),this,SLOT(endSession()),Qt::QueuedConnection);
+    connect(this,SIGNAL(consoleCommand(const QString&)),this,SLOT(exec(const QString&)));
+    connect(this,SIGNAL(abortEvaluation()),this,SLOT(abort()));
+
+    this->device()->close();
+
+    QScriptCompleter * completer = new QScriptCompleter;
+    completer->setParent(this);
+    completer->seScripttEngine(session_->getEngine());
+    setCompleter(completer);
+    // A "." triggers the completer
+    QStringList tr;
+    tr << ".";
+    setCompletionTriggers(tr);
+
+    writeStdOut(">> ");
+    setMode(QConsoleWidget::Input);
+
 }
 
 QDaqConsole::~QDaqConsole()
@@ -50,12 +69,24 @@ QDaqConsole::~QDaqConsole()
 }
 
 void QDaqConsole::exec(const QString& code)
-{
-    session_->evaluate(code);
+{    
+    multilineCode_ += code;
+
+    if (!multilineCode_.isEmpty() && session_->canEvaluate(multilineCode_))
+    {
+        session_->evaluate(multilineCode_);
+        multilineCode_ = "";
+    }
+
+    writeStdOut(multilineCode_.isEmpty() ? "\n>> " : "\n...> ");
+    setMode(QConsoleWidget::Input);
 }
-bool QDaqConsole::canEvaluate(const QString& code)
+
+void QDaqConsole::abort()
 {
-    return session_->canEvaluate(code);
+    session_->abortEvaluation();
+    writeStdOut("\n>> ");
+    setMode(QConsoleWidget::Input);
 }
 
 void QDaqConsole::endSession()
@@ -104,95 +135,6 @@ void QDaqConsole::closeEvent ( QCloseEvent * e )
 	else e->ignore();*/
 }
 
-void QDaqConsole::keyPressEvent (QKeyEvent * e)
-{
-	if (e->modifiers() & Qt::ControlModifier)
-	{
-		int k = e->key();
-        //if (k==Qt::Key_Cancel || k==Qt::Key_Pause) // did not work on Linux. GA 24/3/2015
-        if (k==Qt::Key_Q) // Ctrl-Q aborts
-        {
-            session_->abortEvaluation();
-			e->accept();
-			return;
-		}
-
-        if (k==Qt::Key_C) // Ctrl-C copy
-        {
-            copy();
-            e->accept();
-            return;
-        }
-	}
-	
-	QConsoleWidget::keyPressEvent(e);
-}
-
-QStringList QDaqConsole::introspection(const QString& lookup)
-{
-    // list of found tokens
-    QStringList properties, children, functions;
-
-    if (lookup.isEmpty()) return properties;
-
-    QScriptEngine* eng = session_->getEngine();
-    QScriptValue scriptObj = eng->evaluate(lookup);
-
-    // if the engine cannot recognize the variable return
-    if (eng->hasUncaughtException()) return properties;
-
-     // if a QObject add the named children
-    if (scriptObj.isQObject())
-    {
-        QObject* obj = scriptObj.toQObject();
-
-        foreach(QObject* ch, obj->children())
-        {
-            QString name = ch->objectName();
-            if (!name.isEmpty())
-                children << name;
-        }
-
-    }
-
-    // add the script properties
-    {
-        QScriptValue obj(scriptObj); // the object to iterate over
-        while (obj.isObject()) {
-            QScriptValueIterator it(obj);
-            while (it.hasNext()) {
-                it.next();
-
-                // avoid array indices
-                bool isIdx;
-                it.scriptName().toArrayIndex(&isIdx);
-                if (isIdx) continue;
-
-                // avoid "hidden" properties starting with "__"
-                if (it.name().startsWith("__")) continue;
-
-                // include in list
-                if (it.value().isQObject()) children << it.name();
-                else if (it.value().isFunction()) functions << it.name();
-                else properties << it.name();
-            }
-            obj = obj.prototype();
-        }
-    }
-
-    children.removeDuplicates();
-    children.sort(Qt::CaseInsensitive);
-    functions.removeDuplicates();
-    functions.sort(Qt::CaseInsensitive);
-    properties.removeDuplicates();
-    properties.sort(Qt::CaseInsensitive);
-
-    children.append(properties);
-    children.append(functions);
-
-    return children;
-
-}
 
 /*********************** QDaqConsoleTabWidget *********************/
 QDaqConsoleTabWidget::QDaqConsoleTabWidget(QWidget *parent) : QTabWidget(parent)

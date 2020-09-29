@@ -24,18 +24,21 @@ public slots:
 
     void endSession();
 
-    void flush() { flushStdOut(); }
+    void flush()
+    {
+        // flushStdOut();
+    }
+
+private slots:
+    void exec(const QString& code);
+    void abort();
 
 protected:
-	void exec(const QString& code);
-	bool canEvaluate(const QString& code);
-
-    QStringList introspection(const QString& lookup);
 
 	virtual void closeEvent ( QCloseEvent * event );
 
-    //! derived key press event
-    virtual void keyPressEvent (QKeyEvent * e);
+private:
+    QString multilineCode_;
 };
 
 class QDAQ_EXPORT QDaqConsoleTabWidget : public QTabWidget

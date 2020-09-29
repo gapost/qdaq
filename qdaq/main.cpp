@@ -134,8 +134,8 @@ int main(int argc, char *argv[])
         daqConsole->addConsole();
         daqConsole->show();
 
-        daqConsole->currentConsole()->stdOut("QDaq - Qt-based Data Aqcuisition\n");
-        daqConsole->currentConsole()->stdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
+        daqConsole->currentConsole()->writeStdOut("QDaq - Qt-based Data Aqcuisition\n");
+        daqConsole->currentConsole()->writeStdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
 
         if (!startupScript.isEmpty()) {
             s->evaluate(QString("log('Executing startup script %1')").arg(startupScript));

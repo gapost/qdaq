@@ -28,7 +28,6 @@ INCLUDEPATH += .
 SOURCES += \
     QDaqDelegates.cpp \
     QDaqConsole.cpp \
-    QConsoleWidget.cpp \
     QDaqObjectController.cpp \
     QDaqObjectBrowser.cpp \
     QDaqErrorLog.cpp \
@@ -43,7 +42,6 @@ SOURCES += \
 
 HEADERS  += \
     QDaqDelegates.h \
-    QConsoleWidget.h \
     QDaqConsole.h \
     QDaqObjectBrowser.h \
     QDaqObjectController.h \
@@ -56,6 +54,10 @@ HEADERS  += \
     QDaqLed.h \
     QDaqObjectModel.h \ 
     QDaqUi.h
+
+
+include(qconsolewidget/src/qconsolewidget.pri)
+SOURCES += qconsolewidget/examples/scriptconsole/qscriptcompleter.cpp
 
 
 
