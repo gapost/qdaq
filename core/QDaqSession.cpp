@@ -91,7 +91,7 @@ bool QDaqScriptEngine::evaluate(const QScriptProgram& program, QString& ret, QDa
     }
     else result = engine_->evaluate(program);
 
-	if (!result.isUndefined()) ret = result.toString();
+    if (result.isValid() && !result.isUndefined()) ret = result.toString();
 	if (engine_->hasUncaughtException())
 	{
 		QStringList backtrace = engine_->uncaughtExceptionBacktrace();
@@ -134,9 +134,6 @@ QSet<int> QDaqSession::idx_set;
 QDaqSession::QDaqSession(QObject *parent) : QDaqScriptEngine(parent)
 {
     debugger_ = new QScriptEngineDebugger(this);
-
-    wait_timer_ = new QTimer(this);
-    wait_timer_->setSingleShot(true);
 
     // find a free index number
     idx_ = nextAvailableIndex();
@@ -181,28 +178,47 @@ void QDaqSession::evaluate(const QString& program)
     QString result;
     if ( QDaqScriptEngine::evaluate(program, result) )
     {
-        if (!result.isEmpty()) emit stdOut(result);
+        if (!result.isEmpty()) emit stdOut(result + "\n");
     }
     else
     {
-        emit stdErr(result);
+        emit stdErr(result + "\n");
     }
 }
 void QDaqSession::wait(uint ms)
 {
-    wait_timer_->start(ms);
-    wait_aborted_ = false;
-    do
-        QCoreApplication::processEvents(QEventLoop::WaitForMoreEvents, PROC_EVENTS_INTERVAL);
-    while (wait_timer_->isActive());
-    if (wait_aborted_)
-        engine_->currentContext()->throwError(QScriptContext::UnknownError,"Wait Aborted.");
+    QEventLoop loop;
+    connect(this,SIGNAL(abortWait()),&loop,SLOT(quit()));
+    QTimer::singleShot(ms,Qt::PreciseTimer,&loop,SLOT(quit()));
+    loop.exec();
+
+    /*
+     * wait problem
+     *
+     * Either the above implementation or the one below
+     * with QCoreApplication::processEvents have the same issue:
+     * If another session begins a wait, then first their wait has to
+     * end (either timeout or user abort) and then this one
+     *
+     * The implementation below works ok however CPU goes to 100%
+     *
+     * TODO : find solution!
+     *
+     */
+
+//    QElapsedTimer tmr;
+//    tmr.start();
+//    wait_aborted_ = false;
+//    while(tmr.elapsed()<ms && !wait_aborted_)
+//        QCoreApplication::processEvents(QEventLoop::AllEvents,200);
+
+
 }
 void QDaqSession::abortEvaluation()
 {
-    wait_timer_->stop();
-    wait_aborted_ = true;
+    emit abortWait();
     engine_->abortEvaluation();
+    qDebug() << "Request abort to " << this->objectName();
 }
 void QDaqSession::exec(const QString &fname)
 {
@@ -232,12 +248,12 @@ void QDaqSession::exec(const QString &fname)
     }
     else engine_->currentContext()->throwError(QScriptContext::ReferenceError,"File not found.");
 }
-//void QDaqSession::print(const QString& str)
+
 void QDaqSession::log(const QString& str)
 {
-    stdOut(str);
-    if (!str.endsWith('\n')) stdOut(QString('\n'));
+    stdOut(str + "\n");
 }
+
 void QDaqSession::textSave(const QString &str, const QString &fname)
 {
     QFile file(fname);
@@ -266,7 +282,7 @@ void QDaqSession::importExtension(const QString &name)
 {
     QScriptValue ret = engine_->importExtension(name);
     if (engine_->hasUncaughtException())
-        stdErr(ret.toString());
+        stdErr(ret.toString() + '\n');
 }
 
 QStringList QDaqSession::availableExtensions()

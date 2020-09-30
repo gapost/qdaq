@@ -47,6 +47,8 @@ QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(paren
     connect(this,SIGNAL(consoleCommand(const QString&)),this,SLOT(exec(const QString&)));
     connect(this,SIGNAL(abortEvaluation()),this,SLOT(abort()));
 
+    // TODO : remember to change in qconsolewidget:
+    // device should not be open
     this->device()->close();
 
     QScriptCompleter * completer = new QScriptCompleter;
@@ -78,15 +80,13 @@ void QDaqConsole::exec(const QString& code)
         multilineCode_ = "";
     }
 
-    writeStdOut(multilineCode_.isEmpty() ? "\n>> " : "\n...> ");
+    writeStdOut(multilineCode_.isEmpty() ? ">> " : "...> ");
     setMode(QConsoleWidget::Input);
 }
 
 void QDaqConsole::abort()
 {
     session_->abortEvaluation();
-    writeStdOut("\n>> ");
-    setMode(QConsoleWidget::Input);
 }
 
 void QDaqConsole::endSession()
@@ -197,7 +197,7 @@ void QDaqConsoleTabWidget::abortScript()
 {
     QDaqConsole * c = (QDaqConsole*)currentWidget();
     if (c) c->session()->abortEvaluation();
-    qDebug() << "Request abort to " << c->windowTitle();
+
 }
 
 

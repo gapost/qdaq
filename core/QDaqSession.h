@@ -53,8 +53,8 @@ class QDAQ_EXPORT QDaqSession : public QDaqScriptEngine
 
 protected:
     QScriptEngineDebugger* debugger_;
-    QTimer* wait_timer_;
-    bool wait_aborted_;
+    //QTimer* wait_timer_;
+    //bool wait_aborted_;
     QElapsedTimer watch_;
 
     // console index = 0 - ROOT,1,2,3,...
@@ -139,6 +139,7 @@ signals:
     void stdOut(const QString&);
     void stdErr(const QString&);
     void endSession();
+    void abortWait();
 
 };
 
