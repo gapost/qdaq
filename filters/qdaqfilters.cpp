@@ -3,7 +3,7 @@
 #include "QDaqRoot.h"
 #include "QDaqSession.h"
 
-#include "core_script_interface.h"
+#include "QDaqScriptAPI.h"
 #include "qdaqfopdt.h"
 #include "qdaqinterpolator.h"
 #include "qdaqlinearcorrelator.h"
@@ -29,8 +29,8 @@ void QDaqFilters::onNewSession(QDaqSession *s)
 void QDaqFilters::initScriptInterface(QDaqSession *s)
 {
     QScriptEngine* e = s->getEngine();
-    core_script_register_class(e, &QDaqFOPDT::staticMetaObject);
-    core_script_register_class(e, &QDaqInterpolator::staticMetaObject);
-    core_script_register_class(e, &QDaqLinearCorrelator::staticMetaObject);
-    core_script_register_class(e, &QDaqPid::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqFOPDT::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqInterpolator::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqLinearCorrelator::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqPid::staticMetaObject);
 }

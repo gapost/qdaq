@@ -4,7 +4,7 @@
 #include "QDaqLogFile.h"
 #include "qdaqh5file.h"
 
-#include "core_script_interface.h"
+#include "QDaqScriptAPI.h"
 
 #include <QScriptEngine>
 #include <QScriptEngineDebugger>
@@ -44,14 +44,14 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
     QDaqObject* qdaq = QDaqObject::root();
 
-    QScriptValue rootObj = toScriptValue(engine_, qdaq, QScriptEngine::QtOwnership);
+    QScriptValue rootObj = QDaqScriptAPI::toScriptValue(engine_, qdaq, QScriptEngine::QtOwnership);
 
     self.setProperty("qdaq", rootObj, QScriptValue::Undeletable | QScriptValue::ReadOnly);
 
 	engine_->setGlobalObject(self);
 
     // init core scripting interface
-    core_script_interface_init(engine_);
+    QDaqScriptAPI::initAPI(engine_);
 
 	engine_->collectGarbage();
 }

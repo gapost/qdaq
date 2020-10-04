@@ -1,4 +1,4 @@
-#include "core_script_interface.h"
+#include "QDaqScriptAPI.h"
 
 #include <QScriptEngine>
 
@@ -12,6 +12,13 @@
 #include "QDaqChannel.h"
 #include "QDaqDataBuffer.h"
 #include "QDaqDevice.h"
+
+/*
+ * Conversion of some data from/to qscript
+ *
+ * QColor, QPointF
+ *
+ */
 
 QScriptValue toScriptValue(QScriptEngine *engine, const QColor &clr)
 {
@@ -63,25 +70,6 @@ void fromScriptValueContainer(const QScriptValue &value, Container &cont)
     }
 }
 
-QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject * const &obj, int ownership)
-{
-    return eng->newQObject(obj, QScriptEngine::ValueOwnership(ownership),
-                           QScriptEngine::ExcludeDeleteLater |
-                           QScriptEngine::PreferExistingWrapperObject );
-}
-
-QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject * const &obj, int ownership)
-{
-    return eng->newQObject(scriptObj, obj, QScriptEngine::ValueOwnership(ownership),
-                           QScriptEngine::ExcludeDeleteLater |
-                           QScriptEngine::PreferExistingWrapperObject );
-}
-
-void fromScriptValue(const QScriptValue &value, QDaqObject*& obj)
-{
-    obj = qobject_cast<QDaqObject*>(value.toQObject());
-}
-
 QScriptValue toScriptValue(QScriptEngine *eng, const QDaqObjectList& L)
 {
     QScriptValue V = eng->newArray();
@@ -110,18 +98,38 @@ void fromScriptValue(const QScriptValue &value, QDaqObjectList& L)
     }
 }
 
+QScriptValue QDaqScriptAPI::toScriptValue(QScriptEngine *eng, QDaqObject * const &obj, int ownership)
+{
+    return eng->newQObject(obj, QScriptEngine::ValueOwnership(ownership),
+                           QScriptEngine::ExcludeDeleteLater |
+                           QScriptEngine::PreferExistingWrapperObject );
+}
+
+//QScriptValue toScriptValue(QScriptEngine *eng, const QScriptValue& scriptObj, QDaqObject * const &obj, int ownership)
+//{
+//    return eng->newQObject(scriptObj, obj, QScriptEngine::ValueOwnership(ownership),
+//                           QScriptEngine::ExcludeDeleteLater |
+//                           QScriptEngine::PreferExistingWrapperObject );
+//}
+
+void QDaqScriptAPI::fromScriptValue(const QScriptValue &value, QDaqObject*& obj)
+{
+    obj = qobject_cast<QDaqObject*>(value.toQObject());
+}
+
 typedef QDaqObject* QDaqObjectStar;
 
 
 QScriptValue toScriptValueQDaqObjectStar(QScriptEngine *eng, const QDaqObjectStar& obj)
 {
-    return toScriptValue(eng,obj);
+    return QDaqScriptAPI::toScriptValue(eng,obj);
 }
 
 void fromScriptValueQDaqObjectStar(const QScriptValue &value, QDaqObjectStar &obj)
 {
-    fromScriptValue(value, obj);
+    QDaqScriptAPI::fromScriptValue(value, obj);
 }
+
 
 QScriptValue scriptConstructor(QScriptContext *context, QScriptEngine *engine, const QMetaObject* metaObject)
 {
@@ -139,13 +147,13 @@ QScriptValue scriptConstructor(QScriptContext *context, QScriptEngine *engine, c
         if (!obj)
             return context->throwError(QString("%1(name=%2) could not be created").arg(metaObject->className()).arg(name));
 
-        return toScriptValue(engine, obj);
+        return QDaqScriptAPI::toScriptValue(engine, obj);
     }
     else return context->throwError(QScriptContext::SyntaxError,
                                     QString("%1() called without'new'").arg(metaObject->className()));
 }
 
-int core_script_register_class(QScriptEngine* eng, const QMetaObject* metaObject)
+int QDaqScriptAPI::registerClass(QScriptEngine* eng, const QMetaObject* metaObject)
 {
     QScriptEngine::FunctionWithArgSignature cptr =
             reinterpret_cast<QScriptEngine::FunctionWithArgSignature>(scriptConstructor);
@@ -157,7 +165,7 @@ int core_script_register_class(QScriptEngine* eng, const QMetaObject* metaObject
     return 1;
 }
 
-int core_script_interface_init(QScriptEngine *eng)
+int QDaqScriptAPI::initAPI(QScriptEngine *eng)
 {
     // Register all types and conversions
     ByteArrayClass *byteArrayClass = new ByteArrayClass(eng);
@@ -173,13 +181,78 @@ int core_script_interface_init(QScriptEngine *eng)
         qScriptRegisterMetaType<QPointF>(eng,::toScriptValue,::fromScriptValue);
 
 
-    ret &= core_script_register_class(eng, &QDaqObject::staticMetaObject);
-    ret &= core_script_register_class(eng, &QDaqJob::staticMetaObject);
-    ret &= core_script_register_class(eng, &QDaqLoop::staticMetaObject);
-    ret &= core_script_register_class(eng, &QDaqChannel::staticMetaObject);
-    ret &= core_script_register_class(eng, &QDaqDataBuffer::staticMetaObject);
-    ret &= core_script_register_class(eng, &QDaqDevice::staticMetaObject);
+    ret &= registerClass(eng, &QDaqObject::staticMetaObject);
+    ret &= registerClass(eng, &QDaqJob::staticMetaObject);
+    ret &= registerClass(eng, &QDaqLoop::staticMetaObject);
+    ret &= registerClass(eng, &QDaqChannel::staticMetaObject);
+    ret &= registerClass(eng, &QDaqDataBuffer::staticMetaObject);
+    ret &= registerClass(eng, &QDaqDevice::staticMetaObject);
 
     return ret;
+
+}
+
+QVariant QDaqScriptAPI::toVariant(QScriptEngine *eng, const QScriptValue &value)
+{
+    // Do some QDaq specific type conversions
+    QVariant V;
+    bool ok = false;
+
+    // check for QDaq JS classes Vector and ByteArray
+    if (eng) {
+        QScriptValue ByteArray = eng->globalObject().property("ByteArray");
+        if (ByteArray.isValid() && value.instanceOf(ByteArray)) {
+            QByteArray ba = qscriptvalue_cast<QByteArray>(value);
+            V = QVariant::fromValue(ba);
+            ok = true;
+        }
+        if (!ok) {
+            QScriptValue Vector = eng->globalObject().property("Vector");
+            if (Vector.isValid() && value.instanceOf(Vector)) {
+                QDaqVector v = qscriptvalue_cast<QDaqVector>(value);
+                V = QVariant::fromValue(v);
+                ok = true;
+            }
+        }
+    }
+
+    // check for QDaqObject
+    if (!ok && value.isQObject()) {
+        QDaqObject* obj(0);
+        fromScriptValue(value,obj);
+        if (obj) {
+            V = QVariant::fromValue(obj);
+            ok = true;
+        }
+    }
+
+    // check for QDaqObject list
+    if (!ok && value.isArray()) {
+        quint32 len = value.property("length").toUInt32();
+        bool isObjLst = true;
+        QDaqObjectList L;
+        for (quint32 i = 0; i < len; ++i) {
+            QScriptValue p = value.property(i);
+            if (!p.isQObject()) { isObjLst=false; break; }
+            QDaqObject* obj(0);
+            fromScriptValue(p,obj);
+            if (obj==0) { isObjLst=false; break; }
+            else L << obj;
+        }
+        if (isObjLst) {
+            V = QVariant::fromValue(L);
+            ok = true;
+        }
+    }
+
+
+    // if all failed do the default Qt conversion
+    if (!ok) V = value.toVariant();
+
+    return V;
+}
+
+QDaqScriptAPI::QDaqScriptAPI(QObject *parent) : QObject(parent)
+{
 
 }

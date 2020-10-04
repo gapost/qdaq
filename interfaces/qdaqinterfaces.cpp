@@ -3,7 +3,7 @@
 #include "QDaqRoot.h"
 #include "QDaqSession.h"
 
-#include "core_script_interface.h"
+#include "QDaqScriptAPI.h"
 #include "qdaqmodbus.h"
 #include "qdaqserial.h"
 #include "qdaqtcpip.h"
@@ -29,9 +29,9 @@ void QDaqInterfaces::onNewSession(QDaqSession *s)
 void QDaqInterfaces::initScriptInterface(QDaqSession *s)
 {
     QScriptEngine* e = s->getEngine();
-    core_script_register_class(e, &QDaqModbusTcp::staticMetaObject);
-    core_script_register_class(e, &QDaqModbusRtu::staticMetaObject);
-    core_script_register_class(e, &QDaqSerial::staticMetaObject);
-    core_script_register_class(e, &QDaqTcpip::staticMetaObject);
-    core_script_register_class(e, &QDaqLinuxGpib::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqModbusTcp::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqModbusRtu::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqSerial::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqTcpip::staticMetaObject);
+    QDaqScriptAPI::registerClass(e, &QDaqLinuxGpib::staticMetaObject);
 }

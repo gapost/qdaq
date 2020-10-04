@@ -1,7 +1,7 @@
 #include "QDaqObject.h"
 #include "QDaqRoot.h"
 #include "QDaqTypes.h"
-#include "core_script_interface.h"
+#include "QDaqScriptAPI.h"
 
 #include <QScriptContext>
 #include <QScriptEngine>
@@ -396,60 +396,7 @@ bool QDaqObject::setQDaqProperty(QString name, const QScriptValue &value)
     }
 
     // Do some QDaq specific type conversions
-    QVariant V;
-    bool ok = false;
-
-    // check for QDaq JS classes Vector and ByteArray
-    QScriptEngine* eng = engine();
-    if (eng) {
-        QScriptValue ByteArray = eng->globalObject().property("ByteArray");
-        if (ByteArray.isValid() && value.instanceOf(ByteArray)) {
-            QByteArray ba = qscriptvalue_cast<QByteArray>(value);
-            V = QVariant::fromValue(ba);
-            ok = true;
-        }
-        if (!ok) {
-            QScriptValue Vector = eng->globalObject().property("Vector");
-            if (Vector.isValid() && value.instanceOf(Vector)) {
-                QDaqVector v = qscriptvalue_cast<QDaqVector>(value);
-                V = QVariant::fromValue(v);
-                ok = true;
-            }
-        }
-    }
-
-    // check for QDaqObject
-    if (!ok && value.isQObject()) {
-        QDaqObject* obj(0);
-        fromScriptValue(value,obj);
-        if (obj) {
-            V = QVariant::fromValue(obj);
-            ok = true;
-        }
-    }
-
-    // check for QDaqObject list
-    if (!ok && value.isArray()) {
-        quint32 len = value.property("length").toUInt32();
-        bool isObjLst = true;
-        QDaqObjectList L;
-        for (quint32 i = 0; i < len; ++i) {
-            QScriptValue p = value.property(i);
-            if (!p.isQObject()) { isObjLst=false; break; }
-            QDaqObject* obj(0);
-            fromScriptValue(p,obj);
-            if (obj==0) { isObjLst=false; break; }
-            else L << obj;
-        }
-        if (isObjLst) {
-            V = QVariant::fromValue(L);
-            ok = true;
-        }
-    }
-
-
-    // if all failed do the default Qt conversion
-    if (!ok) V = value.toVariant();
+    QVariant V = QDaqScriptAPI::toVariant(engine(),value);
 
     setProperty(name.toLatin1(),V);
     return true;

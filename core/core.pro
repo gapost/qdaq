@@ -57,7 +57,7 @@ SOURCES += \
     h5helper_v1_1.cpp \
     vectorclass.cpp \
     vectorprototype.cpp \
-    core_script_interface.cpp
+    QDaqScriptAPI.cpp
 
 HEADERS  += \
     QDaqSession.h \
@@ -82,7 +82,7 @@ HEADERS  += \
     h5helper_v1_1.h \
     vectorprototype.h \
     vectorclass.h \
-    core_script_interface.h
+    QDaqScriptAPI.h
 
 
 DISTFILES += \
