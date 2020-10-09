@@ -1,6 +1,22 @@
 #include "QDaqScriptAPI.h"
+#include "QDaqSession.h"
+#include "qdaqh5file.h"
 
+#include <QCoreApplication>
 #include <QScriptEngine>
+#include <QScriptEngineDebugger>
+#include <QIODevice>
+#include <QFile>
+#include <QTextStream>
+#include <QTimer>
+#include <QDir>
+#include <QProcess>
+#include <QEventLoop>
+#include <QDebug>
+#include <QThread>
+#include <QMetaProperty>
+
+#include <QLibraryInfo>
 
 #include "bytearrayclass.h"
 #include "vectorclass.h"
@@ -153,6 +169,20 @@ QScriptValue scriptConstructor(QScriptContext *context, QScriptEngine *engine, c
                                     QString("%1() called without'new'").arg(metaObject->className()));
 }
 
+QScriptValue sleepfunc(QScriptContext *context, QScriptEngine *engine)
+{
+    Q_UNUSED(engine);
+    if (context->argumentCount()!=1) {
+        return context->throwError(QScriptContext::SyntaxError,
+                            "sleep must be called with 1 argument\n"
+                            "  Usage: sleep(ms)");
+    }
+
+    int msecs = context->argument(0).toUInt32();
+    QThread::msleep(msecs);
+    return QScriptValue(QScriptValue::UndefinedValue);
+}
+
 int QDaqScriptAPI::registerClass(QScriptEngine* eng, const QMetaObject* metaObject)
 {
     QScriptEngine::FunctionWithArgSignature cptr =
@@ -167,6 +197,10 @@ int QDaqScriptAPI::registerClass(QScriptEngine* eng, const QMetaObject* metaObje
 
 int QDaqScriptAPI::initAPI(QScriptEngine *eng)
 {
+    // Register sleep func
+    QScriptValue v = eng->newFunction(sleepfunc);
+    eng->globalObject().setProperty("quit", v);
+
     // Register all types and conversions
     ByteArrayClass *byteArrayClass = new ByteArrayClass(eng);
     eng->globalObject().setProperty("ByteArray", byteArrayClass->constructor());
@@ -252,7 +286,303 @@ QVariant QDaqScriptAPI::toVariant(QScriptEngine *eng, const QScriptValue &value)
     return V;
 }
 
-QDaqScriptAPI::QDaqScriptAPI(QObject *parent) : QObject(parent)
+QDaqScriptAPI::QDaqScriptAPI(QObject *parent) : QObject(parent),
+    stopWatch_(new QElapsedTimer()), session_(0)
 {
 
+}
+
+void QDaqScriptAPI::setSession(QDaqSession *s)
+{
+    session_ = s;
+}
+
+QDaqScriptAPI::~QDaqScriptAPI()
+{
+    delete stopWatch_;
+}
+
+QDaqScriptEngine* QDaqScriptAPI::daqengine() const
+{
+    if (session_) return session_->daqEngine();
+    return 0;
+}
+
+// timing
+void QDaqScriptAPI::tic()
+{
+    stopWatch_->start();
+}
+double QDaqScriptAPI::toc()
+{
+    return 0.000001*stopWatch_->nsecsElapsed();
+}
+
+
+void QDaqScriptAPI::wait(uint ms)
+{
+    QEventLoop loop;
+    connect(this,SIGNAL(abortWait()),&loop,SLOT(quit()));
+    QTimer::singleShot(ms,Qt::PreciseTimer,&loop,SLOT(quit()));
+    loop.exec();
+
+    /*
+     * wait problem
+     *
+     * Either the above implementation or the one below
+     * with QCoreApplication::processEvents have the same issue:
+     * If another session begins a wait, then first their wait has to
+     * end (either timeout or user abort) and then this one
+     *
+     * The implementation below works ok however CPU goes to 100%
+     *
+     * TODO : find solution!
+     *
+     */
+
+//    QElapsedTimer tmr;
+//    tmr.start();
+//    wait_aborted_ = false;
+//    while(tmr.elapsed()<ms && !wait_aborted_)
+//        QCoreApplication::processEvents(QEventLoop::AllEvents,200);
+
+
+}
+
+void QDaqScriptAPI::exec(const QString &fname)
+{
+    QFile file(fname);
+    if (file.open(QIODevice::Text | QIODevice::ReadOnly))
+    {
+        QTextStream qin(&file);
+        QString program = qin.readAll();
+
+        // TODO: syntax check the program
+
+        QScriptContext* ctx = context();
+
+        ctx->setActivationObject(ctx->parentContext()->activationObject());
+        ctx->setThisObject(ctx->parentContext()->thisObject());
+
+        QScriptValue ret = engine()->evaluate(program,fname);
+
+
+        if (engine()->hasUncaughtException()) {
+            // TODO : better reporting
+            QString s = ret.toString();
+            QStringList backtrace = engine()->uncaughtExceptionBacktrace();
+
+            context()->throwValue(engine()->uncaughtException());
+        }
+    }
+    else context()->throwError(QScriptContext::ReferenceError,"File not found.");
+}
+
+
+
+void QDaqScriptAPI::log(const QString& str)
+{
+     emit stdOut(str + '\n');
+}
+
+void QDaqScriptAPI::textSave(const QString &str, const QString &fname)
+{
+    QFile file(fname);
+    if (file.open(QFile::WriteOnly | QFile::Truncate))
+    {
+        QTextStream qout(&file);
+        qout << str;
+    }
+    else context()->throwError("File could not be opened.");
+}
+
+QString QDaqScriptAPI::textLoad(const QString &fname)
+{
+    QString str;
+    QFile file(fname);
+    if (file.open(QFile::ReadOnly))
+    {
+        QTextStream qin(&file);
+        str = qin.readAll();
+    }
+    else context()->throwError("File could not be opened.");
+    return str;
+}
+
+void QDaqScriptAPI::importExtension(const QString &name)
+{
+    QScriptValue ret = engine()->importExtension(name);
+    if (engine()->hasUncaughtException() && session_)
+        emit stdErr(ret.toString() + '\n');
+}
+
+QStringList QDaqScriptAPI::availableExtensions()
+{
+//    QDir pluginsDir = QDir(QLibraryInfo::location(QLibraryInfo::PluginsPath));
+
+//    QStringList libraryPaths = qApp->libraryPaths();
+
+    return engine()->availableExtensions();
+}
+
+void QDaqScriptAPI::quit()
+{
+    emit endSession();
+}
+
+QString QDaqScriptAPI::pwd()
+{
+    return QDir::currentPath();
+}
+
+bool QDaqScriptAPI::cd(const QString &path)
+{
+    QDir dir = QDir::current();
+    bool ret = dir.cd(path);
+    if (ret) QDir::setCurrent(dir.path());
+    return ret;
+}
+
+QStringList QDaqScriptAPI::dir(const QStringList& filters)
+{
+    return QDir::current().entryList(filters);
+}
+QStringList QDaqScriptAPI::dir(const QString& filter)
+{
+    return dir(QStringList(filter));
+}
+bool QDaqScriptAPI::isDir(const QString& name)
+{
+    QFileInfo fi(name);
+    return fi.isDir();
+}
+void QDaqScriptAPI::debug(bool on)
+{
+    session_->debug(on);
+}
+QString QDaqScriptAPI::system(const QString &comm)
+{
+    QProcess p;
+    //comm.split(QChar(' '),QString::SkipEmptyParts);
+    p.start(comm);
+    /*bool ret = */p.waitForFinished(1000);
+    QByteArray pout = p.readAllStandardOutput();
+    QByteArray perr = p.readAllStandardError();
+    QByteArray pall = p.readAll();
+    return QString(pout);
+}
+bool QDaqScriptAPI::h5write(const QDaqObject *obj, const QString &fname)
+{
+    QDaqH5File f;
+    bool ret = f.h5write(obj,fname);
+    if (!f.warnings().isEmpty()) session_->stdErr(f.warnings().join(QChar('\n'))+QChar('\n'));
+    if (!ret) context()->throwError(QString("Error writing file: %1.").arg(f.lastError()));
+    return true;
+}
+QDaqObject* QDaqScriptAPI::h5read(const QString &fname)
+{
+    QDaqH5File f;
+    QDaqObject* o = f.h5read(fname);
+    if (!f.warnings().isEmpty()) session_->stdErr(f.warnings().join(QChar('\n'))+QChar('\n'));
+    if (!o) context()->throwError(QString("Error reading file: %1.").arg(f.lastError()));
+    return o;
+}
+
+
+
+
+QString QDaqScriptAPI::info(QScriptValue v)
+{
+    if (!v.isValid()) return QString("invalid");
+
+    if (v.isBool())
+        return QString("Boolean: %1").arg(v.toString());
+
+    if (v.isNumber())
+        return QString("Number: %1").arg(v.toNumber());
+
+    if (v.isString())
+        return QString("String: %1").arg(v.toString());
+
+    if (v.isDate())
+        return QString("Date: %1").arg(v.toString());
+
+    if (v.isNull())
+        return QString("null");
+
+    if (v.isUndefined())
+        return QString("undefined");
+
+    if (v.isFunction())
+        return QString("Function");
+
+    if (v.isVariant()) {
+        QVariant var = v.toVariant();
+        return QString("Variant (%1): %2").arg(var.typeName()).arg(var.toString());
+    }
+
+    if (v.isQObject()) {
+        QObject* obj = v.toQObject();
+        const QMetaObject* metaobj = obj->metaObject();
+        QString S =  QString(metaobj->className());
+        S += "\n";
+        for(int i=0; i< metaobj->propertyCount(); i++)
+        {
+            QMetaProperty metaProperty = metaobj->property(i);
+            QVariant var = metaProperty.read(obj);
+            S += QString("  %1 (%2): %3\n").arg(metaProperty.name())
+                    .arg(var.typeName())
+                    .arg(var.toString());
+        }
+        if (!obj->dynamicPropertyNames().isEmpty()) {
+            S += "Dynamic Properties\n";
+            foreach(const QByteArray& ba, obj->dynamicPropertyNames())
+            {
+                QVariant var = obj->property(ba.constData());
+                S += QString("  %1 (%2): %3\n").arg(ba.constData())
+                        .arg(var.typeName())
+                        .arg(var.toString());
+            }
+        }
+        return S;
+    }
+
+    if (v.isArray())
+        return QString("Array: %1").arg(v.toString());
+
+
+    if (v.isObject())
+        return QString("Object: %1").arg(v.toString());
+
+    return QString();
+
+
+
+//    QString S;
+//    QScriptValue obj(v); // the object to iterate over
+//    while (obj.isObject()) {
+//        QScriptValueIterator it(obj);
+//        while (it.hasNext()) {
+//            it.next();
+//            //if (it.flags() & QScriptValue::SkipInEnumeration)
+//            //    continue;
+//            S += it.name();
+//            S += QString("(%1): ").arg((int)it.flags());
+//            if (it.value().isFunction()) S += "Function";
+//            else if (it.value().isQMetaObject()) S += "QMetaObject";
+//            else if (it.value().isQObject()) S += "QObject";
+//            else S += it.value().toString();
+//            S += "\n";
+//        }
+//        obj = obj.prototype();
+//    }
+//    return S;
+}
+
+QString QDaqScriptAPI::version()
+{
+    QString S = QString("QDaq ver.: %1\n").arg(QDaq::Version());
+    S += QString("Qt compile ver.: %1\n").arg(QDaq::QtVersion());
+    S += QString("Qt run-time ver.: %1\n").arg(qVersion());
+    return S;
 }

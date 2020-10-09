@@ -65,7 +65,7 @@ void QDaqUi::removeDaqWindow(QWidget* w)
 
 void QDaqUi::initScriptInterface(QDaqSession *s)
 {
-    QScriptEngine* e = s->getEngine();
+    QScriptEngine* e = s->scriptEngine();
     QDaqUiProto* proto = new QDaqUiProto(e);
     e->setDefaultPrototype(qMetaTypeId<QDaqUi*>(),
                            e->newQObject(proto,QScriptEngine::ScriptOwnership));
@@ -99,7 +99,7 @@ void QDaqUi::initScriptInterface(QDaqSession *s)
 
 void QDaqUi::onNewSession(QDaqSession *s)
 {
-    initScriptInterface(s);
+    // initScriptInterface(s);
 }
 
 /**************** Prototype ******************/

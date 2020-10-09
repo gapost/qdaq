@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     QDaqUi ui;
     QDaqSession* s = qdaq.rootSession();
 
-    if (debug) s->evaluate("debug(1)");
+    if (debug) s->debug(true);
 
     if (startupScript.isEmpty() && !console) {
         QDaqIDE* mainWin = ui.createIdeWindow();
@@ -135,22 +135,28 @@ int main(int argc, char *argv[])
         daqConsole->show();
 
         daqConsole->currentConsole()->writeStdOut("QDaq - Qt-based Data Aqcuisition\n");
-        daqConsole->currentConsole()->writeStdOut(QString("Version %1\n\n\n").arg(QDaq::Version()));
+        daqConsole->currentConsole()->writeStdOut(QString("Version %1\n\n").arg(QDaq::Version()));
 
         if (!startupScript.isEmpty()) {
-            s->evaluate(QString("log('Executing startup script %1')").arg(startupScript));
-            s->evaluate(QString("exec('%1')").arg(startupScript));
+            daqConsole->currentConsole()->writeStdOut(
+                        QString("log('Executing startup script %1')").arg(startupScript)
+                        );
+            s->eval(QString("exec('%1')").arg(startupScript));
+            s->waitForFinished(-1);
         }
 
 
-        if (s->getEngine()->hasUncaughtException())
+        if (s->scriptEngine()->hasUncaughtException())
         {
-            daqConsole->currentConsole()->flush();
-           // Do nothing, user interacts with console
+            daqConsole->currentConsole()->onRequestInput(">> ");
+            // Do nothing, user interacts with console
         }
         else {
             // if user did not ask for a console, delete the console
             if (!console) delete daqConsole;
+            else // otherwise start interactive session
+                daqConsole->currentConsole()->onRequestInput(">> ");
+
             // if no other windows, exit
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
         }

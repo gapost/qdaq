@@ -23,15 +23,7 @@ public:
 public slots:
 
     void endSession();
-
-    void flush()
-    {
-        // flushStdOut();
-    }
-
-private slots:
-    void exec(const QString& code);
-    void abort();
+    void onRequestInput(const QString &prompt);
 
 protected:
 

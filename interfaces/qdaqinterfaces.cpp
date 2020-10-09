@@ -28,7 +28,7 @@ void QDaqInterfaces::onNewSession(QDaqSession *s)
 
 void QDaqInterfaces::initScriptInterface(QDaqSession *s)
 {
-    QScriptEngine* e = s->getEngine();
+    QScriptEngine* e = s->scriptEngine();
     QDaqScriptAPI::registerClass(e, &QDaqModbusTcp::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqModbusRtu::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqSerial::staticMetaObject);

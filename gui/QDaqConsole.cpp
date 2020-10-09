@@ -44,8 +44,10 @@ QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(paren
     connect(session_,SIGNAL(stdOut(const QString&)),this,SLOT(writeStdOut(const QString&)));
     connect(session_,SIGNAL(stdErr(const QString&)),this,SLOT(writeStdErr(const QString&)));
     connect(session_,SIGNAL(endSession()),this,SLOT(endSession()),Qt::QueuedConnection);
-    connect(this,SIGNAL(consoleCommand(const QString&)),this,SLOT(exec(const QString&)));
-    connect(this,SIGNAL(abortEvaluation()),this,SLOT(abort()));
+    connect(session_,SIGNAL(requestInput(const QString&)),this,SLOT(onRequestInput(const QString&)),Qt::QueuedConnection);
+
+    connect(this,SIGNAL(consoleCommand(QString)),session_,SLOT(eval(QString)));
+    connect(this,SIGNAL(abortEvaluation()),session_,SLOT(abort()));
 
     // TODO : remember to change in qconsolewidget:
     // device should not be open
@@ -53,16 +55,12 @@ QDaqConsole::QDaqConsole(QDaqSession *s, QWidget *parent) : QConsoleWidget(paren
 
     QScriptCompleter * completer = new QScriptCompleter;
     completer->setParent(this);
-    completer->seScripttEngine(session_->getEngine());
+    completer->seScripttEngine(session_->scriptEngine());
     setCompleter(completer);
     // A "." triggers the completer
     QStringList tr;
     tr << ".";
     setCompletionTriggers(tr);
-
-    writeStdOut(">> ");
-    setMode(QConsoleWidget::Input);
-
 }
 
 QDaqConsole::~QDaqConsole()
@@ -70,23 +68,10 @@ QDaqConsole::~QDaqConsole()
     if (session_->index()) delete session_;
 }
 
-void QDaqConsole::exec(const QString& code)
-{    
-    multilineCode_ += code;
-
-    if (!multilineCode_.isEmpty() && session_->canEvaluate(multilineCode_))
-    {
-        session_->evaluate(multilineCode_);
-        multilineCode_ = "";
-    }
-
-    writeStdOut(multilineCode_.isEmpty() ? ">> " : "...> ");
-    setMode(QConsoleWidget::Input);
-}
-
-void QDaqConsole::abort()
+void QDaqConsole::onRequestInput(const QString& prompt)
 {
-    session_->abortEvaluation();
+    writeStdOut(prompt);
+    setMode(QConsoleWidget::Input);
 }
 
 void QDaqConsole::endSession()
@@ -97,14 +82,14 @@ void QDaqConsole::endSession()
 
 void QDaqConsole::closeEvent ( QCloseEvent * e )
 {
-    if (session_->index()==0) {
-        e->accept();
-        return;
-    }
+//    if (session_->index()==0) {
+//        e->accept();
+//        return;
+//    }
 
 	bool ok = true;
 
-    if (session_->isEvaluating())
+    if (session_->daqEngine()->isEvaluating())
 	{
 		QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, windowTitle(),
@@ -115,7 +100,8 @@ void QDaqConsole::closeEvent ( QCloseEvent * e )
 		ok = ret==QMessageBox::Close;
 		if (ok) 
 		{
-            session_->abortEvaluation();
+            //session_->abortEvaluation();
+            emit abortEvaluation();
             e->accept();
             // QCoreApplication::postEvent(parentWidget(),new QCloseEvent());
 		}
@@ -125,14 +111,6 @@ void QDaqConsole::closeEvent ( QCloseEvent * e )
 	{
 		e->accept();	
 	}
-
-	/*if (ok)
-	{
-		QWidget* w = parentWidget();
-		w->close();
-		e->accept();
-	}
-	else e->ignore();*/
 }
 
 
@@ -171,6 +149,9 @@ void QDaqConsoleTabWidget::addConsole()
     } else child = new QDaqConsole(QDaqObject::root()->newSession());
     addTab(child, child->windowTitle());
     if (count()>1) setTabsClosable(true);
+    setCurrentWidget(child);
+    child->setFocus();
+    if (count()>1) child->onRequestInput(">> ");
 }
 
 void QDaqConsoleTabWidget::tabRemoved(int index)
@@ -186,6 +167,7 @@ void QDaqConsoleTabWidget::onTabClose(int index)
         removeTab(index);
         delete w;
     }
+    currentConsole()->setFocus();
 }
 
 QDaqConsole* QDaqConsoleTabWidget::currentConsole()
@@ -196,7 +178,7 @@ QDaqConsole* QDaqConsoleTabWidget::currentConsole()
 void QDaqConsoleTabWidget::abortScript()
 {
     QDaqConsole * c = (QDaqConsole*)currentWidget();
-    if (c) c->session()->abortEvaluation();
+    if (c) emit c->abortEvaluation();
 
 }
 

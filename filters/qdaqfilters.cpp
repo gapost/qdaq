@@ -28,7 +28,7 @@ void QDaqFilters::onNewSession(QDaqSession *s)
 
 void QDaqFilters::initScriptInterface(QDaqSession *s)
 {
-    QScriptEngine* e = s->getEngine();
+    QScriptEngine* e = s->scriptEngine();
     QDaqScriptAPI::registerClass(e, &QDaqFOPDT::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqInterpolator::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqLinearCorrelator::staticMetaObject);
