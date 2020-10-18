@@ -76,8 +76,9 @@ void QDaqConsole::onRequestInput(const QString& prompt)
 
 void QDaqConsole::endSession()
 {
-    QWidget* w = window();
-    w->close();
+    // TODO : fix the endSession behavior
+    // QWidget* w = window();
+    // w->close();
 }
 
 void QDaqConsole::closeEvent ( QCloseEvent * e )
@@ -88,7 +89,6 @@ void QDaqConsole::closeEvent ( QCloseEvent * e )
 //    }
 
 	bool ok = true;
-
     if (session_->daqEngine()->isEvaluating())
 	{
 		QMessageBox::StandardButton ret;
@@ -147,6 +147,9 @@ void QDaqConsoleTabWidget::addConsole()
     if (count()==0) {
         child = new QDaqConsole(QDaqObject::root()->rootSession());
     } else child = new QDaqConsole(QDaqObject::root()->newSession());
+
+    connect(child->session(),SIGNAL(endSession()),this,SLOT(onEndSession()));
+
     addTab(child, child->windowTitle());
     if (count()>1) setTabsClosable(true);
     setCurrentWidget(child);
@@ -163,11 +166,50 @@ void QDaqConsoleTabWidget::tabRemoved(int index)
 void QDaqConsoleTabWidget::onTabClose(int index)
 {
     if (index) {
-        QWidget* w = widget(index);
-        removeTab(index);
-        delete w;
+        QDaqConsole* c = (QDaqConsole*)widget(index);
+
+        bool ok = true;
+        if (c->session()->daqEngine()->isEvaluating())
+        {
+            QMessageBox::StandardButton ret;
+            ret = QMessageBox::warning(this, windowTitle(),
+                         tr("A script is currently executing.\n"
+                            "Closing this console will terminate execution.\n"
+                            "Do you want to close the console?"),
+                            QMessageBox::Close | QMessageBox::Cancel );
+            ok = ret==QMessageBox::Close;
+        }
+
+        if (ok)
+        {
+            removeTab(index);
+            delete c;
+            currentConsole()->setFocus();
+        }
+    }  
+}
+
+void QDaqConsoleTabWidget::onEndSession()
+{
+    // get the session that wants to end
+    QDaqSession* s = qobject_cast<QDaqSession*>(sender());
+    if (!s) return;
+    if (s->index()==0)
+    {
+        return;
     }
-    currentConsole()->setFocus();
+    // find the tab
+    for(int i = 0; i<count(); i++)
+    {
+        QDaqConsole* c = qobject_cast<QDaqConsole*>(widget(i));
+        if (c && c->session()==s)
+        {
+            removeTab(i);
+            currentConsole()->setFocus();
+            return;
+        }
+
+    }
 }
 
 QDaqConsole* QDaqConsoleTabWidget::currentConsole()

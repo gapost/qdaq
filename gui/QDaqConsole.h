@@ -54,6 +54,7 @@ public slots:
 private slots:
     void onTabClose(int index);
     void abortScript();
+    void onEndSession();
 
 private:
     QAction* abort_;

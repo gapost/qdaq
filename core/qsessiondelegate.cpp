@@ -12,6 +12,10 @@ QSessionDelegate::QSessionDelegate() : thread_(0), session_(0)
 
 QSessionDelegate::~QSessionDelegate()
 {
+    if (session_ && session_->daqEngine()->isEvaluating())
+    {
+        emit abort();
+    }
     if (thread_) {
         thread_->quit();
         thread_->wait();

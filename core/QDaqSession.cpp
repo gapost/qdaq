@@ -164,8 +164,6 @@ QDaqSession::QDaqSession(QObject *parent) : QObject(parent)
 
 QDaqSession::~QDaqSession( void)
 {
-    Q_ASSERT(!engine_->isEvaluating());
-
     delete delegate_;
     delete engine_;
     delete api_;

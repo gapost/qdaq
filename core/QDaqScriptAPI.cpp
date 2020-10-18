@@ -425,7 +425,7 @@ QStringList QDaqScriptAPI::availableExtensions()
     return engine()->availableExtensions();
 }
 
-void QDaqScriptAPI::quit()
+void QDaqScriptAPI::exit()
 {
     emit endSession();
 }
