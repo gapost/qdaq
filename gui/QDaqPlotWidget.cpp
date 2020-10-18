@@ -44,3 +44,10 @@ void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QStrin
 
 }
 
+void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QColor &clr)
+{
+    plot(x,y,"",clr);
+
+}
+
+
