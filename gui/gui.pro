@@ -59,7 +59,7 @@ HEADERS  += \
 include(qconsolewidget/src/qconsolewidget.pri)
 SOURCES += qconsolewidget/examples/scriptconsole/qscriptcompleter.cpp
 
-
+include(qmatplotwidget/src/qmatplotwidget.pri)
 
 ## JSedit
 SOURCES += 3rdparty/jsedit/jsedit.cpp

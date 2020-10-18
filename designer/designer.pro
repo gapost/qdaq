@@ -33,7 +33,10 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gui/release/ -lQDaq
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gui/debug/ -lQDaqGui
 else:unix:!macx: LIBS += -L$$OUT_PWD/../gui/ -lQDaqGui
 
-INCLUDEPATH += $$PWD/../gui $$PWD/../gui/qconsolewidget/src
+INCLUDEPATH += $$PWD/../gui \
+               $$PWD/../gui/qconsolewidget/src \
+               $$PWD/../gui/qmatplotwidget/src
+
 DEPENDPATH += $$PWD/../gui
 
 ############# linux 3rd party libs ##############

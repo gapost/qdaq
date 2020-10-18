@@ -1,3 +1,6 @@
 [submodule "gui/qconsolewidget"]
 	path = gui/qconsolewidget
 	url = git@github.com:gapost/qconsolewidget.git
+[submodule "gui/qmatplotwidget"]
+	path = gui/qmatplotwidget
+	url = git@github.com:gapost/qmatplotwidget.git
