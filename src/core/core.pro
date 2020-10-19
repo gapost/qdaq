@@ -90,7 +90,8 @@ DISTFILES += \
     ../../TODO \
     ../../makeArchive.sh \
     ../../makeGitversion.sh \
-    ../../.gitmodules
+    ../../.gitmodules \
+    ../../gitversion.txt
 
 
 unix {
