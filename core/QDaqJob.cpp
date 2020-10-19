@@ -75,7 +75,9 @@ bool QDaqJob::arm_()
 
     if (!armCode_.isEmpty())
     {
-        QDaqScriptEngine* eng = (QDaqScriptEngine*)(root()->rootSession());
+        // armCode is evaluated in the root session (main app thread)
+        // arming/disarming procedures happen outside the loop thread
+        QDaqScriptEngine* eng = root()->rootSession()->daqEngine();
         QString retMsg;
         bool ret = eng->evaluate(armCode_,retMsg,this);
         if (!ret)
@@ -98,7 +100,9 @@ void QDaqJob::disarm_()
     }
     if (!disarmCode_.isEmpty())
     {
-        QDaqScriptEngine* eng = (QDaqScriptEngine*)(root()->rootSession());
+        // disarmCode is evaluated in the root session (main app thread)
+        // arming/disarming procedures happen outside the loop thread
+        QDaqScriptEngine* eng = root()->rootSession()->daqEngine();
         QString retMsg;
         bool ret = eng->evaluate(disarmCode_,retMsg,this);
         if (!ret)
