@@ -5,8 +5,7 @@
 #include "qdaqserial.h"
 #include "qdaqtcpip.h"
 #include "linuxgpib.h"
-
-
+#include "qdaqinterfaces.h"
 
 #include <QScriptEngine>
 
@@ -28,6 +27,7 @@ void QDaqInterfacesPlugin::initialize(const QString &key, QScriptEngine *e)
     if (key=="qdaq") {}
     else if (key=="qdaq-interfaces") {
         // init
+        QDaqInterfaces::registerMetaTypes();
         QDaqScriptAPI::registerClass(e, &QDaqModbusTcp::staticMetaObject);
         QDaqScriptAPI::registerClass(e, &QDaqModbusRtu::staticMetaObject);
         QDaqScriptAPI::registerClass(e, &QDaqSerial::staticMetaObject);

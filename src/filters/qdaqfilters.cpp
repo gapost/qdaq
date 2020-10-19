@@ -14,7 +14,7 @@ QDaqFilters* QDaqFilters::filters_;
 QDaqFilters::QDaqFilters(QObject *parent) : QObject(parent)
 {
     filters_ = this;
-
+    registerMetaTypes();
     initScriptInterface( QDaqObject::root()->rootSession() );
 
     connect(QDaqObject::root(),SIGNAL(newSession(QDaqSession*)),
@@ -33,4 +33,12 @@ void QDaqFilters::initScriptInterface(QDaqSession *s)
     QDaqScriptAPI::registerClass(e, &QDaqInterpolator::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqLinearCorrelator::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqPid::staticMetaObject);
+}
+
+void QDaqFilters::registerMetaTypes()
+{
+    qRegisterMetaType<QDaqFOPDT*>();
+    qRegisterMetaType<QDaqInterpolator*>();
+    qRegisterMetaType<QDaqLinearCorrelator*>();
+    qRegisterMetaType<QDaqPid*>();
 }

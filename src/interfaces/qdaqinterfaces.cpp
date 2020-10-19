@@ -14,7 +14,7 @@ QDaqInterfaces* QDaqInterfaces::interfaces_;
 QDaqInterfaces::QDaqInterfaces(QObject *parent) : QObject(parent)
 {
     interfaces_ = this;
-
+    registerMetaTypes();
     initScriptInterface( QDaqObject::root()->rootSession() );
 
     connect(QDaqObject::root(),SIGNAL(newSession(QDaqSession*)),
@@ -34,4 +34,13 @@ void QDaqInterfaces::initScriptInterface(QDaqSession *s)
     QDaqScriptAPI::registerClass(e, &QDaqSerial::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqTcpip::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqLinuxGpib::staticMetaObject);
+}
+
+void QDaqInterfaces::registerMetaTypes()
+{
+    qRegisterMetaType<QDaqModbusTcp*>();
+    qRegisterMetaType<QDaqModbusRtu*>();
+    qRegisterMetaType<QDaqSerial*>();
+    qRegisterMetaType<QDaqTcpip*>();
+    qRegisterMetaType<QDaqLinuxGpib*>();
 }

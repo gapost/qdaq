@@ -14,6 +14,7 @@ public:
     explicit QDaqInterfaces(QObject *parent = 0);
 
     static void initScriptInterface(QDaqSession* s);
+    static void registerMetaTypes();
 
 private slots:
     void onNewSession(QDaqSession* s);
