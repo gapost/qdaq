@@ -199,7 +199,7 @@ int QDaqScriptAPI::initAPI(QScriptEngine *eng)
 {
     // Register sleep func
     QScriptValue v = eng->newFunction(sleepfunc);
-    eng->globalObject().setProperty("quit", v);
+    eng->globalObject().setProperty("sleep", v);
 
     // Register all types and conversions
     ByteArrayClass *byteArrayClass = new ByteArrayClass(eng);
@@ -332,11 +332,30 @@ void QDaqScriptAPI::wait(uint ms)
      * Either the above implementation or the one below
      * with QCoreApplication::processEvents have the same issue:
      * If another session begins a wait, then first their wait has to
-     * end (either timeout or user abort) and then this one
+     * end (either timeout or user abort) and then this one.
      *
-     * The implementation below works ok however CPU goes to 100%
+     * This is a known problem generally (the term is "loop folding")
+     * and may lead to other serious issues
+     *
+     * The implementation below (with processEvents) works ok however CPU goes to 100%
      *
      * TODO : find solution!
+     *
+     * Current solution (Oct2020)
+     *
+     * Only the root session is executed in the main thread. Other sessions
+     * go in their own QThread+Event Loop and do not have access to the GUI.
+     *
+     * Thus the above local event loop interferes with the main app event loop
+     * only if the wait() is used in the root session - which should be avoided
+     *
+     * When wait() is called from a normal (not root) session, we enter a local
+     * loop in the session's event loop. It is expected that this should not cause
+     * any trouble since this event loop is only for the session's funtioning.
+     *
+     * I tried also an implementation of a wait() with real thread blocking
+     * (using QWaitCondition) but then the session event loop does not process events,
+     * including e.g. a user request for aborting the wait
      *
      */
 
@@ -349,7 +368,7 @@ void QDaqScriptAPI::wait(uint ms)
 
 }
 
-void QDaqScriptAPI::exec(const QString &fname)
+QScriptValue QDaqScriptAPI::exec(const QString &fname)
 {
     QFile file(fname);
     if (file.open(QIODevice::Text | QIODevice::ReadOnly))
@@ -364,18 +383,12 @@ void QDaqScriptAPI::exec(const QString &fname)
         ctx->setActivationObject(ctx->parentContext()->activationObject());
         ctx->setThisObject(ctx->parentContext()->thisObject());
 
-        QScriptValue ret = engine()->evaluate(program,fname);
-
-
-        if (engine()->hasUncaughtException()) {
-            // TODO : better reporting
-            QString s = ret.toString();
-            QStringList backtrace = engine()->uncaughtExceptionBacktrace();
-
-            context()->throwValue(engine()->uncaughtException());
-        }
+        return engine()->evaluate(program,fname);
     }
-    else context()->throwError(QScriptContext::ReferenceError,"File not found.");
+    else {
+        context()->throwError(QScriptContext::ReferenceError,"File not found.");
+        return QScriptValue(QScriptValue::UndefinedValue);
+    }
 }
 
 

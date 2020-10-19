@@ -38,7 +38,7 @@ signals:
 public slots:
     QString version();
     void exit();
-    void exec(const QString& fname);
+    QScriptValue exec(const QString& fname);
 //    void print(const QString& str); // there is a native qt print() that causes errors
     void log(const QString& str);
     void wait(uint ms);
