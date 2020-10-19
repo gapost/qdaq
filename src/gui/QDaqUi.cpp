@@ -99,6 +99,7 @@ void QDaqUi::initScriptInterface(QDaqSession *s)
 
 void QDaqUi::onNewSession(QDaqSession *s)
 {
+    Q_UNUSED(s);
     // initScriptInterface(s);
 }
 

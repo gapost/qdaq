@@ -9,7 +9,7 @@ QT       += core script scripttools
 lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
 
 # set a qmake variable
-GIT_VERSION = "$$cat(../gitversion.txt)"
+GIT_VERSION = "$$cat(../../gitversion.txt)"
 
 # Turns describe output like 0.1.5-42-g652c397 into "0.1.5.42.652c397"
 GIT_VERSION ~= s/-/"."
@@ -28,13 +28,11 @@ DEFINES += QDAQ_LIBRARY
 
 win32 {
     CONFIG(debug, debug|release) {
-        DESTDIR = $$PWD/../../bin-debug
+        DESTDIR = $$PWD/../../../bin-debug
     } else {
-        DESTDIR = $$PWD/../../bin-release
+        DESTDIR = $$PWD/../../../bin-release
     }
 }
-
-# INCLUDEPATH += .
 
 SOURCES += \
     QDaqSession.cpp \
@@ -88,12 +86,11 @@ HEADERS  += \
 
 
 DISTFILES += \
-    ../qdaq.prf \
-    ../qdaq.pri \
-    .gitignore \
-    ../TODO \
-    ../makeArchive.sh \
-    ../makeGitversion.sh
+    ../../.gitignore \
+    ../../TODO \
+    ../../makeArchive.sh \
+    ../../makeGitversion.sh \
+    ../../.gitmodules
 
 
 unix {

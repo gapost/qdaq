@@ -10,7 +10,7 @@ TARGET = QDaqInterfacesPlugin
 TEMPLATE = lib
 CONFIG += plugin
 
-DESTDIR = ../../qdaq/script
+DESTDIR = ../../tools/qdaq/script
 
 SOURCES += qdaqinterfacesplugin.cpp
 
@@ -24,15 +24,15 @@ unix {
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../core/release/ -lQDaqCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../core/debug/ -lQDaqCore
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../core/ -lQDaqCore
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../src/core/ -lQDaqCore
 
-INCLUDEPATH += $$PWD/../../core
-DEPENDPATH += $$PWD/../../core
+INCLUDEPATH += $$PWD/../../src/core
+DEPENDPATH += $$PWD/../../src/core
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../interfaces/release/ -lQDaqInterfaces
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../interfaces/debug/ -lQDaqInterfaces
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../interfaces/ -lQDaqInterfaces
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../src/interfaces/ -lQDaqInterfaces
 
-INCLUDEPATH += $$PWD/../../interfaces
-DEPENDPATH += $$PWD/../../interfaces
+INCLUDEPATH += $$PWD/../../src/interfaces
+DEPENDPATH += $$PWD/../../src/interfaces

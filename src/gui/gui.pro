@@ -17,13 +17,11 @@ DEFINES += QDAQ_LIBRARY
 
 win32 {
     CONFIG(debug, debug|release) {
-        DESTDIR = $$PWD/../../bin-debug
+        DESTDIR = $$PWD/../../../bin-debug
     } else {
-        DESTDIR = $$PWD/../../bin-release
+        DESTDIR = $$PWD/../../../bin-release
     }
 }
-
-INCLUDEPATH += .
 
 SOURCES += \
     QDaqDelegates.cpp \

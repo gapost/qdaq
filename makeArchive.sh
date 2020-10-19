@@ -20,12 +20,12 @@ tar rf $ROOT_ARCHIVE_DIR"/repo-output.tar" "qdaq-"$gitversion"/"gitversion.txt
 rm -r "qdaq-"$gitversion
 
 echo "> append submodule archives"
-pushd gui/qconsolewidget
-git archive --format=tar --prefix=$prefix"/gui/qconsolewidget/" --output $ROOT_ARCHIVE_DIR"/repo-output-sub1.tar" HEAD
+pushd src/gui/qconsolewidget
+git archive --format=tar --prefix=$prefix"src/gui/qconsolewidget/" --output $ROOT_ARCHIVE_DIR"/repo-output-sub1.tar" HEAD
 popd
 tar --concatenate --file repo-output.tar repo-output-sub1.tar
-pushd gui/qmatplotwidget
-git archive --format=tar --prefix=$prefix"/gui/qmatplotwidget/" --output $ROOT_ARCHIVE_DIR"/repo-output-sub2.tar" HEAD
+pushd src/gui/qmatplotwidget
+git archive --format=tar --prefix=$prefix"src/gui/qmatplotwidget/" --output $ROOT_ARCHIVE_DIR"/repo-output-sub2.tar" HEAD
 popd
 tar --concatenate --file repo-output.tar repo-output-sub2.tar
 echo "> remove all sub tars"

@@ -26,18 +26,18 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lQDa
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -lQDaqCore
 else:unix:!macx: LIBS += -L$$OUT_PWD/../core/ -lQDaqCore
 
-INCLUDEPATH += $$PWD/../core
-DEPENDPATH += $$PWD/../core
+INCLUDEPATH += $$PWD/../../src/core
+DEPENDPATH += $$PWD/../../src/core
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gui/release/ -lQDaqGui
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gui/debug/ -lQDaqGui
 else:unix:!macx: LIBS += -L$$OUT_PWD/../gui/ -lQDaqGui
 
-INCLUDEPATH += $$PWD/../gui \
-               $$PWD/../gui/qconsolewidget/src \
-               $$PWD/../gui/qmatplotwidget/src
+INCLUDEPATH += $$PWD/../../src/gui \
+               $$PWD/../../src/gui/qconsolewidget/src \
+               $$PWD/../../src/gui/qmatplotwidget/src
 
-DEPENDPATH += $$PWD/../gui
+DEPENDPATH += $$PWD/../../src/gui
 
 ############# linux 3rd party libs ##############
 

@@ -14,9 +14,9 @@ TEMPLATE = app
 
 win32 {
 CONFIG(debug, debug|release) {
-    DESTDIR = $$PWD/../../bin-debug
+    DESTDIR = $$PWD/../../../bin-debug
 } else {
-    DESTDIR = $$PWD/../../bin-release
+    DESTDIR = $$PWD/../../../bin-release
 }
 }
 
@@ -36,14 +36,14 @@ RESOURCES += \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lQDaqCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -lQDaqCore
-else:unix:!macx: LIBS += -L$$OUT_PWD/../core/ -lQDaqCore
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../src/core/ -lQDaqCore
 
-INCLUDEPATH += $$PWD/../core
-DEPENDPATH += $$PWD/../core
+INCLUDEPATH += $$PWD/../../src/core
+DEPENDPATH += $$PWD/../../src/core
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gui/release/ -lQDaqGui
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gui/debug/ -lQDaqGui
-else:unix:!macx: LIBS += -L$$OUT_PWD/../gui/ -lQDaqGui
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../src/gui/ -lQDaqGui
 
-INCLUDEPATH += $$PWD/../gui $$PWD/../gui/qconsolewidget/src
-DEPENDPATH += $$PWD/../gui
+INCLUDEPATH += $$PWD/../../src/gui $$PWD/../../src/gui/qconsolewidget/src
+DEPENDPATH += $$PWD/../../src/gui

@@ -6,41 +6,24 @@
 #
 ################################################################
 #
-# 1. core
+# 1. src
 #
-# Builds the QDaqCore shared library (libQDaqCore.so or QDaqCore.dll). 
+# Contains sub-projects that build the QDaq libraries
 #
-# 2. gui
+# 2. plugins
 #
-# Builds the QDaqGui shared library (libQDaqGui.so or QDaqGui.dll).
+# Contains sub-projects that build QtDesigner and QtScript plugins
 #
-# 3. qdaq
+# 3. tools
 #
-# Builds the qdaq application, which can be used to run qdaq-javascript scripts.
-#
-# 3. designer
-#
-# Builds the QtDesigner plugins for some of the widgets in QDaqGui.
-#
-# 4. filters
-#
-# Builds the QDaqFilters shared library (libQDaqFilters.so or QDaqFilters.dll).
-#
-# 5. interfaces
-#
-# Builds the QDaqInterfaces shared library (libQDaqInterfaces.so or QDaqInterfaces.dll).
-#
-# 6. docs
+# 4. docs
 #
 # Dummy project, contains the doxygen config file and documentation
 #
-# 7. test
+# 5. test
 #
 # Dummy project, contains test qdaq scripts for testing and debugging.
 #
-# 8. plugins
-#
-# Project to build qdaq javascript plugins
 #
 ###################################################################
 
@@ -49,15 +32,11 @@ CONFIG += ordered
 
 
 SUBDIRS += \
-    core \
-    gui \
-    qdaq \
-    designer \
-    filters \
-    interfaces \
+    src \
+    plugins \
+    tools \
     docs \
-    test \
-    plugins
+    test 
 
 qdaqspec.files  = \
     qdaq-core.prf \
