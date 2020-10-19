@@ -1,7 +1,9 @@
+importExtension("qdaq-interfaces")
+
 var dev = qdaq.appendChild(new QDaqDevice('dev'));
 var tcp = dev.appendChild(new QDaqTcpip('tcp'));
 var loop1 = qdaq.appendChild(new QDaqLoop('loop1'));
-var loop2 = qdaq.appendChild(new QDaqLoop('loop1'));
+var loop2 = qdaq.appendChild(new QDaqLoop('loop2'));
 
 dev.setQDaqProperty('x',true);
 tcp.setQDaqProperty('y',1);
