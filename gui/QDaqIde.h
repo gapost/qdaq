@@ -46,6 +46,7 @@ private slots:
     QDaqConsole *createQDaqConsole();
     void setActiveSubWindow(QWidget *window);
     void fileItemDoubleClicked(const QModelIndex &index);
+    void onCloseRootConsole();
 
 private:
     void createActions();

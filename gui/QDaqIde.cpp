@@ -56,14 +56,6 @@ void QDaqIDE::closeEvent(QCloseEvent *event)
         writeSettings();
         event->accept();
     }
-
-//    if (QDaqObject::root()->daqWindows().isEmpty())
-//    {
-
-//    } else {
-//        hide();
-//        event->ignore();
-//    }
 }
 
 void QDaqIDE::newFile()
@@ -90,6 +82,13 @@ void QDaqIDE::rootConsole()
             cutAct, SLOT(setEnabled(bool)));
     connect(child, SIGNAL(copyAvailable(bool)),
             copyAct, SLOT(setEnabled(bool)));
+
+    child->writeStdOut(">> ");
+    child->setMode(QDaqConsole::Input);
+
+    rootConsoleAct->setEnabled(false);
+
+    connect(child,SIGNAL(destroyed(QObject*)),this,SLOT(onCloseRootConsole()));
 
     child->show();
 }
@@ -234,16 +233,6 @@ void QDaqIDE::updateWindowMenu()
     separatorAct->setVisible(!windows.isEmpty());
 
     for (int i = 0; i < windows.size(); ++i) {
-        /*QPlainTextEdit *child = qobject_cast<QPlainTextEdit *>(windows.at(i)->widget());
-
-        QString text;
-        if (i < 9) {
-            text = tr("&%1 %2").arg(i + 1)
-                               .arg(child->windowTitle());
-        } else {
-            text = tr("%1 %2").arg(i + 1)
-                              .arg(child->windowTitle());
-        }*/
 		QString text = windows.at(i)->windowTitle();
         QAction *action  = windowMenu->addAction(text);
         action->setCheckable(true);
@@ -277,6 +266,9 @@ QDaqConsole *QDaqIDE::createQDaqConsole()
             cutAct, SLOT(setEnabled(bool)));
     connect(child, SIGNAL(copyAvailable(bool)),
             copyAct, SLOT(setEnabled(bool)));
+
+    child->writeStdOut(">> ");
+    child->setMode(QDaqConsole::Input);
 
     return child;
 }
@@ -580,5 +572,10 @@ void QDaqIDE::fileItemDoubleClicked(const QModelIndex &index)
             }
         }
     }
+}
+
+void QDaqIDE::onCloseRootConsole()
+{
+    rootConsoleAct->setEnabled(true);
 }
 
