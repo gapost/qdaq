@@ -24,12 +24,10 @@
 
 #define PROC_EVENTS_INTERVAL 250
 
-QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
+QDaqScriptEngine::QDaqScriptEngine(QObject *parent, EngineType t) : QObject(parent), type_(t)
 {
 	engine_ = new QScriptEngine(this);
 	engine_->setProcessEventsInterval ( PROC_EVENTS_INTERVAL );
-
-
 
     QScriptValue globalObj = engine_->globalObject();
     QDaqObject* qdaq = QDaqObject::root();
@@ -37,9 +35,8 @@ QDaqScriptEngine::QDaqScriptEngine(QObject *parent) : QObject(parent)
 
     globalObj.setProperty("qdaq", rootObj, QScriptValue::Undeletable | QScriptValue::ReadOnly);
 
-
     // init core scripting interface
-    QDaqScriptAPI::initAPI(engine_);
+    QDaqScriptAPI::initAPI(this);
 }
 bool QDaqScriptEngine::evaluate(const QString& program, QString& ret, QDaqObject* thisObj)
 {
@@ -121,7 +118,7 @@ QDaqSession::QDaqSession(QObject *parent) : QObject(parent)
     setObjectName(QString("session%1").arg(idx_));
 
     // create objects
-    engine_ = new QDaqScriptEngine(this);
+    engine_ = new QDaqScriptEngine(this, idx_ ? QDaqScriptEngine::SessionEngine : QDaqScriptEngine::RootEngine);
     delegate_ = new QSessionDelegate();
 
     if (idx_) // not ROOT

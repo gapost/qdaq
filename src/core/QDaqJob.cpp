@@ -394,7 +394,7 @@ void QDaqLoop::createLoopEngine()
         else loop_eng_.clear();
     }
 
-    loop_eng_ = new QDaqScriptEngine(this);
+    loop_eng_ = new QDaqScriptEngine(this, QDaqScriptEngine::LoopEngine);
 }
 
 QDaqLoop* QDaqLoop::parentLoop() const

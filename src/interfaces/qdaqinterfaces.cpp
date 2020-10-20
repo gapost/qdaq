@@ -3,6 +3,8 @@
 #include "QDaqRoot.h"
 #include "QDaqSession.h"
 
+#include <QDebug>
+
 #include "QDaqScriptAPI.h"
 #include "qdaqmodbus.h"
 #include "qdaqserial.h"
@@ -28,6 +30,11 @@ void QDaqInterfaces::onNewSession(QDaqSession *s)
 
 void QDaqInterfaces::initScriptInterface(QDaqSession *s)
 {
+    if (s->daqEngine()->type() != QDaqScriptEngine::RootEngine)
+    {
+        qDebug() << "Cannot install QDaqFilters interface/constructors in non-root QDaqScriptEngine";
+        return;
+    }
     QScriptEngine* e = s->scriptEngine();
     QDaqScriptAPI::registerClass(e, &QDaqModbusTcp::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqModbusRtu::staticMetaObject);

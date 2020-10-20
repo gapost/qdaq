@@ -411,13 +411,11 @@ void QDaqObject::childEvent(QChildEvent *event)
 
         if (event->added()) {
             if (i<0) children_.append(obj);
-            //setQDaqProperty(obj->objectName().toLatin1().constData(),QVariant::fromValue(obj));
             if (isAttached()) obj->attach();
         }
         if (event->removed() && i>=0) {
             if (isAttached()) obj->detach();
-            //setQDaqProperty(obj->objectName().toLatin1().constData(),QVariant());
-            children_.removeAt(i);           
+            children_.removeAt(i);
         }
     }
 
@@ -433,7 +431,6 @@ QDaqObject* QDaqObject::removeChild(QDaqObject *obj)
     }
 
     QDaqObject* childObj = QObject::findChild<QDaqObject*>(obj->objectName());
-    //QDaqObject* childObj = findChild(obj->objectName());
     if (!childObj)
     {
         throwScriptError("The argument is not a valid child object.");

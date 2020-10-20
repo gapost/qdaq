@@ -195,8 +195,10 @@ int QDaqScriptAPI::registerClass(QScriptEngine* eng, const QMetaObject* metaObje
     return 1;
 }
 
-int QDaqScriptAPI::initAPI(QScriptEngine *eng)
+int QDaqScriptAPI::initAPI(QDaqScriptEngine *daqEngine)
 {
+    QScriptEngine* eng = daqEngine->getEngine();
+
     // Register sleep func
     QScriptValue v = eng->newFunction(sleepfunc);
     eng->globalObject().setProperty("sleep", v);
@@ -215,15 +217,16 @@ int QDaqScriptAPI::initAPI(QScriptEngine *eng)
         qScriptRegisterMetaType<QPointF>(eng,::toScriptValue,::fromScriptValue);
 
 
-    ret &= registerClass(eng, &QDaqObject::staticMetaObject);
-    ret &= registerClass(eng, &QDaqJob::staticMetaObject);
-    ret &= registerClass(eng, &QDaqLoop::staticMetaObject);
-    ret &= registerClass(eng, &QDaqChannel::staticMetaObject);
-    ret &= registerClass(eng, &QDaqDataBuffer::staticMetaObject);
-    ret &= registerClass(eng, &QDaqDevice::staticMetaObject);
-
+    if (daqEngine->type()==QDaqScriptEngine::RootEngine)
+    {
+        ret &= registerClass(eng, &QDaqObject::staticMetaObject);
+        ret &= registerClass(eng, &QDaqJob::staticMetaObject);
+        ret &= registerClass(eng, &QDaqLoop::staticMetaObject);
+        ret &= registerClass(eng, &QDaqChannel::staticMetaObject);
+        ret &= registerClass(eng, &QDaqDataBuffer::staticMetaObject);
+        ret &= registerClass(eng, &QDaqDevice::staticMetaObject);
+    }
     return ret;
-
 }
 
 QVariant QDaqScriptAPI::toVariant(QScriptEngine *eng, const QScriptValue &value)

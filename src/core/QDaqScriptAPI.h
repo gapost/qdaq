@@ -22,7 +22,7 @@ public:
     static QScriptValue toScriptValue(QScriptEngine *eng, QDaqObject* const  &obj, int ownership = 2);
     static void fromScriptValue(const QScriptValue &value, QDaqObject* &obj);
     static QVariant toVariant(QScriptEngine *eng, const QScriptValue &value);
-    static int initAPI(QScriptEngine *eng);
+    static int initAPI(QDaqScriptEngine *daqEngine);
     static int registerClass(QScriptEngine* eng, const QMetaObject* metaObject);
 
     void setSession(QDaqSession* s);

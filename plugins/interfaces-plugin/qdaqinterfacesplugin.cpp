@@ -1,6 +1,9 @@
 #include "qdaqinterfacesplugin.h"
 
+#include <QScriptEngine>
+
 #include "QDaqScriptAPI.h"
+#include "QDaqSession.h"
 #include "qdaqmodbus.h"
 #include "qdaqserial.h"
 #include "qdaqtcpip.h"
@@ -26,13 +29,18 @@ void QDaqInterfacesPlugin::initialize(const QString &key, QScriptEngine *e)
 {
     if (key=="qdaq") {}
     else if (key=="qdaq-interfaces") {
-        // init
+        // register QDaqInterfaces types with meta-object system
         QDaqInterfaces::registerMetaTypes();
-        QDaqScriptAPI::registerClass(e, &QDaqModbusTcp::staticMetaObject);
-        QDaqScriptAPI::registerClass(e, &QDaqModbusRtu::staticMetaObject);
-        QDaqScriptAPI::registerClass(e, &QDaqSerial::staticMetaObject);
-        QDaqScriptAPI::registerClass(e, &QDaqTcpip::staticMetaObject);
-        QDaqScriptAPI::registerClass(e, &QDaqLinuxGpib::staticMetaObject);
+        // If it is the root QDaq script engine, register the constructors
+        QDaqScriptEngine* daqEngine = qobject_cast<QDaqScriptEngine*>(e->parent());
+        if (daqEngine && daqEngine->type()==QDaqScriptEngine::RootEngine)
+        {
+            QDaqScriptAPI::registerClass(e, &QDaqModbusTcp::staticMetaObject);
+            QDaqScriptAPI::registerClass(e, &QDaqModbusRtu::staticMetaObject);
+            QDaqScriptAPI::registerClass(e, &QDaqSerial::staticMetaObject);
+            QDaqScriptAPI::registerClass(e, &QDaqTcpip::staticMetaObject);
+            QDaqScriptAPI::registerClass(e, &QDaqLinuxGpib::staticMetaObject);
+        }
     }
     else {
 

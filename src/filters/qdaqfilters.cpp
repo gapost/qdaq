@@ -1,5 +1,7 @@
 #include "qdaqfilters.h"
 
+#include <QDebug>
+
 #include "QDaqRoot.h"
 #include "QDaqSession.h"
 
@@ -28,6 +30,11 @@ void QDaqFilters::onNewSession(QDaqSession *s)
 
 void QDaqFilters::initScriptInterface(QDaqSession *s)
 {
+    if (s->daqEngine()->type() != QDaqScriptEngine::RootEngine)
+    {
+        qDebug() << "Cannot install QDaqFilters interface/constructors in non-root QDaqScriptEngine";
+        return;
+    }
     QScriptEngine* e = s->scriptEngine();
     QDaqScriptAPI::registerClass(e, &QDaqFOPDT::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqInterpolator::staticMetaObject);

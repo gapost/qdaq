@@ -13,6 +13,7 @@
 #include <QScriptValueIterator>
 #include <QFileInfo>
 #include <QDir>
+#include <QDebug>
 
 #include "QDaqDelegates.h"
 #include "QDaqWindow.h"
@@ -65,6 +66,12 @@ void QDaqUi::removeDaqWindow(QWidget* w)
 
 void QDaqUi::initScriptInterface(QDaqSession *s)
 {
+    if (s->daqEngine()->type() != QDaqScriptEngine::RootEngine)
+    {
+        qDebug() << "Cannot install QDaqUi interface in non-root QDaqScriptEngine";
+        return;
+    }
+
     QScriptEngine* e = s->scriptEngine();
     QDaqUiProto* proto = new QDaqUiProto(e);
     e->setDefaultPrototype(qMetaTypeId<QDaqUi*>(),

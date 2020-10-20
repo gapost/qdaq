@@ -27,11 +27,20 @@ class QDAQ_EXPORT QDaqScriptEngine : public QObject
 {    
     Q_OBJECT
 
+public:
+    enum EngineType {
+        LoopEngine,
+        SessionEngine,
+        RootEngine
+    };
+
 protected:
 	QScriptEngine* engine_;
+    EngineType type_;
+
 
 public:
-    explicit QDaqScriptEngine(QObject* parent);
+    explicit QDaqScriptEngine(QObject* parent, EngineType t);
 
     QScriptEngine* getEngine() const { return engine_; }
 
@@ -40,6 +49,7 @@ public:
     bool evaluate(const QScriptProgram& program, QString& ret, QDaqObject* thisObj = 0);
     bool evaluate(const QString& program, QString &ret, QDaqObject* thisObj = 0);
 	void abortEvaluation();
+    EngineType type() const { return type_; }
 };
 
 class QDAQ_EXPORT QDaqSession : public QObject
