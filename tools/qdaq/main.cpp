@@ -4,6 +4,7 @@
 #include <QCommandLineParser>
 #include <QMessageBox>
 #include <QScriptEngine>
+#include <QLayout>
 
 #include <QLibraryInfo>
 
@@ -12,6 +13,7 @@
 #include "QDaqUi.h"
 #include "QDaqIde.h"
 #include "QDaqConsole.h"
+#include "QDaqWindow.h"
 
 enum CommandLineParseResult
 {
@@ -129,36 +131,36 @@ int main(int argc, char *argv[])
     }
     else {
         // Start a console to run the startup script
-        // QDaqConsole* daqConsole = new QDaqConsole(s);
+        QDaqWindow* daqWindow = new QDaqWindow;
         QDaqConsoleTabWidget* daqConsole = new QDaqConsoleTabWidget;
+        daqWindow->setWidget(daqConsole);
         daqConsole->addConsole();
-        daqConsole->show();
+        daqWindow->layout()->setMargin(0);
+        daqWindow->show();
 
         daqConsole->currentConsole()->writeStdOut("QDaq - Qt-based Data Aqcuisition\n");
         daqConsole->currentConsole()->writeStdOut(QString("Version %1\n\n").arg(QDaq::Version()));
 
         if (!startupScript.isEmpty()) {
             daqConsole->currentConsole()->writeStdOut(
-                        QString("log('Executing startup script %1')").arg(startupScript)
+                        QString("Executing startup script %1\n\n").arg(startupScript)
                         );
             s->eval(QString("exec('%1')").arg(startupScript));
-            s->waitForFinished(-1);
         }
 
 
         if (s->scriptEngine()->hasUncaughtException())
         {
-            daqConsole->currentConsole()->onRequestInput(">> ");
             // Do nothing, user interacts with console
         }
         else {
             // if user did not ask for a console, delete the console
-            if (!console) delete daqConsole;
-            else // otherwise start interactive session
-                daqConsole->currentConsole()->onRequestInput(">> ");
+            if (!console) delete daqWindow;
 
             // if no other windows, exit
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
+
+            // otherwise continue
         }
     }
 

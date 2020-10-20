@@ -31,7 +31,8 @@ DISTFILES += \
     scripts/testConsolewidget.js \
     scripts/testVector.js \
     scripts/testH5DataBuffer.js \
-    scripts/testresmeasChan.js
+    scripts/testresmeasChan.js \
+    scripts/testStartupScript.js
 
 FORMS += \
     ui/burstform.ui \
