@@ -22,16 +22,16 @@ unix {
 
 ## Add modules core & gui
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lQDaqCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -lQDaqCore
-else:unix:!macx: LIBS += -L$$OUT_PWD/../core/ -lQDaqCore
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../core/release/ -lQDaqCore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../core/debug/ -lQDaqCore
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../src/core/ -lQDaqCore
 
 INCLUDEPATH += $$PWD/../../src/core
 DEPENDPATH += $$PWD/../../src/core
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gui/release/ -lQDaqGui
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gui/debug/ -lQDaqGui
-else:unix:!macx: LIBS += -L$$OUT_PWD/../gui/ -lQDaqGui
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../src/gui/ -lQDaqGui
 
 INCLUDEPATH += $$PWD/../../src/gui \
                $$PWD/../../src/gui/qconsolewidget/src \
