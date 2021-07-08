@@ -150,7 +150,7 @@ protected:
     bool setArmed(bool on);
 
 public:
-	bool armed() { return armed_; }
+    bool armed() const { return armed_; }
 
     const QString& runCode() const { return runCode_; }
     const QString& armCode() const { return armCode_; }
@@ -315,6 +315,18 @@ class QDAQ_EXPORT QDaqLoop : public QDaqJob
      */
     Q_PROPERTY(uint period READ period WRITE setPeriod)
 
+    /** The measured loop repetition period in ms.
+     * As reported by the machine's high-res timer.
+     * Average of last 10 cycles.
+     */
+    Q_PROPERTY(qreal measuredPeriod READ measuredPeriod)
+
+    /** The measured loop duty cycle in % .
+     * As reported by the machine's high-res timer.
+     * Average of last 10 cycles.
+     */
+    Q_PROPERTY(qreal dutyCycle READ dutyCycle)
+
 protected:
     uint count_, limit_, delay_, preload_,period_; // properties
     uint delay_counter_;
@@ -377,6 +389,8 @@ public:
     uint delay() const { return delay_; }
     uint preload() const { return preload_; }
     uint period() const { return period_; }
+    qreal measuredPeriod() const { return armed() ? perfmon[0]() : 0.0; }
+    qreal dutyCycle() const { return armed() ? 100*perfmon[1]()/perfmon[0]() : 0.0; }
     void setLimit(uint d);
     void setDelay(uint d);
     void setPreload(uint d);

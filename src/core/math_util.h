@@ -138,7 +138,7 @@ public:
 		if (p==pend) p = &data[0];
 		return *this;
 	}
-	T operator()()
+    T operator()() const
 	{
 		T m = 0;
 		for(int i = 0; i<N; ++i) m += data[i];
