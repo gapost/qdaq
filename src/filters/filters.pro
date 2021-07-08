@@ -5,13 +5,27 @@
 #-------------------------------------------------
 
 QT       += script
-
 QT       -= gui
 
-TARGET = QDaqFilters
 TEMPLATE = lib
-
 DEFINES += QDAQ_LIBRARY
+
+# platform options
+win32 {
+    TARGET = libQDaqFilters
+    # Trick Qt to not add version major to the target dll name
+    TARGET_EXT = .dll
+    CONFIG(debug, debug|release) {
+        DESTDIR = $$PWD/../../../bin-debug
+    } else {
+        DESTDIR = $$PWD/../../../bin-release
+    }
+}
+unix {
+    TARGET = QDaqFilters
+    DESTDIR = $$OUT_PWD/../../bin
+}
+
 
 SOURCES +=  \
     qdaqfopdt.cpp \
@@ -41,7 +55,7 @@ unix {
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lQDaqCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -lQDaqCore
-else:unix:!macx: LIBS += -L$$OUT_PWD/../core/ -lQDaqCore
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 
 INCLUDEPATH += $$PWD/../core
 DEPENDPATH += $$PWD/../core

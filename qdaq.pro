@@ -27,6 +27,8 @@
 #
 ###################################################################
 
+lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
+
 TEMPLATE = subdirs
 CONFIG += ordered
 
@@ -47,4 +49,5 @@ qdaqspec.files  = \
 qdaqspec.path  = $$[QMAKE_MKSPECS]/features
 
 INSTALLS += qdaqspec
+
 

@@ -6,7 +6,25 @@
 
 QT       += core script scripttools
 
-lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
+TEMPLATE = lib
+DEFINES += QDAQ_LIBRARY
+
+# platform options
+win32 {
+    TARGET = libQDaqCore
+    # Trick Qt to not add version major to the target dll name
+    TARGET_EXT = .dll
+    CONFIG(debug, debug|release) {
+        DESTDIR = $$PWD/../../../bin-debug
+    } else {
+        DESTDIR = $$PWD/../../../bin-release
+    }
+}
+unix {
+    TARGET = QDaqCore
+    DESTDIR = $$OUT_PWD/../../bin
+}
+
 
 # set a qmake variable
 GIT_VERSION = "$$cat(../../gitversion.txt)"
@@ -18,21 +36,6 @@ GIT_VERSION ~= s/g/""
 # Adding C preprocessor #DEFINE so we can use it in C++ code
 # also here we want full version on every system so using GIT_VERSION
 DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
-
-win32:TARGET = libQDaqCore
-unix:TARGET = QDaqCore
-# Trick Qt to not add version major to the target dll name
-win32 { TARGET_EXT = .dll }
-TEMPLATE = lib
-DEFINES += QDAQ_LIBRARY
-
-win32 {
-    CONFIG(debug, debug|release) {
-        DESTDIR = $$PWD/../../../bin-debug
-    } else {
-        DESTDIR = $$PWD/../../../bin-release
-    }
-}
 
 SOURCES += \
     QDaqSession.cpp \

@@ -1,12 +1,24 @@
 QT += designer
 CONFIG      += plugin debug_and_release
 
-lessThan(QT_MAJOR_VERSION, 5): error("This project needs Qt5")
-
-TARGET      = $$qtLibraryTarget(qdaqwidgetsplugin)
-# Trick Qt to not add version major to the target dll name
-win32 { TARGET_EXT = .dll }
 TEMPLATE    = lib
+
+# platform options
+win32 {
+    TARGET = $$qtLibraryTarget(qdaqwidgetsplugin)
+    # Trick Qt to not add version major to the target dll name
+    TARGET_EXT = .dll
+    CONFIG(debug, debug|release) {
+        DESTDIR = $$PWD/../../../bin-debug
+    } else {
+        DESTDIR = $$PWD/../../../bin-release
+    }
+}
+unix {
+    TARGET = $$qtLibraryTarget(qdaqwidgetsplugin)
+    DESTDIR = $$OUT_PWD/../../bin/designer
+}
+
 
 HEADERS     = qledplugin.h qdaqplotwidgetplugin.h qdaqwidgetsplugin.h \
     qdaqconsoletabplugin.h
@@ -24,14 +36,14 @@ unix {
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../core/release/ -lQDaqCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../core/debug/ -lQDaqCore
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../src/core/ -lQDaqCore
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 
 INCLUDEPATH += $$PWD/../../src/core
 DEPENDPATH += $$PWD/../../src/core
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gui/release/ -lQDaqGui
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gui/debug/ -lQDaqGui
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../src/gui/ -lQDaqGui
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../bin/ -lQDaqGui
 
 INCLUDEPATH += $$PWD/../../src/gui \
                $$PWD/../../src/gui/qconsolewidget/src \
