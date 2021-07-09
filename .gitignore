@@ -2,7 +2,7 @@
 
 test/log/*
 
-test/_command_history.lst
+test/.command_history.lst
 
 test/*.h5
 
