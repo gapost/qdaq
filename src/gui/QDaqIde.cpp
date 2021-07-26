@@ -170,7 +170,7 @@ void QDaqIDE::about()
 {
     QString msg = QString(
                 "<h3>QDaq ver. %1</h3>"
-                "<p>(c) 2015 - 2018, G. Apostolopoulos "
+                "<p>(c) 2015 - 2021, G. Apostolopoulos "
                 "<a href=\"mailto:gapost@ipta.demokritos.gr\">gapost@ipta.demokritos.gr</a></p>"
                 "<p>This program uses the following Open Source tools:</p>"
                 "<ul>"
