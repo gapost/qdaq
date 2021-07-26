@@ -154,8 +154,10 @@ int main(int argc, char *argv[])
             // Do nothing, user interacts with console
         }
         else {
-            // if user did not ask for a console, delete the console
-            if (!console) delete daqWindow;
+            // if user asked for a console start interactive session
+            // else delete the console window
+            if (console) daqConsole->currentConsole()->onRequestInput(">> ");
+            else delete daqWindow;
 
             // if no other windows, exit
             if (QApplication::topLevelWidgets().isEmpty()) return 0;
