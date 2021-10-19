@@ -4,3 +4,6 @@
 [submodule "src/gui/qmatplotwidget"]
 	path = src/gui/qmatplotwidget
 	url = git@github.com:gapost/qmatplotwidget.git
+[submodule "src/core/qthdf5"]
+	path = src/core/qthdf5
+	url = git@github.com:gapost/QtHDF5.git
