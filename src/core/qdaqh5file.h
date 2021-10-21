@@ -6,15 +6,31 @@ class h5helper;
 #include "QDaqTypes.h"
 #include "QDaqObject.h"
 
+#include "qthdf5.h"
+
 #include <string>
 
-namespace H5
-{
-class CommonFG;
-class Group;
-}
+template<>
+class TypeTraits<QDaqVector> {
+public:
 
-using namespace H5;
+    static int metaTypeId(const QDaqVector &)
+    { return qMetaTypeId<double>(); }
+
+    static QH5Dataspace dataspace(const QDaqVector &value)
+    { return QVector<quint64>(1,value.size()); }
+
+    static void resize(QDaqVector & v, int n)
+    { v.resize(n); }
+
+    static void *ptr(QDaqVector &data) {
+        return reinterpret_cast<void *>(data.data());
+    }
+
+    static const void *cptr(const QDaqVector &data) {
+        return reinterpret_cast<const void *>(data.constData());
+    }
+};
 
 class QDaqH5File
 {
@@ -34,8 +50,8 @@ private:
     const QDaqObject* top_;
 
     void newHelper(Version v);
-    void writeRecursive(CommonFG* h5g, const QDaqObject* obj);
-    void readRecursive(CommonFG* h5g, QDaqObject* &parent_obj);
+    void writeRecursive(const QH5Group& h5g, const QDaqObject* obj);
+    void readRecursive(const QH5Group&  h5g, QDaqObject* &parent_obj);
 
     static Version toVersion(int mj, int mn)
     {
@@ -60,6 +76,8 @@ public:
 
     const QDaqObject* getTopObject() const { return top_; }
 
+    static bool isQDaq(const QString& fname);
+
 };
 
 class h5helper
@@ -69,8 +87,8 @@ protected:
     int major_, minor_;
     QDaqH5File* file_;
 
-    virtual void writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object) = 0;
-    virtual void readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object) = 0;
+    virtual void writeDynamicProperties(const QH5Group&  h5obj, const QDaqObject* m_object) = 0;
+    virtual void readDynamicProperties(const QH5Group&  h5obj, QDaqObject* m_object) = 0;
 
     struct deferedPtrData {
         QDaqObject* obj;
@@ -101,35 +119,15 @@ public:
     int major() const { return major_; }
     int minor() const { return minor_; }
 
-    virtual void write(CommonFG* h5obj, const char* name, const int &v) = 0;
-    virtual void write(CommonFG* h5obj, const char* name, const double& v) = 0;
-    virtual void write(CommonFG* h5obj, const char* name, const QString& S) = 0;
-    virtual void write(CommonFG* h5obj, const char* name, const QStringList& S) = 0;
-    virtual void write(CommonFG* h5obj, const char* name, const QDaqVector& value) = 0;
-    virtual void write(CommonFG* h5obj, const char* name, const QDaqObject* obj) = 0;
-    virtual void write(CommonFG* , const char* , const QDaqObjectList & ) = 0;
+    virtual void write(const QH5Group&  h5obj, const char* name, const QDaqObject* obj) = 0;
+    virtual void write(const QH5Group&  , const char* , const QDaqObjectList & ) = 0;
 
-    virtual bool read(CommonFG* h5obj, const char* name, int& value) = 0;
-    virtual bool read(CommonFG* h5obj, const char* name, double& value) = 0;
-    virtual bool read(CommonFG* h5obj, const char* name, QString& str) = 0;
-    virtual bool read(CommonFG* h5obj, const char* name, QStringList& S) = 0;
-    virtual bool read(CommonFG* h5obj, const char* name, QDaqVector& value) = 0;
-
-    virtual void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject) = 0;
-    virtual void readProperties(CommonFG* h5obj, QDaqObject* obj) = 0;
+    virtual void writeProperties(const QH5Group&  h5obj, const QDaqObject* m_object, const QMetaObject* metaObject) = 0;
+    virtual void readProperties(const QH5Group&  h5obj, QDaqObject* obj) = 0;
 
     virtual void lockedPropertyList(QStringList S = QStringList()) = 0;
 
     virtual void connectDeferedPointers() = 0;
-
-    virtual Group createGroup(CommonFG* loc, const char* name) = 0;
-
-    virtual QByteArrayList getGroupNames(CommonFG* h5obj, bool isRoot = false) = 0;
-
-    // Check if a dataset "name" exists in H5 file/group
-    bool h5exist_ds(CommonFG* h5obj, const char* name);
-    // Get group name from obj pointer
-    QString groupName(CommonFG* h5obj);
 
     void pushWarning(const QString& w) { file_->warnings_.push_back(w); }
 

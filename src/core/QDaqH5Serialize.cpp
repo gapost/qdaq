@@ -5,24 +5,19 @@
 
 #include <QDebug>
 
-#include <hdf5.h>
-#include <H5Cpp.h>
-
-
-
 #define CLASS_ATTR_NAME "Class"
 
-void QDaqObject::writeh5(Group *h5g, QDaqH5File *f) const
+void QDaqObject::writeh5(const QH5Group &h5g, QDaqH5File *f) const
 {
     f->helper()->writeProperties(h5g,this,metaObject());
 }
 
-void QDaqObject::readh5(Group *g, QDaqH5File *f)
+void QDaqObject::readh5(const QH5Group &g, QDaqH5File *f)
 {
     f->helper()->readProperties(g,this);
 }
 
-void QDaqDataBuffer::writeh5(H5::Group* h5g, QDaqH5File *f) const
+void QDaqDataBuffer::writeh5(const QH5Group &h5g, QDaqH5File *f) const
 {
 
     f->helper()->lockedPropertyList(columnNames_);
@@ -31,27 +26,19 @@ void QDaqDataBuffer::writeh5(H5::Group* h5g, QDaqH5File *f) const
 
     f->helper()->lockedPropertyList();
 
-
     if (!(columns() && size())) return;
 
-    hsize_t dims = size();
-    DataSpace space(1,&dims);
     for(uint j=0; j<columns(); j++)
-    {
-        QString col_name = columnNames().at(j);
-        DataSet ds = h5g->createDataSet(col_name.toLatin1().constData(),
-                                        PredType::NATIVE_DOUBLE, space);
+        h5g.write(columnNames().at(j).toLatin1(),data_matrix[j]);
 
-        ds.write(data_matrix[j].constData(),PredType::NATIVE_DOUBLE,space);
-    }
 }
 
-void QDaqDataBuffer::readh5(H5::Group *g, QDaqH5File *f)
+void QDaqDataBuffer::readh5(const QH5Group &g, QDaqH5File *f)
 {
     QDaqObject::readh5(g,f);
 
     QStringList S;
-    if ( f->helper()->read(g,"columnNames",S) ) columnNames_ = S;
+    if (g.read("columnNames",S)) columnNames_ = S;
 
     int ncols = columnNames_.size();
     if (!ncols) return;
@@ -63,14 +50,7 @@ void QDaqDataBuffer::readh5(H5::Group *g, QDaqH5File *f)
     QDaqVector rbuff(cap_);
     for(int j=0; j<ncols; j++)
     {
-        QString col_name = columnNames().at(j);
-        DataSet ds = g->openDataSet(col_name.toLatin1().constData());
-        DataSpace space = ds.getSpace();
-        hsize_t sz;
-        space.getSimpleExtentDims(&sz);
-
-        rbuff.setCapacity((int)sz);
-        ds.read(rbuff.data(),PredType::NATIVE_DOUBLE,space);
+        g.read(columnNames().at(j).toLatin1(),rbuff);
         data_matrix[j] = rbuff;
     }
     for(int i=0; i<data_matrix.size(); i++)

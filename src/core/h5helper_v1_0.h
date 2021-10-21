@@ -16,38 +16,23 @@
 class h5helper_v1_0 : public h5helper
 {
 protected:
-    virtual void writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object);
-    virtual void readDynamicProperties(CommonFG* h5obj, QDaqObject* m_object);
+    virtual void writeDynamicProperties(const QH5Group& h5obj, const QDaqObject* m_object);
+    virtual void readDynamicProperties(const QH5Group& h5obj, QDaqObject* m_object);
 
 
 public:
     explicit h5helper_v1_0(QDaqH5File* f) : h5helper(QDaqH5File::V_1_0, 1, 0, f)
     {}
 
-    virtual void write(CommonFG* h5obj, const char* name, const int &v);
-    virtual void write(CommonFG* h5obj, const char* name, const double& v);
-    virtual void write(CommonFG* h5obj, const char* name, const QString& S);
-    virtual void write(CommonFG* h5obj, const char* name, const QStringList& S);
-    virtual void write(CommonFG* h5obj, const char* name, const QDaqVector &v);
-    virtual void write(CommonFG* , const char* , const QDaqObject*) {}
-    virtual void write(CommonFG* , const char* , const QDaqObjectList & ) {}
+    virtual void write(const QH5Group& , const char* , const QDaqObject*) {}
+    virtual void write(const QH5Group& , const char* , const QDaqObjectList & ) {}
 
-    virtual bool read(CommonFG* h5obj, const char* name, int& value);
-    virtual bool read(CommonFG* h5obj, const char* name, double& value);
-    virtual bool read(CommonFG* h5obj, const char* name, QString& str);
-    virtual bool read(CommonFG* h5obj, const char* name, QStringList& S);
-    virtual bool read(CommonFG* h5obj, const char* name, QDaqVector& value);
-
-    virtual void writeProperties(CommonFG* h5obj, const QDaqObject* m_object, const QMetaObject* metaObject);
-    virtual void readProperties(CommonFG* h5obj, QDaqObject* obj);
+    virtual void writeProperties(const QH5Group& h5obj, const QDaqObject* m_object, const QMetaObject* metaObject);
+    virtual void readProperties(const QH5Group& h5obj, QDaqObject* obj);
 
     virtual void lockedPropertyList(QStringList S = QStringList()) { Q_UNUSED(S); }
 
     virtual void connectDeferedPointers() {}
-
-    virtual Group createGroup(CommonFG* loc, const char* name);
-
-    virtual QByteArrayList getGroupNames(CommonFG* h5g, bool isRoot = false);
 };
 
 

@@ -58,8 +58,8 @@ protected:
     // data store type = QVector of QDaqBuffer
     typedef QVector<vector_t> matrix_t;
 
-    virtual void writeh5(H5::Group* h5g, QDaqH5File *f) const;
-    virtual void readh5(H5::Group *h5g, QDaqH5File *f);
+    virtual void writeh5(const QH5Group& h5g, QDaqH5File *f) const;
+    virtual void readh5(const QH5Group& h5g, QDaqH5File *f);
 
 protected:
     // properties

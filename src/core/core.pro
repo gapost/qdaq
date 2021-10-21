@@ -87,6 +87,7 @@ HEADERS  += \
     QDaqScriptAPI.h \
     qsessiondelegate.h
 
+include(qthdf5/src/qthdf5/qthdf5.pri)
 
 DISTFILES += \
     ../../.gitignore \

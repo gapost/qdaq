@@ -12,15 +12,10 @@
 
 #include "QDaqGlobal.h"
 
-namespace H5
-{
-class CommonFG;
-class Group;
-}
-
 class QDaqRoot;
 class QDaqObject;
 class QDaqH5File;
+class QH5Group;
 
 /** A QList of QDaqObject pointers.
  *
@@ -135,7 +130,7 @@ protected:
      *
      * @param g HDF5 Group object
      */
-    virtual void writeh5(H5::Group* g, QDaqH5File* f) const;
+    virtual void writeh5(const QH5Group& g, QDaqH5File* f) const;
     /**
      * @brief Read contents of the object from a H5 group
      *
@@ -146,7 +141,7 @@ protected:
      *
      * @param g HDF5 Group object
      */
-    virtual void readh5(H5::Group *g, QDaqH5File* f);
+    virtual void readh5(const QH5Group& g, QDaqH5File* f);
 
     friend class QDaqH5File;
 

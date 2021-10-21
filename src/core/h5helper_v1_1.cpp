@@ -1,18 +1,15 @@
 #include "h5helper_v1_1.h"
 
-#include <hdf5.h>
-#include <H5Cpp.h>
-
 #include "QDaqObject.h"
 
 #include <QDebug>
 
 #define DYNAMIC_PROPERTY_TAG "DYNAMIC_PROPERTY"
 
-void h5helper_v1_1::write(CommonFG* h5obj, const char* name, const QDaqObject* obj)
+void h5helper_v1_1::write(const QH5Group& h5obj, const char* name, const QDaqObject* obj)
 {
     if (!obj) {
-        h5helper_v1_0::write(h5obj,name,QString("0"));
+        h5obj.write(name,QString("0"));
         return;
     }
 
@@ -27,17 +24,17 @@ void h5helper_v1_1::write(CommonFG* h5obj, const char* name, const QDaqObject* o
             path.push_front(p->objectName());
         }
     }
-    if (p==top) h5helper_v1_0::write(h5obj,name,path);
+    if (p==top) h5obj.write(name,path);
     else {
-        h5helper_v1_0::write(h5obj,name,QString("0"));
+        h5obj.write(name,QString("0"));
         pushWarning(QString("QDaqObject* property named: %1 of %2 could not be saved. Pointed object is outside of file scope.").arg(name).arg(path));
     }
 }
 
-void h5helper_v1_1::write(CommonFG *h5obj, const char *name, const QDaqObjectList &objList)
+void h5helper_v1_1::write(const QH5Group& h5obj, const char *name, const QDaqObjectList &objList)
 {
     if (objList.isEmpty()) {
-        h5helper_v1_0::write(h5obj,name,QString("0"));
+        h5obj.write(name,QString("0"));
         return;
     }
 
@@ -61,7 +58,7 @@ void h5helper_v1_1::write(CommonFG *h5obj, const char *name, const QDaqObjectLis
             pushWarning(QString("A ptr in QDaqObjectList property named: %1 of %2 could not be saved. Pointed object is outside of file scope.").arg(name).arg(path));
         }
     }
-    h5helper_v1_0::write(h5obj,name,pathList);
+    h5obj.write(name,pathList);
 }
 
 void h5helper_v1_1::connectDeferedPointers()
@@ -122,66 +119,6 @@ void h5helper_v1_1::connectDeferedPointers()
     }
 }
 
-
-Group h5helper_v1_1::createGroup(CommonFG* loc, const char* name)
-{
-    hid_t group_creation_plist;
-    group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);
-    herr_t status = H5Pset_link_creation_order(group_creation_plist,
-                                     H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED);
-
-    if (status<0) throw PropListIException("H5Pset_link_creation_order");
-
-    hid_t group_id;
-    group_id = H5Gcreate(loc->getLocId(),
-                         name,
-                         H5P_DEFAULT,
-                         group_creation_plist,
-                         H5P_DEFAULT);
-
-    Group h5g(group_id);
-
-    H5Pclose(group_creation_plist);
-   //5Gclose(group_id);
-
-    return h5g;
-}
-
-QByteArrayList h5helper_v1_1::getGroupNames(CommonFG* h5g, bool isRoot)
-{
-    QByteArrayList names;
-
-    int n = h5g->getNumObjs();
-
-    if (isRoot) {
-        for(int i=0; i<n; ++i) {
-            H5G_obj_t typ = h5g->getObjTypeByIdx(i);
-            if (typ==H5G_GROUP)
-            {
-                QByteArray groupName;
-                groupName.fill('\0',256);
-                h5g->getObjnameByIdx(i,groupName.data(),256);
-                names.push_back(groupName);
-            }
-        }
-    } else {
-        for(int i=0; i<n; ++i) {
-            QByteArray groupName;
-            groupName.fill('\0',256);
-
-            herr_t ret = H5Lget_name_by_idx(h5g->getLocId(), ".", H5_INDEX_CRT_ORDER, H5_ITER_INC,
-                                            i, groupName.data(), 256, 0);
-            if (ret<0) break;
-            H5O_info_t object_info;
-            ret = H5Oget_info_by_name(h5g->getLocId(), groupName, &object_info, 0);
-            if (object_info.type == H5O_TYPE_GROUP) names.push_back(groupName);
-
-        }
-    }
-
-    return names;
-}
-
 /*
  * Dynamic Property Read/Write Conversion Rules
  *
@@ -194,7 +131,7 @@ QByteArrayList h5helper_v1_1::getGroupNames(CommonFG* h5g, bool isRoot)
  *
  */
 
-void h5helper_v1_1::writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_object)
+void h5helper_v1_1::writeDynamicProperties(const QH5Group& h5obj, const QDaqObject* m_object)
 {
     if (m_object->dynamicPropertyNames().isEmpty()) return;
 
@@ -205,107 +142,78 @@ void h5helper_v1_1::writeDynamicProperties(CommonFG* h5obj, const QDaqObject* m_
 
         QVariant v = m_object->property(propName.constData());
 
-        if (QDaqTypes::isBool(v)) h5helper_v1_0::write(h5obj,propName.constData(),(int)v.toBool());
-        else if (QDaqTypes::isNumeric(v)) h5helper_v1_0::write(h5obj,propName.constData(),v.toDouble());
-        else if (QDaqTypes::isString(v)) h5helper_v1_0::write(h5obj,propName.constData(),v.toString());
-        else if (QDaqTypes::isStringList(v)) h5helper_v1_0::write(h5obj,propName.constData(),QDaqTypes::toStringList(v));
-        else if (QDaqTypes::isVector(v)) h5helper_v1_0::write(h5obj,propName.constData(),QDaqTypes::toVector(v));
+        if (QDaqTypes::isBool(v)) h5obj.write(propName,(int)v.toBool());
+        else if (QDaqTypes::isNumeric(v)) h5obj.write(propName,v.toDouble());
+        else if (QDaqTypes::isString(v)) h5obj.write(propName,v.toString());
+        else if (QDaqTypes::isStringList(v)) h5obj.write(propName,QDaqTypes::toStringList(v));
+        else if (QDaqTypes::isVector(v)) h5obj.write(propName,QDaqTypes::toVector(v));
         else continue;
 
         try {
-            DataSet ds = h5obj->openDataSet(propName.constData());
-            DataSpace dspace(H5S_SCALAR);
-            Attribute attr = ds.createAttribute(DYNAMIC_PROPERTY_TAG,PredType::NATIVE_INT,dspace);
-            int va = 1;
-            attr.write(PredType::NATIVE_INT,&va);
+            QH5Dataset ds = h5obj.openDataset(propName);
+            ds.writeAttribute(DYNAMIC_PROPERTY_TAG,1);
         }
-        catch(FileIException& e)
+        catch(h5exception& e)
         {
-            qDebug() << "File exception writing dynamic property " << propName;
-
+            qDebug() << "Exception writing dynamic property " << propName << ", " << e.what();
         }
-        catch(GroupIException& e)
-        {
-            qDebug() << "Group exception writing dynamic property " << propName;
-        }
-        catch(AttributeIException& e)
-        {
-            qDebug() << "Attribute exception writing dynamic property " << propName;
-        }
-
-
     }
 
 }
 
-void h5helper_v1_1::readDynamicProperties(CommonFG* h5g, QDaqObject* m_object)
+void h5helper_v1_1::readDynamicProperties(const QH5Group& h5g, QDaqObject* m_object)
 {
-    int n = h5g->getNumObjs();
+    foreach(const QByteArray& propName, h5g.datasetNames())
+    {
+        QH5Dataset ds = h5g.openDataset(propName);
 
-    for(int i=0; i<n; ++i) {
-        H5G_obj_t typ = h5g->getObjTypeByIdx(i);
-        if (typ==H5G_DATASET)
+        if (ds.hasAttribute(DYNAMIC_PROPERTY_TAG))
         {
-            QByteArray propName;
-            propName.fill('\0',256);
-            h5g->getObjnameByIdx(i,propName.data(),256);
+            QH5Datatype dtype = ds.datatype();
+            QH5Dataspace dspace = ds.dataspace();
+            uint sz = 0;
+            QVector<quint64> dims = dspace.dimensions();
+            if (dims.size()) {
+                sz = dims[0];
+                for(int i=1; i<dims.size(); i++) sz *= dims[i];
+            }
 
-            DataSet ds = h5g->openDataSet(propName.constData());
-
-            if (ds.attrExists(DYNAMIC_PROPERTY_TAG))
-            {
-                H5T_class_t type_class = ds.getTypeClass();
-                DataSpace dspace = ds.getSpace();
-
-                if (type_class==H5T_INTEGER) { // bool
-                    int sz = dspace.getSimpleExtentNpoints();
-                    if (sz>1) {
-                        qDebug() << "Invalid dynamic prop in HDF5"; // only scalar is supported
-                    } else {
-                        int val;
-                        ds.read(&val, ds.getDataType());
-                        bool b = (bool)val;
-                        m_object->setProperty(propName.constData(),QVariant::fromValue(b));
-                    }
-                } else if (type_class==H5T_FLOAT) {
-                    int sz = dspace.getSimpleExtentNpoints();
-                    if (sz>1) {
-                        QDaqVector val;
-                        val.setSize(sz);
-                        ds.read(val.data(), ds.getDataType());
-                        m_object->setProperty(propName.constData(),QVariant::fromValue(val));
-                    } else {
-                        double val;
-                        ds.read(&val, ds.getDataType());
-                        m_object->setProperty(propName.constData(),QVariant::fromValue(val));
-                    }
-                } else if (type_class==H5T_STRING) {
-                    // get string type & size
-                    StrType st = ds.getStrType();
-                    int ncols = st.getSize();
-                    hsize_t sz;
-                    dspace.getSimpleExtentDims(&sz);
-                    int nrows = sz;
-                    QByteArray buff(nrows*ncols,'0');
-                    ds.read(buff.data(),st,dspace);
-                    if (nrows>1) {
-                        QStringList val;
-                        for(int i=0; i<nrows; i++)
-                        {
-                            QByteArray ba(buff.constData() + i*ncols, ncols);
-                            val << QString(ba);
-                        }
-                        m_object->setProperty(propName.constData(),QVariant::fromValue(val));
-                    } else {
-                        QString val(buff);
-                        m_object->setProperty(propName.constData(),QVariant::fromValue(val));
-                    }
+            if (dtype.getClass()==QH5Datatype::INTEGER) { // bool
+                if (sz>1) {
+                    qDebug() << "Invalid dynamic prop in HDF5"; // only scalar is supported
                 } else {
-                    qDebug() << "Invalid dynamic prop in HDF5";
+                    int val;
+                    ds.read(val);
+                    bool b = (bool)val;
+                    m_object->setProperty(propName,QVariant::fromValue(b));
                 }
+            } else if (dtype.getClass()==QH5Datatype::FLOAT) {
+                if (sz>1) {
+                    QDaqVector val;
+                    val.setSize(sz);
+                    ds.read(val);
+                    m_object->setProperty(propName.constData(),QVariant::fromValue(val));
+                } else {
+                    double val;
+                    ds.read(val);
+                    m_object->setProperty(propName.constData(),QVariant::fromValue(val));
+                }
+            } else if (dtype.getClass()==QH5Datatype::STRING) {
+                if (sz>1) {
+                    QStringList val;
+                    ds.read(val);
+                    m_object->setProperty(propName.constData(),QVariant::fromValue(val));
+                } else {
+                    QString val;
+                    ds.read(val);
+                    m_object->setProperty(propName.constData(),QVariant::fromValue(val));
+                }
+            } else {
+                qDebug() << "Invalid dynamic prop in HDF5";
             }
         }
     }
 }
+
 
 

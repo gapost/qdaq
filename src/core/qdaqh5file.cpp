@@ -31,108 +31,42 @@ QDaqH5File::~QDaqH5File()
 bool QDaqH5File::h5write(const QDaqObject* obj, const QString& filename)
 {
     QString S;
-    H5File *file = 0;
 
     // Try block to detect exceptions raised by any of the calls inside it
     try
     {
-        /*
-         * Turn off the auto-printing when failure occurs so that we can
-         * handle the errors appropriately
-         */
-        Exception::dontPrint();
+        QH5File h5f(filename);
 
         /*
          * Create the named file, truncating the existing one if any,
          * using default create and access property lists.
          */
-        file = new H5File( filename.toLatin1(), H5F_ACC_TRUNC );
+        if (!h5f.open(QIODevice::Truncate)) {
+            // lastError_ =
+            return false;
+        }
 
         // get a last version helper
         newHelper(V_LAST);
         warnings_.clear();
 
-        helper()->write(file, "Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate));
-        helper()->write(file, "FileType", "QDaq");
-        helper()->write(file, "FileVersionMajor", QString::number(helper()->major()));
-        helper()->write(file, "FileVersionMinor", QString::number(helper()->minor()));
+        QH5Group root = h5f.root();
+        root.write("Timestamp", QDateTime::currentDateTime().toString(Qt::ISODate));
+        root.write("FileType", QString("QDaq"));
+        root.write("FileVersionMajor", QString::number(helper()->major()));
+        root.write("FileVersionMinor", QString::number(helper()->minor()));
 
         top_ = obj;
-        writeRecursive(file,obj);
+        writeRecursive(root,obj);
 
     }  // end of try block
 
     // catch failure caused by the H5File operations
-    catch( FileIException error )
+    catch( h5exception& error )
     {
-        S = "HDF5 File Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
+        S = "HDF5 File Write Error. ";
+        S += error.what();
     }
-
-    // catch failure caused by the DataSet operations
-    catch( DataSetIException error )
-    {
-        S = "HDF5 DataSet Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataSpace operations
-    catch( DataSpaceIException error )
-    {
-        S = "HDF5 DataSpace Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the Attribute operations
-    catch( AttributeIException error )
-    {
-        S = "HDF5 Attribute Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataType operations
-    catch( DataTypeIException error )
-    {
-        S = "HDF5 DataType Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataType operations
-    catch( PropListIException error )
-    {
-        S = "HDF5 PropList Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataType operations
-    catch( GroupIException error )
-    {
-        S = "HDF5 Group Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    if (file) delete file;
 
     if (!S.isEmpty())
     {
@@ -147,29 +81,28 @@ bool QDaqH5File::h5write(const QDaqObject* obj, const QString& filename)
 QDaqObject *QDaqH5File::h5read(const QString& filename)
 {
     QString S;
-    H5File *file = 0;
     QDaqObject* obj(0);
 
     // Try block to detect exceptions raised by any of the calls inside it
     try
     {
-        /*
-         * Turn off the auto-printing when failure occurs so that we can
-         * handle the errors appropriately
-         */
-        Exception::dontPrint();
+        QH5File h5f(filename);
 
         /*
          * Open the named file with read-only access
          */
-        file = new H5File( filename.toLatin1(), H5F_ACC_RDONLY );
+        if (!h5f.open(QIODevice::ReadOnly)) {
+            // lastError_ =
+            return false;
+        }
 
         newHelper(V_LAST);
         warnings_.clear();
 
+        QH5Group root = h5f.root();
         QString fileType, vMajor, vMinor;
 
-        bool ret = helper()->read(file,"FileType",fileType);
+        bool ret = root.read("FileType",fileType);
         if (!ret) {
             lastError_ = "Error reading file: 'FileType' field not found";
             return 0;
@@ -178,12 +111,12 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
             lastError_ = "Error reading file: 'FileType' is not 'QDaq'";
             return 0;
         }
-        ret = helper()->read(file,"FileVersionMajor",vMajor);
+        ret = root.read("FileVersionMajor",vMajor);
         if (!ret) {
             lastError_ = "Error reading file: 'FileVersionMajor' field not found";
             return 0;
         }
-        ret = helper()->read(file,"FileVersionMinor",vMinor);
+        ret = root.read("FileVersionMinor",vMinor);
         if (!ret) {
             lastError_ = "Error reading file: 'FileVersionMinor' field not found";
             return 0;
@@ -195,87 +128,16 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
         }
 
         newHelper(fileVersion);
-        readRecursive(file,obj);
+        readRecursive(root,obj);
 
     }  // end of try block
 
     // catch failure caused by the H5File operations
-    catch( FileIException error )
+    catch( h5exception& error )
     {
-        S = "HDF5 File Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataSet operations
-    catch( DataSetIException error )
-    {
-        S = "HDF5 DataSet Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataSpace operations
-    catch( DataSpaceIException error )
-    {
-        S = "HDF5 DataSpace Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the Attribute operations
-    catch( AttributeIException error )
-    {
-        S = "HDF5 Attribute Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataType operations
-    catch( DataTypeIException error )
-    {
-        S = "HDF5 DataType Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataType operations
-    catch( PropListIException error )
-    {
-        S = "HDF5 PropList Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    // catch failure caused by the DataType operations
-    catch( GroupIException error )
-    {
-        S = "HDF5 Group Error.";
-        S += " In function ";
-        S += error.getCFuncName();
-        S += ". ";
-        S += error.getCDetailMsg();
-    }
-
-    catch( std::runtime_error error )
-    {
-        S = "HDF5 read error, ";
+        S = "HDF5 File Read Error. ";
         S += error.what();
     }
-
-    if (file) delete file;
 
     if (!S.isEmpty())
     {
@@ -286,24 +148,63 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
     return obj;
 }
 
-void QDaqH5File::writeRecursive(CommonFG* h5g, const QDaqObject* obj)
+bool QDaqH5File::isQDaq(const QString &fname)
 {
-    H5::Group objGroup = helper()->createGroup(h5g, obj->objectName().toLatin1().constData());
+    if (!QH5File::isHDF5(fname)) return false;
+    // Try block to detect exceptions raised by any of the calls inside it
+    try
+    {
+        QH5File h5f(fname);
 
-    obj->writeh5(&objGroup, this);
+        /*
+         * Open the named file with read-only access
+         */
+        if (!h5f.open(QIODevice::ReadOnly)) {
+            // lastError_ =
+            return false;
+        }
 
-    foreach(const QDaqObject* ch, obj->children()) writeRecursive(&objGroup, ch);
+        QH5Group root = h5f.root();
+        QString fileType, vMajor, vMinor;
+        bool ret;
+
+        ret = root.read("FileType",fileType);
+        if (!ret || fileType!="QDaq") return false;
+
+        if (!root.read("FileVersionMajor",vMajor) || !root.read("FileVersionMinor",vMinor)) return false;
+
+        Version fileVersion = toVersion(vMajor.toInt(),vMinor.toInt());
+        if (fileVersion==V_INVALID) return false;
+
+        return true;
+
+    }  // end of try block
+
+    // catch failure caused by the H5File operations
+    catch( h5exception& error )
+    {
+        return false;
+    }
+
 }
 
-void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
+void QDaqH5File::writeRecursive(const QH5Group &h5g, const QDaqObject* obj)
 {
-    bool isRoot = parent_obj==0;
-    QByteArrayList groups = helper()->getGroupNames(h5g, isRoot);
+    QH5Group objGroup = h5g.createGroup(obj->objectName().toLatin1(),true);
+
+    obj->writeh5(objGroup, this);
+
+    foreach(const QDaqObject* ch, obj->children()) writeRecursive(objGroup, ch);
+}
+
+void QDaqH5File::readRecursive(const QH5Group &h5g, QDaqObject* &parent_obj)
+{
+    QByteArrayList groups = h5g.groupNames(true);
 
     foreach(QByteArray groupName, groups) {
-        Group g = h5g->openGroup(groupName);
+        QH5Group g = h5g.openGroup(groupName);
         QString className;
-        if (helper()->read(&g,CLASS_ATTR_NAME,className))
+        if (g.read(CLASS_ATTR_NAME,className))
         {
             if (className=="QDaqRoot") className = "QDaqObject";
             className += "*";
@@ -319,18 +220,19 @@ void QDaqH5File::readRecursive(CommonFG* h5g, QDaqObject* &parent_obj)
                         top_ = obj;
                     }
 
-                    obj->readh5(&g,this);
-                    readRecursive(&g, obj);
+                    obj->readh5(g,this);
+                    readRecursive(g, obj);
                 }
                 else delete obj;
             } else {
                 QString S = QString("Unknown class %1 for object %2").arg(className).arg(QString(groupName));
-                throw std::runtime_error(S.toLatin1().toStdString());
+                throw h5exception(S.toLatin1());
             }
         }
     }
 
-    if (isRoot) helper()->connectDeferedPointers();
+    // if reading the root
+    if (parent_obj==0) helper()->connectDeferedPointers();
 }
 
 void QDaqH5File::newHelper(Version v)
@@ -349,25 +251,6 @@ void QDaqH5File::newHelper(Version v)
         helper_ = new h5helper_v1_1(this); return;
     }
 
-}
-
-// Check if a dataset "name" exists in H5 file/group
-bool h5helper::h5exist_ds(CommonFG* h5obj, const char* name)
-{
-    H5O_info_t info;
-    return H5Lexists(h5obj->getLocId(),name,0) &&
-           H5Oget_info_by_name(h5obj->getLocId(),name,&info,0)>=0 &&
-           info.type==H5O_TYPE_DATASET;
-}
-
-QString h5helper::groupName(CommonFG* h5obj)
-{
-    int sz = H5Iget_name(h5obj->getLocId(),0,0);
-    if (sz) {
-        QByteArray ba(sz+1,char(0));
-        H5Iget_name(h5obj->getLocId(),ba.data(),sz+1);
-        return QString(ba);
-    } else return QString();
 }
 
 void h5helper::deferObjPtrRead(QDaqObject *obj, const char *name, const QString &path)
