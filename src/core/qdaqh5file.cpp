@@ -93,7 +93,7 @@ QDaqObject *QDaqH5File::h5read(const QString& filename)
          */
         if (!h5f.open(QIODevice::ReadOnly)) {
             // lastError_ =
-            return false;
+            return obj;
         }
 
         newHelper(V_LAST);

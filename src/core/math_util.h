@@ -1,7 +1,7 @@
 #ifndef _math_util_h_
 #define _math_util_h_
 
-// #include <cmath>
+#include <cmath>
 
 #include <QVector>
 #include <QExplicitlySharedDataPointer>
