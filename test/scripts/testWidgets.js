@@ -1,23 +1,23 @@
 log("Creating Widgets");
 
-var w = loadTopLevelUi('ui/tabwidget.ui','mainForm');
+var w = ui.loadTopLevelUi('ui/tabwidget.ui','mainForm');
 
-var to = loadUi('ui/testform.ui');
+var to = ui.loadUi('ui/testform.ui');
 var from = w.findChild('loopCtrl');
 
 w.replaceWidget(from,to);
 
-to = loadUi('ui/deltaControl.ui');
+to = ui.loadUi('ui/deltaControl.ui');
 from = w.findChild('deltaCtrl');
 
 w.replaceWidget(from,to);
 
-to = loadUi('ui/cryoTemperatureControl.ui');
+to = ui.loadUi('ui/cryoTemperatureControl.ui');
 from = w.findChild('cryoCtrl');
 
 w.replaceWidget(from,to);
 
-to = loadUi('ui/plotform.ui');
+to = ui.loadUi('ui/plotform.ui');
 from = w.findChild('plotWdgt');
 
 w.replaceWidget(from,to);
@@ -64,11 +64,11 @@ loop.appendChild(loop2);
 
 log("Tree = \n" + qdaq.objectTree());
 
-bind(qdaq.loop.t,  w.findChild('t'));
-bind(qdaq.loop.loop2.t,  w.findChild('t2'));
-bind(qdaq.loop.X1, w.findChild('X1'));
-bind(qdaq.loop.X2, w.findChild('X2'));
-bind(qdaq.loop.X3, w.findChild('qLed'));
+ui.bind(qdaq.loop.t,  w.findChild('t'));
+ui.bind(qdaq.loop.loop2.t,  w.findChild('t2'));
+ui.bind(qdaq.loop.X1, w.findChild('X1'));
+ui.bind(qdaq.loop.X2, w.findChild('X2'));
+ui.bind(qdaq.loop.X3, w.findChild('qLed'));
 
 function startPressed(on) {
     if (on) qdaq.loop.arm();
