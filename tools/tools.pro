@@ -16,4 +16,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    qdaq
+    qdaq \
+    filebrowser
