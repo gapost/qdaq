@@ -40,9 +40,16 @@ HEADERS +=\
     tcp_socket.h \
     qdaqinterfaces.h
 
+
+
 unix {
-SOURCES += linuxgpib.cpp
-HEADERS += linuxgpib.h
+    UBUNTU = $$system(cat /proc/version | grep -o Ubuntu)
+
+    !contains( UBUNTU, Ubuntu) {
+        SOURCES += linuxgpib.cpp
+        HEADERS += linuxgpib.h
+        LIBS += -lgpib
+    }
 }
 
 win32 {
@@ -70,7 +77,6 @@ DEPENDPATH += $$PWD/../core
 unix {
     LIBS += -lmodbus
     INCLUDEPATH += /usr/include/modbus
-    LIBS += -lgpib
 }
 
 win32 {

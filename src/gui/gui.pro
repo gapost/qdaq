@@ -98,6 +98,14 @@ unix {
 
     ######### QtSolutions ###############
     CONFIG += qtpropertybrowser
+
+    UBUNTU = $$system(cat /proc/version | grep -o Ubuntu)
+
+    contains( UBUNTU, Ubuntu ) {
+        INCLUDEPATH += /usr/include/qtpropertybrowser
+        LIBS += -lqtpropertybrowser
+    }
+
 }
 
 ############## 3rd Party Libs for win32 ###############
