@@ -4,13 +4,8 @@
 
 #include "QDaqScriptAPI.h"
 #include "QDaqSession.h"
-#include "qdaqmodbus.h"
-#include "qdaqserial.h"
-#include "qdaqtcpip.h"
-#include "linuxgpib.h"
 #include "qdaqinterfaces.h"
 
-#include <QScriptEngine>
 
 QDaqInterfacesPlugin::QDaqInterfacesPlugin(QObject *parent) :
     QScriptExtensionPlugin(parent)
@@ -35,11 +30,7 @@ void QDaqInterfacesPlugin::initialize(const QString &key, QScriptEngine *e)
         QDaqScriptEngine* daqEngine = qobject_cast<QDaqScriptEngine*>(e->parent());
         if (daqEngine && daqEngine->type()==QDaqScriptEngine::RootEngine)
         {
-            QDaqScriptAPI::registerClass(e, &QDaqModbusTcp::staticMetaObject);
-            QDaqScriptAPI::registerClass(e, &QDaqModbusRtu::staticMetaObject);
-            QDaqScriptAPI::registerClass(e, &QDaqSerial::staticMetaObject);
-            QDaqScriptAPI::registerClass(e, &QDaqTcpip::staticMetaObject);
-            QDaqScriptAPI::registerClass(e, &QDaqLinuxGpib::staticMetaObject);
+            QDaqInterfaces::initScriptInterface(daqEngine);
         }
     }
     else {

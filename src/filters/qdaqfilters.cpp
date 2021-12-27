@@ -17,7 +17,7 @@ QDaqFilters::QDaqFilters(QObject *parent) : QObject(parent)
 {
     filters_ = this;
     registerMetaTypes();
-    initScriptInterface( QDaqObject::root()->rootSession() );
+    initScriptInterface( QDaqObject::root()->rootSession()->daqEngine() );
 
     connect(QDaqObject::root(),SIGNAL(newSession(QDaqSession*)),
             this,SLOT(onNewSession(QDaqSession*)));
@@ -25,17 +25,17 @@ QDaqFilters::QDaqFilters(QObject *parent) : QObject(parent)
 
 void QDaqFilters::onNewSession(QDaqSession *s)
 {
-    initScriptInterface(s);
+    initScriptInterface(s->daqEngine());
 }
 
-void QDaqFilters::initScriptInterface(QDaqSession *s)
+void QDaqFilters::initScriptInterface(QDaqScriptEngine *s)
 {
-    if (s->daqEngine()->type() != QDaqScriptEngine::RootEngine)
+    if (s->type() != QDaqScriptEngine::RootEngine)
     {
         qDebug() << "Cannot install QDaqFilters interface/constructors in non-root QDaqScriptEngine";
         return;
     }
-    QScriptEngine* e = s->scriptEngine();
+    QScriptEngine* e = s->getEngine();
     QDaqScriptAPI::registerClass(e, &QDaqFOPDT::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqInterpolator::staticMetaObject);
     QDaqScriptAPI::registerClass(e, &QDaqLinearCorrelator::staticMetaObject);

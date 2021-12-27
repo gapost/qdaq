@@ -4,10 +4,7 @@
 
 #include "QDaqScriptAPI.h"
 #include "QDaqSession.h"
-#include "qdaqfopdt.h"
-#include "qdaqinterpolator.h"
-#include "qdaqlinearcorrelator.h"
-#include "qdaqpid.h"
+
 #include "qdaqfilters.h"
 
 QDaqFiltersPlugin::QDaqFiltersPlugin(QObject *parent) :
@@ -33,10 +30,7 @@ void QDaqFiltersPlugin::initialize(const QString &key, QScriptEngine *e)
         QDaqScriptEngine* daqEngine = qobject_cast<QDaqScriptEngine*>(e->parent());
         if (daqEngine && daqEngine->type()==QDaqScriptEngine::RootEngine)
         {
-            QDaqScriptAPI::registerClass(e, &QDaqFOPDT::staticMetaObject);
-            QDaqScriptAPI::registerClass(e, &QDaqInterpolator::staticMetaObject);
-            QDaqScriptAPI::registerClass(e, &QDaqLinearCorrelator::staticMetaObject);
-            QDaqScriptAPI::registerClass(e, &QDaqPid::staticMetaObject);
+            QDaqFilters::initScriptInterface(daqEngine);
         }
     }
     else {

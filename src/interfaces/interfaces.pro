@@ -49,6 +49,7 @@ unix {
         SOURCES += linuxgpib.cpp
         HEADERS += linuxgpib.h
         LIBS += -lgpib
+        DEFINES += LINUX_GPIB
     }
 }
 

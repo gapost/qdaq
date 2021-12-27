@@ -6,6 +6,7 @@
 #include <QObject>
 
 class QDaqSession;
+class QDaqScriptEngine;
 
 class QDAQ_EXPORT QDaqFilters : public QObject
 {
@@ -14,7 +15,7 @@ class QDAQ_EXPORT QDaqFilters : public QObject
 public:
     explicit QDaqFilters(QObject *parent = 0);
 
-    static void initScriptInterface(QDaqSession* s);
+    static void initScriptInterface(QDaqScriptEngine* s);
     static void registerMetaTypes();
 
 private slots:
