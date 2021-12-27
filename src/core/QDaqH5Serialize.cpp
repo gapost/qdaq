@@ -38,23 +38,20 @@ void QDaqDataBuffer::readh5(const QH5Group &g, QDaqH5File *f)
     QDaqObject::readh5(g,f);
 
     QStringList S;
-    if (g.read("columnNames",S)) columnNames_ = S;
-
-    int ncols = columnNames_.size();
-    if (!ncols) return;
-    uint cap_ = capacity();
-    data_matrix = matrix_t(ncols);
-    // restore the capacity && type
-    for(int i=0; i<data_matrix.size(); i++)
-        data_matrix[i].setCircular(circular_);
-    QDaqVector rbuff(cap_);
-    for(int j=0; j<ncols; j++)
-    {
-        g.read(columnNames().at(j).toLatin1(),rbuff);
-        data_matrix[j] = rbuff;
+    if (g.read("columnNames",S) && !S.isEmpty()) {
+        setColumnNames(S); // creates data_matrix and dyn. props <-> columns
+        for(int j=0; j<S.size(); j++) {
+            bool ret = g.read(columnNames().at(j).toLatin1(),data_matrix[j]);
+            if (!ret)
+                f->helper()->pushWarning(
+                            QString("Unable to read QDaqDataBuffer column")
+                            );
+        }
     }
-    for(int i=0; i<data_matrix.size(); i++)
-        data_matrix[i].setCapacity(cap_);
+
+
+
+
 }
 
 
