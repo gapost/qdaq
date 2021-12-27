@@ -11,7 +11,7 @@ class h5helper;
 #include <string>
 
 template<>
-class TypeTraits<QDaqVector> {
+class QH5Datatype::traits<QDaqVector> {
 public:
 
     static int metaTypeId(const QDaqVector &)
