@@ -19,15 +19,15 @@ void QDaqObject::readh5(const QH5Group &g, QDaqH5File *f)
 
 void QDaqDataBuffer::writeh5(const QH5Group &h5g, QDaqH5File *f) const
 {
-
+    // add columns to the locked prop list
+    // so that they are not automatically written by QDaqObject::writeh5
     f->helper()->lockedPropertyList(columnNames_);
 
     QDaqObject::writeh5(h5g,f);
 
     f->helper()->lockedPropertyList();
 
-    if (!(columns() && size())) return;
-
+    // now write the data columns
     for(uint j=0; j<columns(); j++)
         h5g.write(columnNames().at(j).toLatin1(),data_matrix[j]);
 
@@ -37,20 +37,18 @@ void QDaqDataBuffer::readh5(const QH5Group &g, QDaqH5File *f)
 {
     QDaqObject::readh5(g,f);
 
-    QStringList S;
-    if (g.read("columnNames",S) && !S.isEmpty()) {
-        setColumnNames(S); // creates data_matrix and dyn. props <-> columns
-        for(int j=0; j<S.size(); j++) {
-            bool ret = g.read(columnNames().at(j).toLatin1(),data_matrix[j]);
-            if (!ret)
-                f->helper()->pushWarning(
-                            QString("Unable to read QDaqDataBuffer column")
-                            );
-        }
+    // now read the data columns
+    // data_matrix has been created & initialized
+    // when reading the columnNames property
+    int sz = columnNames().size();
+    for(int i=0; i<sz; i++) {
+        const char* col_name = columnNames().at(i).toLatin1().constData();
+        bool ret = g.read(col_name,data_matrix[i]);
+        if (!ret)
+            f->helper()->pushWarning(
+                        QString("Unable to read QDaqDataBuffer column %1").arg(col_name)
+                        );
     }
-
-
-
 
 }
 
