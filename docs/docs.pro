@@ -4,6 +4,7 @@ CONFIG -= qt
 
 DISTFILES += \
     ../README.md \
+    ../TODO \
     Doxyfile \
     html/index.html \
     index.html \

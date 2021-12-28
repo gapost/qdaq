@@ -1,4 +1,7 @@
-  * script extensions
+* QDaqDataBuffer
+  * Not implemented: A QDaqDataBuffer with QDaqChannels correctly write to & read from h5 file
+
+* script extensions
     * core makes a lib with no widgets - only ref to widgets
     * QDaqSession does not have widget-related functions
     * all widgets got into "gui" module libQDaqGui.so
