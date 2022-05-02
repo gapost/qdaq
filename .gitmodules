@@ -1,9 +1,9 @@
 [submodule "src/gui/qconsolewidget"]
 	path = src/gui/qconsolewidget
-	url = git@github.com:gapost/qconsolewidget.git
+	url = git@gitlab.com:qdaq/qconsolewidget.git
 [submodule "src/gui/qmatplotwidget"]
 	path = src/gui/qmatplotwidget
-	url = git@github.com:gapost/qmatplotwidget.git
+	url = git@gitlab.com:qdaq/qmatplotwidget.git
 [submodule "src/core/qthdf5"]
 	path = src/core/qthdf5
 	url = git@gitlab.com:qdaq/qthdf5.git
