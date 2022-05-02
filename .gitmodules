@@ -6,4 +6,4 @@
 	url = git@github.com:gapost/qmatplotwidget.git
 [submodule "src/core/qthdf5"]
 	path = src/core/qthdf5
-	url = git@github.com:gapost/QtHDF5.git
+	url = git@gitlab.com:qdaq/qthdf5.git
