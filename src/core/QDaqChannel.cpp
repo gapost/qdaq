@@ -1,6 +1,14 @@
 #include "QDaqChannel.h"
 #include <QChar>
-#include <muParser.h>
+
+#if  defined (__MINGW64__) && defined (_UNICODE)
+// In MSYS2/MINGW64 the default muParser lib is build with UNICODE off
+	#undef _UNICODE
+	#include <muParser.h>
+	#define _UNICODE
+#else
+	#include <muParser.h>
+#endif
 
 #include <algorithm>
 
@@ -248,7 +256,7 @@ bool QDaqChannel::run()
 				//Q_UNUSED(e);
 
                 const mu::string_type& msg = e.GetMsg();
-#if defined(_UNICODE)
+#if defined(_UNICODE) && !defined(__MINGW64__)
                 pushError(QString("muParser"),QString::fromStdWString(msg));
 #else
 				pushError(QString("muParser"),QString(msg.c_str()));
@@ -304,7 +312,7 @@ void QDaqChannel::clear()
 
 QString QDaqChannel::parserExpression() const
 {
-#if defined(_UNICODE)
+#if defined(_UNICODE)  && !defined(__MINGW64__)
     if (parser_) return QString::fromStdWString(parser_->GetExpr());
 #else
 	if (parser_) return QString(parser_->GetExpr().c_str());
@@ -334,13 +342,13 @@ void QDaqChannel::setParserExpression(const QString& s)
 		}
 		else
 		{
-#if defined(_UNICODE)
+#if defined(_UNICODE) && !defined(__MINGW64__)
             if (!parser_)
             {
                 parser_= new mu::Parser();
                 parser_->DefineVar(QString("x").toStdWString(),&v_);
             }
-            parser_->SetExpr(s.toStdWString());
+            parser_->SetExpr();
 #else
 			if (!parser_)
 			{

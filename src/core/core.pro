@@ -105,40 +105,11 @@ unix {
     INSTALLS += headers target
 }
 
-############# linux 3rd party libs ##############
+############# 3rd party libs ##############
 
-unix {
-
-    ############## HDF5 ##############
-    LIBS += -lhdf5 -lhdf5_cpp
-
-    ############## muParser ##############
-    LIBS += -lmuparser
-
-}
-
-############## 3rd Party Libs for win32 ###############
-
-win32 {
 
 ############## HDF5 ##############
-win32: LIBS += -L$$PWD/../3rdparty/HDF5/1.8.20/lib/ -lhdf5 -lhdf5_cpp
-INCLUDEPATH += $$PWD/../3rdparty/HDF5/1.8.20/include
-DEPENDPATH += $$PWD/../3rdparty/HDF5/1.8.20/include
-DEFINES += H5_BUILT_AS_DYNAMIC_LIB
+LIBS += -lhdf5 -lhdf5_cpp
 
 ############## muParser ##############
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../3rdparty/muparser-2.2.5/lib/ -lmuparser
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../3rdparty/muparser-2.2.5/lib/ -lmuparserd
-
-INCLUDEPATH += $$PWD/../3rdparty/muparser-2.2.5/include
-DEPENDPATH += $$PWD/../3rdparty/muparser-2.2.5/include
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../3rdparty/muparser-2.2.5/lib/libmuparser.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../3rdparty/muparser-2.2.5/lib/libmuparserd.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../3rdparty/muparser-2.2.5/lib/muparser.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../3rdparty/muparser-2.2.5/lib/muparserd.lib
-
-DEFINES += _CRT_SECURE_NO_WARNINGS
-
-}
+LIBS += -lmuparser
