@@ -7,23 +7,18 @@
 QT  += core gui widgets script scripttools uitools
 
 TEMPLATE = lib
-DEFINES += QDAQ_LIBRARY
+DEFINES += QDAQ_LIBRARY QCONSOLE_LIBRARY
 
 # platform options
 win32 {
     TARGET = libQDaqGui
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-    CONFIG(debug, debug|release) {
-        DESTDIR = $$PWD/../../../bin-debug
-    } else {
-        DESTDIR = $$PWD/../../../bin-release
-    }
 }
 unix {
     TARGET = QDaqGui
-    DESTDIR = $$OUT_PWD/../../bin
 }
+DESTDIR = $$OUT_PWD/../../bin
 
 SOURCES += \
     QDaqDelegates.cpp \
@@ -80,24 +75,25 @@ unix {
     INSTALLS += headers target
 }
 
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lQDaqCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -lQDaqCore
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
+LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 
 INCLUDEPATH += $$PWD/../core
 DEPENDPATH += $$PWD/../core
 
-############# linux 3rd party libs ##############
+############# 3rd party libs ##############
+
+######### Qwt ###############
+CONFIG += qwt
+win32 {
+    INCLUDEPATH += $$[QT_INSTALL_HEADERS]/qwt-qt5
+}
+
+######### QtSolutions ###############
+CONFIG += qtpropertybrowser
 
 unix {
 
-    ######### Qwt ###############
-    CONFIG += qwt
-
-    ######### QtSolutions ###############
-    CONFIG += qtpropertybrowser
+    
 
     UBUNTU = $$system(cat /proc/version | grep -o Ubuntu)
 
@@ -108,32 +104,4 @@ unix {
 
 }
 
-############## 3rd Party Libs for win32 ###############
 
-win32 {
-# Qwt-6
-DEFINES += QWT_DLL
-QWT_PATH = $$PWD/../3rdparty/Qwt-6.1.3-qt-5.9.2
-LIBS += -L$$QWT_PATH/lib/
-CONFIG(release, debug|release) {
-    LIBS += -lqwt
-} else {
-    LIBS += -lqwtd
-}
-INCLUDEPATH += $$QWT_PATH/include
-DEPENDPATH += $$QWT_PATH/include
-
-######### QtSolutions ###############
-QTSOLUTIONS_PATH = $$PWD/../3rdparty/qt-solutions/qtpropertybrowser
-INCLUDEPATH += $$QTSOLUTIONS_PATH/src
-LIBS += -L$$QTSOLUTIONS_PATH/lib
-DEFINES += QT_QTPROPERTYBROWSER_IMPORT
-CONFIG(debug, debug|release) {
-        LIBS += -lQtSolutions_PropertyBrowser-headd
-} else {
-        LIBS += -lQtSolutions_PropertyBrowser-head
-}
-
-DEFINES += _CRT_SECURE_NO_WARNINGS
-
-}

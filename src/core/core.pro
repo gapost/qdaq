@@ -14,16 +14,11 @@ win32 {
     TARGET = libQDaqCore
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-    CONFIG(debug, debug|release) {
-        DESTDIR = $$PWD/../../../bin-debug
-    } else {
-        DESTDIR = $$PWD/../../../bin-release
-    }
 }
 unix {
     TARGET = QDaqCore
-    DESTDIR = $$OUT_PWD/../../bin
 }
+DESTDIR = $$OUT_PWD/../../bin
 
 
 # set a qmake variable

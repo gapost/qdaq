@@ -3,19 +3,7 @@ QT += widgets
 
 TARGET = filebrowser
 TEMPLATE = app
-
-# platform options
-win32 {
-    CONFIG(debug, debug|release) {
-        DESTDIR = $$PWD/../../../bin-debug
-    } else {
-        DESTDIR = $$PWD/../../../bin-release
-    }
-}
-
-unix {
-    DESTDIR = $$OUT_PWD/../../bin
-}
+DESTDIR = $$OUT_PWD/../../bin
 
 HEADERS       = mainwindow.h \
                 mdichild.h

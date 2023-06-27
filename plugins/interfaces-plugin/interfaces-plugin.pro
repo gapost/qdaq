@@ -14,16 +14,11 @@ win32 {
     TARGET = $$qtLibraryTarget(QDaqInterfacesPlugin)
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-    CONFIG(debug, debug|release) {
-        DESTDIR = $$PWD/../../../bin-debug
-    } else {
-        DESTDIR = $$PWD/../../../bin-release
-    }
 }
 unix {
     TARGET = $$qtLibraryTarget(QDaqInterfacesPlugin)
-    DESTDIR = $$OUT_PWD/../../bin/script
 }
+DESTDIR = $$OUT_PWD/../../bin/script
 
 SOURCES += qdaqinterfacesplugin.cpp
 
@@ -35,17 +30,11 @@ unix {
     INSTALLS += target
 }
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../core/release/ -lQDaqCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../core/debug/ -lQDaqCore
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
-
+LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 INCLUDEPATH += $$PWD/../../src/core
 DEPENDPATH += $$PWD/../../src/core
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../interfaces/release/ -lQDaqInterfaces
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../interfaces/debug/ -lQDaqInterfaces
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../bin/ -lQDaqInterfaces
-
+LIBS += -L$$OUT_PWD/../../bin/ -lQDaqInterfaces
 INCLUDEPATH += $$PWD/../../src/interfaces
 DEPENDPATH += $$PWD/../../src/interfaces

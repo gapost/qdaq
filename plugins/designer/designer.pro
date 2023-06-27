@@ -8,16 +8,11 @@ win32 {
     TARGET = $$qtLibraryTarget(qdaqwidgetsplugin)
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-    CONFIG(debug, debug|release) {
-        DESTDIR = $$PWD/../../../bin-debug
-    } else {
-        DESTDIR = $$PWD/../../../bin-release
-    }
 }
 unix {
     TARGET = $$qtLibraryTarget(qdaqwidgetsplugin)
-    DESTDIR = $$OUT_PWD/../../bin/designer
 }
+DESTDIR = $$OUT_PWD/../../bin/designer
 
 
 HEADERS     = qledplugin.h qdaqplotwidgetplugin.h qdaqwidgetsplugin.h \
@@ -34,46 +29,18 @@ unix {
 
 ## Add modules core & gui
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../core/release/ -lQDaqCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../core/debug/ -lQDaqCore
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
-
+LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 INCLUDEPATH += $$PWD/../../src/core
 DEPENDPATH += $$PWD/../../src/core
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gui/release/ -lQDaqGui
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gui/debug/ -lQDaqGui
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../bin/ -lQDaqGui
-
+LIBS += -L$$OUT_PWD/../../bin/ -lQDaqGui
 INCLUDEPATH += $$PWD/../../src/gui \
                $$PWD/../../src/gui/qconsolewidget/src \
                $$PWD/../../src/gui/qmatplotwidget/src
-
 DEPENDPATH += $$PWD/../../src/gui
 
 ############# linux 3rd party libs ##############
 
-unix {
-    ######### Qwt ###############
-    CONFIG += qwt
-}
+######### Qwt ###############
+CONFIG += qwt
 
-############## 3rd Party Libs for win32 ###############
-
-win32 {
-# Qwt-6
-DEFINES += QWT_DLL
-QWT_PATH = $$PWD/../3rdparty/Qwt-6.1.3-qt-5.9.2
-LIBS += -L$$QWT_PATH/lib/
-CONFIG(release, debug|release) {
-    LIBS += -lqwt
-} else {
-    LIBS += -lqwtd
-}
-INCLUDEPATH += $$QWT_PATH/include
-DEPENDPATH += $$QWT_PATH/include
-
-
-DEFINES += _CRT_SECURE_NO_WARNINGS
-
-}

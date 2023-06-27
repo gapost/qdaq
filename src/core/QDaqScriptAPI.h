@@ -6,13 +6,15 @@
 #include <QScriptValue>
 #include <QVariant>
 
+#include "QDaqGlobal.h"
+
 class QScriptEngine;
 class QDaqScriptEngine;
 class QDaqObject;
 class QElapsedTimer;
 class QDaqSession;
 
-class QDaqScriptAPI : public QObject, protected QScriptable
+class QDAQ_EXPORT QDaqScriptAPI : public QObject, protected QScriptable
 {
     Q_OBJECT
 public:
