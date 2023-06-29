@@ -1,0 +1,2 @@
+INCLUDEPATH *= $$[QT_INSTALL_HEADERS]/QtSolutions
+LIBS *= -lQtSolutions_SingleApplication-2.6.1

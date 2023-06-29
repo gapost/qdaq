@@ -1,0 +1,97 @@
+# Maintainer: Christian Bühler <christian@cbuehler.de>
+
+_realname=qt-solutions-git
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-qt5")
+pkgver=55.2fb541e
+pkgrel=1
+pkgdesc="Components from the discontinued Qt Solutions product, a collection of minor Qt add-ons and former Qt modules which for various reasons have been pruned from Qt itself. (GIT version)"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
+url='https://github.com/qtproject/qt-solutions'
+license=('BSD-3-Clause')
+depends=("${MINGW_PACKAGE_PREFIX}-qt5-base")
+makedepends=('git')
+provides=('qt-solutions')
+conflicts=('qt-solutions')
+source=('git+https://code.qt.io/qt-solutions/qt-solutions.git'
+        qtpropertybrowser.prf
+		qtservice.prf
+		qtsingleapplication.prf)
+sha256sums=('SKIP'
+            'SKIP'
+			'SKIP'
+			'SKIP')
+
+prepare() {
+  
+  sed "s|\$\$DESTDIR|${pkgdirbase}/${MINGW_PACKAGE_PREFIX}-${_realname}-qt5${MINGW_PREFIX}/lib|g" \
+    -i qt-solutions/{qtservice,qtsingleapplication,qtpropertybrowser}/buildlib/buildlib.pro
+	
+  # use versioned soname
+  sed "s,head,2.6.1,g" \
+    -i qt-solutions/{qtservice,qtsingleapplication,qtpropertybrowser}/common.pri
+  # do not build example source
+  sed /examples/d \
+    -i qt-solutions/qtpropertybrowser/qtpropertybrowser.pro
+  sed /examples/d \
+    -i qt-solutions/qtservice/qtservice.pro
+  sed /examples/d \
+    -i qt-solutions/qtsingleapplication/qtsingleapplication.pro
+
+}
+
+build() {
+
+  cd "${srcdir}/qt-solutions/qtservice"
+  ./configure \
+    -library
+  qmake CONFIG-=debug_and_release CONFIG+=release
+  make
+
+  cd "${srcdir}/qt-solutions/qtsingleapplication"
+  ./configure \
+    -library
+  qmake CONFIG-=debug_and_release CONFIG+=release
+  make
+
+  cd "${srcdir}/qt-solutions/qtpropertybrowser"
+  ./configure.bat \
+    -library
+  qmake CONFIG-=debug_and_release CONFIG+=release
+  make
+}
+
+package() {
+  mkdir -p "${pkgdir}${MINGW_PREFIX}"/include/QtSolutions
+
+  cd "${srcdir}/qt-solutions/qtpropertybrowser/src"
+  cp -ap \
+    qt*.h \
+    Qt* \
+    "${pkgdir}${MINGW_PREFIX}"/include/QtSolutions
+  cd ..
+  make install
+    
+  cd "${srcdir}/qt-solutions/qtservice/src"
+  for i in QtServiceBase QtServiceController qtservice.h; do
+    install -Dm644 "${i}" "${pkgdir}${MINGW_PREFIX}"/include/QtSolutions
+  done
+  cd ..
+  make install
+  
+  cd "${srcdir}/qt-solutions/qtsingleapplication/src"
+  for i in QtSingleApplication qtsingleapplication.h; do
+    install -Dm644 "${i}" "${pkgdir}${MINGW_PREFIX}"/include/QtSolutions
+  done
+  cd ..
+  make install
+  
+  cd "${srcdir}"
+  install -Dm644 qtpropertybrowser.prf "${pkgdir}${MINGW_PREFIX}/share/qt5/mkspecs/features/qtpropertybrowser.prf"
+  install -Dm644 qtservice.prf "${pkgdir}${MINGW_PREFIX}/share/qt5/mkspecs/features/qtservice.prf"
+  install -Dm644 qtservice.prf "${pkgdir}${MINGW_PREFIX}/share/qt5/mkspecs/features/qtsingleapplication.prf"
+    
+  mkdir -p "${pkgdir}${MINGW_PREFIX}"/bin
+  mv "${pkgdir}${MINGW_PREFIX}"/lib/*.dll "${pkgdir}${MINGW_PREFIX}"/bin/
+}
