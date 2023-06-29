@@ -16,20 +16,37 @@ git pull --recurse-submodules
 
 ## required MSYS2 packages
 
-USE UCRT64
+Tested platform: UCRT64
+
+Install the following to prepare the build environment
+
+```
+pacman -S mingw-w64-ucrt-x86_64-toolchain
+pacman -S mingw-w64-ucrt-x86_64-qt5-base
+pacman -S mingw-w64-ucrt-x86_64-qt5-serialport
+pacman -S mingw-w64-ucrt-x86_64-qt5-script
+pacman -S mingw-w64-ucrt-x86_64-qt5-tools
+```
 
 - core
     - muparser    
-      the MSYS2 package is build without unicode support
-    - hdf5
+      `mingw-w64-ucrt-x86_64-muparser`    
+      the MSYS2 package is build without unicode support    
+    - hdf5     
+      `mingw-w64-ucrt-x86_64-hdf5`
 - gui
-    - qwt   
-    The include path is not correctly set. Had to add `$$[QT_INSTALL_HEADERS]/qwt-qt5` in the include path
+    - qwt    
+      `mingw-w64-ucrt-x86_64-qwt-qt5`   
+      The include path is not correctly set. Had to add `$$[QT_INSTALL_HEADERS]/qwt-qt5` in the include path
 - QtSolutions - propertybrowser    
   Had to create the package for mingw
   Found similar package in AUR and started from there
 - filters
-    - gsl
+    - gsl    
+      `mingw-w64-ucrt-x86_64-gsl`
+- interfaces
+  - modbus     
+    `mingw-w64-ucrt-x86_64-libmodbus-git`
 
 
 ## build
