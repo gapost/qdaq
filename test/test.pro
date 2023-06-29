@@ -15,24 +15,24 @@ SOURCES +=
 HEADERS +=
 
 DISTFILES += \
-    scripts/clearAll.js \
-    scripts/testGPIB.js \
-    scripts/testQDaqObject.js \
-    scripts/testTabs.js \
-    scripts/testTimerLoop.js \
-    scripts/testH5.js \
-    scripts/testWidgets.js \
-    scripts/testDynamicProperties.js \
-    scripts/testPID.js \
-    scripts/tbl.dat \
-    scripts/testKeithley.js \
-    scripts/test3706.js \
-    scripts/data.json \
-    scripts/testConsolewidget.js \
-    scripts/testVector.js \
-    scripts/testH5DataBuffer.js \
-    scripts/testresmeasChan.js \
-    scripts/testStartupScript.js
+    js/clearAll.js \
+    js/testGPIB.js \
+    js/testQDaqObject.js \
+    js/testTabs.js \
+    js/testTimerLoop.js \
+    js/testH5.js \
+    js/testWidgets.js \
+    js/testDynamicProperties.js \
+    js/testPID.js \
+    js/tbl.dat \
+    js/testKeithley.js \
+    js/test3706.js \
+    js/data.json \
+    js/testConsolewidget.js \
+    js/testVector.js \
+    js/testH5DataBuffer.js \
+    js/testresmeasChan.js \
+    js/testStartupScript.js
 
 FORMS += \
     ui/burstform.ui \
