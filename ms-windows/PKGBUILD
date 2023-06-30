@@ -1,0 +1,45 @@
+# Maintainer: Christian Bühler <christian@cbuehler.de>
+
+_realname=qdaq
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-qt5")
+pkgver=0.3.0
+pkgrel=1
+pkgdesc="A Qt-based framework for data aquisition applications."
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
+url='https://gitlab.com/qdaq/qdaq'
+license=('MIT')
+depends=("${MINGW_PACKAGE_PREFIX}-qt5-base")
+depends=("${MINGW_PACKAGE_PREFIX}-qt5-serialport")
+depends=("${MINGW_PACKAGE_PREFIX}-qt5-script")
+depends=("${MINGW_PACKAGE_PREFIX}-qt5-tools")
+depends=("${MINGW_PACKAGE_PREFIX}-muparser")
+depends=("${MINGW_PACKAGE_PREFIX}-hdf5")
+depends=("${MINGW_PACKAGE_PREFIX}-qwt-qt5")
+depends=("${MINGW_PACKAGE_PREFIX}-gsl")
+depends=("${MINGW_PACKAGE_PREFIX}-libmodbus-git")
+depends=("${MINGW_PACKAGE_PREFIX}-qt-solutions-git-qt5")
+makedepends=('git')
+provides=('qdaq')
+conflicts=('qdaq')
+source=('qdaq.tar.gz')
+sha256sums=('SKIP')
+
+prepare() {
+
+}
+
+build() {
+  cd "${srcdir}"
+  mkdir -p build
+  cd build
+  qmake CONFIG-=debug_and_release CONFIG+=release ../qdaq/qdaq.pro && make qmake_all
+  make
+}
+
+package() {
+  mkdir -p "${pkgdir}${MINGW_PREFIX}"
+  
+  make install INSTALL_ROOT="${pkgdir}${MINGW_PREFIX}" -C "${srcdir}/build"
+}
