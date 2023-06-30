@@ -2,8 +2,8 @@
 
 _realname=qdaq
 pkgbase=mingw-w64-${_realname}
-pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-qt5")
-pkgver=0.3.0
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=0.3.1
 pkgrel=1
 pkgdesc="A Qt-based framework for data aquisition applications."
 arch=('any')
@@ -20,26 +20,27 @@ depends=("${MINGW_PACKAGE_PREFIX}-qwt-qt5")
 depends=("${MINGW_PACKAGE_PREFIX}-gsl")
 depends=("${MINGW_PACKAGE_PREFIX}-libmodbus-git")
 depends=("${MINGW_PACKAGE_PREFIX}-qt-solutions-git-qt5")
-makedepends=('git')
+makedepends=("${MINGW_PACKAGE_PREFIX}-cc")
 provides=('qdaq')
 conflicts=('qdaq')
-source=('qdaq.tar.gz')
+source=('qdaq-v0.3.1.28.903206f.tar.gz')
 sha256sums=('SKIP')
 
-prepare() {
-
-}
-
 build() {
-  cd "${srcdir}"
-  mkdir -p build
-  cd build
+  mkdir -p build-${MSYSTEM} && cd build-${MSYSTEM}
   qmake CONFIG-=debug_and_release CONFIG+=release ../qdaq/qdaq.pro && make qmake_all
   make
 }
 
 package() {
-  mkdir -p "${pkgdir}${MINGW_PREFIX}"
-  
-  make install INSTALL_ROOT="${pkgdir}${MINGW_PREFIX}" -C "${srcdir}/build"
+  cd build-${MSYSTEM}
+
+  # Fix Makefiles
+  local PREFIX_WIN=$(cygpath -am ${MINGW_PREFIX})
+  find "${srcdir}/build-${MSYSTEM}" -type f \( -name 'Makefile*' \) \
+      -exec sed -i -e "s|${PREFIX_WIN:0:2}\$(INSTALL_ROOT|\$(INSTALL_ROOT|g" {} \;
+  find "${srcdir}/build-${MSYSTEM}" -type f \( -name 'Makefile*' \) \
+      -exec sed -i -e "s|)${PREFIX_WIN:2}|)${MINGW_PREFIX}|g" {} \;
+
+  make INSTALL_ROOT="${pkgdir}" install
 }
