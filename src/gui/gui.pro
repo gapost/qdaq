@@ -8,16 +8,13 @@ QT  += core gui widgets script scripttools uitools
 
 TEMPLATE = lib
 DEFINES += QDAQ_LIBRARY QCONSOLE_LIBRARY
-
+TARGET = QDaqGui
 # platform options
 win32 {
-    TARGET = libQDaqGui
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
 }
-unix {
-    TARGET = QDaqGui
-}
+
 DESTDIR = $$OUT_PWD/../../bin
 
 SOURCES += \
@@ -68,11 +65,14 @@ HEADERS += 3rdparty/kled/kled.h
 RESOURCES += \
     qdaqgui.qrc
 
-unix {
-    target.path = $$[QT_INSTALL_LIBS]
-    headers.files  = $${HEADERS}
-    headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
-    INSTALLS += headers target
+target.path = $$[QT_INSTALL_LIBS]
+headers.files  = $${HEADERS}
+headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
+INSTALLS += headers target
+
+win32 {
+    dlltarget.path = $$[QT_INSTALL_BINS]                                                                               
+    INSTALLS += dlltarget
 }
 
 LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore

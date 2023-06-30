@@ -8,15 +8,11 @@ QT       += core script
 
 TEMPLATE = lib
 CONFIG += plugin
-
+TARGET = $$qtLibraryTarget(QDaqFiltersPlugin)
 # platform options
-win32 {
-    TARGET = $$qtLibraryTarget(QDaqFiltersPlugin)
+win32 {    
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-}
-unix {
-    TARGET = $$qtLibraryTarget(QDaqFiltersPlugin)
 }
 DESTDIR = $$OUT_PWD/../../bin/script
 
@@ -27,10 +23,8 @@ HEADERS += filtersplugin.h
 DISTFILES += \
     filters-plugin.json
 
-unix {
-    target.path = $$[QT_INSTALL_PLUGINS]/script
-    INSTALLS += target
-}
+target.path = $$[QT_INSTALL_PLUGINS]/script
+INSTALLS += target
 
 LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 INCLUDEPATH += $$PWD/../../src/core

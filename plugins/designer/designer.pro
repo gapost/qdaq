@@ -2,15 +2,11 @@ QT += designer
 CONFIG      += plugin debug_and_release
 
 TEMPLATE    = lib
-
+TARGET = $$qtLibraryTarget(qdaqwidgetsplugin)
 # platform options
 win32 {
-    TARGET = $$qtLibraryTarget(qdaqwidgetsplugin)
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-}
-unix {
-    TARGET = $$qtLibraryTarget(qdaqwidgetsplugin)
 }
 DESTDIR = $$OUT_PWD/../../bin/designer
 
@@ -21,10 +17,8 @@ SOURCES     = qledplugin.cpp qdaqplotwidgetplugin.cpp qdaqwidgetsplugin.cpp \
     qdaqconsoletabplugin.cpp
 RESOURCES   = icons.qrc
 
-unix {
-  target.path = $$[QT_INSTALL_PLUGINS]/designer
-  INSTALLS    += target
-}
+target.path = $$[QT_INSTALL_PLUGINS]/designer
+INSTALLS    += target
 
 
 ## Add modules core & gui

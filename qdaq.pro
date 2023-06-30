@@ -34,17 +34,17 @@ CONFIG += ordered
 
 
 SUBDIRS += \
-    src \
+    src  \
     plugins \
     tools \
     docs \
     test 
 
 qdaqspec.files  = \
-    qdaq-core.prf \
-    qdaq-gui.prf \
-    qdaq-filters.prf \
-    qdaq-interfaces.prf
+    distfiles/qdaq-core.prf \
+    distfiles/qdaq-gui.prf \
+    distfiles/qdaq-filters.prf \
+    distfiles/qdaq-interfaces.prf
 
 qdaqspec.path  = $$[QMAKE_MKSPECS]/features
 

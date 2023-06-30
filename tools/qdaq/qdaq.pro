@@ -15,14 +15,11 @@ SOURCES += main.cpp
 
 HEADERS  +=
 
-unix {
-    target.path = /usr/bin
-    INSTALLS += target
-}
+target.path = $$[QT_INSTALL_BINS]
+INSTALLS += target
 
 RESOURCES += \
     qdaq.qrc
-
 
 LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 INCLUDEPATH += $$PWD/../../src/core

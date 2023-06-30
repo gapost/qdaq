@@ -11,13 +11,10 @@ TEMPLATE = lib
 DEFINES += QDAQ_LIBRARY
 
 # platform options
+TARGET = QDaqFilters
 win32 {
-    TARGET = libQDaqFilters
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-}
-unix {
-    TARGET = QDaqFilters
 }
 DESTDIR = $$OUT_PWD/../../bin
 
@@ -39,11 +36,14 @@ HEADERS += \
     isa_pid.h \
     qdaqfilters.h
 
-unix {
-    target.path = $$[QT_INSTALL_LIBS]
-    headers.files  = $${HEADERS}
-    headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
-    INSTALLS += headers target
+target.path = $$[QT_INSTALL_LIBS]
+headers.files  = $${HEADERS}
+headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
+INSTALLS += headers target
+
+win32 {
+    dlltarget.path = $$[QT_INSTALL_BINS]                                                                               
+    INSTALLS += dlltarget
 }
 
 ## Add module core

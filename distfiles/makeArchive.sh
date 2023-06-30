@@ -6,7 +6,8 @@
 # cd qdaq-root-folder; ./makeArchive.sh
 
 gitversion=`git describe --always --tags  | sed -e 's/-/./g' | sed -e 's/g//g'`
-prefix="qdaq-"$gitversion"/"
+# prefix="qdaq-"$gitversion"/"
+prefix="qdaq/"
 filename="../qdaq-"$gitversion
 ROOT_ARCHIVE_DIR="$(pwd)"
 

@@ -10,13 +10,10 @@ TEMPLATE = lib
 DEFINES += QDAQ_LIBRARY
 
 # platform options
+TARGET = QDaqCore
 win32 {
-    TARGET = libQDaqCore
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-}
-unix {
-    TARGET = QDaqCore
 }
 DESTDIR = $$OUT_PWD/../../bin
 
@@ -93,11 +90,15 @@ DISTFILES += \
     ../../gitversion.txt
 
 
-unix {
-    target.path = $$[QT_INSTALL_LIBS]
-    headers.files  = $${HEADERS}
-    headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
-    INSTALLS += headers target
+
+target.path = $$[QT_INSTALL_LIBS]
+headers.files  = $${HEADERS}
+headers.path   = $$[QT_INSTALL_HEADERS]/QDaq
+INSTALLS += headers target
+
+win32 {
+    dlltarget.path = $$[QT_INSTALL_BINS]                                                                               
+    INSTALLS += dlltarget
 }
 
 ############# 3rd party libs ##############

@@ -8,15 +8,11 @@ QT       += core script serialport network
 
 TEMPLATE = lib
 CONFIG += plugin
-
+TARGET = $$qtLibraryTarget(QDaqInterfacesPlugin)
 # platform options
-win32 {
-    TARGET = $$qtLibraryTarget(QDaqInterfacesPlugin)
+win32 {   
     # Trick Qt to not add version major to the target dll name
     TARGET_EXT = .dll
-}
-unix {
-    TARGET = $$qtLibraryTarget(QDaqInterfacesPlugin)
 }
 DESTDIR = $$OUT_PWD/../../bin/script
 
@@ -25,10 +21,8 @@ SOURCES += qdaqinterfacesplugin.cpp
 HEADERS += qdaqinterfacesplugin.h
 DISTFILES += interfaces-plugin.json
 
-unix {
-    target.path = $$[QT_INSTALL_PLUGINS]/script
-    INSTALLS += target
-}
+target.path = $$[QT_INSTALL_PLUGINS]/script
+INSTALLS += target
 
 LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 INCLUDEPATH += $$PWD/../../src/core
