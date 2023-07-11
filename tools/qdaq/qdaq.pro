@@ -10,6 +10,7 @@ TARGET = qdaq
 TEMPLATE = app
 DESTDIR = $$OUT_PWD/../../bin
 
+include(../../qdaq_version.pri)
 
 SOURCES += main.cpp
 
@@ -20,6 +21,8 @@ INSTALLS += target
 
 RESOURCES += \
     qdaq.qrc
+
+RC_ICONS = qdaq_logo.ico
 
 LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 INCLUDEPATH += $$PWD/../../src/core
