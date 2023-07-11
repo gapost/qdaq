@@ -12,6 +12,14 @@
 #include <QDockWidget>
 #include <QFileSystemModel>
 #include <QTreeView>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QVBoxLayout>
 
 #include "QDaqIde.h"
 #include "QDaqScriptEditor.h"
@@ -168,20 +176,55 @@ void QDaqIDE::windowView()
 
 void QDaqIDE::about()
 {
+    QDialog AboutDialog(this);
+    AboutDialog.setWindowTitle("About QDaq");
+    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(AboutDialog.sizePolicy().hasHeightForWidth());
+    AboutDialog.setSizePolicy(sizePolicy);
+    AboutDialog.setSizeGripEnabled(false);
+    QVBoxLayout* verticalLayout = new QVBoxLayout(&AboutDialog);
+    QHBoxLayout* horizontalLayout = new QHBoxLayout();
+    horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+    QLabel* label = new QLabel(&AboutDialog);
+    label->setPixmap(QPixmap(":/images/qdaq_logo_64.png"));
+    label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    label->setFixedWidth(104);
+    horizontalLayout->addWidget(label);
+    //QSpacerItem* horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
+    //horizontalLayout->addItem(horizontalSpacer);
+    QLabel* label_2 = new QLabel(&AboutDialog);
+
     QString msg = QString(
-                "<h3>QDaq ver. %1</h3>"
-                "<p>(c) 2015 - 2021, G. Apostolopoulos "
+                "<h2>QDaq ver. %1</h2>"
+                "<p>(c) 2015 - 2023, G. Apostolopoulos "
                 "<a href=\"mailto:gapost@ipta.demokritos.gr\">gapost@ipta.demokritos.gr</a></p>"
                 "<p>This program uses the following Open Source tools:</p>"
                 "<ul>"
-                    "<li>"
-                    "The Qt C++ gui toolkit"
-                    " <a href=\"http://www.trolltech.com/qt/\">www.trolltech.com/qt/</a>"
-                    "</li>"
+                "<li>"
+                "The Qt C++ gui toolkit"
+                " <a href=\"http://www.trolltech.com/qt/\">www.trolltech.com/qt/</a>"
+                "</li>"
                 "</ul>"
-               ).arg(QDaq::Version());
+                "<p></p>"
+                ).arg(QDaq::Version());
 
-   QMessageBox::about(this, tr("About QDaq"),msg);
+    label_2->setText(msg);
+    horizontalLayout->addWidget(label_2);
+    verticalLayout->addLayout(horizontalLayout);
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(&AboutDialog);
+    buttonBox->setStandardButtons(QDialogButtonBox::Ok);
+    buttonBox->setCenterButtons(true);
+    verticalLayout->addWidget(buttonBox);
+
+    QObject::connect(buttonBox, SIGNAL(accepted()), &AboutDialog, SLOT(accept()));
+
+    AboutDialog.setFixedSize(520,180);
+
+    AboutDialog.exec();
+
 }
 
 void QDaqIDE::updateMenus()

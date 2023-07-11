@@ -123,12 +123,12 @@ QDaqConsoleTabWidget::QDaqConsoleTabWidget(QWidget *parent) : QTabWidget(parent)
     QToolBar* bar = new QToolBar;
 
     abort_ = bar->addAction("Abort script",this,SLOT(abortScript()));
-    QIcon ico = QIcon::fromTheme("process-stop");
+    QIcon ico = QIcon(":/images/stop.png");
     if (!ico.isNull())
             abort_->setIcon(ico);
 
-    QAction* a = bar->addAction("Add console tab",this,SLOT(addConsole()));
-    ico = QIcon::fromTheme("utilities-terminal");
+    QAction* a = bar->addAction("New console tab",this,SLOT(addConsole()));
+    ico = QIcon(":/images/Terminal-128.png");
     if (!ico.isNull())
             a->setIcon(ico);
 

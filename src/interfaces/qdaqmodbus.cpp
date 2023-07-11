@@ -1,6 +1,6 @@
 #include "qdaqmodbus.h"
 
-#include <modbus.h>
+#include <modbus/modbus.h>
 
 QDaqModbusRtu::QDaqModbusRtu(const QString& name, const QString& portName) :
     QDaqSerial(name, portName), ctx_(0)

@@ -10,6 +10,8 @@ win32 {
 }
 DESTDIR = $$OUT_PWD/../../bin/designer
 
+include(../../qdaq_version.pri)
+
 
 HEADERS     = qledplugin.h qdaqplotwidgetplugin.h qdaqwidgetsplugin.h \
     qdaqconsoletabplugin.h

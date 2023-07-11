@@ -17,6 +17,8 @@ win32 {
 
 DESTDIR = $$OUT_PWD/../../bin
 
+include(../../qdaq_version.pri)
+
 SOURCES += \
     QDaqDelegates.cpp \
     QDaqConsole.cpp \
@@ -28,7 +30,7 @@ SOURCES += \
     QDaqWindow.cpp \
     QDaqPlotWidget.cpp \
     QDaqLed.cpp \
-    QDaqObjectModel.cpp \ 
+    QDaqObjectModel.cpp \
     QDaqUi.cpp
 
 
@@ -103,5 +105,7 @@ unix {
     }
 
 }
+
+FORMS +=
 
 

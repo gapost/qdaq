@@ -18,6 +18,8 @@ win32 {
 }
 DESTDIR = $$OUT_PWD/../../bin
 
+include(../../qdaq_version.pri)
+
 SOURCES += \
     qdaqserial.cpp \
     qdaqmodbus.cpp \
@@ -71,7 +73,7 @@ win32 {
 
 ######### libmodbus ###############
 LIBS += -lmodbus
-INCLUDEPATH += $$[QT_INSTALL_HEADERS]/modbus
+## INCLUDEPATH += modbus
 
 ### NI-GPIB
 # include(ni4882.pri)

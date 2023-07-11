@@ -18,6 +18,8 @@ win32 {
 }
 DESTDIR = $$OUT_PWD/../../bin
 
+include(../../qdaq_version.pri)
+
 
 SOURCES +=  \
     qdaqfopdt.cpp \

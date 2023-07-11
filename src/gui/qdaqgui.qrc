@@ -23,5 +23,7 @@
         <file>images/device.png</file>
         <file>images/clear.png</file>
         <file>images/filter.png</file>
+        <file>images/qdaq_logo_256.png</file>
+        <file>images/qdaq_logo_64.png</file>
     </qresource>
 </RCC>

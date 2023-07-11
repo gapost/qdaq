@@ -16,6 +16,8 @@ win32 {
 }
 DESTDIR = $$OUT_PWD/../../bin/script
 
+include(../../qdaq_version.pri)
+
 SOURCES += qdaqinterfacesplugin.cpp
 
 HEADERS += qdaqinterfacesplugin.h
