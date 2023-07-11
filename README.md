@@ -7,6 +7,8 @@ Qdaq is a Qt-based set of tools for performing data aqcuisition (DAQ) tasks cont
 - A scripting interface based on Javascript and QtScript
 - A complete application for executing and debugging QDaq scripts
 
+Main repo is at https://gitlab.com/qdaq/qdaq. Github repo is a copy for visibility.
+
 Documentation can be found at https://gapost.github.io/qdaq
 
 
