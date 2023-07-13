@@ -10,4 +10,4 @@ GIT_VERSION ~= s/g/""
 DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
 
 # for win32
-VERSION = 0.3.0
+VERSION = 0.3.3
