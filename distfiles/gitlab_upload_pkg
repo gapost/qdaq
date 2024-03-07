@@ -1,0 +1,3 @@
+curl --header "PRIVATE-TOKEN: glpat-a39dyzzNxKR8UAf6xzxs" \
+     --upload-file ../qdaq-win64-v0.3.3.zip \
+     "https://gitlab.com/api/v4/projects/35820159/packages/generic/qdaq-win64/0.3.3/qdaq-win64-v0.3.3.zip"
