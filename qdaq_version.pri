@@ -7,7 +7,12 @@ GIT_VERSION ~= s/g/""
 
 # Adding C preprocessor #DEFINE so we can use it in C++ code
 # also here we want full version on every system so using GIT_VERSION
-DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
+unix {
+    DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
+}
 
 # for win32
-VERSION = 0.3.3
+win32 {
+    VERSION = 0.3.4
+    DEFINES += GIT_VERSION=\\\"$$VERSION\\\"
+}

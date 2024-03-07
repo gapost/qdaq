@@ -19,8 +19,8 @@ HEADERS  +=
 target.path = $$[QT_INSTALL_BINS]
 INSTALLS += target
 
-RESOURCES += \
-    qdaq.qrc
+# RESOURCES += \
+#    qdaq.qrc
 
 RC_ICONS = qdaq_logo.ico
 
