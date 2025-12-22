@@ -19,10 +19,12 @@ HEADERS  +=
 target.path = $$[QT_INSTALL_BINS]
 INSTALLS += target
 
-# RESOURCES += \
-#    qdaq.qrc
+ RESOURCES += \
+    qdaq.qrc
 
+win32 {
 RC_ICONS = qdaq_logo.ico
+}
 
 LIBS += -L$$OUT_PWD/../../bin/ -lQDaqCore
 INCLUDEPATH += $$PWD/../../src/core
