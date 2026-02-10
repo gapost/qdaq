@@ -6,3 +6,6 @@ test/.command_history.lst
 
 test/*.h5
 
+.build/*
+build/*
+

@@ -2,7 +2,7 @@
 #define _SCRIPTCONSOLE_H_
 
 #include "QDaqGlobal.h"
-#include "QConsoleWidget.h"
+#include <QConsoleWidget>
 
 #include <QTabWidget>
 
@@ -12,13 +12,13 @@ class QDAQ_EXPORT QDaqConsole : public QConsoleWidget
 {
     Q_OBJECT
 
-    QDaqSession* session_;
+    QDaqSession *session_;
 
 public:
-    QDaqConsole(QDaqSession* s, QWidget* parent = 0);
+    QDaqConsole(QDaqSession *s, QWidget *parent = 0);
     virtual ~QDaqConsole();
 
-    QDaqSession* session() { return session_; }
+    QDaqSession *session() { return session_; }
 
 public slots:
 
@@ -26,8 +26,7 @@ public slots:
     void onRequestInput(const QString &prompt);
 
 protected:
-
-	virtual void closeEvent ( QCloseEvent * event );
+    virtual void closeEvent(QCloseEvent *event);
 
 private:
     QString multilineCode_;
@@ -38,9 +37,9 @@ class QDAQ_EXPORT QDaqConsoleTabWidget : public QTabWidget
     Q_OBJECT
 
 public:
-    QDaqConsoleTabWidget(QWidget* parent = 0);
+    QDaqConsoleTabWidget(QWidget *parent = 0);
 
-    QDaqConsole* currentConsole();
+    QDaqConsole *currentConsole();
 
     virtual QSize sizeHint() const;
 
@@ -57,9 +56,7 @@ private slots:
     void onEndSession();
 
 private:
-    QAction* abort_;
-
+    QAction *abort_;
 };
 
 #endif
-

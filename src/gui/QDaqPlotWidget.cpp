@@ -2,9 +2,7 @@
 
 #include <math.h>
 
-
-QDaqPlotWidget::QDaqPlotWidget(QWidget* parent) :
-    QMatPlotWidget(parent)
+QDaqPlotWidget::QDaqPlotWidget(QWidget *parent) : QMatPlotWidget(parent)
 {
 }
 
@@ -12,6 +10,7 @@ QDaqPlotWidget::~QDaqPlotWidget(void)
 {
 }
 
+/*
 class QDaqPlotDataSeries : public QMatPlotWidget::AbstractDataSeries
 {
     QDaqVector vx;
@@ -35,19 +34,16 @@ public:
         return QRectF(x1,y1,x2-x1,y2-y1);
     }
 };
+*/
 
 void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QString &attr, const QColor &clr)
 {
-    QDaqPlotDataSeries* data = new QDaqPlotDataSeries(x,y);
+    // QDaqPlotDataSeries* data = new QDaqPlotDataSeries(x,y);
 
-    QMatPlotWidget::plotDataSeries(data,attr,clr);
-
+    QMatPlotWidget::plot(x, y, attr, clr);
 }
 
 void QDaqPlotWidget::plot(const QDaqVector &x, const QDaqVector &y, const QColor &clr)
 {
-    plot(x,y,"",clr);
-
+    plot(x, y, "", clr);
 }
-
-
