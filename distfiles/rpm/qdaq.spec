@@ -1,6 +1,6 @@
 Summary: Qt based data aquisition
 Name: qdaq
-Version: v0.3.0
+Version: v0.3.5
 Release: 1%{?dist}
 License: MIT
 Source0: %{name}-%{version}.tar.gz
@@ -16,44 +16,36 @@ Requires: qwt-qt5
 Requires: libmodbus
 Requires: linux-gpib
 # Requires: comedilib
-Requires: qtpropertybrowser-qt5
+
 
 BuildRequires: qt5-qtbase-devel
 BuildRequires: qt5-qtscript-devel
 BuildRequires: qt5-qtserialport-devel
 BuildRequires: qt5-qttools-static
-BuildRequires: hdf5-devel
+BuildRequires: qthdf5
 BuildRequires: gsl-devel
 BuildRequires: muParser-devel
-BuildRequires: qwt-qt5-devel
+BuildRequires: qmatplotwidget
+BuildRequires: qtpropertybrowser
+BuildRequires: qconsolewidget
 BuildRequires: libmodbus-devel
 BuildRequires: linux-gpib-devel
 # BuildRequires: comedilib-devel
-BuildRequires: qtpropertybrowser-qt5-devel
+
 
 %description
-A Qt based framework for data aquisition applications.
-
-%package devel
-Summary:  Development files for %{name}
-Requires: qwt-qt5-devel
-Requires: %{name}%{?_isa} = %{version}-%{release}
-%description devel
-%{summary}.
+A Qt based framework for data acquisition applications.
 
 %prep
 %setup -q 
 
 %build
-mkdir %{_target_platform}
-pushd %{_target_platform}
-%{qmake_qt5} ..
-make %{?_smp_mflags}
-popd
+%{cmake}
+%{cmake_build}
 
 %install
 rm -rf %{buildroot}
-make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
+%{cmake_install}
 
 %clean
 rm -rf %{buildroot}
@@ -63,16 +55,15 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-/usr/bin/qdaq
-%{_qt5_libdir}/*.so.*
+%{_bindir}qdaq
+%{_qt5_libdir}/*
 %{_qt5_plugindir}/*
 
-%files devel
-%{_qt5_headerdir}/QDaq/
-%{_qt5_libdir}/*.so
-%{_qt5_libdir}/qt5/mkspecs/features/*
 
 %changelog
+* Tue Feb 10 2026 George
+- cmake build
+- v0.3.5
 * Fri Sep 14 2020 George
 - new v0.3.0
 * Fri Sep 4 2020 George

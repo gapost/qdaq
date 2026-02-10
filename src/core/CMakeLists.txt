@@ -50,16 +50,18 @@ set(_HEADERS
     qsessiondelegate.h
 )
 
-add_library(QDaqCore SHARED
+set(TARGET_NAME QDaqCore)
+
+add_library(${TARGET_NAME} SHARED
     ${_SOURCES}
     ${_HEADERS}
     )
 
-add_library(QDaq::Core ALIAS QDaqCore)
+add_library(QDaq::Core ALIAS ${TARGET_NAME})
 
-target_compile_definitions(QDaqCore PRIVATE GIT_VERSION="${PROJECT_VERSION}")
+target_compile_definitions(${TARGET_NAME} PRIVATE GIT_VERSION="${PROJECT_VERSION}")
 
-target_link_libraries(QDaqCore
+target_link_libraries(${TARGET_NAME}
     PRIVATE
     Qt5::Core
     Qt5::Widgets
@@ -69,58 +71,18 @@ target_link_libraries(QDaqCore
     muparser::muparser
     )
 
-target_include_directories(QDaqCore
+target_include_directories(${TARGET_NAME}
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/QDaqCore>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/QDaq>
     )
 
-# -----------------------
-# Installation and config
-# -----------------------
-include(CMakePackageConfigHelpers)
 
 # Install the library target and export targets file
-install(TARGETS QDaqCore
-    EXPORT QDaqCoreTargets
+install(TARGETS ${TARGET_NAME}
+    EXPORT ${TARGET_NAME}Targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/QDaqCore
 )
 
-# Install public headers collected in INSTALL_HEADERS
-install(FILES ${INSTALL_HEADERS}
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/QDaqCore
-)
-
-# location where CMake config files will be installed (relocatable)
-set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/QDaqCore")
-
-# Expose QT major version for the package config template
-set(PACKAGE_QT_MAJOR ${QT_VERSION_MAJOR})
-
-# Install the exported targets so downstream projects can use target names
-install(EXPORT QDaqCoreTargets
-    FILE QDaqCoreTargets.cmake
-    NAMESPACE QDaq::
-    DESTINATION ${CONFIG_INSTALL_DIR}
-)
-
-# Generate and install package config + version files
-write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/QDaqCoreConfigVersion.cmake"
-  VERSION ${PROJECT_VERSION}
-  COMPATIBILITY AnyNewerVersion
-)
-
-# configure_package_config_file(
-#   "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/QDaqCoreConfig.cmake.in"
-#   "${CMAKE_CURRENT_BINARY_DIR}/QDaqCoreConfig.cmake"
-#   INSTALL_DESTINATION "${CONFIG_INSTALL_DIR}"
-# )
-
-install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/QDaqCoreConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/QDaqCoreConfigVersion.cmake"
-  DESTINATION "${CONFIG_INSTALL_DIR}")

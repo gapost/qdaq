@@ -1,37 +1,37 @@
 set(_SOURCES 
-    qdaqfopdt.cpp 
-    qdaqinterpolator.cpp 
-    qdaqlinearcorrelator.cpp 
-    qdaqpid.cpp 
-    qdaqfilters.cpp
+    qdaqserial.cpp 
+    qdaqmodbus.cpp 
+    qdaqtcpip.cpp 
+    tcp_socket.cpp 
+    qdaqinterfaces.cpp
 )
 
 set(_HEADERS  
-    qdaqfopdt.h 
-    linefit.h 
-    qdaqlinearcorrelator.h 
-    qdaqinterpolator.h 
-    qdaqpid.h 
-    relaytuner.h 
-    isa_pid.h 
-    qdaqfilters.h
+    qdaqserial.h 
+    qdaqmodbus.h 
+    qdaqtcpip.h 
+    tcp_socket.h 
+    qdaqinterfaces.h
 )
 
-set(TARGET_NAME QDaqFilters)
+set(TARGET_NAME QDaqInterfaces)
 
 add_library(${TARGET_NAME} SHARED
     ${_SOURCES}
     ${_HEADERS}
     )
 
-add_library(QDaq::Filters ALIAS ${TARGET_NAME})
+add_library(QDaq::Interfaces ALIAS ${TARGET_NAME})
 
 target_link_libraries(${TARGET_NAME}
     PRIVATE
     Qt5::Core
+    Qt5::Network
     Qt5::Script
+    Qt5::SerialPort
     QDaq::Core
-    PkgConfig::GSL
+    PkgConfig::MODBUS
+    PkgConfig::GPIB
     )
 
 target_include_directories(${TARGET_NAME}
@@ -40,6 +40,7 @@ target_include_directories(${TARGET_NAME}
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/QDaq>
     )
 
+
 # Install the library target and export targets file
 install(TARGETS ${TARGET_NAME}
     EXPORT ${TARGET_NAME}Targets
@@ -47,4 +48,3 @@ install(TARGETS ${TARGET_NAME}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
-

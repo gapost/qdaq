@@ -1,37 +1,38 @@
 set(_SOURCES 
-    qdaqfopdt.cpp 
-    qdaqinterpolator.cpp 
-    qdaqlinearcorrelator.cpp 
-    qdaqpid.cpp 
-    qdaqfilters.cpp
+    qledplugin.cpp 
+    qdaqplotwidgetplugin.cpp 
+    qdaqwidgetsplugin.cpp 
+    qdaqconsoletabplugin.cpp
+    icons.qrc
 )
 
 set(_HEADERS  
-    qdaqfopdt.h 
-    linefit.h 
-    qdaqlinearcorrelator.h 
-    qdaqinterpolator.h 
-    qdaqpid.h 
-    relaytuner.h 
-    isa_pid.h 
-    qdaqfilters.h
+    qledplugin.h 
+    qdaqplotwidgetplugin.h 
+    qdaqwidgetsplugin.h 
+    qdaqconsoletabplugin.h
 )
 
-set(TARGET_NAME QDaqFilters)
+set(TARGET_NAME QDaqDesignerPlugin)
 
 add_library(${TARGET_NAME} SHARED
     ${_SOURCES}
     ${_HEADERS}
     )
 
-add_library(QDaq::Filters ALIAS ${TARGET_NAME})
+set_target_properties(${TARGET_NAME} PROPERTIES 
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/designer")
+
+add_library(QDaq::DesignerPlugin ALIAS ${TARGET_NAME})
+
 
 target_link_libraries(${TARGET_NAME}
     PRIVATE
     Qt5::Core
-    Qt5::Script
+    Qt5::Widgets
+    Qt5::Designer
     QDaq::Core
-    PkgConfig::GSL
+    QDaq::Gui
     )
 
 target_include_directories(${TARGET_NAME}
@@ -40,11 +41,11 @@ target_include_directories(${TARGET_NAME}
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/QDaq>
     )
 
+
 # Install the library target and export targets file
 install(TARGETS ${TARGET_NAME}
     EXPORT ${TARGET_NAME}Targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/qt5/plugins/designer/
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
-

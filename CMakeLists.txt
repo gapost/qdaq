@@ -31,8 +31,20 @@ endif()
 # Install folder support
 include(GNUInstallDirs)
 
+# use install rpath, no need to use LD_LIBRARY_PATH 
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH OFF)
+
 # Find dependencies.
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets Script ScriptTools UiTools SerialPort)
+find_package(Qt5 REQUIRED COMPONENTS 
+  Core 
+  Widgets 
+  Network 
+  Script 
+  ScriptTools 
+  UiTools 
+  SerialPort 
+  Designer)
 find_package(QtHDF5 REQUIRED)
 find_package(QMatPlotWidget REQUIRED)
 find_package(Qt5PropertyBrowser REQUIRED)
@@ -42,6 +54,7 @@ find_package(muparser REQUIRED)
 # Find modbus and GSL libraries using pkg-config
 find_package(PkgConfig QUIET)
 if(PkgConfig_FOUND)
+
   pkg_check_modules(MODBUS REQUIRED IMPORTED_TARGET libmodbus)
   if(MODBUS_FOUND)
     message(STATUS "Modbus library found: ${MODBUS_LIBRARIES}")
@@ -55,17 +68,25 @@ if(PkgConfig_FOUND)
   else()
     message(WARNING "GSL library not found via pkg-config")
   endif()
+
+  pkg_check_modules(GPIB REQUIRED IMPORTED_TARGET libgpib)
+  if(GPIB_FOUND)
+    message(STATUS "GPIB library found: ${GPIB_LIBRARIES}")
+  else()
+    message(WARNING "GPIB library not found via pkg-config")
+  endif()
+
 else()
-  message(WARNING "pkg-config not found, cannot search for Modbus or GSL libraries")
+  message(WARNING "pkg-config not found, cannot search for Modbus, GSL or GPIB libraries")
 endif()
 
-# Library.
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Library, plugins & tools
 add_subdirectory(src)
-
-# Examples.
-if(QTHDF5_BUILD_EXAMPLES)
-    add_subdirectory(examples)
-endif()
+add_subdirectory(plugins)
+add_subdirectory(tools)
 
 
 message(STATUS "----------------------------------------")
@@ -93,6 +114,12 @@ if(GSL_FOUND)
   message(STATUS "  GSL version:          ${GSL_VERSION}")
 else()
   message(STATUS "  GSL:      <not found>")
+endif()
+
+if(GPIB_FOUND)
+  message(STATUS "  GPIB version:          ${GPIB_VERSION}")
+else()
+  message(STATUS "  GPIB:      <not found>")
 endif()
 
 message(STATUS "----------------------------------------")
