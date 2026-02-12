@@ -1,45 +1,43 @@
 Summary: Qt based data aquisition
 Name: qdaq
-Version: v0.3.5
+Version: 0.3.6
 Release: 1%{?dist}
 License: MIT
-Source0: %{name}-%{version}.tar.gz
+Source0: %{name}-v%{version}.tar.gz
 
 Requires: qt5-qtbase
 Requires: qt5-qtbase-gui
 Requires: qt5-qtscript
 Requires: qt5-qtserialport
-Requires: hdf5
+Requires: qthdf5
+Requires: qmatplotwidget
+Requires: qconsolewidget
+Requires: qtpropertybrowser
 Requires: gsl
 Requires: muParser
-Requires: qwt-qt5
 Requires: libmodbus
 Requires: linux-gpib
 # Requires: comedilib
-
 
 BuildRequires: qt5-qtbase-devel
 BuildRequires: qt5-qtscript-devel
 BuildRequires: qt5-qtserialport-devel
 BuildRequires: qt5-qttools-static
-BuildRequires: hdf5-devel
-BuildRequires: qthdf5
+BuildRequires: qthdf5-devel
+BuildRequires: qmatplotwidget-devel
+BuildRequires: qtpropertybrowser-devel
+BuildRequires: qconsolewidget-devel
 BuildRequires: gsl-devel
 BuildRequires: muParser-devel
-BuildRequires: qwt-qt5-devel
-BuildRequires: qmatplotwidget
-BuildRequires: qtpropertybrowser
-BuildRequires: qconsolewidget
 BuildRequires: libmodbus-devel
 BuildRequires: linux-gpib-devel
 # BuildRequires: comedilib-devel
-
 
 %description
 A Qt based framework for data acquisition applications.
 
 %prep
-%setup -q 
+%setup -q -n %{name}-v%{version}
 
 %build
 %{cmake}
@@ -63,6 +61,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Feb 12 2026 George
+- correct linux-gpib not loading error
+- v0.3.6
 * Tue Feb 10 2026 George
 - cmake build
 - v0.3.5

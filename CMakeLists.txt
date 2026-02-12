@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 project(QDaq 
-  VERSION 0.3.5 
+  VERSION 0.3.6 
   LANGUAGES CXX
   DESCRIPTION "Qt-based Data Acquisition"
   HOMEPAGE_URL https://gitlab.com/qdaq/qdaq

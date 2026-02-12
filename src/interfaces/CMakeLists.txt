@@ -4,6 +4,7 @@ set(_SOURCES
     qdaqtcpip.cpp 
     tcp_socket.cpp 
     qdaqinterfaces.cpp
+    linuxgpib.cpp
 )
 
 set(_HEADERS  
@@ -12,6 +13,7 @@ set(_HEADERS
     qdaqtcpip.h 
     tcp_socket.h 
     qdaqinterfaces.h
+    linuxgpib.h
 )
 
 set(TARGET_NAME QDaqInterfaces)
@@ -22,6 +24,8 @@ add_library(${TARGET_NAME} SHARED
     )
 
 add_library(QDaq::Interfaces ALIAS ${TARGET_NAME})
+
+target_compile_definitions(${TARGET_NAME} PRIVATE LINUX_GPIB)
 
 target_link_libraries(${TARGET_NAME}
     PRIVATE
