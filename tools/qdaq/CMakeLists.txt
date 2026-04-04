@@ -1,6 +1,11 @@
-add_executable(qdaq 
+if(WIN32)
+    set(_WIN32_SOURCES qdaq.rc)
+endif()
+
+add_executable(qdaq  # WIN32 - add this options to avoid console window on Windows
     main.cpp
     qdaq.qrc
+    ${_WIN32_SOURCES}
     )
 
 target_link_libraries(qdaq
@@ -13,9 +18,13 @@ target_link_libraries(qdaq
     )
 
 # Install the library target and export targets file
-install(TARGETS qdaq
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+if(WIN32)
+    install(TARGETS qdaq
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
+    )
+else()
+    install(TARGETS qdaq
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+endif()
 
