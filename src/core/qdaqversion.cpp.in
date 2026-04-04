@@ -1,0 +1,19 @@
+#include "QDaqObject.h"
+
+#define QDAQ_VERSION GIT_VERSION
+
+const char* QDaq::Version() { return "@PROJECT_VERSION@"; }
+
+const char* QDaq::QtVersion() { return QT_VERSION_STR; }
+
+const QDaqObject::VersionInfo& QDaqObject::versionInfo()
+{ return versionInfo_; }
+
+QDaqObject::VersionInfo QDaqObject::versionInfo_ = { 
+    "@PROJECT_VERSION@",  
+    "@GIT_TAG@",
+    "@CMAKE_BUILD_TIME@",       
+    "@CMAKE_CXX_COMPILER_ID@",
+    "@CMAKE_CXX_COMPILER_VERSION@", 
+    "@CMAKE_CXX_PLATFORM_ID@"
+};

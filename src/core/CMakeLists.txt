@@ -1,3 +1,26 @@
+# Configure version.cpp
+# all @###@ codes are replaced except for @GIT_TAG@
+# which is configured during build
+set(GIT_TAG "@GIT_TAG@")
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/qdaqversion.cpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/qdaqversion1.cpp
+)
+
+# Update the GIT_TAG in version.cpp
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qdaqversion.cpp
+    COMMAND ${CMAKE_COMMAND}
+    -DRUN_BUILD_CONFIG_FILE=1
+    -DFILE_IN=${CMAKE_CURRENT_BINARY_DIR}/qdaqversion1.cpp
+    -DFILE_OUT=${CMAKE_CURRENT_BINARY_DIR}/qdaqversion.cpp
+    -DFILE_CONTENT=${CMAKE_SOURCE_DIR}/gitversion.txt
+    -DVAR_NAME="GIT_TAG"
+    -P ${CMAKE_SOURCE_DIR}/cmake/BuildConfigFile.cmake
+    DEPENDS 
+        ${CMAKE_SOURCE_DIR}/gitversion.txt
+        qdaqversion.cpp.in
+)
+
 set(_SOURCES 
     QDaqSession.cpp 
     QDaqObject.cpp 
@@ -21,6 +44,7 @@ set(_SOURCES
     vectorprototype.cpp 
     QDaqScriptAPI.cpp 
     qsessiondelegate.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/qdaqversion.cpp
 )
 
 set(_HEADERS  
@@ -61,6 +85,10 @@ add_library(QDaq::Core ALIAS ${TARGET_NAME})
 
 target_compile_definitions(${TARGET_NAME} PRIVATE GIT_VERSION="${PROJECT_VERSION}")
 
+if(WIN32)
+    target_compile_definitions(${TARGET_NAME} PRIVATE QDAQ_LIBRARY)
+endif()
+
 target_link_libraries(${TARGET_NAME}
     PRIVATE
     Qt5::Core
@@ -79,10 +107,14 @@ target_include_directories(${TARGET_NAME}
 
 
 # Install the library target and export targets file
-install(TARGETS ${TARGET_NAME}
-    EXPORT ${TARGET_NAME}Targets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+if(WIN32)
+    install(TARGETS ${TARGET_NAME}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
+    )
+else()
+    install(TARGETS ${TARGET_NAME}
+        EXPORT ${TARGET_NAME}Targets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+endif()
 

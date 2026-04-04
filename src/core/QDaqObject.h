@@ -22,7 +22,7 @@ class QH5Group;
  * @ingroup Core
  *
  */
-typedef QList<QDaqObject*> QDaqObjectList;
+typedef QList<QDaqObject *> QDaqObjectList;
 
 /** Structure containing error data.
  *
@@ -33,7 +33,7 @@ typedef QList<QDaqObject*> QDaqObjectList;
  * that lives in QDaqRoot.
  * The error queue is accesible through QDaqObject::root()->errorQueue().
  *
-*/
+ */
 struct QDAQ_EXPORT QDaqError
 {
     /// Date/time of occurence
@@ -46,19 +46,19 @@ struct QDAQ_EXPORT QDaqError
     QString descr;
 
     QDaqError()
-    {}
+    {
+    }
 
-    QDaqError(const QString& aname, const QString& atype, const QString& adesc = QString(), const QDateTime& at = QDateTime::currentDateTime()) :
-        t(at), objectName(aname), type(atype), descr(adesc)
-    {}
-    QDaqError(const QDaqError& e) :
-        t(e.t), objectName(e.objectName), type(e.type), descr(e.descr)
-    {}
+    QDaqError(const QString &aname, const QString &atype, const QString &adesc = QString(), const QDateTime &at = QDateTime::currentDateTime()) : t(at), objectName(aname), type(atype), descr(adesc)
+    {
+    }
+    QDaqError(const QDaqError &e) : t(e.t), objectName(e.objectName), type(e.type), descr(e.descr)
+    {
+    }
     QString toString() const
     {
         return QString("%1\t%2\t%3\t%4").arg(t.toString()).arg(objectName).arg(type).arg(descr);
     }
-
 };
 
 /** Base class of all QDaq objects.
@@ -102,23 +102,37 @@ struct QDAQ_EXPORT QDaqError
  */
 class QDAQ_EXPORT QDaqObject : public QObject, protected QScriptable
 {
-	Q_OBJECT
+    Q_OBJECT
+
+public:
+    struct VersionInfo
+    {
+        const char *version;
+        const char *git_tag;
+        const char *build_time;
+        const char *compiler_id;
+        const char *compiler_version;
+        const char *system_id;
+    };
+
+    static const VersionInfo &versionInfo();
 
 protected:
+    static VersionInfo versionInfo_;
 
-	/// Push an error in the error queue
-    void pushError(const QString& type, const QString& descr = QString()) const;
+    /// Push an error in the error queue
+    void pushError(const QString &type, const QString &descr = QString()) const;
 
-	/// Throw a script error with message msg
-	void throwScriptError(const QString& msg) const;
+    /// Throw a script error with message msg
+    void throwScriptError(const QString &msg) const;
 
     /** Check if name is a legal name for an QDaqObject.
-    * Names should start with a letter and contain letters, numbers or the underscore _.
-    * This function also checks if there are any sibbling objects with the same name.
-	*/
-	bool checkName(const QString& name) const;
-	static bool isNameValid(const QString& name, int* code = 0);
-	bool isNameUnique(const QString& name) const;
+     * Names should start with a letter and contain letters, numbers or the underscore _.
+     * This function also checks if there are any sibbling objects with the same name.
+     */
+    bool checkName(const QString &name) const;
+    static bool isNameValid(const QString &name, int *code = 0);
+    bool isNameUnique(const QString &name) const;
 
     /**
      * @brief Write contents of the object to a H5 group
@@ -130,7 +144,7 @@ protected:
      *
      * @param g HDF5 Group object
      */
-    virtual void writeh5(const QH5Group& g, QDaqH5File* f) const;
+    virtual void writeh5(const QH5Group &g, QDaqH5File *f) const;
     /**
      * @brief Read contents of the object from a H5 group
      *
@@ -141,33 +155,33 @@ protected:
      *
      * @param g HDF5 Group object
      */
-    virtual void readh5(const QH5Group& g, QDaqH5File* f);
+    virtual void readh5(const QH5Group &g, QDaqH5File *f);
 
     friend class QDaqH5File;
 
     // for handling child events
-    virtual void childEvent ( QChildEvent * event );
+    virtual void childEvent(QChildEvent *event);
 
     // this is a duplicate to QtObjects's list
     // so that we can handle child ordering stuff (insertBefore etc.)
     QDaqObjectList children_;
 
     // the root object
-    static QDaqRoot* root_;
+    static QDaqRoot *root_;
 
 public:
     /// A recursive mutex for synching thread access to this object
     QMutex comm_lock;
 
     /// Obtain a pointer to the one-and-only QDaqRoot object.
-    static QDaqRoot* root() { return root_; }
+    static QDaqRoot *root() { return root_; }
 
     /** Construct a QDaqObject with a name.
      *
      * The name is actually the objectName property of the QObject super-class.
      *
      */
-    Q_INVOKABLE explicit QDaqObject(const QString& name);
+    Q_INVOKABLE explicit QDaqObject(const QString &name);
     virtual ~QDaqObject(void);
 
     /** Attach this QDaqObject to the QDaq tree.
@@ -192,20 +206,20 @@ public:
      * Subclasses may reimplement this function to perform needed actions before detaching.
      *
      */
-	virtual void detach();
+    virtual void detach();
 
     /// Returns true is this object is attached to the QDaq tree.
     bool isAttached() const;
 
     // helper function neede for building the tree string representation
-	void objectTree(QString& S, int level) const;
+    void objectTree(QString &S, int level) const;
 
     /** Return a pointer to an object given its full path in the QDaq tree.
      *
      * If the specified path is invalid the function returns a null pointer.
      *
      */
-    static QDaqObject* fromPath(const QString& path);
+    static QDaqObject *fromPath(const QString &path);
 
 public slots:
 
@@ -220,21 +234,19 @@ public slots:
      */
     QString path() const;
     /// Output in a string the object hierarchy beneath this object.
-	QString objectTree() const
-	{
-		QString S;
-		int ind = 0;
-		objectTree(S,ind);
-		return S;
-	}
-	/// List the objects properties
-	QString listProperties() const;
-	/// List the objects scriptable functions
-	QString listFunctions() const;
+    QString objectTree() const
+    {
+        QString S;
+        int ind = 0;
+        objectTree(S, ind);
+        return S;
+    }
+    /// List the objects properties
+    QString listProperties() const;
+    /// List the objects scriptable functions
+    QString listFunctions() const;
 
-
-    bool setQDaqProperty(QString name, const QScriptValue& value);
-
+    bool setQDaqProperty(QString name, const QScriptValue &value);
 
     /**
      * \name DOM Level 1 Node interface
@@ -248,42 +260,42 @@ public slots:
      */
     ///@{
     /// Return the object's parent or null if the object does not have a parent.
-    QDaqObject* parent() const { return qobject_cast<QDaqObject*>(QObject::parent()); }
+    QDaqObject *parent() const { return qobject_cast<QDaqObject *>(QObject::parent()); }
     /// Return a list of children of this object
     QDaqObjectList children() const { return children_; }
     /// Returns true if the object has children
     bool hasChildren() const { return !children_.isEmpty(); }
     /// Adds a new child QDaqObject, as the last child and returns a pointer to it.
-    QDaqObject* appendChild(QDaqObject* obj);
+    QDaqObject *appendChild(QDaqObject *obj);
     /// Adds a new child QDaqObject, before an existing child and returns a pointer to it.
-    QDaqObject* insertBefore(QDaqObject* newobj, QDaqObject* existingobj);
+    QDaqObject *insertBefore(QDaqObject *newobj, QDaqObject *existingobj);
     /// Clone a QDaqObject with its child objects.
-    QDaqObject* clone();
+    QDaqObject *clone();
     /// Remove a child and return a pointer to it.
-    QDaqObject* removeChild(QDaqObject* obj);
+    QDaqObject *removeChild(QDaqObject *obj);
     /// Replace a child and return a pointer to the old child.
-    QDaqObject* replaceChild(QDaqObject* newobj, QDaqObject* oldobj);
+    QDaqObject *replaceChild(QDaqObject *newobj, QDaqObject *oldobj);
 
     /** Find the first child QDaqObject with objectName equal to name.
      *
      */
-    QDaqObject* findChild(const QString& name) const
+    QDaqObject *findChild(const QString &name) const
     {
         // this function overrides Qt's default findChild
         // so that it returns always a QDaqObject (not a plain QObject)
-        return QObject::findChild<QDaqObject*>(name);
+        return QObject::findChild<QDaqObject *>(name);
     }
     ///@}
 
 signals:
     /// Fired when object properties have changed
-	void propertiesChanged();
+    void propertiesChanged();
     /// Fired when widgets need update
     void updateWidgets();
 };
 
 Q_DECLARE_METATYPE(QDaqError)
-Q_DECLARE_METATYPE(QDaqObject*)
+Q_DECLARE_METATYPE(QDaqObject *)
 Q_DECLARE_METATYPE(QDaqObjectList)
 
 #define ERROR_QUEUE_DEPTH 1000
@@ -293,17 +305,17 @@ class QDAQ_EXPORT QDaqErrorQueue : public QObject
     Q_OBJECT
     /// Queue of QDaq errors
     QList<QDaqError> queue_;
+
 public:
     explicit QDaqErrorQueue(QObject *parent = 0);
-    void push(const QDaqError& item);
+    void push(const QDaqError &item);
     QList<QDaqError> errorQueue() const { return queue_; }
-    const QDaqError& head() const { return queue_.first(); }
-    QList<QDaqError> objectBackTrace(const QDaqObject* obj, int maxItems = 4) const;
+    const QDaqError &head() const { return queue_.first(); }
+    QList<QDaqError> objectBackTrace(const QDaqObject *obj, int maxItems = 4) const;
 signals:
     void errorAdded();
     void errorRemoved();
 public slots:
 };
-
 
 #endif
