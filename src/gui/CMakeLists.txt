@@ -45,7 +45,13 @@ add_library(${TARGET_NAME} SHARED
 
 add_library(QDaq::Gui ALIAS ${TARGET_NAME} )
 
+if(WIN32)
+    target_compile_definitions(${TARGET_NAME} PRIVATE QDAQ_LIBRARY)
+endif()
+
 target_link_libraries(${TARGET_NAME} 
+    PUBLIC
+    QConsoleWidget::QConsoleWidget
     PRIVATE
     Qt5::Core
     Qt5::Widgets
@@ -55,7 +61,6 @@ target_link_libraries(${TARGET_NAME}
     QtHDF5::QtHDF5
     QDaq::Core
     QMatPlotWidget::QMatPlotWidget
-    QConsoleWidget::QConsoleWidget
     Qt5PropertyBrowser::Qt5PropertyBrowser
     )
 
@@ -66,11 +71,15 @@ target_include_directories(${TARGET_NAME}
     )
 
 # Install the library target and export targets file
-install(TARGETS ${TARGET_NAME}
-    EXPORT ${TARGET_NAME}Targets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+if(WIN32)
+    install(TARGETS ${TARGET_NAME}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
+    )
+else()
+    install(TARGETS ${TARGET_NAME}
+        EXPORT ${TARGET_NAME}Targets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+endif()
 
 

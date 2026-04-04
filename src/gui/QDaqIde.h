@@ -29,7 +29,7 @@ protected:
 
 private slots:
     void newFile();
-    QDaqConsole* newConsole();
+    QDaqConsole *newConsole();
     void rootConsole();
     void open();
     void save();
@@ -40,8 +40,8 @@ private slots:
     void about();
     void updateMenus();
     void updateWindowMenu();
-	void tabbedView();
-	void windowView();
+    void tabbedView();
+    void windowView();
     QDaqScriptEditor *createScriptEditor();
     QDaqConsole *createQDaqConsole();
     void setActiveSubWindow(QWidget *window);
@@ -56,17 +56,17 @@ private:
     void createDockers();
     void readSettings();
     void writeSettings();
-	QPlainTextEdit* activeTextEdit();
-    QDaqScriptEditor* activeScriptEditor();
+    QPlainTextEdit *activeTextEdit();
+    QDaqScriptEditor *activeScriptEditor();
     QMdiSubWindow *findEditor(const QString &fileName);
 
     QSignalMapper *windowMapper;
     QMdiArea *mdiArea;
-    QDaqObjectBrowser* objectBrowser_;
-    QTreeView* fileBrowser_;
-    QDaqErrorLog* errorLog_;
+    QDaqObjectBrowser *objectBrowser_;
+    QTreeView *fileBrowser_;
+    QDaqErrorLog *errorLog_;
 
-    QList<QAction*> toggleDockersActions;
+    QList<QAction *> toggleDockersActions;
 
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -94,8 +94,6 @@ private:
     QAction *previousAct;
     QAction *separatorAct;
     QAction *aboutAct;
-    QAction *aboutQtAct;
 };
 
 #endif
-

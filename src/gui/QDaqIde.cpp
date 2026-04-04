@@ -45,22 +45,24 @@ QDaqIDE::QDaqIDE()
     createMenus();
     createToolBars();
     createStatusBar();
-	createDockers();
+    createDockers();
     updateMenus();
 
     readSettings();
 
     setWindowTitle(tr("QDaq IDE"));
     setObjectName("ide");
-
 }
 
 void QDaqIDE::closeEvent(QCloseEvent *event)
 {
     mdiArea->closeAllSubWindows();
-    if (activeTextEdit()) {
+    if (activeTextEdit())
+    {
         event->ignore();
-    } else {
+    }
+    else
+    {
         writeSettings();
         event->accept();
     }
@@ -96,35 +98,40 @@ void QDaqIDE::rootConsole()
 
     rootConsoleAct->setEnabled(false);
 
-    connect(child,SIGNAL(destroyed(QObject*)),this,SLOT(onCloseRootConsole()));
+    connect(child, SIGNAL(destroyed(QObject *)), this, SLOT(onCloseRootConsole()));
 
     child->show();
 }
 
 void QDaqIDE::open()
 {
-	QFileDialog::Options options;
+    QFileDialog::Options options;
     options |= QFileDialog::DontUseNativeDialog;
     QString selectedFilter;
     QString fileName = QFileDialog::getOpenFileName(this,
-                                "Open script file",
-                                QString(),
-                                tr("Script Files (*.js);;All Files (*)"),
-                                &selectedFilter,
-                                options);
+                                                    "Open script file",
+                                                    QString(),
+                                                    tr("Script Files (*.js);;All Files (*)"),
+                                                    &selectedFilter,
+                                                    options);
 
-    if (!fileName.isEmpty()) {
+    if (!fileName.isEmpty())
+    {
         QMdiSubWindow *existing = findEditor(fileName);
-        if (existing) {
+        if (existing)
+        {
             mdiArea->setActiveSubWindow(existing);
             return;
         }
 
         QDaqScriptEditor *child = createScriptEditor();
-        if (child->loadFile(fileName)) {
+        if (child->loadFile(fileName))
+        {
             statusBar()->showMessage(tr("File loaded"), 2000);
             child->show();
-        } else {
+        }
+        else
+        {
             child->close();
         }
     }
@@ -162,16 +169,16 @@ void QDaqIDE::paste()
 
 void QDaqIDE::tabbedView()
 {
-	mdiArea->setViewMode(QMdiArea::TabbedView);
-	mdiArea->setTabPosition(QTabWidget::South);
-	mdiArea->setTabShape(QTabWidget::Rounded);
-	updateWindowMenu();
+    mdiArea->setViewMode(QMdiArea::TabbedView);
+    mdiArea->setTabPosition(QTabWidget::South);
+    mdiArea->setTabShape(QTabWidget::Rounded);
+    updateWindowMenu();
 }
 
 void QDaqIDE::windowView()
 {
-	mdiArea->setViewMode(QMdiArea::SubWindowView);
-	updateWindowMenu();
+    mdiArea->setViewMode(QMdiArea::SubWindowView);
+    updateWindowMenu();
 }
 
 void QDaqIDE::about()
@@ -179,52 +186,77 @@ void QDaqIDE::about()
     QDialog AboutDialog(this);
     AboutDialog.setWindowTitle("About QDaq");
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(AboutDialog.sizePolicy().hasHeightForWidth());
+    // sizePolicy.setHorizontalStretch(0);
+    // sizePolicy.setVerticalStretch(0);
+    // sizePolicy.setHeightForWidth(AboutDialog.sizePolicy().hasHeightForWidth());
     AboutDialog.setSizePolicy(sizePolicy);
-    AboutDialog.setSizeGripEnabled(false);
-    QVBoxLayout* verticalLayout = new QVBoxLayout(&AboutDialog);
-    QHBoxLayout* horizontalLayout = new QHBoxLayout();
+    // AboutDialog.setSizeGripEnabled(false);
+    QVBoxLayout *verticalLayout = new QVBoxLayout(&AboutDialog);
+    QHBoxLayout *horizontalLayout = new QHBoxLayout();
     horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-    QLabel* label = new QLabel(&AboutDialog);
+    QLabel *label = new QLabel(&AboutDialog);
     label->setPixmap(QPixmap(":/images/qdaq_logo_64.png"));
-    label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    label->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     label->setFixedWidth(104);
+    label->setMargin(10);
     horizontalLayout->addWidget(label);
-    //QSpacerItem* horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
-    //horizontalLayout->addItem(horizontalSpacer);
-    QLabel* label_2 = new QLabel(&AboutDialog);
-
+    // QSpacerItem* horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
+    // horizontalLayout->addItem(horizontalSpacer);
+    QLabel *label_2 = new QLabel(&AboutDialog);
+    label_2->setOpenExternalLinks(true);
+    QDaqObject::VersionInfo v = QDaqObject::versionInfo();
     QString msg = QString(
-                "<h2>QDaq ver. %1</h2>"
-                "<p>(c) 2015 - 2023, G. Apostolopoulos "
-                "<a href=\"mailto:gapost@ipta.demokritos.gr\">gapost@ipta.demokritos.gr</a></p>"
-                "<p>This program uses the following Open Source tools:</p>"
-                "<ul>"
-                "<li>"
-                "The Qt C++ gui toolkit"
-                " <a href=\"http://www.trolltech.com/qt/\">www.trolltech.com/qt/</a>"
-                "</li>"
-                "</ul>"
-                "<p></p>"
-                ).arg(QDaq::Version());
+                      R"(
+                      <h2>QDaq</h2>
+                      <p>Qt-based Data Acquisition<br>
+                      Source code: <a href=\"https://gitlab.com/qdaq/qdaq\">https://gitlab.com/qdaq/qdaq</a><br>
+                      Documentation: <a href=\"https://qdaq.gitlab.io/\">https://qdaq.gitlab.io/</a><br>
+                      Version: %1<br>
+                      Qt Version: %2<br>
+                      Git-tag: %3<br>
+                      Build time: %4<br>
+                      Compiler: %5 %6<br>
+                      System: %7 %8</p>
+                      <h3>LICENSE</h3>
+                      <p>MIT License<br>
+                      Copyright (c) 2015-2026, <br>
+                      National Centre for Scientific Research "Demokritos" 
+                      and QDaq contributors.</p>
+                      <h3>Credits</h3>
+                      <p>This program uses the following Open Source tools:
+                      <ul>
+                      <li>The Qt C++ gui toolkit - <a href=\"https://www.qt.io/\">www.qt.io</a></li>
+                      <li>The HDF5 file format - <a href=\"https://www.hdfgroup.org/solutions/hdf5/\">www.hdfgroup.org/solutions/hdf5</a></li>
+                      <li>muparser fast math parser library - <a href=\"http://muparser.sourceforge.net/\">muparser.sourceforge.net</a></li>
+                      <li>Qwt widgets for technical applications - <a href=\"https://qwt.sourceforge.io/\">qwt.sourceforge.io</a></li>
+                      <li>GSL - GNU Scientific Library - <a href=\"https://www.gnu.org/software/gsl/\">www.gnu.org/software/gsl</a></li>
+                      <li>libmodbus - <a href=\"https://libmodbus.org/\">libmodbus.org</a></li>
+                      <li>linux-gpib - <a href=\"https://linux-gpib.sourceforge.io/\">linux-gpib.sourceforge.io</a></li>
+                      </ul>
+                      </p>)")
+                      .arg(v.version)
+                      .arg(QDaq::QtVersion())
+                      .arg(v.git_tag)
+                      .arg(v.build_time)
+                      .arg(v.compiler_id)
+                      .arg(v.compiler_version)
+                      .arg(v.system_id)
+                      .arg(QSysInfo::currentCpuArchitecture());
 
     label_2->setText(msg);
     horizontalLayout->addWidget(label_2);
     verticalLayout->addLayout(horizontalLayout);
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(&AboutDialog);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(&AboutDialog);
     buttonBox->setStandardButtons(QDialogButtonBox::Ok);
-    buttonBox->setCenterButtons(true);
+    // buttonBox->setCenterButtons(true);
     verticalLayout->addWidget(buttonBox);
 
     QObject::connect(buttonBox, SIGNAL(accepted()), &AboutDialog, SLOT(accept()));
 
-    AboutDialog.setFixedSize(520,180);
+    // AboutDialog.setFixedSize(520, 180);
 
     AboutDialog.exec();
-
 }
 
 void QDaqIDE::updateMenus()
@@ -237,10 +269,10 @@ void QDaqIDE::updateMenus()
     pasteAct->setEnabled(hasTextEdit);
     closeAct->setEnabled(hasTextEdit);
     closeAllAct->setEnabled(hasTextEdit);
-    //tileAct->setEnabled(hasTextEdit);
-    //cascadeAct->setEnabled(hasTextEdit);
-    //nextAct->setEnabled(hasTextEdit);
-    //previousAct->setEnabled(hasTextEdit);
+    // tileAct->setEnabled(hasTextEdit);
+    // cascadeAct->setEnabled(hasTextEdit);
+    // nextAct->setEnabled(hasTextEdit);
+    // previousAct->setEnabled(hasTextEdit);
     separatorAct->setVisible(hasTextEdit);
 
     bool hasSelection = (activeTextEdit() &&
@@ -252,21 +284,22 @@ void QDaqIDE::updateMenus()
 void QDaqIDE::updateWindowMenu()
 {
     windowMenu->clear();
-	foreach(QAction* act, toggleDockersActions) windowMenu->addAction(act);
+    foreach (QAction *act, toggleDockersActions)
+        windowMenu->addAction(act);
     windowMenu->addSeparator();
     windowMenu->addAction(closeAct);
     windowMenu->addAction(closeAllAct);
     windowMenu->addSeparator();
-	if (mdiArea->viewMode()==QMdiArea::SubWindowView)
-	{
-		windowMenu->addAction(tileAct);
-		windowMenu->addAction(cascadeAct);
-		windowMenu->addAction(tabbedViewAct);
-	}
-	else
-	{
-		windowMenu->addAction(windowViewAct);
-	}
+    if (mdiArea->viewMode() == QMdiArea::SubWindowView)
+    {
+        windowMenu->addAction(tileAct);
+        windowMenu->addAction(cascadeAct);
+        windowMenu->addAction(tabbedViewAct);
+    }
+    else
+    {
+        windowMenu->addAction(windowViewAct);
+    }
     windowMenu->addSeparator();
     windowMenu->addAction(nextAct);
     windowMenu->addAction(previousAct);
@@ -275,11 +308,12 @@ void QDaqIDE::updateWindowMenu()
     QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
     separatorAct->setVisible(!windows.isEmpty());
 
-    for (int i = 0; i < windows.size(); ++i) {
-		QString text = windows.at(i)->windowTitle();
-        QAction *action  = windowMenu->addAction(text);
+    for (int i = 0; i < windows.size(); ++i)
+    {
+        QString text = windows.at(i)->windowTitle();
+        QAction *action = windowMenu->addAction(text);
         action->setCheckable(true);
-        action ->setChecked(windows.at(i) == mdiArea->activeSubWindow());
+        action->setChecked(windows.at(i) == mdiArea->activeSubWindow());
         connect(action, SIGNAL(triggered()), windowMapper, SLOT(map()));
         windowMapper->setMapping(action, windows.at(i));
     }
@@ -300,7 +334,7 @@ QDaqScriptEditor *QDaqIDE::createScriptEditor()
 
 QDaqConsole *QDaqIDE::createQDaqConsole()
 {
-    QDaqSession* s = QDaqObject::root()->newSession();
+    QDaqSession *s = QDaqObject::root()->newSession();
     QDaqConsole *child = new QDaqConsole(s);
 
     mdiArea->addSubWindow(child);
@@ -331,7 +365,7 @@ void QDaqIDE::createActions()
     newConsoleAct->setStatusTip(tr("Open new script console"));
     connect(newConsoleAct, SIGNAL(triggered()), this, SLOT(newConsole()));
 
-	openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
+    openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
@@ -346,12 +380,12 @@ void QDaqIDE::createActions()
     saveAsAct->setStatusTip(tr("Save the document under a new name"));
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-//! [0]
+    //! [0]
     exitAct = new QAction(tr("E&xit"), this);
-    //exitAct->setShortcut(tr("Ctrl+Q"));
+    // exitAct->setShortcut(tr("Ctrl+Q"));
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-//! [0]
+    //! [0]
 
     cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
     cutAct->setShortcuts(QKeySequence::Cut);
@@ -417,10 +451,6 @@ void QDaqIDE::createActions()
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-
-    aboutQtAct = new QAction(tr("About &Qt"), this);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-    connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
 void QDaqIDE::createMenus()
@@ -449,7 +479,6 @@ void QDaqIDE::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
 }
 
 void QDaqIDE::createToolBars()
@@ -482,31 +511,30 @@ void QDaqIDE::createDockers()
     objectBrowser_ = new QDaqObjectBrowser(dock);
     dock->setWidget(objectBrowser_);
     dock->setFloating(false);
-    //dock->hide();
-    addDockWidget(Qt::LeftDockWidgetArea,dock);
+    // dock->hide();
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
     toggleDockersActions << dock->toggleViewAction();
 
     dock = new QDockWidget("File Browser", this);
     dock->setObjectName("objectFileBrowserDocker");
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-
-    QFileSystemModel* model = new QFileSystemModel();
+    QFileSystemModel *model = new QFileSystemModel();
     model->setRootPath(QDir::currentPath());
     model->setFilter(QDir::AllDirs | QDir::Files);
-    //model.setRootPath("");
-    //if (parser.isSet(dontUseCustomDirectoryIconsOption))
-        //model.iconProvider()->setOptions(QFileIconProvider::DontUseCustomDirectoryIcons);
+    // model.setRootPath("");
+    // if (parser.isSet(dontUseCustomDirectoryIconsOption))
+    // model.iconProvider()->setOptions(QFileIconProvider::DontUseCustomDirectoryIcons);
 
     fileBrowser_ = new QTreeView();
     fileBrowser_->setModel(model);
     fileBrowser_->setRootIndex(model->index(QDir::currentPath()));
 
-//    if (!rootPath.isEmpty()) {
-//        const QModelIndex rootIndex = model.index(QDir::cleanPath(rootPath));
-//        if (rootIndex.isValid())
-//            fileBrowser_->setRootIndex(rootIndex);
-//    }
+    //    if (!rootPath.isEmpty()) {
+    //        const QModelIndex rootIndex = model.index(QDir::cleanPath(rootPath));
+    //        if (rootIndex.isValid())
+    //            fileBrowser_->setRootIndex(rootIndex);
+    //    }
 
     // Demonstrating look and feel features
     fileBrowser_->setAnimated(false);
@@ -517,17 +545,13 @@ void QDaqIDE::createDockers()
     // fileBrowser_->setColumnWidth(0, fileBrowser_->width() / 3);
 
     // fileBrowser_->setWindowTitle(QObject::tr("Dir View"));
-    connect(fileBrowser_,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(fileItemDoubleClicked(QModelIndex)));
-
-
-
+    connect(fileBrowser_, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(fileItemDoubleClicked(QModelIndex)));
 
     dock->setWidget(fileBrowser_);
     dock->setFloating(false);
-    //dock->hide();
-    addDockWidget(Qt::LeftDockWidgetArea,dock);
+    // dock->hide();
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
     toggleDockersActions << dock->toggleViewAction();
-
 
     dock = new QDockWidget("Error Log", this);
     dock->setObjectName("errorLogDocker");
@@ -535,7 +559,7 @@ void QDaqIDE::createDockers()
     errorLog_ = new QDaqErrorLog(dock);
     dock->setWidget(errorLog_);
     dock->setFloating(false);
-    addDockWidget(Qt::BottomDockWidgetArea,dock);
+    addDockWidget(Qt::BottomDockWidgetArea, dock);
     toggleDockersActions << dock->toggleViewAction();
 }
 
@@ -555,7 +579,7 @@ void QDaqIDE::writeSettings()
     settings.setValue("size", size());
 }
 
-QPlainTextEdit* QDaqIDE::activeTextEdit()
+QPlainTextEdit *QDaqIDE::activeTextEdit()
 {
     if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
         return qobject_cast<QPlainTextEdit *>(activeSubWindow->widget());
@@ -573,7 +597,8 @@ QMdiSubWindow *QDaqIDE::findEditor(const QString &fileName)
 {
     QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
 
-    foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
+    foreach (QMdiSubWindow *window, mdiArea->subWindowList())
+    {
         QDaqScriptEditor *editor = qobject_cast<QDaqScriptEditor *>(window->widget());
         if (editor && (editor->currentFile() == canonicalFilePath))
             return window;
@@ -590,27 +615,34 @@ void QDaqIDE::setActiveSubWindow(QWidget *window)
 
 void QDaqIDE::fileItemDoubleClicked(const QModelIndex &index)
 {
-    QFileSystemModel* model = (QFileSystemModel*)fileBrowser_->model();
+    QFileSystemModel *model = (QFileSystemModel *)fileBrowser_->model();
     QFileInfo fi = model->fileInfo(index);
-    if (fi.isDir()) {
+    if (fi.isDir())
+    {
         QString path = fi.absoluteFilePath(); // .dir().absolutePath();
         model->setRootPath(path);
         fileBrowser_->setRootIndex(model->index(path));
     }
-    if (fi.isFile()) {
+    if (fi.isFile())
+    {
         QString fileName = fi.fileName();
-        if (!fileName.isEmpty()) {
+        if (!fileName.isEmpty())
+        {
             QMdiSubWindow *existing = findEditor(fileName);
-            if (existing) {
+            if (existing)
+            {
                 mdiArea->setActiveSubWindow(existing);
                 return;
             }
 
             QDaqScriptEditor *child = createScriptEditor();
-            if (child->loadFile(fi.absoluteFilePath())) {
+            if (child->loadFile(fi.absoluteFilePath()))
+            {
                 statusBar()->showMessage(tr("File loaded"), 2000);
                 child->show();
-            } else {
+            }
+            else
+            {
                 child->close();
             }
         }
@@ -621,4 +653,3 @@ void QDaqIDE::onCloseRootConsole()
 {
     rootConsoleAct->setEnabled(true);
 }
-
