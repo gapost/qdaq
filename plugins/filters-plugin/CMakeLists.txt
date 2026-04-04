@@ -35,9 +35,15 @@ target_include_directories(${TARGET_NAME}
 
 
 # Install the library target and export targets file
-install(TARGETS ${TARGET_NAME}
-    EXPORT ${TARGET_NAME}Targets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/qt5/plugins/script/
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+if(WIN32)
+    install(TARGETS ${TARGET_NAME}
+        EXPORT ${TARGET_NAME}Targets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/script
+    )
+else()
+    install(TARGETS ${TARGET_NAME}
+        EXPORT ${TARGET_NAME}Targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/qt5/plugins/script/
+    )
+endif()
