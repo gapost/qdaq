@@ -6,6 +6,15 @@ test/.command_history.lst
 
 test/*.h5
 
-.build/*
-build/*
+.build/
+build/
+.winbuild/
+.win32build/
+.win64build/
+.vscode/
+.qtcreator/
+
+doc/html/*
+CMakeLists.txt.user.*
+CMakeLists.txt.user
 

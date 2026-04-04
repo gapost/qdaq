@@ -9,6 +9,13 @@ project(QDaq
   HOMEPAGE_URL https://gitlab.com/qdaq/qdaq
 )
 
+string(TIMESTAMP CMAKE_BUILD_TIME UTC)
+
+# add our custom cmake modules directory 
+list(APPEND CMAKE_MODULE_PATH
+     "${CMAKE_SOURCE_DIR}/cmake"
+)
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -69,16 +76,28 @@ if(PkgConfig_FOUND)
     message(WARNING "GSL library not found via pkg-config")
   endif()
 
-  pkg_check_modules(GPIB REQUIRED IMPORTED_TARGET libgpib)
-  if(GPIB_FOUND)
-    message(STATUS "GPIB library found: ${GPIB_LIBRARIES}")
-  else()
-    message(WARNING "GPIB library not found via pkg-config")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    pkg_check_modules(GPIB IMPORTED_TARGET libgpib)
+    if(GPIB_FOUND)
+      message(STATUS "GPIB library found: ${GPIB_LIBRARIES}")
+    else()
+      message(WARNING "GPIB library not found via pkg-config")
+    endif()
   endif()
 
 else()
-  message(WARNING "pkg-config not found, cannot search for Modbus, GSL or GPIB libraries")
+  message(WARNING "pkg-config not found, cannot search for Modbus, GSL or Linux-GPIB libraries")
 endif()
+
+if (WIN32)
+  find_package(NI4882)
+  if(NI4882_FOUND)
+    message(STATUS "NI-488.2 library found: ${NI4882_LIBRARY}")
+  else()
+    message(WARNING "NI-488.2 library not found")
+  endif()
+endif()
+
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -116,10 +135,18 @@ else()
   message(STATUS "  GSL:      <not found>")
 endif()
 
-if(GPIB_FOUND)
-  message(STATUS "  GPIB version:          ${GPIB_VERSION}")
+if (WIN32)
+  if(NI4882_FOUND)
+    message(STATUS "  NI-488.2 library:     ${NI4882_LIBRARY}")
+  else()
+    message(STATUS "  NI-488.2: <not found>")
+  endif()
 else()
-  message(STATUS "  GPIB:      <not found>")
+  if(GPIB_FOUND)
+    message(STATUS "  GPIB version:          ${GPIB_VERSION}")
+  else()
+    message(STATUS "  GPIB:      <not found>")
+  endif()
 endif()
 
 message(STATUS "----------------------------------------")
