@@ -1,8 +1,7 @@
-#ifndef LINUXGPIB_H
-#define LINUXGPIB_H
+#ifndef QDAQGPIB_H
+#define QDAQGPIB_H
 
 #include "QDaqGlobal.h"
-
 
 #include "QDaqInterface.h"
 #include "QDaqVector.h"
@@ -30,13 +29,13 @@
  *
  */
 
-class QDAQ_EXPORT QDaqLinuxGpib : public QDaqInterface
+class QDAQ_EXPORT QDaqGpib : public QDaqInterface
 {
     Q_OBJECT
 
 public:
-    Q_INVOKABLE explicit QDaqLinuxGpib(const QString& name);
-    virtual ~QDaqLinuxGpib();
+    Q_INVOKABLE explicit QDaqGpib(const QString& name);
+    virtual ~QDaqGpib();
 
     // io
     virtual bool open_port(uint i, QDaqDevice*);
@@ -76,6 +75,6 @@ private:
 
 };
 
-Q_DECLARE_METATYPE(QDaqLinuxGpib*)
+Q_DECLARE_METATYPE(QDaqGpib*)
 
-#endif // LINUXGPIB_H
+#endif // QDAQGPIB_H
